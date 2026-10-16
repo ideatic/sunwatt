@@ -3,13 +3,16 @@ import PackageDescription
 
 let package = Package(
     name: "HomeDashKit",
-    defaultLocalization: "es",
+    defaultLocalization: "en",
     platforms: [.iOS("27.0"), .macOS("27.0")],
     products: [
         .library(name: "HomeDashKit", targets: ["HomeDashKit"]),
     ],
     targets: [
-        .target(name: "HomeDashKit"),
+        .target(
+            name: "HomeDashKit",
+            resources: [.process("Resources")]
+        ),
         .testTarget(
             name: "HomeDashKitTests",
             dependencies: ["HomeDashKit"],

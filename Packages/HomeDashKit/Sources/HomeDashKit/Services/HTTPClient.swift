@@ -16,7 +16,7 @@ public protocol PriceDataSource: Sendable {
     func fetch(day: Date) async throws -> PriceSeries
 }
 
-/// Errors shown to the user. `errorDescription` is in Spanish (UI language).
+/// Errors shown to the user. `errorDescription` is localized (see L10n).
 public enum HomeDashError: Error, Equatable, Sendable, LocalizedError {
     case invalidKioskURL
     case notConfigured
@@ -27,12 +27,12 @@ public enum HomeDashError: Error, Equatable, Sendable, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .invalidKioskURL: "La URL del kiosco no es válida. Debe contener el parámetro kk."
-        case .notConfigured: "Configura la URL del kiosco en Ajustes."
-        case .http(let status): "El servidor respondió con el código \(status)."
-        case .badResponse(let detail): "Respuesta no válida: \(detail)"
-        case .unavailable: "Datos no disponibles todavía."
-        case .network(let detail): "Error de red: \(detail)"
+        case .invalidKioskURL: L10n.string("The kiosk URL is not valid. It must contain the kk parameter.")
+        case .notConfigured: L10n.string("Set up the kiosk URL in Settings.")
+        case .http(let status): L10n.string("The server responded with code \(status).")
+        case .badResponse(let detail): L10n.string("Invalid response: \(detail)")
+        case .unavailable: L10n.string("Data not available yet.")
+        case .network(let detail): L10n.string("Network error: \(detail)")
         }
     }
 }

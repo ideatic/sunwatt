@@ -16,7 +16,7 @@ settings:
     CODE_SIGN_IDENTITY: "-"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
-    DEVELOPMENT_LANGUAGE: es
+    DEVELOPMENT_LANGUAGE: en
 packages:
   HomeDashKit:
     path: Packages/HomeDashKit
@@ -41,6 +41,8 @@ targets:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: HomeDash
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, es, pt, fr, de, it, nl]
         LSApplicationCategoryType: public.app-category.utilities
         UILaunchScreen: {}
         UIApplicationSceneManifest:
@@ -70,6 +72,8 @@ targets:
       path: Widgets/Info.plist
       properties:
         CFBundleDisplayName: HomeDash
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, es, pt, fr, de, it, nl]
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:

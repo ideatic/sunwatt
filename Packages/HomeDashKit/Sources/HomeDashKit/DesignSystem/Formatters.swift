@@ -1,8 +1,9 @@
 import Foundation
 
-/// Spanish-locale formatting for all UI figures (comma decimal separator).
+/// Formatting for all UI figures. Follows the user's locale (Spanish: comma decimal separator). Times in the data time zone.
 public enum Format {
-    public static let locale = Locale(identifier: "es_ES")
+    /// Overridable for snapshots/tests; defaults to the user's current locale.
+    nonisolated(unsafe) public static var locale = Locale.autoupdatingCurrent
 
     /// "4,8" (1 decimal for < 10 kW, 0 decimals above).
     public static func kW(_ value: Double?) -> String {
