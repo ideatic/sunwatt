@@ -3,13 +3,13 @@ import Testing
 @testable import HomeDashKit
 
 /// Wraps an inner JSON string the way the kiosk does: HTML-escaped inside `data`.
-private func kioskBody(inner: String, success: Bool = true) -> Data {
+func kioskBody(inner: String, success: Bool = true) -> Data {
     let escaped = inner.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "\"", with: "&quot;")
     let outer: [String: Any] = ["data": escaped, "success": success, "failCode": 0]
     return try! JSONSerialization.data(withJSONObject: outer)
 }
 
-private func kioskCurveJSON(labels: [String], values: [String]) -> String {
+func kioskCurveJSON(labels: [String], values: [String]) -> String {
     let x = labels.map { "\"\($0)\"" }.joined(separator: ",")
     let y = values.map { "\"\($0)\"" }.joined(separator: ",")
     return "{\"powerCurve\":{\"xAxis\":[\(x)],\"activePower\":[\(y)]}}"
@@ -71,7 +71,7 @@ private func kioskCurveJSON(labels: [String], values: [String]) -> String {
         let inner = """
         {"powerCurve":{"xAxis":["10:00","10:05","10:10","10:15","10:20","10:25"],"activePower":[1.5,"2.25","-","--","",null]}}
         """
-        let s = try FusionSolarKioskClient.parse(kioskBody(inner: inner), fetchedAt: day, day: day)
+        let s = try FusionSolarKioskClient.parse(kioskBody(inner: inner), fetchedAt: madrid(2026, 10, 17, 12, 0), day: day)
         #expect(s.curve.map(\.kW) == [1.5, 2.25, nil, nil, nil, nil])
         #expect(s.dataAsOf == madrid(2026, 10, 17, 10, 5))
     }
@@ -108,7 +108,7 @@ private func kioskCurveJSON(labels: [String], values: [String]) -> String {
         // 2026-10-25: 02:00-02:59 happens twice. Repeated label maps to the later instant.
         let labels = ["01:55", "02:00", "02:30", "02:55", "02:00", "02:30", "03:00"]
         let body = kioskBody(inner: kioskCurveJSON(labels: labels, values: ["1", "2", "3", "4", "5", "6", "7"]))
-        let s = try FusionSolarKioskClient.parse(body, fetchedAt: day, day: madrid(2026, 10, 25, 12, 0))
+        let s = try FusionSolarKioskClient.parse(body, fetchedAt: madrid(2026, 10, 25, 12, 0), day: madrid(2026, 10, 25, 12, 0))
         #expect(s.curve.count == 7)
         for (a, b) in zip(s.curve, s.curve.dropFirst()) { #expect(a.time < b.time) }
         let first = s.curve[1].time

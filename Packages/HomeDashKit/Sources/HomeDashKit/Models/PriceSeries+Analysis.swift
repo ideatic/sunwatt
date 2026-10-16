@@ -1,6 +1,30 @@
 import Foundation
 
-/// Price analysis. All day math uses `Constants.madridCalendar`.
+/// Hourly points of one market day plus their statistics. Build it once per render with
+/// `PriceSeries.dayContext(for:)` instead of calling `stats`/`fraction`/`level` per point.
+public struct PriceDayContext: Hashable, Sendable {
+    /// Hourly points of the day (23, 24 or 25 on DST days), sorted by start.
+    public let hours: [PricePoint]
+    public let stats: PriceStats
+
+    public init(hours: [PricePoint], stats: PriceStats) {
+        self.hours = hours
+        self.stats = stats
+    }
+
+    /// Position 0...1 of `point` within the day's min...max (0.5 if flat).
+    public func fraction(of point: PricePoint) -> Double {
+        guard stats.max > stats.min else { return 0.5 }
+        return Swift.min(1, Swift.max(0, (point.eurPerKWh - stats.min) / (stats.max - stats.min)))
+    }
+
+    /// Level of `point` relative to the day's range (lower third = low, upper third = high).
+    public func level(of point: PricePoint) -> PriceLevel {
+        PriceLevel.classify(fraction: fraction(of: point))
+    }
+}
+
+/// Price analysis. All day math uses `region.calendar` (the market time zone of the series).
 public extension PriceSeries {
     /// Points aggregated to hourly (average of the 15-min points in each hour). Identity when already hourly.
     func hourly() -> [PricePoint] {
@@ -23,13 +47,14 @@ public extension PriceSeries {
         hourly().first { $0.contains(date) }
     }
 
-    /// Hourly points of the Europe/Madrid day containing `date` (23, 24 or 25 points).
+    /// Hourly points of the market day (in `region`'s time zone) containing `date` (23, 24 or 25 points).
     func hours(onDayOf date: Date) -> [PricePoint] {
-        guard let day = Constants.madridCalendar.dateInterval(of: .day, for: date) else { return [] }
+        guard let day = region.calendar.dateInterval(of: .day, for: date) else { return [] }
         return hourly().filter { $0.start >= day.start && $0.start < day.end }
     }
 
-    /// Hourly points in [`date` - before hours, `date` + after hours], aligned to hour starts.
+    /// Hourly points from `before` hours before to `after` hours after the hour containing `date`
+    /// (inclusive at both ends), aligned to hour starts.
     func hours(around date: Date, before: Int = 6, after: Int = 12) -> [PricePoint] {
         let current = Self.hourStart(of: date)
         let lower = current.addingTimeInterval(-Double(before) * 3600)
@@ -37,22 +62,27 @@ public extension PriceSeries {
         return hourly().filter { $0.start >= lower && $0.start <= upper }
     }
 
-    /// Min/max/average €/kWh of the Europe/Madrid day containing `date`.
-    func stats(onDayOf date: Date) -> PriceStats? {
-        let day = hours(onDayOf: date).map(\.eurPerKWh)
-        guard let lo = day.min(), let hi = day.max() else { return nil }
-        return PriceStats(min: lo, max: hi, average: day.reduce(0, +) / Double(day.count))
+    /// Hours and statistics of the market day containing `date`, computed once. Nil when the series has no point that day.
+    func dayContext(for date: Date) -> PriceDayContext? {
+        let day = hours(onDayOf: date)
+        guard let lo = day.map(\.eurPerKWh).min(), let hi = day.map(\.eurPerKWh).max() else { return nil }
+        let average = day.reduce(0) { $0 + $1.eurPerKWh } / Double(day.count)
+        return PriceDayContext(hours: day, stats: PriceStats(min: lo, max: hi, average: average))
     }
 
-    /// Level of `point` relative to the day's range (lower third = low, upper third = high).
+    /// Min/max/average €/kWh of the market day containing `date`.
+    func stats(onDayOf date: Date) -> PriceStats? {
+        dayContext(for: date)?.stats
+    }
+
+    /// Level of `point` relative to its day's range (lower third = low, upper third = high).
     func level(of point: PricePoint) -> PriceLevel {
         PriceLevel.classify(fraction: fraction(of: point))
     }
 
-    /// Position 0...1 of `point` within its day's min...max (0.5 if flat).
+    /// Position 0...1 of `point` within its day's min...max (0.5 if flat or unknown).
     func fraction(of point: PricePoint) -> Double {
-        guard let s = stats(onDayOf: point.start), s.max > s.min else { return 0.5 }
-        return Swift.min(1, Swift.max(0, (point.eurPerKWh - s.min) / (s.max - s.min)))
+        dayContext(for: point.start)?.fraction(of: point) ?? 0.5
     }
 
     /// The `count` cheapest hourly points that start at or after the current hour, sorted by start time.
@@ -64,7 +94,7 @@ public extension PriceSeries {
         return cheapest.sorted { $0.start < $1.start }
     }
 
-    /// Start of the absolute hour containing `date` (Madrid offsets are whole hours, so this is DST-safe).
+    /// Start of the absolute hour containing `date` (offsets of all supported regions are whole hours, so this is DST-safe).
     private static func hourStart(of date: Date) -> Date {
         Date(timeIntervalSince1970: (date.timeIntervalSince1970 / 3600).rounded(.down) * 3600)
     }

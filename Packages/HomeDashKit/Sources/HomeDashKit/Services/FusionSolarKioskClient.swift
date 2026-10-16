@@ -6,55 +6,55 @@ public struct FusionSolarKioskClient: SolarDataSource {
     public let http: HTTPClient
     public let now: @Sendable () -> Date
 
-    public init(endpoint: KioskEndpoint, http: HTTPClient = URLSession.shared, now: @escaping @Sendable () -> Date = { Date() }) {
+    public init(endpoint: KioskEndpoint, http: HTTPClient = URLSession.homeDash, now: @escaping @Sendable () -> Date = { Date() }) {
         self.endpoint = endpoint
         self.http = http
         self.now = now
     }
 
     public func fetch() async throws -> SolarSnapshot {
-        var request = URLRequest(url: endpoint.apiURL)
-        request.timeoutInterval = 20
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        let data: Data
-        let response: URLResponse
-        do {
-            (data, response) = try await http.data(for: request)
-        } catch let error as URLError {
-            throw HomeDashError.network(error.localizedDescription)
-        }
-        if let httpResponse = response as? HTTPURLResponse, !(200..<300).contains(httpResponse.statusCode) {
-            throw HomeDashError.http(status: httpResponse.statusCode)
-        }
+        let request = HTTPFetch.request(endpoint.apiURL)
+        let (data, response) = try await HTTPFetch.perform(http, request, redacting: endpoint.kk)
+        try HTTPFetch.checkStatus(response)
         let date = now()
         return try Self.parse(data, fetchedAt: date, day: date)
     }
 
     /// Parses a raw kiosk response body (outer JSON with HTML-escaped `data` string).
+    /// Curve points later than `fetchedAt` + 5 min lose their value (stale yesterday curve).
     /// `day` is any instant in the Europe/Madrid day the curve labels ("HH:mm") belong to.
     public static func parse(_ data: Data, fetchedAt: Date, day: Date) throws -> SolarSnapshot {
         guard let outer = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else {
-            throw HomeDashError.badResponse("JSON externo")
+            throw HomeDashError.badResponse("outer JSON")
         }
         guard (outer["success"] as? Bool) == true else {
             throw HomeDashError.badResponse("success=false")
         }
         guard let escaped = outer["data"] as? String, !escaped.isEmpty else {
-            throw HomeDashError.badResponse("falta data")
+            throw HomeDashError.badResponse("missing data")
         }
         let inner = HTMLEntities.unescape(escaped)
         guard let innerData = inner.data(using: .utf8),
               let root = (try? JSONSerialization.jsonObject(with: innerData)) as? [String: Any] else {
-            throw HomeDashError.badResponse("data no es JSON")
+            throw HomeDashError.badResponse("data is not JSON")
         }
 
-        let kpi = root["realKpi"] as? [String: Any] ?? [:]
-        let curveObject = root["powerCurve"] as? [String: Any] ?? [:]
+        let kpiObject = root["realKpi"] as? [String: Any]
+        let powerCurve = root["powerCurve"] as? [String: Any]
+        guard kpiObject != nil || powerCurve != nil else {
+            throw HomeDashError.badResponse("no realKpi or powerCurve")
+        }
+        let kpi = kpiObject ?? [:]
+        let curveObject = powerCurve ?? [:]
         let labels = (curveObject["xAxis"] as? [Any])?.compactMap { $0 as? String } ?? []
         let values = curveObject["activePower"] as? [Any] ?? []
         let station = (root["stationOverview"] as? [String: Any])?["stationName"] as? String
 
-        let curve = curvePoints(labels: labels, values: values, day: day)
+        // Near midnight Huawei may still serve yesterday's curve: drop values from the future.
+        let limit = fetchedAt.addingTimeInterval(5 * 60)
+        let curve = curvePoints(labels: labels, values: values, day: day).map {
+            $0.time > limit ? CurvePoint(time: $0.time, kW: nil) : $0
+        }
         return SolarSnapshot(
             stationName: station.flatMap { $0.isEmpty ? nil : $0 },
             currentPowerKW: number(kpi["realTimePower"]),
@@ -85,7 +85,7 @@ public struct FusionSolarKioskClient: SolarDataSource {
         let dayStart = cal.startOfDay(for: day)
         var firstInstant: [String: Date] = [:]
         var points: [CurvePoint] = []
-        for (i, label) in labels.enumerated() {
+        for (i, label) in labels.enumerated().prefix(min(labels.count, values.count)) {
             let parts = label.split(separator: ":")
             guard parts.count == 2, let h = Int(parts[0]), let m = Int(parts[1]),
                   (0..<24).contains(h), (0..<60).contains(m) else { continue }
@@ -105,7 +105,7 @@ public struct FusionSolarKioskClient: SolarDataSource {
             }
             // Nonexistent label (spring-forward gap): skip.
             guard let time else { continue }
-            points.append(CurvePoint(time: time, kW: i < values.count ? number(values[i]) : nil))
+            points.append(CurvePoint(time: time, kW: number(values[i])))
         }
         return points.sorted { $0.time < $1.time }
     }
