@@ -59,8 +59,8 @@ public enum Theme {
             }
         }
 
-        public static let pastOpacity: Double = 0.35
-        public static let futureOpacity: Double = 0.75
+        public static let pastOpacity: Double = 0.42
+        public static let futureOpacity: Double = 0.82
     }
 
     // MARK: Backgrounds

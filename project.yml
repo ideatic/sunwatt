@@ -61,6 +61,7 @@ targets:
     dependencies:
       - package: HomeDashKit
       - sdk: WidgetKit.framework
+      - sdk: AppIntents.framework
       - sdk: SwiftUI.framework
     entitlements:
       path: Widgets/HomeDashWidgets.entitlements

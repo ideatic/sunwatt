@@ -1,0 +1,254 @@
+import SwiftUI
+import WidgetKit
+
+/// Soft container background. The extension passes it to `.containerBackground(for: .widget)`;
+/// the snapshot frame draws it itself.
+public struct WidgetBackground: View {
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.widgetRenderingMode) private var mode
+
+    public init() {}
+
+    public var body: some View {
+        ZStack {
+            Rectangle().fill(Theme.Background.widget(scheme))
+            if mode == .fullColor {
+                RadialGradient(
+                    colors: [Theme.Solar.amber.opacity(scheme == .dark ? 0.10 : 0.12), .clear],
+                    center: .topLeading, startRadius: 0, endRadius: 220
+                )
+            }
+        }
+    }
+}
+
+/// Sun (amber gradient) while producing, dimmed moon when idle.
+struct SolarIcon: View {
+    let idle: Bool
+    var size: CGFloat = 16
+    @Environment(\.widgetRenderingMode) private var mode
+
+    var body: some View {
+        Image(systemName: idle ? Theme.Solar.nightSymbol : Theme.Solar.symbol)
+            .font(.system(size: size, weight: .semibold))
+            .symbolRenderingMode(.monochrome)
+            .foregroundStyle(WidgetPalette(mode: mode).solarIcon(idle: idle))
+            .widgetAccentable(!idle)
+    }
+}
+
+/// Bolt tinted by the current price level.
+struct PriceIcon: View {
+    let fraction: Double?
+    var size: CGFloat = 16
+    @Environment(\.widgetRenderingMode) private var mode
+
+    var body: some View {
+        Image(systemName: Theme.Price.symbol)
+            .font(.system(size: size, weight: .semibold))
+            .foregroundStyle(WidgetPalette(mode: mode).priceColor(fraction: fraction))
+            .widgetAccentable()
+    }
+}
+
+/// Current power as a big figure, or "No production" when idle.
+struct SolarFigure: View {
+    let solar: SolarModel
+    var size: CGFloat
+
+    var body: some View {
+        if solar.isIdle {
+            wtext("No production")
+                .font(.system(size: size * 0.5, weight: .bold, design: .rounded))
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
+                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            FigureText(value: Format.kW(solar.powerKW), unit: "kW", size: size)
+                .widgetAccentable()
+        }
+    }
+}
+
+/// "23,4 kWh today"
+struct SolarDailyCaption: View {
+    let solar: SolarModel
+
+    var body: some View {
+        wtext("\(Format.kWh(solar.dailyKWh)) kWh today")
+            .font(.system(.caption, design: .rounded).weight(.medium))
+            .monospacedDigit()
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+    }
+}
+
+/// Current price as a big figure, or an em dash when the series ran out.
+struct PriceFigure: View {
+    let price: PriceModel
+    var size: CGFloat
+    var showsUnit = true
+
+    var body: some View {
+        FigureText(value: Format.eurPerKWh(price.current?.eurPerKWh), unit: showsUnit ? "€/kWh" : nil, size: size)
+            .widgetAccentable()
+    }
+}
+
+/// Colored dot + level word ("Cheap"), or "No current price".
+struct LevelLabel: View {
+    let price: PriceModel
+    @Environment(\.widgetRenderingMode) private var mode
+
+    var body: some View {
+        HStack(spacing: 5) {
+            if let level = price.level {
+                Circle()
+                    .fill(WidgetPalette(mode: mode).levelColor(level))
+                    .frame(width: 7, height: 7)
+                wtext(level.label)
+            } else {
+                wtext("No current price")
+            }
+        }
+        .font(.system(.caption, design: .rounded).weight(.medium))
+        .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+    }
+}
+
+/// Small section title above a chart.
+struct ChartCaption: View {
+    let title: LocalizedStringKey
+    var trailing: String?
+
+    var body: some View {
+        HStack {
+            wtext(title)
+            Spacer(minLength: 4)
+            if let trailing { Text(verbatim: trailing) }
+        }
+        .font(.system(.caption2, design: .rounded).weight(.semibold))
+        .foregroundStyle(.secondary)
+        .textCase(.uppercase)
+        .lineLimit(1)
+    }
+}
+
+/// Mini price chart, or a quiet placeholder when there are no points.
+struct PriceMiniChart: View {
+    let price: PriceModel
+    var style: PriceBarChart.Style = .mini
+
+    var body: some View {
+        if let series = price.series, !price.points.isEmpty {
+            PriceBarChart(series: series, points: price.points, now: price.now, style: style)
+        } else {
+            Color.clear
+        }
+    }
+}
+
+/// Solar half of a medium widget or large header: header row, figure, daily energy, optional mini curve.
+struct SolarColumn: View {
+    let solar: SolarModel
+    let now: Date
+    var figureSize: CGFloat = 32
+    var showsChart = true
+
+    var body: some View {
+        if solar.isAvailable {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 4) {
+                    SolarIcon(idle: solar.isIdle)
+                    Spacer(minLength: 2)
+                    DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
+                }
+                .frame(height: 20)
+                SolarFigure(solar: solar, size: figureSize)
+                    .padding(.top, 2)
+                SolarDailyCaption(solar: solar)
+                    .padding(.top, 1)
+                if showsChart, let snapshot = solar.snapshot {
+                    SolarCurveChart(snapshot: snapshot, now: now, style: .mini)
+                        .padding(.top, 8)
+                        .frame(maxHeight: .infinity)
+                } else {
+                    Spacer(minLength: 0)
+                }
+            }
+        } else {
+            SourceStateView(kind: solar.phase == .notConfigured ? .notConfigured : .solarError, compact: true)
+        }
+    }
+}
+
+/// Price half of a medium widget or large header: header row, figure, level, optional mini bars.
+struct PriceColumn: View {
+    let price: PriceModel
+    var figureSize: CGFloat = 32
+    var showsChart = true
+
+    var body: some View {
+        if price.series != nil {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 4) {
+                    PriceIcon(fraction: price.fraction)
+                    Spacer(minLength: 2)
+                    if let since = price.staleSince {
+                        StaleBadge(since: since, timeZone: price.timeZone)
+                    }
+                }
+                .frame(height: 20)
+                PriceFigure(price: price, size: figureSize)
+                    .padding(.top, 2)
+                LevelLabel(price: price)
+                    .padding(.top, 1)
+                if showsChart {
+                    PriceMiniChart(price: price)
+                        .padding(.top, 8)
+                        .frame(maxHeight: .infinity)
+                } else {
+                    Spacer(minLength: 0)
+                }
+            }
+        } else {
+            SourceStateView(kind: .priceError, compact: true)
+        }
+    }
+}
+
+/// Min / average / max prices of the day with level dots.
+struct PriceStatsRow: View {
+    let stats: PriceStats
+    @Environment(\.widgetRenderingMode) private var mode
+
+    var body: some View {
+        HStack(alignment: .top, spacing: Theme.Spacing.m) {
+            item("Min", stats.min, color: Theme.Price.green)
+            item("Avg", stats.average, color: Theme.Price.yellow)
+            item("Max", stats.max, color: Theme.Price.red)
+        }
+    }
+
+    private func item(_ label: LocalizedStringKey, _ value: Double, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            wtext(label)
+                .font(.system(.caption2, design: .rounded).weight(.medium))
+                .foregroundStyle(.secondary)
+            HStack(spacing: 4) {
+                Circle()
+                    .fill(mode == .fullColor ? AnyShapeStyle(color) : AnyShapeStyle(HierarchicalShapeStyle.secondary))
+                    .frame(width: 6, height: 6)
+                Text(verbatim: Format.eurPerKWh(value))
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .monospacedDigit()
+            }
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+    }
+}
