@@ -28,7 +28,7 @@ private func kioskCurveJSON(labels: [String], values: [String]) -> String {
         #expect(s.dailyEnergyKWh == 0)
         #expect(s.dataAsOf == nil)
         #expect(s.fetchedAt == fetched)
-        #expect(s.stationName?.isEmpty == false)
+        #expect(s.stationName == "Demo Station")
         #expect(s.curve.first?.time == madrid(2026, 10, 17, 0, 0))
         #expect(s.curve.last?.time == madrid(2026, 10, 17, 23, 55))
         #expect(s.isIdle)
