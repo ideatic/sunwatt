@@ -22,19 +22,23 @@ public enum Format {
     /// "0,147" €/kWh (3 decimals by default).
     public static func eurPerKWh(_ value: Double?, decimals: Int = 3) -> String {
         guard let value else { return "–" }
-        return value.formatted(.number.locale(locale).precision(.fractionLength(decimals)))
+        // A value that rounds to zero must not print as "-0,000".
+        let scale = pow(10.0, Double(decimals))
+        let normalized = (value * scale).rounded() == 0 ? 0 : value
+        return normalized.formatted(.number.locale(locale).precision(.fractionLength(decimals)))
     }
 
-    /// "14:30" in Europe/Madrid.
-    public static func time(_ date: Date) -> String {
-        var style = Date.FormatStyle(date: .omitted, time: .shortened, locale: locale, timeZone: Constants.madrid)
+    /// "14:30" in `timeZone` (Europe/Madrid by default).
+    public static func time(_ date: Date, timeZone: TimeZone = Constants.madrid) -> String {
+        var style = Date.FormatStyle(date: .omitted, time: .shortened, locale: locale, timeZone: timeZone)
         style = style.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)
         return date.formatted(style)
     }
 
-    /// "14 h" hour label in Europe/Madrid.
-    public static func hour(_ date: Date) -> String {
-        let h = Constants.madridCalendar.component(.hour, from: date)
-        return "\(h) h"
+    /// "14 h" hour label in `timeZone` (Europe/Madrid by default).
+    public static func hour(_ date: Date, timeZone: TimeZone = Constants.madrid) -> String {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = timeZone
+        return "\(cal.component(.hour, from: date)) h"
     }
 }
