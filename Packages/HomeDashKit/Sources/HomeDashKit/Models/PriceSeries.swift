@@ -34,14 +34,28 @@ public struct PriceSeries: Codable, Hashable, Sendable {
     public var granularity: PriceGranularity
     /// When this app fetched the data.
     public var fetchedAt: Date
-    /// `last-update` reported by REE, if any.
+    /// `last-update` reported by the source, if any.
     public var sourceUpdatedAt: Date?
+    /// Market the prices belong to. Day/hour math uses `region.calendar`.
+    public var region: PriceRegion
 
-    public init(points: [PricePoint], granularity: PriceGranularity, fetchedAt: Date, sourceUpdatedAt: Date? = nil) {
+    public init(points: [PricePoint], granularity: PriceGranularity, fetchedAt: Date, sourceUpdatedAt: Date? = nil, region: PriceRegion = .spain) {
         self.points = points
         self.granularity = granularity
         self.fetchedAt = fetchedAt
         self.sourceUpdatedAt = sourceUpdatedAt
+        self.region = region
+    }
+
+    private enum CodingKeys: String, CodingKey { case points, granularity, fetchedAt, sourceUpdatedAt, region }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        points = try c.decode([PricePoint].self, forKey: .points)
+        granularity = try c.decode(PriceGranularity.self, forKey: .granularity)
+        fetchedAt = try c.decode(Date.self, forKey: .fetchedAt)
+        sourceUpdatedAt = try c.decodeIfPresent(Date.self, forKey: .sourceUpdatedAt)
+        region = try c.decodeIfPresent(PriceRegion.self, forKey: .region) ?? .spain
     }
 }
 

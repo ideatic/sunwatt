@@ -19,10 +19,22 @@ public enum PriceWindow: String, Codable, Sendable, CaseIterable {
 public struct HomeDashSettings: Codable, Hashable, Sendable {
     public var kioskURL: String
     public var showTomorrowPrices: Bool
+    public var priceRegion: PriceRegion
 
-    public init(kioskURL: String = "", showTomorrowPrices: Bool = true) {
+    public init(kioskURL: String = "", showTomorrowPrices: Bool = true, priceRegion: PriceRegion = .spain) {
         self.kioskURL = kioskURL
         self.showTomorrowPrices = showTomorrowPrices
+        self.priceRegion = priceRegion
+    }
+
+    private enum CodingKeys: String, CodingKey { case kioskURL, showTomorrowPrices, priceRegion }
+
+    /// Missing keys (older stored settings) fall back to defaults.
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        kioskURL = try c.decodeIfPresent(String.self, forKey: .kioskURL) ?? ""
+        showTomorrowPrices = try c.decodeIfPresent(Bool.self, forKey: .showTomorrowPrices) ?? true
+        priceRegion = try c.decodeIfPresent(PriceRegion.self, forKey: .priceRegion) ?? .spain
     }
 }
 
