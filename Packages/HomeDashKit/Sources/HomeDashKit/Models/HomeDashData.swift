@@ -6,7 +6,7 @@ public enum SourceStatus: Hashable, Sendable, Codable {
     case fresh
     /// Fetch failed (or skipped); showing cached data from `since`.
     case stale(since: Date)
-    /// No data at all. `message` is user-facing (Spanish).
+    /// No data at all. `message` is user-facing and already localized.
     case error(message: String)
     /// Solar only: no kiosk URL configured.
     case notConfigured
@@ -50,6 +50,7 @@ public struct HomeDashEntry: Hashable, Sendable {
     }
 
     /// True when the price status is stale or the series has no point covering `date`.
+    /// False when there are no prices at all: the view shows the status (error / empty) instead of a stale marker.
     public var isPriceStale: Bool {
         if case .stale = data.priceStatus { return true }
         if let prices = data.prices, !prices.points.contains(where: { $0.contains(date) }) { return true }

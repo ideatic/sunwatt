@@ -2,12 +2,12 @@ import Foundation
 import Testing
 @testable import HomeDashKit
 
-private struct FakeSolar: SolarDataSource {
+struct FakeSolar: SolarDataSource {
     var result: Result<SolarSnapshot, HomeDashError>
     func fetch() async throws -> SolarSnapshot { try result.get() }
 }
 
-private final class CallLog: @unchecked Sendable {
+final class CallLog: @unchecked Sendable {
     private let lock = NSLock()
     private var _flags: [Bool] = []
     private var _days: [Date] = []
@@ -17,26 +17,26 @@ private final class CallLog: @unchecked Sendable {
     var days: [Date] { lock.lock(); defer { lock.unlock() }; return _days }
 }
 
-private struct FakePlain: PriceDataSource {
+struct FakePlain: PriceDataSource {
     var result: Result<PriceSeries, HomeDashError>
     var log = CallLog()
     func fetch(day: Date) async throws -> PriceSeries { log.day(day); return try result.get() }
 }
 
-private struct FakeRange: PriceRangeDataSource {
+struct FakeRange: PriceRangeDataSource {
     var result: Result<PriceSeries, HomeDashError>
     var log = CallLog()
     func fetch(day: Date) async throws -> PriceSeries { try result.get() }
     func fetchTodayAndTomorrow(includeTomorrow: Bool) async throws -> PriceSeries { log.flag(includeTomorrow); return try result.get() }
 }
 
-private let loaderNow = madrid(2026, 6, 1, 12, 30)
+let loaderNow = madrid(2026, 6, 1, 12, 30)
 
-private func makeLoader(store: AppGroupStore, solar: SolarDataSource?, prices: PriceDataSource) -> HomeDashLoader {
+func makeLoader(store: AppGroupStore, solar: SolarDataSource?, prices: PriceDataSource) -> HomeDashLoader {
     HomeDashLoader(store: store, makeSolar: { _ in solar }, prices: prices, now: { loaderNow })
 }
 
-private func configured(_ store: AppGroupStore, tomorrow: Bool = true) {
+func configured(_ store: AppGroupStore, tomorrow: Bool = true) {
     store.settings = HomeDashSettings(kioskURL: "https://example.test/kiosk", showTomorrowPrices: tomorrow)
 }
 
@@ -97,12 +97,15 @@ private func configured(_ store: AppGroupStore, tomorrow: Bool = true) {
         }
     }
 
-    @Test func plainSourceUsesFetchDayNow() async {
+    @Test func plainSourceUsesDefaultRangeFetch() async {
         let (store, _) = storeTempStore()
         configured(store)
         let fake = FakePlain(result: .success(storeSamplePrices()))
+        let before = Date()
         _ = await makeLoader(store: store, solar: nil, prices: fake).load()
-        #expect(fake.log.days == [loaderNow])
+        // Default `fetchTodayAndTomorrow` fetches the current day only.
+        #expect(fake.log.days.count == 1)
+        #expect((fake.log.days.first ?? .distantPast) >= before)
     }
 
     @Test func yesterdaysSolarCacheIsStale() async {
