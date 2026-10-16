@@ -1,0 +1,11 @@
+# Local secrets / per-machine config (kiosk URL lives here, never commit it)
+Config/*.local
+# Xcode
+*.xcodeproj/
+xcuserdata/
+DerivedData/
+build/
+.build/
+.swiftpm/
+*.xcresult
+.DS_Store
