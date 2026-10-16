@@ -5,11 +5,19 @@ public enum TimelineBuilder {
     /// Entries: one at `now`, then one at every following Europe/Madrid hour start for `hours` hours,
     /// so the current-hour price and highlight advance without a fetch. DST-safe (23/25-hour days).
     public static func entries(for data: HomeDashData, now: Date, hours: Int = 24) -> [HomeDashEntry] {
-        fatalError("Implemented by the store/timeline task")
+        var result = [HomeDashEntry(date: now, data: data)]
+        guard hours > 0,
+              let firstBoundary = Constants.madridCalendar.dateInterval(of: .hour, for: now)?.end
+        else { return result }
+        // Madrid DST shifts are whole hours, so absolute 3600 s steps stay on wall-clock hour starts.
+        for i in 0..<hours {
+            result.append(HomeDashEntry(date: firstBoundary.addingTimeInterval(Double(i) * 3600), data: data))
+        }
+        return result
     }
 
     /// When to ask WidgetKit for the next reload: `now + Constants.refreshInterval`.
     public static func nextReload(after now: Date) -> Date {
-        fatalError("Implemented by the store/timeline task")
+        now.addingTimeInterval(Constants.refreshInterval)
     }
 }

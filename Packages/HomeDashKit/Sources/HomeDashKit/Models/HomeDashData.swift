@@ -44,10 +44,15 @@ public struct HomeDashEntry: Hashable, Sendable {
 
     /// Solar data is shown as stale when older than `Constants.staleAfter` at `date`, or when its status is stale.
     public var isSolarStale: Bool {
-        fatalError("Implemented by the store/timeline task")
+        if case .stale = data.solarStatus { return true }
+        if let solar = data.solar, date.timeIntervalSince(solar.fetchedAt) > Constants.staleAfter { return true }
+        return false
     }
 
+    /// True when the price status is stale or the series has no point covering `date`.
     public var isPriceStale: Bool {
-        fatalError("Implemented by the store/timeline task")
+        if case .stale = data.priceStatus { return true }
+        if let prices = data.prices, !prices.points.contains(where: { $0.contains(date) }) { return true }
+        return false
     }
 }
