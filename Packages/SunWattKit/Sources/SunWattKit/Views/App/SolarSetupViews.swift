@@ -52,13 +52,14 @@ struct SolarSetupEditor: View {
         }
     }
 
-    /// Switching between SolarEdge and PVOutput clears the ID and key: they never work on the other service.
+    /// Choosing SolarEdge or PVOutput after another provider clears the ID and key: they never work on the other
+    /// service, and the fields do not record which one they belong to (also when switching through FusionSolar).
     private var providerBinding: Binding<SolarProvider> {
         Binding(
             get: { model.settings.solarProvider },
             set: { new in
                 model.updateSettings { settings in
-                    if settings.solarProvider != new, settings.solarProvider.usesAPIKey, new.usesAPIKey {
+                    if settings.solarProvider != new, new.usesAPIKey {
                         settings.solarSiteID = ""
                         settings.solarAPIKey = ""
                     }
@@ -133,7 +134,8 @@ struct SolarProviderPicker: View {
 }
 
 /// Site/system ID and API key fields with validation and "Test connection" (SolarEdge, PVOutput).
-/// The text is saved when the user submits, leaves a field or the view goes away; never per keystroke.
+/// The text is saved when the user submits, leaves a field or the view goes away, and 0.8 s after the last
+/// keystroke when both values are valid; never per keystroke. Unsaved text is dropped when the provider changes.
 struct SolarAPIEditor: View {
     let model: AppModel
     let provider: SolarProvider
@@ -183,6 +185,13 @@ struct SolarAPIEditor: View {
         }
         .onChange(of: siteID) { _, _ in test = .idle }
         .onChange(of: apiKey) { _, _ in test = .idle }
+        // Valid input is saved shortly after the last keystroke (like the kiosk link), so the onboarding button
+        // stops offering "Skip, prices only" and the widgets get the account without leaving the field.
+        .task(id: "\(siteID)\n\(apiKey)") {
+            guard self.input == .valid else { return }
+            do { try await Task.sleep(for: KioskURLDraft.defaultDebounce) } catch { return }
+            commit()
+        }
         .onDisappear { commit() }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { commit() }

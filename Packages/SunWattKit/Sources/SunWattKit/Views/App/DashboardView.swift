@@ -58,7 +58,7 @@ struct DashboardContent: View {
                 message: Text(verbatim: message),
                 actions: [
                     .init(label: "Try again", prominent: true) { Task { await model.refresh() } },
-                    .init(label: "Check kiosk link") { model.present(.settings) },
+                    .init(label: model.settings.solarProvider == .fusionSolar ? "Check kiosk link" : "Settings") { model.present(.settings) },
                 ])
         default:
             if let solar = entry.solarForDisplay {

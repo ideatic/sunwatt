@@ -76,5 +76,7 @@ Each entry: decision, why, how to change it.
 - PVOutput: `GET /service/r2/getstatus.jsp?h=1&limit=288&asc=1`, key and system ID in `X-Pvoutput-Apikey` / `X-Pvoutput-SystemId` headers. "No status found" (400, before the first upload of the day) is a day without production. "Exceeded … requests" (403) is a rate limit, not a wrong key. "Power now" is the latest status if it is at most 30 min old, else 0.
 - Both send local site times without a zone; they are read in the device time zone (the plant is almost always where the phone is). The charts still use Europe/Madrid (D8), the same as for FusionSolar.
 - Cache identity: `SolarAccount.cacheID` = SHA-256 of provider + ID + key (FusionSolar keeps `KioskEndpoint.cacheID`, so existing caches stay valid). A snapshot from another provider or account is never shown.
+- One ID + key pair is stored, not one per provider. Choosing SolarEdge or PVOutput after any other provider clears it (a key never works on the other service). Switching away and back means typing the key again.
+- Known edge: the 20-minute reuse and the stale checks use the Madrid day; outside that time zone (Portugal, Canary Islands) the hour around midnight can show the previous day's snapshot a little longer.
 - Test data: SolarEdge and PVOutput fixtures are synthetic, written from the documented formats (no real account was available). Run a live check with a real site before release.
 - Change: add a case to `SolarProvider` and `SolarAccount` (see AGENTS.md, "Adding things").
