@@ -4,51 +4,166 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SunWatt: Solar &amp; Power</title>
-<meta name="description" content="SunWatt shows your home solar output and the electricity price in widgets for iPhone, iPad, Mac and Apple Watch.">
-<style>
-:root{--bg:#fff;--fg:#1c1c1e;--muted:#636366;--accent:#c76a00;--card:#f4f4f6;--line:#e2e2e6}
-@media (prefers-color-scheme:dark){:root{--bg:#000;--fg:#f2f2f7;--muted:#a1a1a6;--accent:#ffb340;--card:#1c1c1e;--line:#2c2c2e}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-main{max-width:42rem;margin:0 auto;padding:2.5rem 1rem 4rem}
-h1{font-size:2.2rem;line-height:1.15;margin:0 0 .5rem}
-h2{font-size:1.3rem;margin:2.2rem 0 .5rem}
-p,li{color:var(--fg)}
-.lead{color:var(--muted);font-size:1.15rem}
-a{color:var(--accent)}
-ul{padding-left:1.2rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem 1.2rem;margin:1.2rem 0}
-nav a{margin-right:1rem}
-footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
-hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0}
-</style>
+<meta name="description" content="SunWatt shows your home solar output and the electricity price in widgets for iPhone, iPad, Mac and Apple Watch. No account, no tracking.">
+<meta name="apple-itunes-app" content="app-id=6823996246">
+<meta property="og:title" content="SunWatt: Solar &amp; Power">
+<meta property="og:description" content="Your home solar output and the electricity price, in widgets.">
+<meta property="og:image" content="https://ideatic.github.io/sunwatt/img/shot-solar.jpg">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/icon.png" alt="" width="30" height="30">SunWatt</a>
+    <nav>
+      <a class="optional" href="#features">Features</a>
+      <a href="support.html">Support</a>
+      <a href="privacy.html">Privacy</a>
+      <a class="optional" href="#es" lang="es">Español</a>
+    </nav>
+  </div>
+</header>
+
 <main>
-<h1>SunWatt</h1>
-<p class="lead">Your home solar output and the electricity price, in widgets. Free for iPhone, iPad, Mac and Apple Watch.</p>
-<nav><a href="privacy.html">Privacy</a><a href="support.html">Support</a></nav>
+<div class="hero">
+  <div class="wrap">
+    <img class="icon" src="img/icon.png" alt="SunWatt app icon" width="128" height="128">
+    <h1>SunWatt</h1>
+    <p class="lead">Your home solar output and the electricity price, in widgets. For iPhone, iPad, Mac and Apple Watch.</p>
+    <div class="badges">
+      <a href="https://apps.apple.com/app/id6823996246">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/white/en-us">
+          <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us" alt="Download on the App Store" width="144" height="48">
+        </picture>
+      </a>
+    </div>
+    <p class="badge-note">Free. One download for iPhone, iPad, Mac and Apple Watch.</p>
+    <div class="platforms">
+      <span class="chip">Huawei FusionSolar</span><span class="chip">SolarEdge</span><span class="chip">PVOutput</span><span class="chip">8 electricity markets</span>
+    </div>
+  </div>
+</div>
 
-<h2>What it does</h2>
-<ul>
-<li>Solar: current power (kW), today's energy (kWh) and today's curve, from Huawei FusionSolar (kiosk link), SolarEdge (site ID and API key) or PVOutput (system ID and API key; works with many inverter brands such as Fronius, SMA, Enphase, GoodWe and Growatt).</li>
-<li>Electricity price: Spain (regulated PVPC, Red Eléctrica) and day-ahead wholesale prices for Portugal, France, Germany &amp; Luxembourg, Austria, Belgium, Netherlands and North Italy.</li>
-<li>Widgets: small, medium, large, Lock Screen and a Control Center control. Light, dark, tinted and clear.</li>
-<li>Siri and Shortcuts, and an Apple Watch app with complications.</li>
-</ul>
-<div class="card"><strong>Private by design.</strong> No account, no tracking, no analytics, no ads. Nothing is sent to the developer.</div>
+<div class="strip" aria-label="Screenshots">
+  <img src="img/shot-solar.jpg" alt="Solar widgets: current power, today's energy and today's curve" width="660" height="1434" loading="lazy">
+  <img src="img/shot-price.jpg" alt="Price widgets: current price, level and the day's bars" width="660" height="1434" loading="lazy">
+  <img src="img/shot-lock.jpg" alt="Lock Screen widgets and Control Center controls" width="660" height="1434" loading="lazy">
+  <img src="img/shot-watch.jpg" alt="Apple Watch app with price and solar pages" width="660" height="1434" loading="lazy">
+  <img src="img/shot-app.jpg" alt="The app dashboard with interactive charts" width="660" height="1434" loading="lazy">
+  <img src="img/shot-setup.jpg" alt="Setup: choose FusionSolar, SolarEdge or PVOutput" width="660" height="1434" loading="lazy">
+</div>
 
-<hr>
-<section lang="es">
-<h2>SunWatt en español</h2>
-<p>Tu producción solar (Huawei FusionSolar, SolarEdge o PVOutput) y el precio de la luz (PVPC) en widgets para iPhone, iPad, Mac y Apple Watch. Gratis, sin cuenta y sin rastreo.</p>
-<nav><a href="privacy.html#es">Privacidad</a><a href="support.html#es">Soporte</a></nav>
+<section id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Everything at a glance</h2>
+      <p>Look at your phone, your desk or your wrist and you know: is the sun working, and is power cheap right now?</p>
+    </div>
+    <div class="features">
+      <article class="card">
+        <div class="art"><img src="readme/medium-day-light.png" alt="Medium widget with solar and price" width="412" height="218" loading="lazy"></div>
+        <h3>Your solar output, live</h3>
+        <p>Current power in kW, today's energy in kWh and today's curve. With several plants, the widget shows them in turn.</p>
+      </article>
+      <article class="card">
+        <div class="art"><img src="readme/large-day-light.png" alt="Large widget with the day's prices" width="412" height="430" loading="lazy"></div>
+        <h3>Electricity price, hour by hour</h3>
+        <p>The price now, whether it is cheap or expensive, and the cheapest hours ahead. Tomorrow's prices as soon as they are out.</p>
+      </article>
+      <article class="card">
+        <div class="art">
+          <img class="wide" src="readme/accessoryRectangular-day-dark.png" alt="Lock Screen rectangular widget" width="200" height="104" loading="lazy">
+          <img class="round" src="readme/accessoryCircular-day-dark.png" alt="Lock Screen circular widget" width="104" height="104" loading="lazy">
+        </div>
+        <h3>Lock Screen and Control Center</h3>
+        <p>Small widgets on the Lock Screen and two controls (price and solar) for Control Center. Ask Siri, or use Shortcuts.</p>
+      </article>
+      <article class="card">
+        <div class="art">
+          <img src="readme/app-price-day-dark.png" alt="Apple Watch price page" width="186" height="216" loading="lazy">
+          <img src="readme/app-solar-day-dark.png" alt="Apple Watch solar page" width="186" height="216" loading="lazy">
+        </div>
+        <h3>On your Apple Watch</h3>
+        <p>A watch app with price and solar pages, plus complications for your watch face.</p>
+      </article>
+    </div>
+  </div>
 </section>
 
-<footer>
-<p>SunWatt is published by ideatic Development, S.L.U. (Spain). Not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE.</p>
-<p>Day-ahead prices outside Spain: Energy-Charts, Fraunhofer ISE, licence CC BY 4.0.</p>
-</footer>
+<section class="soft">
+  <div class="wrap split">
+    <div>
+      <h2>A real app on the Mac too</h2>
+      <p>Explore today's curve and prices with your mouse, compare today and tomorrow, and put the widgets on your desktop.</p>
+      <ul class="list">
+        <li>Interactive charts <span>(touch or hover for any hour)</span></li>
+        <li>Cheapest upcoming hours</li>
+        <li>This month and this year</li>
+        <li>Light and dark mode, 7 languages</li>
+      </ul>
+    </div>
+    <img src="readme/mac-dashboardDay-light.png" alt="SunWatt on the Mac: solar and price dashboard" width="900" height="640" loading="lazy">
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Works with your system</h2>
+      <p>Connect your solar monitoring in a minute, or use SunWatt for prices only.</p>
+    </div>
+    <div class="features">
+      <article class="card">
+        <h3>Solar monitoring</h3>
+        <ul class="list">
+          <li>Huawei FusionSolar <span>(kiosk link or API account)</span></li>
+          <li>SolarEdge <span>(site ID and API key)</span></li>
+          <li>PVOutput <span>(Fronius, SMA, Enphase, GoodWe, Growatt and more)</span></li>
+          <li>Live data at home <span>(Huawei dongle or SunSpec inverter, optional)</span></li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Electricity prices</h3>
+        <ul class="list">
+          <li>Spain <span>(regulated PVPC, Red Eléctrica)</span></li>
+          <li>Portugal, France, Germany &amp; Luxembourg</li>
+          <li>Austria, Belgium, Netherlands, North Italy <span>(day-ahead market)</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="privacy soft">
+  <div class="wrap">
+    <div class="card">
+      <h2>Private by design</h2>
+      <p>No account, no tracking, no analytics, no ads. Your settings and data stay on your devices. Nothing is sent to us.</p>
+      <p><a href="privacy.html">Read the privacy policy</a></p>
+    </div>
+  </div>
+</section>
+
+<section id="es" lang="es">
+  <div class="wrap narrow" style="text-align:center">
+    <h2>SunWatt en español</h2>
+    <p>Tu producción solar (Huawei FusionSolar, SolarEdge o PVOutput) y el precio de la luz (PVPC y mercados europeos) en widgets para iPhone, iPad, Mac y Apple Watch. Gratis, sin cuenta y sin rastreo.</p>
+    <p><a href="support.html#es">Soporte</a> · <a href="privacy.html#es">Privacidad</a></p>
+  </div>
+</section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <nav><a href="support.html">Support</a><a href="privacy.html">Privacy</a><a href="mailto:contacto@ideatic.net">contacto@ideatic.net</a></nav>
+    <p>SunWatt is published by ideatic Development, S.L.U. (Spain). Not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE.</p>
+    <p>Day-ahead prices outside Spain: Energy-Charts, Fraunhofer ISE, licence CC BY 4.0.</p>
+    <p>Apple, the Apple logo, iPhone, iPad, Mac and Apple Watch are trademarks of Apple Inc. App Store is a service mark of Apple Inc.</p>
+  </div>
+</footer>
 </body>
 </html>

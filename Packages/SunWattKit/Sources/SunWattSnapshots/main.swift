@@ -95,6 +95,11 @@ func jobs() -> [Job] {
     // Languages.
     result.append(Job(name: "medium-day-light-en", entry: day, family: .medium, locale: "en_GB"))
     result.append(Job(name: "large-day-dark-en", entry: day, family: .large, scheme: .dark, locale: "en_GB"))
+    // English pictures for the README and the website (docs/readme), as in the en-US store listing.
+    result.append(Job(name: "small-day-light-en", entry: day, family: .small, locale: "en_US"))
+    result.append(Job(name: "large-day-light-en", entry: day, family: .large, locale: "en_US"))
+    result.append(Job(name: "medium-day-light-en_US", entry: day, family: .medium, locale: "en_US"))
+    result.append(Job(name: "accessoryRectangular-day-dark-en", entry: day, family: .accessoryRectangular, scheme: .dark, locale: "en_US"))
     result.append(Job(name: "medium-day-light-de", entry: day, family: .medium, locale: "de_DE"))
     result.append(Job(name: "large-day-light-de", entry: day, family: .large, locale: "de_DE"))
     result.append(Job(name: "medium-day-light-fr", entry: SampleData.entry(.day, region: .france), family: .medium, locale: "fr_FR"))

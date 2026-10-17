@@ -97,7 +97,16 @@ func main() {
                    name: "app-solar-unconfigured-dark-de", to: directory)
         try render(WatchSnapshotView(entry: SampleData.entry(.day), kind: .pricePage, scheme: .dark, locale: Locale(identifier: "de_DE")),
                    name: "app-price-day-dark-de", to: directory)
-        print("Rendered \(count + 2) images to \(directory.path)")
+        // English pages and complication for the README and the website (docs/readme).
+        Format.locale = Locale(identifier: "en_US")
+        let english = Locale(identifier: "en_US")
+        try render(WatchSnapshotView(entry: SampleData.entry(.day), kind: .pricePage, scheme: .dark, locale: english),
+                   name: "app-price-day-dark-en", to: directory)
+        try render(WatchSnapshotView(entry: SampleData.entry(.day), kind: .solarPage, scheme: .dark, locale: english),
+                   name: "app-solar-day-dark-en", to: directory)
+        try render(WatchSnapshotView(entry: SampleData.entry(.day), kind: .complication(.rectangular), scheme: .dark, locale: english),
+                   name: "complication-rectangular-day-dark-en", to: directory)
+        print("Rendered \(count + 5) images to \(directory.path)")
     } catch {
         FileHandle.standardError.write(Data("error: \(error.localizedDescription)\n".utf8))
         exit(1)
