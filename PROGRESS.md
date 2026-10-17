@@ -43,7 +43,9 @@
 
 - [x] Full code review (15 findings): all fixed (DECISIONS D19).
 
-- [x] Tap-to-refresh fixed (2026-10-17, simulator, iPad iOS 27): a `Button(intent:)` that wrapped the whole widget was ignored and the tap opened the app. The button is now an invisible overlay; a tap refreshes (cache files rewritten) and the app stays closed. No unit test: widget hit-testing only exists in the system renderer.
+- [x] Tap-to-refresh fixed (2026-10-17, simulator, iPad iOS 27): a `Button(intent:)` that wrapped the whole widget was ignored and the tap opened the app. The button is now an invisible overlay; a tap refreshes (cache files rewritten) and the app stays closed. No unit test: widget hit-testing only exists in the system renderer. Also checked on the iPhone 18 Pro simulator (2026-10-17, medium widget, live kiosk data): cache rewritten on tap, app stays closed.
+- [x] FusionSolar API account field shows Huawei's portal word: "Password (system code)" in all 7 languages (label, hint, help, two errors). SolarEdge/PVOutput API keys are secret fields (dots) like the system code.
+- [x] `scripts/upload_metadata.sh`: uploads store texts (and optional screenshots) with fastlane deliver; dry run by default, `--upload` only on the owner's word (docs/RELEASE.md, step f2). Not run against App Store Connect yet.
 
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).

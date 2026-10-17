@@ -51,6 +51,29 @@ App Store Connect > App Privacy. Answers are in `AppStore/app_privacy.md`: "Data
 
 Follow `AppStore/SCREENSHOTS.md` (sizes, order, 7 languages). Upload for iPhone 6.9", iPad 13", Mac, Apple Watch.
 
+## f2) Upload the store texts: `scripts/upload_metadata.sh`
+
+Uploads `AppStore/metadata/` (7 locales) with fastlane deliver. It never uploads a binary, never submits for review and never releases.
+
+1. Install: `brew install fastlane`.
+2. API key: App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys > "+". Role: App Manager. Download the `.p8` file once (Apple shows it only once). Keep it outside the repo, for example `~/.appstoreconnect/AuthKey_XXXXXXXXXX.p8`.
+3. Write `~/.appstoreconnect/sunwatt_api_key.json` (or set `ASC_API_KEY_PATH` to another path). Placeholder values:
+
+```json
+{
+  "key_id": "XXXXXXXXXX",
+  "issuer_id": "00000000-0000-0000-0000-000000000000",
+  "key_filepath": "/Users/you/.appstoreconnect/AuthKey_XXXXXXXXXX.p8",
+  "in_house": false
+}
+```
+
+4. Dry run (default): `scripts/upload_metadata.sh`. It checks the metadata and prints what it would upload. It does not contact Apple and needs no key.
+5. Real upload, only when the owner says so: `scripts/upload_metadata.sh --upload`. It runs deliver twice (`ios`, then `osx`). Use `--platform ios|osx|both` to limit it.
+6. Screenshots are off by default. `--screenshots <dir>` adds them and overwrites the store screenshots. deliver reads `<dir>/<locale>/*.png` (folders `en-US`, `es-ES`, ...). The folders in `Screenshots/` are not in that layout yet. See step f).
+
+The app record (step a) must exist first.
+
 ## g) macOS: one record or two?
 
 Recommended: one record (Universal Purchase). The Mac app uses the same bundle ID `com.ideatic.sunwatt`, so one app record covers iOS, iPadOS, macOS and watchOS. Users buy (or here, get) the app once and it works on all their devices. One page, one set of reviews, one privacy answer set. The macOS build uploads into the same record when you add the macOS platform in step a).
