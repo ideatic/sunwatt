@@ -9,7 +9,7 @@ PREZZO DELL'ELETTRICITÀ
 
 PRODUZIONE SOLARE
 Collega il tuo impianto e vedi la potenza attuale in kW, l'energia di oggi in kWh e la curva di produzione. Funziona con:
-• Huawei FusionSolar: incolla il link Kiosk del tuo impianto
+• Huawei FusionSolar: incolla il link Kiosk del tuo impianto oppure inserisci l'account API che il tuo installatore crea per te
 • SolarEdge: inserisci l'ID del sito e la chiave API
 • PVOutput: inserisci l'ID del sistema e la chiave API. PVOutput funziona con molte marche di inverter, come Fronius, SMA, Enphase, GoodWe e Growatt
 Al primo avvio una guida spiega dove trovare ogni dato in pochi minuti.

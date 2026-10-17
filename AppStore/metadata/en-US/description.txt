@@ -2,7 +2,7 @@ SunWatt puts two numbers you check every day where you can see them: how much yo
 
 SOLAR
 Connect your solar system and see your current power in kW, today's energy in kWh and today's production curve. SunWatt works with:
-• Huawei FusionSolar: paste your kiosk link
+• Huawei FusionSolar: paste your kiosk link, or enter the API account your installer creates for you
 • SolarEdge: enter your site ID and API key
 • PVOutput: enter your system ID and API key. PVOutput works with many inverter brands, such as Fronius, SMA, Enphase, GoodWe and Growatt
 The onboarding shows you where to find each one in a couple of minutes.

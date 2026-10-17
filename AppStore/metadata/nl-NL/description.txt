@@ -9,7 +9,7 @@ STROOMPRIJS
 
 ZONNE-OPBRENGST
 Koppel je monitoringsysteem en zie het huidige vermogen in kW, de energie van vandaag in kWh en de opbrengstcurve. Werkt met:
-• Huawei FusionSolar: plak de Kiosk-link van je installatie
+• Huawei FusionSolar: plak de Kiosk-link van je installatie of voer het API-account in dat je installateur voor je aanmaakt
 • SolarEdge: vul je site-ID en API-sleutel in
 • PVOutput: vul je systeem-ID en API-sleutel in. PVOutput werkt met veel omvormermerken, zoals Fronius, SMA, Enphase, GoodWe en Growatt
 Bij de eerste start zie je in een paar minuten waar je alles vindt.

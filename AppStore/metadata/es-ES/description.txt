@@ -9,7 +9,7 @@ PRECIO DE LA LUZ (PVPC)
 
 PRODUCCIÓN SOLAR
 Conecta tu instalación y verás la potencia actual en kW, la energía de hoy en kWh y la curva de producción del día. Funciona con:
-• Huawei FusionSolar: pega el enlace Kiosk de tu planta
+• Huawei FusionSolar: pega el enlace Kiosk de tu planta o introduce la cuenta de API que tu instalador crea para ti
 • SolarEdge: introduce el ID del sitio y la clave API
 • PVOutput: introduce el ID de tu sistema y la clave API. PVOutput funciona con muchas marcas de inversores, como Fronius, SMA, Enphase, GoodWe o Growatt
 El primer arranque te explica dónde encontrar cada dato en un par de minutos.

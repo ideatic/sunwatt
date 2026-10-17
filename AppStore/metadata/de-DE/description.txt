@@ -9,7 +9,7 @@ STROMPREIS
 
 SOLARPRODUKTION
 Verbinden Sie Ihre Solaranlage und sehen Sie die aktuelle Leistung in kW, die Energie von heute in kWh und die Tageskurve. Unterstützt werden:
-• Huawei FusionSolar: Kiosk-Link Ihrer Anlage einfügen
+• Huawei FusionSolar: Kiosk-Link Ihrer Anlage einfügen oder das API-Konto eingeben, das Ihr Installateur für Sie anlegt
 • SolarEdge: Standort-ID und API-Schlüssel eingeben
 • PVOutput: System-ID und API-Schlüssel eingeben. PVOutput funktioniert mit vielen Wechselrichter-Marken wie Fronius, SMA, Enphase, GoodWe und Growatt
 Beim ersten Start erfahren Sie in wenigen Minuten, wo Sie die Angaben finden.

@@ -9,7 +9,7 @@ PRIX DE L'ÉLECTRICITÉ
 
 PRODUCTION SOLAIRE
 Connectez votre système de suivi pour voir la puissance actuelle en kW, l'énergie du jour en kWh et la courbe de production. Compatible avec :
-• Huawei FusionSolar : collez le lien Kiosk de votre installation
+• Huawei FusionSolar : collez le lien Kiosk de votre installation, ou saisissez le compte API que votre installateur crée pour vous
 • SolarEdge : saisissez l'ID du site et la clé API
 • PVOutput : saisissez l'ID du système et la clé API. PVOutput fonctionne avec de nombreuses marques d'onduleurs, comme Fronius, SMA, Enphase, GoodWe et Growatt
 Le premier lancement vous explique où trouver chaque information en quelques minutes.
