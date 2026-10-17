@@ -51,10 +51,32 @@ targets:
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: true
+    preBuildScripts:
+      # Debug only: copies Config/kiosk.local (ignored by version control) into the bundle, or an empty file when
+      # absent, for the debug prefill. Other configurations remove it. The content is never printed.
+      - name: Debug kiosk prefill
+        script: |
+          set -eu
+          DEST="${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/kiosk.local"
+          if [ "${CONFIGURATION}" = "Debug" ]; then
+            mkdir -p "$(dirname "${DEST}")"
+            if [ -f "${SRCROOT}/Config/kiosk.local" ]; then
+              cp "${SRCROOT}/Config/kiosk.local" "${DEST}"
+            else
+              : > "${DEST}"
+            fi
+          else
+            rm -f "${DEST}"
+          fi
+        inputFiles:
+          - $(SRCROOT)/Config/kiosk.local
+        outputFiles:
+          - $(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/kiosk.local
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ideatic.homedash
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         TARGETED_DEVICE_FAMILY: "1,2"
   HomeDashWidgets:
