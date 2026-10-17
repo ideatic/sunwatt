@@ -43,6 +43,8 @@
 
 - [x] Full code review (15 findings): all fixed (DECISIONS D19).
 
+- [x] Tap-to-refresh fixed (2026-10-17, simulator, iPad iOS 27): a `Button(intent:)` that wrapped the whole widget was ignored and the tap opened the app. The button is now an invisible overlay; a tap refreshes (cache files rewritten) and the app stays closed. No unit test: widget hit-testing only exists in the system renderer.
+
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
 - Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).
