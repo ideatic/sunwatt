@@ -35,11 +35,21 @@ public enum Format {
         return normalized.formatted(.number.locale(locale).precision(.fractionLength(decimals)))
     }
 
-    /// "14:30" in `timeZone` (Europe/Madrid by default).
-    public static func time(_ date: Date, timeZone: TimeZone = Constants.madrid) -> String {
+    /// "14:30" in `timeZone` (Europe/Madrid by default); "2:30 PM" in 12-hour locales, where "02:30" alone would
+    /// read as night.
+    public static func time(_ date: Date, timeZone: TimeZone = Constants.madrid, locale: Locale = Format.locale) -> String {
         var style = Date.FormatStyle(date: .omitted, time: .shortened, locale: locale, timeZone: timeZone)
-        style = style.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)
+        if usesTwelveHourClock(locale) {
+            style = style.hour(.defaultDigits(amPM: .abbreviated)).minute(.twoDigits)
+        } else {
+            style = style.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits)
+        }
         return date.formatted(style)
+    }
+
+    /// True when the locale's preferred hour format has an AM/PM marker (en_US), false for 24-hour locales (es, en_GB).
+    static func usesTwelveHourClock(_ locale: Locale) -> Bool {
+        (DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: locale) ?? "").contains("a")
     }
 
     /// "14 h" hour label in `timeZone` (Europe/Madrid by default).

@@ -138,3 +138,13 @@ import WidgetKit
     #expect(Format.time(date, timeZone: TimeZone(identifier: "Europe/Lisbon")!) == "13:32")
     #expect(Format.hour(date, timeZone: TimeZone(identifier: "Europe/Lisbon")!) == "13 h")
 }
+
+/// A 12-hour locale must say AM/PM: "02:32" alone reads as night (bug seen in the en-US store screenshots).
+@Test func formatTimeShowsAMPMInTwelveHourLocales() {
+    let date = madrid(2026, 10, 17, 14, 32)
+    let morning = madrid(2026, 10, 17, 9, 5)
+    let afternoon = Format.time(date, locale: Locale(identifier: "en_US")).replacingOccurrences(of: "\u{202F}", with: " ")
+    #expect(afternoon == "2:32 PM")
+    #expect(Format.time(morning, locale: Locale(identifier: "es_ES")) == "09:05")
+    #expect(Format.time(date, locale: Locale(identifier: "en_GB")) == "14:32")
+}
