@@ -19,6 +19,9 @@ struct DashboardContent: View {
 
         VStack(alignment: .leading, spacing: Theme.Spacing.l) {
             DashboardHeader(model: model)
+            if let expiry = model.kioskExpiryNoticeDate {
+                KioskExpiryNotice(model: model, expiry: expiry)
+            }
             Group {
                 if idiom != .phone {
                     // Two columns when there is room (Mac window, iPad); stacked in a narrow iPad split view.
@@ -48,6 +51,22 @@ struct DashboardContent: View {
 
     @ViewBuilder
     private func solarSection(_ entry: SunWattEntry) -> some View {
+        if entry.data.solarLinkExpired {
+            StateCard(
+                symbol: "link",
+                title: atext("Kiosk link expired"),
+                message: Text(verbatim: SunWattError.kioskLinkRejected.localizedDescription),
+                actions: [
+                    .init(label: "Replace link", prominent: true) { model.present(.settings) },
+                    .init(label: "How do I get it?") { model.present(.kioskHelp) },
+                ])
+        } else {
+            solarStatusSection(entry)
+        }
+    }
+
+    @ViewBuilder
+    private func solarStatusSection(_ entry: SunWattEntry) -> some View {
         switch entry.data.solarStatus {
         case .notConfigured:
             SolarSetupCard(model: model)
@@ -167,6 +186,46 @@ private struct DashboardFooter: View {
 }
 
 // MARK: Solar
+
+/// "Your kiosk link may stop working around …": shown from 30 days before the link's first anniversary in SunWatt
+/// (kiosk links last one year), until the user replaces the link or closes the notice.
+private struct KioskExpiryNotice: View {
+    let model: AppModel
+    let expiry: Date
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        let date = expiry.formatted(Date.FormatStyle(locale: Format.locale).day().month(.wide).year())
+        HStack(alignment: .top, spacing: Theme.Spacing.m) {
+            Image(systemName: "link.badge.plus")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(AppPalette(scheme).warning)
+                .frame(width: 28)
+            VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                atext("Your kiosk link may stop working around \(date). Create a new one in FusionSolar and paste it here.")
+                    .font(.system(.subheadline, design: .rounded))
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: Theme.Spacing.s) {
+                    SettingsOpener(model: model) { atext("Renew link") }
+                        .buttonStyle(PrimaryButtonStyle(compact: true))
+                    Button { model.present(.kioskHelp) } label: { atext("How do I get it?") }
+                        .buttonStyle(SoftButtonStyle(compact: true))
+                }
+            }
+            Spacer(minLength: 0)
+            Button { model.dismissKioskExpiryNotice() } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.secondary)
+                    .padding(6)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(atext("Done"))
+        }
+        .appCard()
+    }
+}
 
 /// What the house uses now, the grid exchange and today's share from the panels. Shown only with a meter at home.
 private struct HomeEnergyRow: View {

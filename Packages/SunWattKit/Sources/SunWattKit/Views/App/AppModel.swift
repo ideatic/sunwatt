@@ -129,7 +129,13 @@ public final class AppModel {
             self.sheet = Self.sheet(for: launch.screen)
             applyDemo(scenarioName: launch.scenario)
         } else {
-            let settings = store.settings
+            var settings = store.settings
+            // Links saved before the date was recorded: count from now (the expiry notice then comes a bit late at
+            // worst, never early).
+            if settings.kioskLinkSavedAt == nil, KioskEndpoint(parsing: settings.kioskURL) != nil {
+                settings.kioskLinkSavedAt = Date()
+                store.settings = settings
+            }
             self.settings = settings
             self.hasLoaded = false
             self.showsOnboarding = launch.screen == .onboarding || (launch.screen == nil && !settings.onboardingCompleted)
@@ -147,7 +153,8 @@ public final class AppModel {
         solarConfigured: Bool = true,
         showsOnboarding: Bool = false,
         isLoading: Bool = false,
-        home: HomeEnergy? = nil
+        home: HomeEnergy? = nil,
+        kioskLinkExpired: Bool = false
     ) {
         self.init(launch: AppLaunchOptions(demo: true, screen: showsOnboarding ? .onboarding : .dashboard, scenario: scenario.rawValue, widgets: widgetCount ?? 0))
         self.settings = settings
@@ -162,6 +169,11 @@ public final class AppModel {
         } else {
             applyDemo(scenarioName: scenario.rawValue)
             if let home { data?.solar?.home = home }
+            if kioskLinkExpired {
+                data?.solar = nil
+                data?.solarStatus = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
+                data?.solarLinkExpired = true
+            }
         }
     }
 
@@ -295,6 +307,11 @@ public final class AppModel {
         let old = settings
         var new = old
         change(&new)
+        if new.kioskURL != old.kioskURL {
+            // A new link: its year starts now, and a closed expiry notice applies to the old link only.
+            new.kioskLinkSavedAt = KioskEndpoint(parsing: new.kioskURL) != nil ? Date() : nil
+            new.kioskExpiryNoticeDismissed = false
+        }
         guard new != old else { return }
         settings = new
         if isDemo {
@@ -373,6 +390,26 @@ public final class AppModel {
         } catch {
             return .failure(error)
         }
+    }
+
+    // MARK: Kiosk link expiry
+
+    /// When the kiosk link stops working at the latest (saved + 1 year). Set only while the "renew soon" notice
+    /// should show: from 30 days before, unless the user closed it or the link already counts as expired.
+    var kioskExpiryNoticeDate: Date? {
+        guard settings.solarProvider == .fusionSolar, !settings.kioskExpiryNoticeDismissed,
+              !(data?.solarLinkExpired ?? false), KioskEndpoint(parsing: settings.kioskURL) != nil,
+              let saved = settings.kioskLinkSavedAt,
+              let expiry = Calendar.current.date(byAdding: .year, value: 1, to: saved),
+              now >= expiry.addingTimeInterval(-Self.kioskNoticeLead) else { return nil }
+        return expiry
+    }
+
+    /// How long before the expiry the notice appears.
+    static let kioskNoticeLead: TimeInterval = 30 * 24 * 3600
+
+    func dismissKioskExpiryNotice() {
+        updateSettings { $0.kioskExpiryNoticeDismissed = true }
     }
 
     // MARK: Derived

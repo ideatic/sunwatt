@@ -43,6 +43,9 @@ public extension PriceDataSource {
 /// Errors shown to the user. `errorDescription` is localized (see L10n).
 public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
     case invalidKioskURL
+    /// FusionSolar answered `success: false` or 401/403/404 for the kiosk link: most likely the link expired (they
+    /// last one year) or the kiosk was turned off. `SunWattLoader` calls it expired once it lasts 30 minutes.
+    case kioskLinkRejected
     /// SolarEdge / PVOutput: the ID is not a number or the key has the wrong format.
     case invalidSolarCredentials
     /// SolarEdge / PVOutput answered 401 or 403: wrong key or ID, or the API access is off.
@@ -56,6 +59,7 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .invalidKioskURL: L10n.string("The kiosk URL is not valid. It must contain the kk parameter.")
+        case .kioskLinkRejected: L10n.string("Huawei no longer accepts this kiosk link. Kiosk links expire after a year: create a new one in FusionSolar and paste it in SunWatt.")
         case .invalidSolarCredentials: L10n.string("The ID must be a number and the API key letters and digits only.")
         case .solarCredentialsRejected: L10n.string("The API key or the ID was rejected. Check both, and that API access is on.")
         case .notConfigured: L10n.string("Set up your solar system in Settings.")

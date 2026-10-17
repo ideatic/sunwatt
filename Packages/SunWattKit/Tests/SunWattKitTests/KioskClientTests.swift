@@ -174,7 +174,7 @@ func kioskCurveJSON(labels: [String], values: [String]) -> String {
         do {
             _ = try await client(http).fetch()
             Issue.record("expected throw")
-        } catch SunWattError.badResponse {
+        } catch SunWattError.kioskLinkRejected {
         } catch {
             Issue.record("wrong error: \(error)")
         }

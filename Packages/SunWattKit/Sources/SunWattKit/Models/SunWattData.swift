@@ -18,6 +18,11 @@ public struct SunWattData: Hashable, Sendable, Codable {
     public var prices: PriceSeries?
     public var solarStatus: SourceStatus
     public var priceStatus: SourceStatus
+    /// True when Huawei has rejected the kiosk link for at least `SunWattLoader.kioskExpiredAfter`: the link most
+    /// likely expired. Views then ask the user to replace it. Not stored (worked out by the loader).
+    public var solarLinkExpired = false
+
+    private enum CodingKeys: String, CodingKey { case solar, prices, solarStatus, priceStatus }
 
     public init(solar: SolarSnapshot?, prices: PriceSeries?, solarStatus: SourceStatus, priceStatus: SourceStatus) {
         self.solar = solar

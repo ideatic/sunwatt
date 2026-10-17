@@ -37,6 +37,14 @@ struct SolarModel {
     var staleSince: Date?
     /// "Data as of" time shown next to the figures.
     var dataTime: Date?
+    /// The kiosk link keeps being rejected (most likely expired).
+    var linkExpired = false
+
+    /// The message to show when there is no solar data.
+    var stateKind: SourceStateView.Kind {
+        if phase == .notConfigured { return .notConfigured }
+        return linkExpired ? .linkExpired : .solarError
+    }
 
     /// One line about the house for the large widget ("Home 1,2 kW · selling 0,8 kW"). Nil without a meter at
     /// home (export-only plants show nothing).
@@ -55,6 +63,7 @@ struct SolarModel {
         let solar = entry.solarForDisplay
         snapshot = solar
         dataTime = solar.map { $0.dataAsOf ?? $0.fetchedAt }
+        linkExpired = data.solarLinkExpired
         switch data.solarStatus {
         case .notConfigured:
             phase = .notConfigured

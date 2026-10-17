@@ -15,6 +15,9 @@ public struct FusionSolarKioskClient: SolarDataSource {
     public func fetch() async throws -> SolarSnapshot {
         let request = HTTPFetch.request(endpoint.apiURL)
         let (data, response) = try await HTTPFetch.perform(http, request, redacting: endpoint.kk)
+        if let status = (response as? HTTPURLResponse)?.statusCode, [401, 403, 404].contains(status) {
+            throw SunWattError.kioskLinkRejected
+        }
         try HTTPFetch.checkStatus(response)
         let date = now()
         return try Self.parse(data, fetchedAt: date, day: date)
@@ -27,8 +30,9 @@ public struct FusionSolarKioskClient: SolarDataSource {
         guard let outer = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else {
             throw SunWattError.badResponse("outer JSON")
         }
+        // Huawei answers success: false for a link that no longer works (expired after a year, or kiosk turned off).
         guard (outer["success"] as? Bool) == true else {
-            throw SunWattError.badResponse("success=false")
+            throw SunWattError.kioskLinkRejected
         }
         guard let escaped = outer["data"] as? String, !escaped.isEmpty else {
             throw SunWattError.badResponse("missing data")

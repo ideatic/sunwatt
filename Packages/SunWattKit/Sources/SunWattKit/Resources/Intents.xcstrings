@@ -1107,6 +1107,47 @@
         }
       },
       "extractionState" : "manual"
+    },
+    "Your FusionSolar kiosk link has expired. Create a new one and paste it in the SunWatt settings." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu enlace del kiosco de FusionSolar ha caducado. Crea uno nuevo y pégalo en los ajustes de SunWatt."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A tua ligação do quiosque da FusionSolar expirou. Cria uma nova e cola-a nas definições do SunWatt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre lien du kiosque FusionSolar a expiré. Créez-en un nouveau, puis collez-le dans les réglages de SunWatt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Kiosk-Link von FusionSolar ist abgelaufen. Erstelle einen neuen und füge ihn in den SunWatt-Einstellungen ein."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo link del chiosco di FusionSolar è scaduto. Creane uno nuovo e incollalo nelle impostazioni di SunWatt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je FusionSolar-kiosklink is verlopen. Maak een nieuwe aan en plak die in de SunWatt-instellingen."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

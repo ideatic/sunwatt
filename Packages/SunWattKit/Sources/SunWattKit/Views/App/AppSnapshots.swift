@@ -16,6 +16,8 @@ public struct AppSnapshotView: View {
         case dashboardTomorrow
         case dashboardWidgetAdded
         case dashboardHome
+        case dashboardKioskExpiring
+        case dashboardKioskExpired
         case settings
         case settingsTest
         case settingsInvalid
@@ -112,6 +114,12 @@ public struct AppSnapshotView: View {
             return AppModel(demo: .day, settings: settings, widgetCount: 0, solarConfigured: false)
         case .dashboardWidgetAdded:
             return AppModel(demo: .day, settings: settings, widgetCount: 2)
+        case .dashboardKioskExpiring:
+            // Saved 350 days before the sample time: the notice shows (15 days left).
+            settings.kioskLinkSavedAt = SampleData.now.addingTimeInterval(-350 * 24 * 3600)
+            return AppModel(demo: .day, settings: settings, widgetCount: 1)
+        case .dashboardKioskExpired:
+            return AppModel(demo: .day, settings: settings, widgetCount: 1, kioskLinkExpired: true)
         case .dashboardHome:
             // A plant with a meter at home: consumption, selling the surplus, today's share from the panels.
             let home = HomeEnergy(consumptionKW: 0.9, gridKW: -3.9, dailyConsumptionKWh: 6.4, dailyImportKWh: 2.1, dailyExportKWh: 9.8)

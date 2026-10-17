@@ -156,7 +156,7 @@ public struct WatchSolarPage: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                SourceStateView(kind: .solarError, compact: true, lastUpdate: solar.snapshot?.fetchedAt)
+                SourceStateView(kind: solar.stateKind, compact: true, lastUpdate: solar.snapshot?.fetchedAt)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

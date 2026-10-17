@@ -82,12 +82,20 @@ public struct SunWattLoader: Sendable {
         } else {
             switch solarOutcome {
             case .success(var snapshot):
+                store.clearKioskRejection()
                 snapshot.endpointID = Self.endpointID(for: settings)
                 store.saveSolar(snapshot)
                 data.solar = snapshot
                 data.solarStatus = .fresh
             case .failure(let error):
-                if let cached = cachedSolar(for: settings) {
+                if (error as? SunWattError) == .kioskLinkRejected, let id = Self.endpointID(for: settings) {
+                    store.noteKioskRejected(linkID: id, at: nowDate)
+                }
+                if isKioskLinkExpired(settings: settings, now: nowDate) {
+                    // Rejected for a while: the link most likely expired. Ask for a new one instead of showing old data.
+                    data.solarStatus = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
+                    data.solarLinkExpired = true
+                } else if let cached = cachedSolar(for: settings) {
                     // Also covers a cache from a previous Madrid day: its curve belongs to another day.
                     data.solar = cached
                     data.solarStatus = .stale(since: cached.fetchedAt)
@@ -131,11 +139,27 @@ public struct SunWattLoader: Sendable {
             data.solar = solar
             data.solarStatus = .stale(since: solar.fetchedAt)
         }
+        if isKioskLinkExpired(settings: settings, now: now()) {
+            data.solar = nil
+            data.solarStatus = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
+            data.solarLinkExpired = true
+        }
         if let prices = store.loadPrices(), prices.region == settings.priceRegion {
             data.prices = prices
             data.priceStatus = .stale(since: prices.fetchedAt)
         }
         return data
+    }
+
+    /// How long Huawei must keep rejecting the kiosk link before SunWatt calls it expired. One rejection can be a
+    /// passing problem on Huawei's side; an expired link is rejected on every refresh.
+    public static let kioskExpiredAfter: TimeInterval = 30 * 60
+
+    /// True when the FusionSolar link in `settings` has been rejected for at least `kioskExpiredAfter`.
+    func isKioskLinkExpired(settings: SunWattSettings, now: Date) -> Bool {
+        guard case .fusionSolar(let endpoint)? = SolarAccount(settings: settings),
+              let since = store.kioskRejectedSince(linkID: endpoint.cacheID) else { return false }
+        return now.timeIntervalSince(since) >= Self.kioskExpiredAfter
     }
 
     /// Identifier of the solar account in `settings`; nil when it is not set up or not valid.

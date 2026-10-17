@@ -54,6 +54,36 @@ public final class AppGroupStore: @unchecked Sendable {
         }
     }
 
+    private static let kioskRejectionKey = "sunwatt.kioskRejection"
+    private struct KioskRejection: Codable { var linkID: String; var since: Date }
+
+    /// Since when the kiosk link with this cache ID has been rejected without a success in between. Nil when it
+    /// was not rejected (or another link was).
+    public func kioskRejectedSince(linkID: String) -> Date? {
+        lock.lock(); defer { lock.unlock() }
+        guard let data = defaults.data(forKey: Self.kioskRejectionKey),
+              let value = try? JSONDecoder().decode(KioskRejection.self, from: data), value.linkID == linkID else { return nil }
+        return value.since
+    }
+
+    /// Records a rejection of the link; keeps the first time when it was already rejected.
+    /// Returns the time the rejections started.
+    @discardableResult
+    public func noteKioskRejected(linkID: String, at date: Date) -> Date {
+        if let since = kioskRejectedSince(linkID: linkID) { return since }
+        lock.lock(); defer { lock.unlock() }
+        if let data = try? JSONEncoder().encode(KioskRejection(linkID: linkID, since: date)) {
+            defaults.set(data, forKey: Self.kioskRejectionKey)
+        }
+        return date
+    }
+
+    /// A successful fetch (or a new link) ends the rejection.
+    public func clearKioskRejection() {
+        lock.lock(); defer { lock.unlock() }
+        defaults.removeObject(forKey: Self.kioskRejectionKey)
+    }
+
     public func loadSolar() -> SolarSnapshot? { read(SolarSnapshot.self, file: "solar.json") }
     /// Skipped when the stored snapshot has a newer `fetchedAt`.
     public func saveSolar(_ snapshot: SolarSnapshot) { write(snapshot, file: "solar.json", fetchedAt: snapshot.fetchedAt) }

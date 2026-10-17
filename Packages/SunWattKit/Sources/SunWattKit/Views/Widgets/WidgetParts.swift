@@ -181,7 +181,7 @@ struct SolarColumn: View {
                 }
             }
         } else {
-            SourceStateView(kind: solar.phase == .notConfigured ? .notConfigured : .solarError, compact: true, lastUpdate: solar.snapshot?.fetchedAt)
+            SourceStateView(kind: solar.stateKind, compact: true, lastUpdate: solar.snapshot?.fetchedAt)
         }
     }
 }

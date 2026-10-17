@@ -247,6 +247,47 @@
       },
       "extractionState" : "manual"
     },
+    "Huawei no longer accepts this kiosk link. Kiosk links expire after a year: create a new one in FusionSolar and paste it in SunWatt." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huawei ya no acepta este enlace del kiosco. Los enlaces del kiosco caducan al cabo de un año: crea uno nuevo en FusionSolar y pégalo en SunWatt."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Huawei já não aceita esta ligação do quiosque. As ligações do quiosque expiram ao fim de um ano: crie uma nova no FusionSolar e cole-a no SunWatt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huawei n’accepte plus ce lien du kiosque. Les liens du kiosque expirent au bout d’un an : créez-en un nouveau dans FusionSolar et collez-le dans SunWatt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huawei akzeptiert diesen Kiosk-Link nicht mehr. Kiosk-Links laufen nach einem Jahr ab: Erstelle in FusionSolar einen neuen und füge ihn in SunWatt ein."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huawei non accetta più questo link del chiosco. I link del chiosco scadono dopo un anno: creane uno nuovo in FusionSolar e incollalo in SunWatt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huawei accepteert deze kiosklink niet meer. Kiosklinks verlopen na een jaar: maak in FusionSolar een nieuwe aan en plak die in SunWatt."
+          }
+        }
+      }
+    },
     "Invalid response: %@" : {
       "localizations" : {
         "de" : {

@@ -56,7 +56,7 @@ public struct SunWattWidgetView: View {
     private func fullStateKind(solar: SolarModel, price: PriceModel) -> SourceStateView.Kind? {
         let solarDown = !solar.isAvailable
         let priceDown = price.series == nil
-        let solarKind: SourceStateView.Kind = solar.phase == .notConfigured ? .notConfigured : .solarError
+        let solarKind = solar.stateKind
         switch content {
         case .solarOnly: return solarDown ? solarKind : nil
         case .priceOnly: return priceDown ? .priceError : nil

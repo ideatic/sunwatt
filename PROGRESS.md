@@ -31,6 +31,8 @@
 
 - [x] Home consumption for plants with a meter at home (SolarEdge, PVOutput), hidden for export-only plants (DECISIONS D16). Dashboard section + large widget line; new screenshot kind `dashboardHome`.
 
+- [x] Kiosk link expiry: rejection detection (30 min), expired state in app, widgets, watch and Siri, renew notice a month before (DECISIONS D17). Screenshot kinds `dashboardKioskExpiring`, `dashboardKioskExpired`. Missing: a real expired-kiosk response as fixture; support page FAQ.
+
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
 - Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).

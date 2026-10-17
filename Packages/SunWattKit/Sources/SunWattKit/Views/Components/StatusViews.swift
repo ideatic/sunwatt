@@ -74,6 +74,8 @@ public struct SourceStateView: View {
     public enum Kind: Sendable {
         case notConfigured
         case solarError
+        /// FusionSolar keeps rejecting the kiosk link: it most likely expired.
+        case linkExpired
         case priceError
         /// Both sources are down.
         case unavailable
@@ -126,6 +128,7 @@ public struct SourceStateView: View {
     private var symbol: String {
         switch kind {
         case .notConfigured: "gearshape"
+        case .linkExpired: "link"
         case .unavailable: "wifi.exclamationmark"
         default: "exclamationmark.triangle"
         }
@@ -140,13 +143,18 @@ public struct SourceStateView: View {
         switch kind {
         case .notConfigured: wtext("Solar not set up")
         case .solarError: wtext("Solar data unavailable")
+        case .linkExpired: wtext("Kiosk link expired")
         case .priceError: wtext("Prices unavailable")
         case .unavailable: wtext("Data unavailable")
         }
     }
 
     private var hint: Text {
-        kind == .notConfigured ? wtext("Set up solar in SunWatt") : wtext("Open SunWatt to check the connection")
+        switch kind {
+        case .notConfigured: wtext("Set up solar in SunWatt")
+        case .linkExpired: wtext("Open SunWatt to replace it")
+        default: wtext("Open SunWatt to check the connection")
+        }
     }
 }
 
