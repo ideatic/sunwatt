@@ -23,7 +23,7 @@ The app contacts only:
 - the FusionSolar server named in the kiosk link the user pastes (only if the user chooses FusionSolar)
 - monitoringapi.solaredge.com (official SolarEdge Monitoring API, HTTPS; only if the user chooses SolarEdge)
 - pvoutput.org (PVOutput API, HTTPS; only if the user chooses PVOutput)
-The app has no API keys of its own. A SolarEdge or PVOutput API key is entered by the user, is sent only to that provider, and is stored only on the device (App Group shared with the widgets, and synced to the user's own Apple Watch). No tracking, no analytics, no ads. Nothing is sent to the developer. Settings and last data are stored on the device (App Group shared with the widgets).
+The app has no API keys of its own. A SolarEdge or PVOutput API key is entered by the user, is sent only to that provider, and is stored only on the device (in the keychain, shared with the widgets, and synced to the user's own Apple Watch). No tracking, no analytics, no ads. Nothing is sent to the developer. Settings and last data are stored on the device (App Group shared with the widgets).
 
 Other
 Not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE. Public data is used under its terms (CC BY 4.0 with attribution in the app). The app needs an internet connection to load prices.

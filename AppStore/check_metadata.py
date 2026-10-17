@@ -51,7 +51,7 @@ def main() -> None:
                 errs.append(f"{loc}/name: does not start with SunWatt")
             print(f"{loc:6} {f:17} {n:5}/{lim}")
     if root.is_dir():
-        extra = sorted(d.name for d in root.iterdir() if d.is_dir() and d.name not in LOCALES)
+        extra = sorted(d.name for d in root.iterdir() if d.is_dir() and d.name not in LOCALES + ["review_information"])
         if extra:
             errs.append(f"unexpected locale folders: {extra}")
     if errs:

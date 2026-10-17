@@ -82,4 +82,4 @@ Mac notes: the Mac app is sandboxed with the team-prefixed App Group (`EX68NKELW
 
 ## h) Submit
 
-Select the build in the version page, fill in the review notes from `AppStore/review_notes.txt`, then "Add for Review". Review takes about 1 to 2 days.
+Select the build in the version page, fill in the review notes from `AppStore/metadata/review_information/notes.txt`, then "Add for Review". Review takes about 1 to 2 days.

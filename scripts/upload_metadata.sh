@@ -94,14 +94,20 @@ MSG
 fi
 
 echo "MODE: UPLOAD. Sends the texts to App Store Connect (app $APP_ID)."
+# deliver asks "Do you want to setup deliver?" when the folder has no Deliverfile, and crashes in a
+# non-interactive shell. Run it from a folder with an empty Deliverfile and give it absolute paths.
+ROOT="$PWD"
+WORK="$ROOT/build/deliver"
+mkdir -p "$WORK"
+: > "$WORK/Deliverfile"
 for platform in "${PLATFORMS[@]}"; do
   echo "== fastlane deliver ($platform)"
   ARGS=(
     deliver
-    --api_key_path "$KEY_PATH"
+    --api_key_path "$(cd "$(dirname "$KEY_PATH")" && pwd)/$(basename "$KEY_PATH")"
     --app_identifier "$APP_ID"
     --platform "$platform"
-    --metadata_path "$METADATA"
+    --metadata_path "$ROOT/$METADATA"
     --skip_binary_upload true
     --submit_for_review false
     --automatic_release false
@@ -109,9 +115,9 @@ for platform in "${PLATFORMS[@]}"; do
     --force true
   )
   if [[ -n "$SHOTS" ]]; then
-    # One folder per platform: iPhone + iPad shots for ios, Mac shots for osx. deliver picks the device by pixel
+    # One folder per platform: iPhone, iPad and Apple Watch shots for ios, Mac shots for osx. deliver picks the device by pixel
     # size and would otherwise try to put the Mac shots on the iOS version.
-    PLATFORM_SHOTS="build/screenshots-$platform"
+    PLATFORM_SHOTS="$ROOT/build/screenshots-$platform"
     rm -rf "$PLATFORM_SHOTS"
     for dir in "$SHOTS"/*/; do
       locale="$(basename "$dir")"
@@ -119,13 +125,13 @@ for platform in "${PLATFORMS[@]}"; do
       if [[ "$platform" == osx ]]; then
         cp "$dir"*_mac_*.png "$PLATFORM_SHOTS/$locale/"
       else
-        cp "$dir"*_iphone*_*.png "$dir"*_ipad*_*.png "$PLATFORM_SHOTS/$locale/"
+        cp "$dir"*_iphone*_*.png "$dir"*_ipad*_*.png "$dir"*_watch_*.png "$PLATFORM_SHOTS/$locale/"
       fi
     done
     ARGS+=(--skip_screenshots false --screenshots_path "$PLATFORM_SHOTS" --overwrite_screenshots)
   else
     ARGS+=(--skip_screenshots true)
   fi
-  fastlane "${ARGS[@]}"
+  (cd "$WORK" && fastlane "${ARGS[@]}")
 done
 echo "DONE. Texts are in App Store Connect. Nothing was submitted for review."

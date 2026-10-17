@@ -429,8 +429,45 @@ func renderStore(to directory: URL, languages filter: [String]) throws -> Int {
                 count += 1
             }
         }
+        // Apple Watch: the bare watch screen, no caption or frame, at 416 x 496 px (Series 10/11, 46 mm).
+        let entry = SampleData.entry(.day, region: language.region)
+        let watchPages: [(String, AnyView)] = [
+            ("price", AnyView(WatchPricePage(entry: entry))),
+            ("solar", AnyView(WatchSolarPage(entry: entry))),
+        ]
+        for (index, page) in watchPages.enumerated() {
+            let view = WatchStoreScreen(page: page.1, locale: Locale(identifier: language.locale))
+            try writeOpaque(view, name: "\(index + 1)_watch_\(page.0)", scale: 2, to: folder)
+            count += 1
+        }
     }
     return count
+}
+
+/// A watch page full screen, black, with the clock in the corner like watchOS draws it.
+struct WatchStoreScreen: View {
+    let page: AnyView
+    let locale: Locale
+
+    var body: some View {
+        let screen = WatchSnapshotView.screenSize
+        page
+            .padding(.horizontal, 12)
+            .padding(.top, 34)
+            .padding(.bottom, 10)
+            .frame(width: screen.width, height: screen.height)
+            .background(Color.black)
+            .overlay(alignment: .topTrailing) {
+                Text(SampleData.now.formatted(
+                    Date.FormatStyle(locale: locale, timeZone: TimeZone(identifier: "Europe/Madrid")!)
+                        .hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)))
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .padding(.top, 10).padding(.trailing, 22)
+            }
+            .environment(\.colorScheme, .dark)
+            .environment(\.locale, locale)
+            .foregroundStyle(.white)
+    }
 }
 
 /// Like `write`, but flattens the image onto an opaque RGB bitmap: App Store Connect rejects PNGs with alpha.
