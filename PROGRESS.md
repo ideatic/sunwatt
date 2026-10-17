@@ -24,3 +24,11 @@
 ## Known issues
 - macOS signing needs a team (DECISIONS D4).
 - No public API to add a widget from the app (checked iOS 27 SDK). App shows a guide and detects installed widgets.
+
+## Release checklist (from the metadata task)
+- [ ] Onboarding has a "Skip" path for solar (App Review notes rely on it)
+- [ ] Energy-Charts "Fraunhofer ISE, CC BY 4.0" attribution visible in the app
+- [ ] `ITSAppUsesNonExemptEncryption = NO` in all Info.plists
+- [ ] Privacy manifests (`PrivacyInfo.xcprivacy`) for app, widgets, watch
+- [ ] User: host `docs/` (e.g. GitHub Pages) and replace `REPLACE-ME` URLs/email
+- [ ] User: create the app record in App Store Connect, confirm screenshot sizes
