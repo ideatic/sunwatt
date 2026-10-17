@@ -1,126 +1,129 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "Solar production and electricity price.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Producción solar y precio de la electricidad."
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Solar production and electricity price." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solarerzeugung und Strompreis."
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produção solar e preço da eletricidade."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Producción solar y precio de la electricidad."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Production solaire et prix de l'électricité."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production solaire et prix de l'électricité."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solarerzeugung und Strompreis."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione solare e prezzo dell'elettricità."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produzione solare e prezzo dell'elettricità."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonne-opbrengst en elektriciteitsprijs."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonne-opbrengst en elektriciteitsprijs."
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produção solar e preço da eletricidade."
           }
         }
       }
     },
-    "Solar today": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar hoy"
+    "Solar today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar heute"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar hoje"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar hoy"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solaire aujourd’hui"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solaire aujourd’hui"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar heute"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solare oggi"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solare oggi"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zon vandaag"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zon vandaag"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar hoje"
           }
         }
       }
     },
-    "Today's solar production.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Producción solar de hoy."
+    "Today's solar production." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solarerzeugung von heute."
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produção solar de hoje."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Producción solar de hoy."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Production solaire du jour."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production solaire du jour."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solarerzeugung von heute."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione solare di oggi."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produzione solare di oggi."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonne-opbrengst van vandaag."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonne-opbrengst van vandaag."
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produção solar de hoje."
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

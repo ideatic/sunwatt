@@ -1,286 +1,293 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "Cheapest hours": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Horas más baratas"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Cheapest hours" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günstigste Stunden"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Horas mais baratas"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas más baratas"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Heures les moins chères"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures les moins chères"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Günstigste Stunden"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ore più economiche"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ore più economiche"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goedkoopste uren"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Goedkoopste uren"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas mais baratas"
           }
         }
       }
     },
-    "Now": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ahora"
+    "No data yet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Daten"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Agora"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin datos aún"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Maint."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas encore de données"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jetzt"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ancora nessun dato"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ora"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nog geen gegevens"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nu"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda sem dados"
           }
         }
       }
     },
-    "Prices show Spain until then": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Los precios usan España mientras tanto"
+    "Now" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Os preços usam Espanha até lá"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les prix utilisent l'Espagne d'ici là"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maint."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bis dahin zeigen die Preise Spanien"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ora"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nel frattempo i prezzi usano la Spagna"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nu"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tot dan tonen de prijzen Spanje"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora"
           }
         }
       }
     },
-    "Set up SunWatt on your iPhone": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura SunWatt en tu iPhone"
+    "Prices show Spain until then" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis dahin zeigen die Preise Spanien"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configure o SunWatt no seu iPhone"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los precios usan España mientras tanto"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configurez SunWatt sur votre iPhone"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les prix utilisent l'Espagne d'ici là"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Richte SunWatt auf deinem iPhone ein"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nel frattempo i prezzi usano la Spagna"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura SunWatt sul tuo iPhone"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tot dan tonen de prijzen Spanje"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stel SunWatt in op je iPhone"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os preços usam Espanha até lá"
           }
         }
       }
     },
-    "Set up on iPhone": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura en el iPhone"
+    "Set up on iPhone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem iPhone einrichten"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configure no iPhone"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura en el iPhone"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "À configurer sur l’iPhone"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À configurer sur l’iPhone"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auf dem iPhone einrichten"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura su iPhone"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura su iPhone"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stel in op je iPhone"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stel in op je iPhone"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure no iPhone"
           }
         }
       }
     },
-    "No data yet": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin datos aún"
+    "Set up SunWatt on your iPhone" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richte SunWatt auf deinem iPhone ein"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ainda sem dados"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura SunWatt en tu iPhone"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas encore de données"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez SunWatt sur votre iPhone"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Noch keine Daten"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura SunWatt sul tuo iPhone"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ancora nessun dato"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stel SunWatt in op je iPhone"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nog geen gegevens"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure o SunWatt no seu iPhone"
           }
         }
       }
     },
-    "Solar unavailable": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar no disponible"
+    "Solar unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar nicht verfügbar"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar indisponível"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar no disponible"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solaire indisponible"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solaire indisponible"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar nicht verfügbar"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solare non disponibile"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solare non disponibile"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zon niet beschikbaar"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zon niet beschikbaar"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar indisponível"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

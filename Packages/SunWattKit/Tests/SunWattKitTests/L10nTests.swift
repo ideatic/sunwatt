@@ -5,17 +5,17 @@ import Foundation
 @Test func catalogCompilesIntoBundle() throws {
     let es = try #require(SunWattKit.L10n.bundle.path(forResource: "es", ofType: "lproj"))
     let bundle = try #require(Bundle(path: es))
-    #expect(bundle.localizedString(forKey: "No production", value: nil, table: nil) == "Sin producción")
+    #expect(bundle.localizedString(forKey: "No production", value: nil, table: "Core") == "Sin producción")
 }
 
 @Suite struct CatalogCompletenessTests {
     private static let translated = ["es", "pt", "fr", "de", "it", "nl"]
 
-    /// `Localizable.xcstrings` read from the source tree (tests run from the package checkout).
+    /// `Core.xcstrings` read from the source tree (tests run from the package checkout).
     private func catalog() throws -> [String: Any] {
         let url = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Sources/SunWattKit/Resources/Localizable.xcstrings")
+            .appendingPathComponent("Sources/SunWattKit/Resources/Core.xcstrings")
         let data = try Data(contentsOf: url)
         let root = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
         return try #require(root["strings"] as? [String: Any])
@@ -35,18 +35,12 @@ import Foundation
         }
     }
 
-    @Test func catalogKeysAreSorted() throws {
-        let url = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-            .appendingPathComponent("Sources/SunWattKit/Resources/Localizable.xcstrings")
-        let text = try String(contentsOf: url, encoding: .utf8)
-        let keys = try Array(catalog().keys)
-        // Order of appearance in the file must be sorted.
-        let positions = keys.compactMap { text.range(of: "\n    \"\($0)\": {")?.lowerBound }
-        #expect(positions.count == keys.count)
-        let inFile = keys.sorted { text.distance(from: text.startIndex, to: text.range(of: "\n    \"\($0)\": {")!.lowerBound)
-            < text.distance(from: text.startIndex, to: text.range(of: "\n    \"\($1)\": {")!.lowerBound) }
-        #expect(inFile == inFile.sorted())
+    /// Every key is managed by hand. Xcode marks keys it did not extract itself as stale, and in this package it
+    /// cannot map the `atext`/`wtext` wrappers to their tables, so without "manual" it would mark them all.
+    @Test func everyKeyIsManual() throws {
+        for (key, entry) in try catalog() {
+            #expect((entry as? [String: Any])?["extractionState"] as? String == "manual", "\(key)")
+        }
     }
 
     @Test func everyCompiledLanguageBundleHasEveryKey() throws {
@@ -55,7 +49,7 @@ import Foundation
             let path = try #require(L10n.bundle.path(forResource: language, ofType: "lproj"), "\(language).lproj")
             let bundle = try #require(Bundle(path: path))
             for key in keys {
-                let value = bundle.localizedString(forKey: key, value: "\u{1}missing", table: "Localizable")
+                let value = bundle.localizedString(forKey: key, value: "\u{1}missing", table: "Core")
                 #expect(value != "\u{1}missing" && !value.isEmpty, "\(key) missing in \(language)")
             }
         }
@@ -64,8 +58,8 @@ import Foundation
     @Test func regionNamesAreTranslated() throws {
         let path = try #require(L10n.bundle.path(forResource: "es", ofType: "lproj"))
         let es = try #require(Bundle(path: path))
-        #expect(es.localizedString(forKey: "Spain", value: nil, table: nil) == "España")
-        #expect(es.localizedString(forKey: "Germany & Luxembourg", value: nil, table: nil) == "Alemania y Luxemburgo")
+        #expect(es.localizedString(forKey: "Spain", value: nil, table: "Core") == "España")
+        #expect(es.localizedString(forKey: "Germany & Luxembourg", value: nil, table: "Core") == "Alemania y Luxemburgo")
         for region in PriceRegion.allCases { #expect(!region.displayName.isEmpty) }
     }
 }

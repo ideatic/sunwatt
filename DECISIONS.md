@@ -43,7 +43,7 @@ Each entry: decision, why, how to change it.
 - Change: add a case to `PriceRegion` with its zone code and time zone.
 
 ## D9. Languages and number format
-- en (source), es, pt, fr, de, it, nl. String catalogs: `Localizable.xcstrings` (data/errors/regions), `Widgets.xcstrings` (widget views), `App.xcstrings` (app screens), `Widgets/Resources/Localizable.xcstrings` (App Intent strings). Tests check every key has all 6 translations.
+- en (source), es, pt, fr, de, it, nl. String catalogs: `Core.xcstrings` (data/errors/regions; not named Localizable so Xcode cannot dump untranslated keys into it; all keys `extractionState: manual`), `Widgets.xcstrings` (widget views), `App.xcstrings` (app screens), `Widgets/Resources/Localizable.xcstrings` (App Intent strings). Tests check every key has all 6 translations.
 - Numbers follow the user's locale (`Format.locale`, default `autoupdatingCurrent`), so Spanish users get the comma decimal separator. The spec asked for a Spanish number format; this keeps that for Spanish and stays correct for the other languages.
 - Change: set `Format.locale` to a fixed locale at app start.
 

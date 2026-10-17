@@ -1,966 +1,990 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "No production": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin producción"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ kWh today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh heute"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem produção"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh hoy"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas de production"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh aujourd’hui"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keine Erzeugung"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh oggi"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessuna produzione"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh vandaag"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geen opbrengst"
-          }
-        }
-      }
-    },
-    "%@ kWh today": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kWh hoy"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kWh hoje"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kWh aujourd’hui"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kWh heute"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kWh oggi"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ kWh vandaag"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kWh hoje"
           }
         }
       }
     },
-    "Updated %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Actualizado %@"
+    "Average" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mittel"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Atualizado %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mis à jour %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moyen"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aktualisiert %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiornato %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemiddeld"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bijgewerkt %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Avg" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moy"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gem"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Méd"
           }
         }
       }
     },
-    "Set up the kiosk in the app": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura el kiosco en la app"
+    "Cheap" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günstig"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configure o quiosque na app"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barata"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configurez le kiosque dans l’app"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bas"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kiosk in der App einrichten"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bassa"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imposta il kiosk nell’app"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laag"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stel de kiosk in via de app in"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barata"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Data from %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten von %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos de las %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données de %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati delle %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gegevens van %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados das %@"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Data unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten nicht verfügbar"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos no disponibles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données indisponibles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati non disponibili"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gegevens niet beschikbaar"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados indisponíveis"
           }
         }
       }
     },
-    "Solar data unavailable": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Datos solares no disponibles"
+    "Day-ahead" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day-Ahead"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dados solares indisponíveis"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mercado diario"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Données solaires indisponibles"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marché J-1"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solardaten nicht verfügbar"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giorno prima"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dati solari non disponibili"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day-ahead"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonnedata niet beschikbaar"
-          }
-        }
-      }
-    },
-    "Data unavailable": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Datos no disponibles"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dados indisponíveis"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Données indisponibles"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daten nicht verfügbar"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dati non disponibili"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gegevens niet beschikbaar"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mercado diário"
           }
         }
       }
     },
-    "Prices unavailable": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precios no disponibles"
+    "Expensive" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teuer"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preços indisponíveis"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cara"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prix indisponibles"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Élevé"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preise nicht verfügbar"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alta"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prezzi non disponibili"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoog"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prijzen niet beschikbaar"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cara"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Last update %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letzte Aktualisierung %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última actualización %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière mise à jour %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo aggiornamento %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laatste update %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última atualização %@"
           }
         }
       }
     },
-    "No current price": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin precio actual"
+    "Max" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem preço atual"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máx"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pas de prix actuel"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kein aktueller Preis"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun prezzo attuale"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Max"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geen actuele prijs"
-          }
-        }
-      }
-    },
-    "Cheap": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Barata"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Barata"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bas"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Günstig"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bassa"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Laag"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Máx"
           }
         }
       }
     },
-    "Average": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Normal"
+    "Min" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Normal"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mín"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moyen"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mittel"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Min"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gemiddeld"
-          }
-        }
-      }
-    },
-    "Expensive": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cara"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cara"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Élevé"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Teuer"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alta"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hoog"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mín"
           }
         }
       }
     },
-    "Min": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mín"
+    "No current price" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein aktueller Preis"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mín"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin precio actual"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Min"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de prix actuel"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Min"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun prezzo attuale"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Min"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen actuele prijs"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Min"
-          }
-        }
-      }
-    },
-    "Avg": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Méd"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Moy"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ø"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Media"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gem"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem preço atual"
           }
         }
       }
     },
-    "Max": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Máx"
+    "No production" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Erzeugung"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Máx"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin producción"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Max"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas de production"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Max"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna produzione"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Max"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen opbrengst"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Max"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem produção"
           }
         }
       }
     },
-    "Peak": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pico"
+    "Open SunWatt to check the connection" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne SunWatt, um die Verbindung zu prüfen"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pico"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre SunWatt para revisar la conexión"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pic"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez SunWatt pour vérifier la connexion"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spitze"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri SunWatt per controllare la connessione"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Picco"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open SunWatt om de verbinding te controleren"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Piek"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o SunWatt para verificar a ligação"
           }
         }
       }
     },
-    "PVPC": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PVPC"
+    "Peak" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spitze"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PVPC"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PVPC"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pic"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PVPC"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Picco"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PVPC"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piek"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PVPC"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pico"
           }
         }
       }
     },
-    "Day-ahead": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mercado diario"
+    "Price" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preis"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mercado diário"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precio"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Marché J-1"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prix"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Day-Ahead"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prezzo"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giorno prima"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prijs"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Day-ahead"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preço"
           }
         }
       }
     },
-    "Production": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Producción"
+    "Prices unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preise nicht verfügbar"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produção"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precios no disponibles"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Production"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prix indisponibles"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erzeugung"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prezzi non disponibili"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produzione"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prijzen niet beschikbaar"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Opbrengst"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preços indisponíveis"
           }
         }
       }
     },
-    "Price": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precio"
+    "Production" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erzeugung"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preço"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Producción"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prix"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Production"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preis"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produzione"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prezzo"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opbrengst"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prijs"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Produção"
           }
         }
       }
     },
-    "Data from %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Datos de las %@"
+    "PVPC" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PVPC"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dados das %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PVPC"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Données de %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PVPC"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daten von %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PVPC"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dati delle %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PVPC"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gegevens van %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PVPC"
           }
         }
       }
     },
-    "Solar not set up": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar no configurado"
+    "Set up the kiosk in SunWatt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richte den Kiosk in SunWatt ein"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar não configurado"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura el kiosco en SunWatt"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solaire non configuré"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez le kiosque dans SunWatt"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solar nicht eingerichtet"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura il chiosco in SunWatt"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solare non configurato"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stel de kiosk in SunWatt in"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonne-energie niet ingesteld"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure o quiosque no SunWatt"
           }
         }
       }
     },
-    "Set up the kiosk in SunWatt": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura el kiosco en SunWatt"
+    "Set up the kiosk in the app" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiosk in der App einrichten"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configure o quiosque no SunWatt"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura el kiosco en la app"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configurez le kiosque dans SunWatt"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez le kiosque dans l’app"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Richte den Kiosk in SunWatt ein"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta il kiosk nell’app"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura il chiosco in SunWatt"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stel de kiosk in via de app in"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stel de kiosk in SunWatt in"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure o quiosque na app"
           }
         }
       }
     },
-    "Open SunWatt to check the connection": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abre SunWatt para revisar la conexión"
+    "Solar data unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solardaten nicht verfügbar"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abra o SunWatt para verificar a ligação"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos solares no disponibles"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ouvrez SunWatt pour vérifier la connexion"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données solaires indisponibles"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Öffne SunWatt, um die Verbindung zu prüfen"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati solari non disponibili"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri SunWatt per controllare la connessione"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonnedata niet beschikbaar"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open SunWatt om de verbinding te controleren"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados solares indisponíveis"
           }
         }
       }
     },
-    "Last update %@": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Última actualización %@"
+    "Solar not set up" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar nicht eingerichtet"
           }
         },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Última atualização %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar no configurado"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dernière mise à jour %@"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solaire non configuré"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Letzte Aktualisierung %@"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solare non configurato"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ultimo aggiornamento %@"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonne-energie niet ingesteld"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Laatste update %@"
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar não configurado"
+          }
+        }
+      }
+    },
+    "Updated %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiert %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizado %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis à jour %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiornato %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bijgewerkt %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizado %@"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

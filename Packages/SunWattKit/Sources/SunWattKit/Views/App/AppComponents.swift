@@ -318,12 +318,12 @@ func regionName(_ region: PriceRegion) -> Text {
     case .netherlands: key = "Netherlands"
     case .italyNorth: key = "Italy (North)"
     }
-    return Text(LocalizedStringKey(key), bundle: .module)
+    return Text(LocalizedStringKey(key), tableName: "Core", bundle: .module)
 }
 
 /// Tariff name as `Text`: "PVPC" in Spain, "Day-ahead price" elsewhere.
 func tariffName(_ region: PriceRegion) -> Text {
-    region.isRetailTariff ? Text(verbatim: "PVPC") : Text(LocalizedStringKey("Day-ahead price"), bundle: .module)
+    region.isRetailTariff ? Text(verbatim: "PVPC") : Text(LocalizedStringKey("Day-ahead price"), tableName: "Core", bundle: .module)
 }
 
 /// "Regulated PVPC price" / "Wholesale day-ahead price" note for a region.
