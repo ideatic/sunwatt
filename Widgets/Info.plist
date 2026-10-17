@@ -37,5 +37,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>SunWatt reads your inverter on your home network to show live solar production.</string>
 </dict>
 </plist>
