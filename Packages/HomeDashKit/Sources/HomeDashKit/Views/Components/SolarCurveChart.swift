@@ -35,15 +35,18 @@ public struct SolarCurveChart: View {
         let peak = points.max { $0.kW < $1.kW }
 
         Chart {
-            ForEach(points) { point in
-                AreaMark(x: .value("Time", point.time), y: .value("kW", point.kW))
-                    .interpolationMethod(.catmullRom)
-                    .foregroundStyle(palette.solarArea)
+            // The area ends in a vertical edge under the latest point, which reads as a stem in the small chart.
+            if isFull {
+                ForEach(points) { point in
+                    AreaMark(x: .value("Time", point.time), y: .value("kW", point.kW))
+                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(palette.solarArea)
+                }
             }
             ForEach(points) { point in
                 LineMark(x: .value("Time", point.time), y: .value("kW", point.kW))
                     .interpolationMethod(.catmullRom)
-                    .lineStyle(StrokeStyle(lineWidth: isFull ? 2 : 1.6, lineCap: .round, lineJoin: .round))
+                    .lineStyle(StrokeStyle(lineWidth: isFull ? 2 : 1.8, lineCap: .round, lineJoin: .round))
                     .foregroundStyle(palette.solarLine)
             }
             if isFull, domain.contains(now) {
@@ -80,15 +83,25 @@ public struct SolarCurveChart: View {
         .chartYScale(domain: 0...yMax)
         .chartYAxis {
             if isFull {
-                AxisMarks(values: [0, yMax / 2]) { _ in
-                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.10))
+                let ticks = ChartLayout.solarTicks(yMax: yMax)
+                AxisMarks(position: .trailing, values: ticks) { value in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.07))
+                    AxisValueLabel(anchor: .leading) {
+                        if let v = value.as(Double.self) {
+                            Text(verbatim: ChartLayout.axisNumber(v, decimals: 1) + (v == ticks.last && v > 0 ? " kW" : ""))
+                                .font(.system(.caption2, design: .rounded))
+                                .monospacedDigit()
+                                .foregroundStyle(.secondary)
+                                .frame(width: 34, alignment: .trailing)
+                        }
+                    }
                 }
             }
         }
         .chartXAxis {
             if isFull {
                 AxisMarks(values: ChartLayout.axisHours(domain: domain, step: 3, calendar: calendar)) { value in
-                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.08))
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.07))
                     AxisValueLabel(anchor: .top) {
                         if let date = value.as(Date.self) {
                             Text(verbatim: Format.hour(date)).font(.system(.caption2, design: .rounded)).foregroundStyle(.secondary)

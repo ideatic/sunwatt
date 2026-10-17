@@ -27,7 +27,11 @@ public struct HomeDashWidgetView: View {
                 AccessoryCircularView(solar: solar, price: price, content: content)
             default:
                 if let kind = fullStateKind(solar: solar, price: price) {
-                    SourceStateView(kind: kind)
+                    if family == .large {
+                        LargeUnavailableView(kind: kind, content: content, lastUpdate: entry.data.lastUpdated)
+                    } else {
+                        SourceStateView(kind: kind, lastUpdate: entry.data.lastUpdated)
+                    }
                 } else {
                     systemBody(solar: solar, price: price)
                 }

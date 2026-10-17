@@ -61,6 +61,21 @@ public enum Theme {
 
         public static let pastOpacity: Double = 0.42
         public static let futureOpacity: Double = 0.82
+        /// Dark mode needs a higher past opacity and a neutral blend: over near-black, low-opacity red or amber turns brown.
+        public static let pastOpacityDark: Double = 0.72
+
+        public static func pastOpacity(for scheme: ColorScheme) -> Double {
+            scheme == .dark ? pastOpacityDark : pastOpacity
+        }
+
+        /// Dimmed color of a past bar: in dark mode the hue is blended toward a neutral grey first.
+        public static func pastColor(_ base: Color, scheme: ColorScheme) -> Color {
+            scheme == .dark ? mix(base, Color(white: 0.62), 0.52) : base
+        }
+
+        /// Smallest bar height as a fraction of the Y span, so very cheap hours still show their color.
+        public static let minBarFractionMini: Double = 0.07
+        public static let minBarFractionFull: Double = 0.035
     }
 
     // MARK: Backgrounds

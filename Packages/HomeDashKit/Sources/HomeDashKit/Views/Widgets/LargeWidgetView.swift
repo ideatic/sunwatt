@@ -91,3 +91,75 @@ struct LargeWidgetView: View {
         }
     }
 }
+
+/// Large widget with nothing to show: the message sits where the figures would be and the chart sections keep
+/// their place as dimmed skeletons, so the widget keeps its shape.
+struct LargeUnavailableView: View {
+    let kind: SourceStateView.Kind
+    let content: WidgetContent
+    var lastUpdate: Date?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            SourceStateView(kind: kind, lastUpdate: lastUpdate)
+                .frame(height: 150)
+            if content != .priceOnly {
+                section("Production") { SolarSkeleton() }
+            }
+            if content != .solarOnly {
+                section("Price", unit: "€/kWh") { PriceSkeleton() }
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func section(_ title: LocalizedStringKey, unit: String? = nil, @ViewBuilder _ chart: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+            ChartCaption(title: title, trailing: unit)
+            chart()
+        }
+        .frame(maxHeight: .infinity)
+        .opacity(0.45)
+    }
+}
+
+/// Placeholder for the production chart: faint grid and a flat dashed curve.
+private struct SolarSkeleton: View {
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack {
+                ForEach(0..<3, id: \.self) { row in
+                    Rectangle().fill(Color.primary.opacity(0.07)).frame(height: 0.5)
+                        .position(x: proxy.size.width / 2, y: proxy.size.height * CGFloat(row) / 2)
+                }
+                Path { path in
+                    path.move(to: CGPoint(x: 0, y: proxy.size.height - 1))
+                    path.addCurve(
+                        to: CGPoint(x: proxy.size.width, y: proxy.size.height - 1),
+                        control1: CGPoint(x: proxy.size.width * 0.3, y: proxy.size.height * 0.2),
+                        control2: CGPoint(x: proxy.size.width * 0.7, y: proxy.size.height * 0.2))
+                }
+                .stroke(Color.primary.opacity(0.22), style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [4, 4]))
+            }
+        }
+    }
+}
+
+/// Placeholder for the price chart: 24 even rounded bars.
+private struct PriceSkeleton: View {
+    private let heights: [CGFloat] = [0.7, 0.65, 0.6, 0.55, 0.5, 0.5, 0.6, 0.7, 0.75, 0.55, 0.35, 0.2,
+                                      0.15, 0.15, 0.15, 0.18, 0.25, 0.5, 0.7, 0.8, 0.8, 0.75, 0.7, 0.65]
+
+    var body: some View {
+        GeometryReader { proxy in
+            HStack(alignment: .bottom, spacing: 2) {
+                ForEach(heights.indices, id: \.self) { index in
+                    RoundedRectangle(cornerRadius: Theme.Radius.bar)
+                        .fill(Color.primary.opacity(0.18))
+                        .frame(height: max(3, proxy.size.height * heights[index]))
+                }
+            }
+            .frame(maxHeight: .infinity, alignment: .bottom)
+        }
+    }
+}

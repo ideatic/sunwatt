@@ -49,7 +49,7 @@ struct SmallWidgetView: View {
                 }
             }
         } else {
-            SourceStateView(kind: solar.phase == .notConfigured ? .notConfigured : .solarError)
+            SourceStateView(kind: solar.phase == .notConfigured ? .notConfigured : .solarError, lastUpdate: solar.snapshot?.fetchedAt)
         }
     }
 

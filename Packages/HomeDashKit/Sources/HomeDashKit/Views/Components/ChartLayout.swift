@@ -96,4 +96,30 @@ public enum ChartLayout {
         }
         return result
     }
+
+    /// Up to three Y axis values (0 and two multiples of a round step) for a chart spanning `0...top`.
+    public static func axisTicks(top: Double, steps: [Double]) -> [Double] {
+        guard top > 0 else { return [0] }
+        let step = steps.first { top / $0 <= 3.5 } ?? steps.last ?? top
+        return [0, step, step * 2].filter { $0 <= top }
+    }
+
+    public static func solarTicks(yMax: Double) -> [Double] {
+        axisTicks(top: yMax, steps: [0.5, 1, 2, 5, 10, 20])
+    }
+
+    public static func priceTicks(yMax: Double) -> [Double] {
+        axisTicks(top: yMax, steps: [0.02, 0.05, 0.1, 0.2, 0.5, 1])
+    }
+
+    /// Axis label text: whole numbers without decimals, else the figure formatting of the locale.
+    static func axisNumber(_ value: Double, decimals: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = Format.locale
+        formatter.numberStyle = .decimal
+        let whole = (value - value.rounded()).magnitude < 0.0001
+        formatter.minimumFractionDigits = whole ? 0 : decimals
+        formatter.maximumFractionDigits = whole ? 0 : decimals
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
 }

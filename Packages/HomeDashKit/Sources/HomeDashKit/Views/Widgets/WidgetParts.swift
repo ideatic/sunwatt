@@ -127,13 +127,13 @@ struct ChartCaption: View {
 
     var body: some View {
         HStack {
-            wtext(title)
+            // Section labels are small caps; units are never uppercased ("€/kWh", not "€/KWH").
+            wtext(title).textCase(.uppercase)
             Spacer(minLength: 4)
-            if let trailing { Text(verbatim: trailing) }
+            if let trailing { Text(verbatim: trailing).textCase(nil) }
         }
         .font(.system(.caption2, design: .rounded).weight(.semibold))
         .foregroundStyle(.secondary)
-        .textCase(.uppercase)
         .lineLimit(1)
     }
 }
@@ -181,7 +181,7 @@ struct SolarColumn: View {
                 }
             }
         } else {
-            SourceStateView(kind: solar.phase == .notConfigured ? .notConfigured : .solarError, compact: true)
+            SourceStateView(kind: solar.phase == .notConfigured ? .notConfigured : .solarError, compact: true, lastUpdate: solar.snapshot?.fetchedAt)
         }
     }
 }
@@ -216,7 +216,7 @@ struct PriceColumn: View {
                 }
             }
         } else {
-            SourceStateView(kind: .priceError, compact: true)
+            SourceStateView(kind: .priceError, compact: true, lastUpdate: price.series?.fetchedAt, timeZone: price.timeZone)
         }
     }
 }
