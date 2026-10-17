@@ -51,3 +51,9 @@ New kinds: `dashboardPlants` (3 demo plants: Home, Barn, Beach house), `settings
 - Not visible in snapshots: the second tab selected and a third tab overflowing (scroll view). The Mac and iPad settings sheet is shorter than the card, so the plant tabs show only in the phone full-height PNG.
 - Many existing PNGs in this folder changed in the commit: the committed ones were older than the code (Settings got longer with the provider picker). A render of the previous commit gives the same pixels as the new render for every old kind: nothing single-plant changed because of this iteration.
 - Render 3 (review): in Settings the provider buttons (FusionSolar / SolarEdge / PVOutput) showed small text with SolarEdge, the API account and on Mac/iPad. The settings sheet has a fixed height in snapshots, so the long card squeezed the one-line labels vertically and `minimumScaleFactor` shrank them. The labels now keep their height (`fixedSize(vertical:)`); the scale factor still handles long names. 41 PNGs changed: these labels, and Mac/iPad settings move by a few points.
+
+## Iteration 7: "Password (system code)" and hidden API keys (2026-10-17)
+- FusionSolar's portal labels the Northbound credential "Password"; the API calls it systemCode. The field now reads "Password (system code)" (es "Contraseña (código del sistema)", de "Passwort (Systemcode)", ...); hint, help text and the two error messages use the same words. Translated per locale (Haiku LQA); es/pt first suggested an abbreviation, the full form fits the label row.
+- SolarEdge/PVOutput API key fields are secret (dots), like the system code.
+- Checked: onboarding API account (es), Settings API account (de, full height): labels on one line, no truncation.
+- Widget guide and onboarding widget PNGs changed too: their widget previews show the new medium layout.

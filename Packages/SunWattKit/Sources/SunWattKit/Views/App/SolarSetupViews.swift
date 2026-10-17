@@ -37,7 +37,7 @@ struct SolarSetupEditor: View {
             case .northboundAccount:
                 NorthboundAccountEditor(model: model, plantID: plantID, initialTest: initialTest)
                 hairline
-                atext("Your installer creates an API account in FusionSolar (Company Management → Northbound Management) and gives you its user name and system code. Unlike a kiosk link it does not expire. The server is the one in your FusionSolar address, for example eu5.fusionsolar.huawei.com.")
+                atext("Your installer creates an API account in FusionSolar (Company Management → Northbound Management) and gives you its user name and password (system code). Unlike a kiosk link it does not expire. The server is the one in your FusionSolar address, for example eu5.fusionsolar.huawei.com.")
                     .font(.system(.footnote, design: .rounded))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -188,7 +188,7 @@ struct SolarAPIEditor: View {
             fieldLabel(idLabel)
             AppTextField(prompt: "123456", text: $siteID, onCommit: commit)
             fieldLabel("API key")
-            AppTextField(prompt: keyPrompt, text: $apiKey, onCommit: commit)
+            AppTextField(prompt: keyPrompt, text: $apiKey, onCommit: commit, isSecret: true)
             validationRow(input, palette: palette)
             HStack(spacing: Theme.Spacing.s) {
                 Button { runTest() } label: {
@@ -742,7 +742,7 @@ struct NorthboundAccountEditor: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
             fieldLabel("User name")
             AppTextField(prompt: "api_user", text: $userName, onCommit: commit)
-            fieldLabel("System code")
+            fieldLabel("Password (system code)")
             AppTextField(prompt: "••••••••", text: $systemCode, onCommit: commit, isSecret: true)
             fieldLabel("Server")
             AppTextField(prompt: NorthboundCredentials.defaultHost, text: $host, onCommit: commit)
@@ -782,7 +782,7 @@ struct NorthboundAccountEditor: View {
             switch input {
             case .empty:
                 Image(systemName: "key").foregroundStyle(.secondary)
-                atext("Enter the user name and the system code.").foregroundStyle(.secondary)
+                atext("Enter the user name and the password.").foregroundStyle(.secondary)
             case .valid:
                 Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.success)
                 atext("Ready. Test the connection to check it.").foregroundStyle(palette.success)

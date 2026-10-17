@@ -862,84 +862,84 @@
         }
       }
     },
-    "Enter the user name and the system code of your FusionSolar API account." : {
+    "Enter the user name and the password (system code) of your FusionSolar API account." : {
       "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Introduce el nombre de usuario y el código del sistema de tu cuenta de API de FusionSolar."
+            "value" : "Introduce el nombre de usuario y la contraseña (código del sistema) de tu cuenta de API de FusionSolar."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Introduza o nome de utilizador e o código do sistema da sua conta API do FusionSolar."
+            "value" : "Introduza o nome de utilizador e a palavra-passe (código do sistema) da sua conta API do FusionSolar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saisissez le nom d’utilisateur et le code système de votre compte API FusionSolar."
+            "value" : "Saisissez le nom d’utilisateur et le mot de passe (code système) de votre compte API FusionSolar."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gib den Benutzernamen und den Systemcode deines FusionSolar-API-Kontos ein."
+            "value" : "Gib den Benutzernamen und das Passwort (Systemcode) deines FusionSolar-API-Kontos ein."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inserisci il nome utente e il codice di sistema del tuo account API di FusionSolar."
+            "value" : "Inserisci il nome utente e la password (codice di sistema) del tuo account API di FusionSolar."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voer de gebruikersnaam en de systeemcode van het FusionSolar-API-account in."
+            "value" : "Voer de gebruikersnaam en het wachtwoord (systeemcode) van het FusionSolar-API-account in."
           }
         }
       }
     },
-    "FusionSolar did not accept the user name or the system code. Check both with your installer." : {
+    "FusionSolar did not accept the user name or the password. Check both with your installer." : {
       "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FusionSolar no ha aceptado el nombre de usuario ni el código del sistema. Compruébalos con tu instalador."
+            "value" : "FusionSolar no ha aceptado el nombre de usuario ni la contraseña. Compruébalos con tu instalador."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O FusionSolar não aceitou o nome de utilizador nem o código do sistema. Verifique ambos com o seu instalador."
+            "value" : "O FusionSolar não aceitou o nome de utilizador nem a palavra-passe. Verifique ambos com o seu instalador."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FusionSolar n’a pas accepté le nom d’utilisateur ou le code système. Vérifiez les deux avec votre installateur."
+            "value" : "FusionSolar n’a pas accepté le nom d’utilisateur ni le mot de passe. Vérifiez les deux avec votre installateur."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FusionSolar hat den Benutzernamen oder den Systemcode nicht akzeptiert. Prüfe beides mit deinem Installateur."
+            "value" : "FusionSolar hat den Benutzernamen oder das Passwort nicht akzeptiert. Prüfe beides mit deinem Installateur."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FusionSolar non ha accettato il nome utente o il codice di sistema. Controllali entrambi con il tuo installatore."
+            "value" : "FusionSolar non ha accettato il nome utente o la password. Controllali entrambi con il tuo installatore."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De gebruikersnaam of de systeemcode is geweigerd door FusionSolar. Controleer beide bij de installateur."
+            "value" : "FusionSolar heeft de gebruikersnaam of het wachtwoord niet geaccepteerd. Controleer beide bij de installateur."
           }
         }
       }

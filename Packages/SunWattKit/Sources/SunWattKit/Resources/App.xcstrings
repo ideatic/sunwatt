@@ -7463,47 +7463,6 @@
         }
       }
     },
-    "Enter the user name and the system code." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Introduce el nombre de usuario y el código del sistema."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Introduza o nome de utilizador e o código do sistema."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saisissez le nom d’utilisateur et le code système."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geben Sie den Benutzernamen und den Systemcode ein."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci il nome utente e il codice di sistema."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voer de gebruikersnaam en de systeemcode in."
-          }
-        }
-      }
-    },
     "Kiosk link" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7586,47 +7545,6 @@
         }
       }
     },
-    "System code" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código del sistema"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código do sistema"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Code système"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Systemcode"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Codice di sistema"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Systeemcode"
-          }
-        }
-      }
-    },
     "User name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7668,46 +7586,131 @@
         }
       }
     },
-    "Your installer creates an API account in FusionSolar (Company Management → Northbound Management) and gives you its user name and system code. Unlike a kiosk link it does not expire. The server is the one in your FusionSolar address, for example eu5.fusionsolar.huawei.com." : {
+    "Password (system code)" : {
       "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu instalador crea una cuenta de API en FusionSolar (Company Management → Northbound Management) y te da su nombre de usuario y su código del sistema. A diferencia de un enlace del kiosco, no caduca. El servidor es el de tu dirección de FusionSolar, por ejemplo eu5.fusionsolar.huawei.com."
+            "value" : "Contraseña (código del sistema)"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O seu instalador cria uma conta API no FusionSolar (Company Management → Northbound Management) e indica-lhe o nome de utilizador e o código do sistema. Ao contrário de uma ligação do quiosque, não expira. O servidor é o que consta do seu endereço FusionSolar, por exemplo eu5.fusionsolar.huawei.com."
+            "value" : "Palavra-passe (código do sistema)"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre installateur crée un compte API dans FusionSolar (Company Management → Northbound Management) et vous communique son nom d’utilisateur et son code système. Contrairement à un lien du kiosque, il n’expire pas. Le serveur est celui de votre adresse FusionSolar, par exemple eu5.fusionsolar.huawei.com."
+            "value" : "Mot de passe (code système)"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ihr Installateur legt in FusionSolar ein API-Konto an (Company Management → Northbound Management) und gibt Ihnen dessen Benutzernamen und Systemcode. Anders als ein Kiosk-Link läuft es nicht ab. Der Server ist der aus Ihrer FusionSolar-Adresse, zum Beispiel eu5.fusionsolar.huawei.com."
+            "value" : "Passwort (Systemcode)"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il tuo installatore crea un account API in FusionSolar (Company Management → Northbound Management) e ti fornisce il nome utente e il codice di sistema. A differenza del link del chiosco, non scade. Il server è quello indicato nel tuo indirizzo FusionSolar, per esempio eu5.fusionsolar.huawei.com."
+            "value" : "Password (codice di sistema)"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De installateur maakt in FusionSolar een API-account aan (Company Management → Northbound Management) en geeft de gebruikersnaam en systeemcode door. In tegenstelling tot een kiosklink verloopt die niet. De server is dezelfde als in het FusionSolar-adres, bijvoorbeeld eu5.fusionsolar.huawei.com."
+            "value" : "Wachtwoord (systeemcode)"
           }
         }
-      }
+      },
+      "comment" : "FusionSolar API account field. Huawei's portal calls it \"Password\", the API \"systemCode\"."
+    },
+    "Enter the user name and the password." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce el nombre de usuario y la contraseña."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduza o nome de utilizador e a palavra-passe."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez le nom d’utilisateur et le mot de passe."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geben Sie den Benutzernamen und das Passwort ein."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci il nome utente e la password."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voer de gebruikersnaam en het wachtwoord in."
+          }
+        }
+      },
+      "comment" : "FusionSolar API account: hint while the fields are empty."
+    },
+    "Your installer creates an API account in FusionSolar (Company Management → Northbound Management) and gives you its user name and password (system code). Unlike a kiosk link it does not expire. The server is the one in your FusionSolar address, for example eu5.fusionsolar.huawei.com." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu instalador crea una cuenta de API en FusionSolar (Company Management → Northbound Management) y te da su nombre de usuario y su contraseña (código del sistema). A diferencia de un enlace del kiosco, no caduca. El servidor es el de tu dirección de FusionSolar, por ejemplo eu5.fusionsolar.huawei.com."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O seu instalador cria uma conta API no FusionSolar (Company Management → Northbound Management) e indica-lhe o nome de utilizador e a palavra-passe (código do sistema). Ao contrário de uma ligação do quiosque, não expira. O servidor é o que consta do seu endereço FusionSolar, por exemplo eu5.fusionsolar.huawei.com."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre installateur crée un compte API dans FusionSolar (Company Management → Northbound Management) et vous communique son nom d’utilisateur et son mot de passe (code système). Contrairement à un lien du kiosque, il n’expire pas. Le serveur est celui de votre adresse FusionSolar, par exemple eu5.fusionsolar.huawei.com."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ihr Installateur legt in FusionSolar ein API-Konto an (Company Management → Northbound Management) und gibt Ihnen dessen Benutzernamen und Passwort (Systemcode). Anders als ein Kiosk-Link läuft es nicht ab. Der Server ist der aus Ihrer FusionSolar-Adresse, zum Beispiel eu5.fusionsolar.huawei.com."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo installatore crea un account API in FusionSolar (Company Management → Northbound Management) e ti fornisce il nome utente e la password (codice di sistema). A differenza del link del chiosco, non scade. Il server è quello indicato nel tuo indirizzo FusionSolar, per esempio eu5.fusionsolar.huawei.com."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De installateur maakt in FusionSolar een API-account aan (Company Management → Northbound Management) en geeft de gebruikersnaam en het wachtwoord (systeemcode) door. In tegenstelling tot een kiosklink verloopt die niet. De server is dezelfde als in het FusionSolar-adres, bijvoorbeeld eu5.fusionsolar.huawei.com."
+          }
+        }
+      },
+      "comment" : "FusionSolar API account: help under the fields."
     }
   },
   "version" : "1.0"
