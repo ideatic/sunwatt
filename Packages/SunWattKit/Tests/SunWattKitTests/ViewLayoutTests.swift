@@ -122,6 +122,15 @@ import WidgetKit
     #expect(Format.eurPerKWh(-0.003) == "-0,003")
 }
 
+@Test func formatLargeEnergyInMegawattHours() {
+    Format.locale = Locale(identifier: "es_ES")
+    let month = Format.energy(733.2), year = Format.energy(17_092)
+    #expect(month.value == "733,2" && month.unit == "kWh")
+    #expect(Format.energy(9_999).unit == "kWh")
+    #expect(year.value == "17,1" && year.unit == "MWh")
+    #expect(Format.energy(nil).value == "–")
+}
+
 @Test func formatTimeUsesGivenTimeZone() {
     Format.locale = Locale(identifier: "es_ES")
     let date = madrid(2026, 10, 17, 14, 32)

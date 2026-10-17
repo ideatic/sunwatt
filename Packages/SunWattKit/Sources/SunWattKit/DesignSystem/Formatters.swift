@@ -19,6 +19,13 @@ public enum Format {
         return value.formatted(.number.locale(locale).precision(.fractionLength(digits)))
     }
 
+    /// Energy with its unit: kWh as `kWh(_:)` below 10.000 kWh, else MWh with 1 decimal ("17,1" MWh), so totals such
+    /// as a year's production stay short.
+    public static func energy(_ kWh: Double?) -> (value: String, unit: String) {
+        guard let kWh, abs(kWh) >= 10_000 else { return (Self.kWh(kWh), "kWh") }
+        return ((kWh / 1000).formatted(.number.locale(locale).precision(.fractionLength(1))), "MWh")
+    }
+
     /// "0,147" €/kWh (3 decimals by default).
     public static func eurPerKWh(_ value: Double?, decimals: Int = 3) -> String {
         guard let value else { return "–" }

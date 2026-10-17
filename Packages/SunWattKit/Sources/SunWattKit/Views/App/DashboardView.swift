@@ -303,10 +303,12 @@ private struct SolarCard: View {
                 Spacer(minLength: Theme.Spacing.s)
                 VStack(alignment: .trailing, spacing: Theme.Spacing.s) {
                     if let month = solar.monthEnergyKWh {
-                        MiniStat(value: Format.kWh(month), unit: "kWh", caption: "This month", alignment: .trailing)
+                        let monthEnergy = Format.energy(month)
+                        MiniStat(value: monthEnergy.value, unit: monthEnergy.unit, caption: "This month", alignment: .trailing)
                     }
                     if let year = solar.yearEnergyKWh {
-                        MiniStat(value: Format.kWh(year), unit: "kWh", caption: "This year", alignment: .trailing)
+                        let yearEnergy = Format.energy(year)
+                        MiniStat(value: yearEnergy.value, unit: yearEnergy.unit, caption: "This year", alignment: .trailing)
                     }
                 }
                 .multilineTextAlignment(.trailing)
