@@ -134,8 +134,11 @@ struct AppToggleRow: View {
 struct AppTextField: View {
     let prompt: String
     @Binding var text: String
+    /// Called when the user submits or leaves the field.
+    var onCommit: (() -> Void)?
     @Environment(\.colorScheme) private var scheme
     @Environment(\.appSnapshot) private var snapshot
+    @FocusState private var focused: Bool
 
     var body: some View {
         let palette = AppPalette(scheme)
@@ -152,6 +155,11 @@ struct AppTextField: View {
             } else {
                 TextField(text: $text, prompt: Text(verbatim: prompt), axis: .vertical) { EmptyView() }
                     .lineLimit(1...3)
+                    .focused($focused)
+                    .onChange(of: focused) { _, isFocused in
+                        if !isFocused { onCommit?() }
+                    }
+                    .onSubmit { onCommit?() }
                     .autocorrectionDisabled()
                     #if os(iOS)
                     .keyboardType(.URL)

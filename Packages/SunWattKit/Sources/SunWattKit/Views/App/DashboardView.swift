@@ -61,7 +61,7 @@ struct DashboardContent: View {
                     .init(label: "Check kiosk link") { model.present(.settings) },
                 ])
         default:
-            if let solar = entry.data.solar {
+            if let solar = entry.solarForDisplay {
                 SolarCard(solar: solar, now: entry.date, isStale: entry.isSolarStale, initialSelection: solarSelection)
             } else {
                 SolarSetupCard(model: model)
@@ -407,13 +407,14 @@ private struct PriceCard: View {
         let upcoming = series.cheapestUpcoming(from: from, count: 3)
             .filter { region.calendar.isDate($0.start, inSameDayAs: reference) }
         if !upcoming.isEmpty {
+            let contexts = PriceDayContexts(series: series, points: upcoming)
             VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                 atext(shownDay == .today ? "Cheapest upcoming hours" : "Cheapest hours tomorrow")
                     .font(.system(.caption, design: .rounded).weight(.semibold))
                     .foregroundStyle(.secondary)
                 HStack(spacing: Theme.Spacing.s) {
                     ForEach(upcoming) { point in
-                        HourChip(point: point, fraction: series.fraction(of: point), timeZone: region.timeZone)
+                        HourChip(point: point, fraction: contexts.fraction(of: point), timeZone: region.timeZone)
                     }
                 }
             }

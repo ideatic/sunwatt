@@ -26,6 +26,9 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
     public var fetchedAt: Date
     /// Time of the last non-nil curve point, if any. Huawei caches up to ~30 min, so this is the "data as of" time.
     public var dataAsOf: Date?
+    /// One-way identifier of the kiosk link (host + token) this snapshot came from, set by `SunWattLoader`
+    /// (see `KioskEndpoint.cacheID`). Nil in caches written before this field existed: those never match a link.
+    public var endpointID: String?
 
     public init(
         stationName: String? = nil,
@@ -36,7 +39,8 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
         cumulativeEnergyKWh: Double? = nil,
         curve: [CurvePoint],
         fetchedAt: Date,
-        dataAsOf: Date?
+        dataAsOf: Date?,
+        endpointID: String? = nil
     ) {
         self.stationName = stationName
         self.currentPowerKW = currentPowerKW
@@ -47,6 +51,7 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
         self.curve = curve
         self.fetchedAt = fetchedAt
         self.dataAsOf = dataAsOf
+        self.endpointID = endpointID
     }
 
     /// True when the plant is not producing (night or no data).

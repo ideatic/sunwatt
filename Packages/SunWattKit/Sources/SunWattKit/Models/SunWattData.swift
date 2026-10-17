@@ -42,11 +42,33 @@ public struct SunWattEntry: Hashable, Sendable {
         self.data = data
     }
 
-    /// Solar data is shown as stale when older than `Constants.staleAfter` at `date`, or when its status is stale.
+    /// True when the solar snapshot belongs to an earlier Europe/Madrid day than `date`: its curve and its
+    /// "today" values describe yesterday. Compares calendar days, not 24-hour spans (DST days have 23/25 hours).
+    public var isSolarFromEarlierDay: Bool {
+        guard let solar = data.solar else { return false }
+        let calendar = Constants.madridCalendar
+        let reference = min(solar.fetchedAt, solar.dataAsOf ?? solar.fetchedAt)
+        return calendar.startOfDay(for: date) > calendar.startOfDay(for: reference)
+    }
+
+    /// The snapshot views must show at `date`. After midnight a snapshot from the previous day loses its curve,
+    /// the current power and the daily energy (they belong to yesterday), so the views show "no production" with the
+    /// stale marker instead of yesterday's numbers as today's. Month, year and total energy are kept.
+    public var solarForDisplay: SolarSnapshot? {
+        guard var solar = data.solar, isSolarFromEarlierDay else { return data.solar }
+        solar.curve = []
+        solar.currentPowerKW = nil
+        solar.dailyEnergyKWh = nil
+        solar.dataAsOf = nil
+        return solar
+    }
+
+    /// Solar data is shown as stale when older than `Constants.staleAfter` at `date`, when its status is stale,
+    /// or when it was fetched on an earlier Madrid day.
     public var isSolarStale: Bool {
         if case .stale = data.solarStatus { return true }
         if let solar = data.solar, date.timeIntervalSince(solar.fetchedAt) > Constants.staleAfter { return true }
-        return false
+        return isSolarFromEarlierDay
     }
 
     /// True when the price status is stale or the series has no point covering `date`.

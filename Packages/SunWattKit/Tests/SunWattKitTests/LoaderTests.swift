@@ -37,7 +37,7 @@ func makeLoader(store: AppGroupStore, solar: SolarDataSource?, prices: PriceData
 }
 
 func configured(_ store: AppGroupStore, tomorrow: Bool = true) {
-    store.settings = SunWattSettings(kioskURL: "https://example.test/kiosk", showTomorrowPrices: tomorrow)
+    store.settings = SunWattSettings(kioskURL: testKioskURL, showTomorrowPrices: tomorrow)
 }
 
 @Suite struct LoaderTests {

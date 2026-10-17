@@ -240,19 +240,25 @@ struct SettingsContent: View {
 struct KioskLinkEditor: View {
     let model: AppModel
     @State private var test: KioskTestState
+    /// The field text lives here and is saved to the settings only at the right moments (see `KioskURLDraft`).
+    @State private var draft: KioskURLDraft
     @Environment(\.appSnapshot) private var snapshot
     @Environment(\.colorScheme) private var scheme
+    @Environment(\.scenePhase) private var scenePhase
 
     init(model: AppModel, initialTest: KioskTestState = .idle) {
         self.model = model
         _test = State(initialValue: initialTest)
+        _draft = State(initialValue: KioskURLDraft(saved: model.settings.kioskURL) { [weak model] value in
+            model?.updateSettings { $0.kioskURL = value }
+        })
     }
 
     var body: some View {
         let palette = AppPalette(scheme)
-        let input = KioskInputState(model.settings.kioskURL)
+        let input = draft.inputState
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-            AppTextField(prompt: "https://…/kiosk?kk=…", text: model.binding(\.kioskURL))
+            AppTextField(prompt: "https://…/kiosk?kk=…", text: draft.binding, onCommit: { draft.commitNow() })
             validationRow(input, palette: palette)
             HStack(spacing: Theme.Spacing.s) {
                 pasteButton
@@ -265,6 +271,10 @@ struct KioskLinkEditor: View {
                 Spacer(minLength: 0)
             }
             testResult(palette: palette)
+        }
+        .onDisappear { draft.commitNow() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { draft.commitNow() }
         }
     }
 
@@ -280,8 +290,7 @@ struct KioskLinkEditor: View {
             // The system paste button reads the clipboard only when tapped and never shows the paste prompt.
             PasteButton(payloadType: String.self) { strings in
                 guard let text = strings.first else { return }
-                let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-                model.updateSettings { $0.kioskURL = trimmed }
+                draft.paste(text)
                 test = .idle
             }
             .labelStyle(.titleAndIcon)
@@ -362,7 +371,7 @@ struct KioskLinkEditor: View {
 
     private func runTest() {
         test = .testing
-        let text = model.settings.kioskURL
+        let text = draft.text
         Task {
             switch await model.testKiosk(text) {
             case .success(let solar): test = .success(solar)

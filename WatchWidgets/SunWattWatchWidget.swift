@@ -24,7 +24,7 @@ struct WatchProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping @Sendable (Timeline<WatchTimelineEntry>) -> Void) {
         Task {
-            let data = await SunWattLoader().load()
+            let data = await SunWattLoader().load(maxCacheAge: SunWattLoader.sharedCacheWindow)
             let now = Date()
             let entries = TimelineBuilder.entries(for: data, now: now).map(WatchTimelineEntry.init)
             completion(Timeline(entries: entries, policy: .after(TimelineBuilder.nextReload(after: now))))

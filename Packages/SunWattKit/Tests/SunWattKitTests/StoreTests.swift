@@ -8,11 +8,16 @@ func storeTempStore() -> (AppGroupStore, URL) {
     return (AppGroupStore(defaults: defaults, directory: dir), dir)
 }
 
-func storeSampleSolar(fetchedAt: Date = madrid(2026, 6, 1, 12, 0)) -> SolarSnapshot {
+/// A valid kiosk link used by the loader tests (the token is fake).
+let testKioskURL = "https://example.test/rest/pvms/web/kiosk/v1/station-kiosk-file?kk=TESTKK"
+/// What `SunWattLoader` stores in `SolarSnapshot.endpointID` for `testKioskURL`.
+let testKioskID = KioskEndpoint(parsing: testKioskURL)!.cacheID
+
+func storeSampleSolar(fetchedAt: Date = madrid(2026, 6, 1, 12, 0), endpointID: String? = testKioskID) -> SolarSnapshot {
     SolarSnapshot(
         stationName: "Casa", currentPowerKW: 2.5, dailyEnergyKWh: 10.2,
         curve: [CurvePoint(time: madrid(2026, 6, 1, 11, 55), kW: 2.4), CurvePoint(time: madrid(2026, 6, 1, 12, 0), kW: nil)],
-        fetchedAt: fetchedAt, dataAsOf: madrid(2026, 6, 1, 11, 55))
+        fetchedAt: fetchedAt, dataAsOf: madrid(2026, 6, 1, 11, 55), endpointID: endpointID)
 }
 
 func storeSamplePrices(day: Date = madrid(2026, 6, 1, 0, 0), fetchedAt: Date = madrid(2026, 6, 1, 12, 0)) -> PriceSeries {

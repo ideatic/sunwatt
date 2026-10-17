@@ -12,17 +12,20 @@ public struct IntentDataSource: Sendable {
 
     public var loader: SunWattLoader
     public var deadline: TimeInterval
+    /// Data stored less than this many seconds ago is used without a request (see `SunWattLoader.load`).
+    public var maxCacheAge: TimeInterval
 
-    public init(loader: SunWattLoader = SunWattLoader(), deadline: TimeInterval = 8) {
+    public init(loader: SunWattLoader = SunWattLoader(), deadline: TimeInterval = 8, maxCacheAge: TimeInterval = SunWattLoader.sharedCacheWindow) {
         self.loader = loader
         self.deadline = deadline
+        self.maxCacheAge = maxCacheAge
     }
 
     public func data(for need: Need) async -> SunWattData {
         let cached = loader.cached()
         let now = loader.now()
         if Self.cacheAnswers(cached, need: need, now: now) { return cached }
-        return await loader.load(deadline: deadline)
+        return await loader.load(deadline: deadline, maxCacheAge: maxCacheAge)
     }
 
     static func cacheAnswers(_ data: SunWattData, need: Need, now: Date) -> Bool {

@@ -71,6 +71,7 @@ public struct WatchPricePage: View {
     private func cheapest(_ series: PriceSeries) -> some View {
         let hours = series.cheapestUpcoming(from: entry.date, count: 3)
         if !hours.isEmpty {
+            let contexts = PriceDayContexts(series: series, points: hours)
             VStack(alignment: .leading, spacing: 2) {
                 watchText("Cheapest hours")
                     .textCase(.uppercase)
@@ -78,14 +79,14 @@ public struct WatchPricePage: View {
                     .foregroundStyle(.secondary)
                 HStack(spacing: 4) {
                     ForEach(hours) { point in
-                        chip(point, series: series)
+                        chip(point, series: series, contexts: contexts)
                     }
                 }
             }
         }
     }
 
-    private func chip(_ point: PricePoint, series: PriceSeries) -> some View {
+    private func chip(_ point: PricePoint, series: PriceSeries, contexts: PriceDayContexts) -> some View {
         let isNow = point.contains(entry.date)
         return VStack(spacing: 0) {
             Group {
@@ -107,7 +108,7 @@ public struct WatchPricePage: View {
         .padding(.vertical, 3)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Theme.Price.color(fraction: series.fraction(of: point)).opacity(0.22))
+                .fill(Theme.Price.color(fraction: contexts.fraction(of: point)).opacity(0.22))
         )
     }
 }
