@@ -86,9 +86,64 @@ struct SunWattWatchWidget: Widget {
     }
 }
 
+struct WatchSolarComplicationEntryView: View {
+    @Environment(\.widgetFamily) private var widgetFamily
+    let entry: WatchTimelineEntry
+
+    var body: some View {
+        let family = WatchComplicationFamily(widgetFamily) ?? .circular
+        switch family {
+        case .corner:
+            cornerBody
+        case .circular:
+            WatchSolarComplicationView(entry: entry.entry, family: family)
+                .containerBackground(for: .widget) { AccessoryWidgetBackground() }
+        default:
+            WatchSolarComplicationView(entry: entry.entry, family: family)
+                .containerBackground(for: .widget) { Color.clear }
+        }
+    }
+
+    @ViewBuilder
+    private var cornerBody: some View {
+        let content = WatchSolarCornerContent(entry: entry.entry)
+            .containerBackground(for: .widget) { Color.clear }
+        if let gauge = WatchSolarGauge(entry: entry.entry) {
+            content.widgetLabel {
+                Gauge(value: gauge.value, in: 0...gauge.upper) {
+                    Text(verbatim: "kW")
+                } currentValueLabel: {
+                    Text(verbatim: "\(Format.kW(gauge.value)) kW")
+                } minimumValueLabel: {
+                    Text(verbatim: "0")
+                } maximumValueLabel: {
+                    Text(verbatim: Format.kW(gauge.upper))
+                }
+                .tint(Gradient(colors: [Theme.Solar.amber, Theme.Solar.orange]))
+            }
+        } else {
+            content
+        }
+    }
+}
+
+struct SunWattSolarComplication: Widget {
+    let kind = "SunWattSolarComplication"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: WatchProvider()) { entry in
+            WatchSolarComplicationEntryView(entry: entry)
+        }
+        .configurationDisplayName("Solar today")
+        .description("Today's solar production.")
+        .supportedFamilies([.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner])
+    }
+}
+
 @main
 struct SunWattWatchWidgetBundle: WidgetBundle {
     var body: some Widget {
         SunWattWatchWidget()
+        SunWattSolarComplication()
     }
 }

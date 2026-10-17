@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 
 /// Localized text from the package `Watch` catalog.
 func watchText(_ key: LocalizedStringKey) -> Text {
@@ -169,18 +170,22 @@ public struct WatchSnapshotView: View {
         case pricePage
         case solarPage
         case complication(WatchComplicationFamily)
+        case solarComplication(WatchComplicationFamily)
     }
 
     public let entry: SunWattEntry
     public let kind: Kind
     public let scheme: ColorScheme
     public let locale: Locale
+    public let renderingMode: WidgetRenderingMode
 
-    public init(entry: SunWattEntry, kind: Kind, scheme: ColorScheme = .dark, locale: Locale = Format.locale) {
+    public init(entry: SunWattEntry, kind: Kind, scheme: ColorScheme = .dark, locale: Locale = Format.locale,
+                renderingMode: WidgetRenderingMode = .fullColor) {
         self.entry = entry
         self.kind = kind
         self.scheme = scheme
         self.locale = locale
+        self.renderingMode = renderingMode
     }
 
     /// Apple Watch 46 mm screen in points.
@@ -191,7 +196,7 @@ public struct WatchSnapshotView: View {
         switch kind {
         case .pricePage, .solarPage:
             CGSize(width: screenSize.width + padding * 2, height: screenSize.height + padding * 2)
-        case .complication(let family):
+        case .complication(let family), .solarComplication(let family):
             CGSize(width: max(family.size.width, 120) + 40, height: max(family.size.height, 70) + 40)
         }
     }
@@ -205,13 +210,16 @@ public struct WatchSnapshotView: View {
             case .solarPage:
                 screen(WatchSolarPage(entry: entry))
             case .complication(let family):
-                complication(family)
+                complication(family, solar: false)
+            case .solarComplication(let family):
+                complication(family, solar: true)
             }
         }
         .frame(width: size.width, height: size.height)
         .background(scheme == .dark ? Color(white: 0.04) : Color(white: 0.82))
         .environment(\.colorScheme, scheme)
         .environment(\.locale, locale)
+        .environment(\.widgetRenderingMode, renderingMode)
     }
 
     private func screen(_ page: some View) -> some View {
@@ -230,48 +238,62 @@ public struct WatchSnapshotView: View {
     }
 
     @ViewBuilder
-    private func complication(_ family: WatchComplicationFamily) -> some View {
+    private func complication(_ family: WatchComplicationFamily, solar: Bool) -> some View {
         let tile = Color.white.opacity(scheme == .dark ? 0.16 : 0.55)
+        let content = Group {
+            if solar {
+                WatchSolarComplicationView(entry: entry, family: family)
+            } else {
+                WatchComplicationView(entry: entry, family: family)
+            }
+        }
         switch family {
         case .circular:
-            WatchComplicationView(entry: entry, family: family)
+            content
                 .padding(2)
                 .frame(width: family.size.width, height: family.size.height)
                 .background(Circle().fill(tile))
         case .rectangular:
-            WatchComplicationView(entry: entry, family: family)
+            content
                 .padding(.horizontal, 8).padding(.vertical, 5)
                 .frame(width: family.size.width, height: family.size.height)
                 .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(tile))
         case .inline:
-            WatchComplicationView(entry: entry, family: family)
+            content
                 .font(.system(size: 14, weight: .medium))
                 .frame(width: family.size.width, height: family.size.height)
         case .corner:
             // Stand-in for the system corner: content plus an arc gauge label (the real arc is drawn by watchOS).
             ZStack {
-                WatchCornerGaugeArc(entry: entry)
-                WatchComplicationView(entry: entry, family: family)
+                if solar {
+                    WatchArc(fraction: WatchSolarGauge(entry: entry)?.fraction,
+                             color: Theme.Solar.orange, tinted: renderingMode == .fullColor)
+                } else {
+                    let gauge = WatchCornerGauge(entry: entry)
+                    WatchArc(fraction: gauge.map { $0.upper > $0.lower ? ($0.value - $0.lower) / ($0.upper - $0.lower) : 0.5 },
+                             color: Theme.Price.color(fraction: gauge?.fraction ?? 0.5), tinted: renderingMode == .fullColor)
+                }
+                content
             }
             .frame(width: family.size.width, height: family.size.height)
         }
     }
 }
 
-/// Snapshot stand-in for the gauge `widgetLabel` of the corner complication.
-struct WatchCornerGaugeArc: View {
-    let entry: SunWattEntry
+/// Snapshot stand-in for the gauge `widgetLabel` of the corner complications.
+struct WatchArc: View {
+    let fraction: Double?
+    let color: Color
+    var tinted = true
 
     var body: some View {
-        if let gauge = WatchCornerGauge(entry: entry) {
-            let t = gauge.upper > gauge.lower ? (gauge.value - gauge.lower) / (gauge.upper - gauge.lower) : 0.5
+        if let fraction {
             ZStack {
                 Circle().trim(from: 0.55, to: 0.95)
                     .stroke(Color.primary.opacity(0.2), style: StrokeStyle(lineWidth: 5, lineCap: .round))
-                Circle().trim(from: 0.55, to: 0.55 + max(0.004, 0.4 * t))
-                    .stroke(Theme.Price.color(fraction: gauge.fraction), style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                Circle().trim(from: 0.55, to: 0.55 + max(0.004, 0.4 * min(max(fraction, 0), 1)))
+                    .stroke(tinted ? color : Color.primary, style: StrokeStyle(lineWidth: 5, lineCap: .round))
             }
-            .rotationEffect(.degrees(0))
             .padding(2)
         }
     }

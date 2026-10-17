@@ -45,7 +45,7 @@ public struct WatchComplicationView: View {
     public var body: some View {
         switch family {
         case .circular:
-            SunWattWidgetView(entry: entry, family: .accessoryCircular, content: .priceOnly)
+            WatchPriceCircularView(entry: entry)
         case .rectangular:
             SunWattWidgetView(entry: entry, family: .accessoryRectangular, content: .both)
         case .inline:

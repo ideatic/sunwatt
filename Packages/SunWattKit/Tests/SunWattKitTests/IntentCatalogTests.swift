@@ -51,6 +51,13 @@ import Testing
         try checkComplete("Widgets/Resources/Localizable.xcstrings")
     }
 
+    @Test func watchWidgetCatalogIsComplete() throws {
+        try checkComplete("WatchWidgets/Resources/Localizable.xcstrings")
+        let catalog = try strings(at: "WatchWidgets/Resources/Localizable.xcstrings")
+        #expect(catalog["Solar today"] != nil)
+        #expect(catalog["Today's solar production."] != nil)
+    }
+
     @Test func formatPlaceholdersMatchInEveryLanguage() throws {
         let catalog = try strings(at: "Packages/SunWattKit/Sources/SunWattKit/Resources/Intents.xcstrings")
         for (key, entry) in catalog {

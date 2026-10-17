@@ -63,6 +63,34 @@ func main() {
                 }
             }
         }
+        // Solar complication: every family and state, light and dark.
+        var afterMidnight = SampleData.entry(.day)
+        afterMidnight.date = SampleData.entry(.day).date.addingTimeInterval(11 * 3600)
+        let solarScenarios = scenarios + [("midnight", afterMidnight)]
+        for (schemeName, scheme) in [("light", ColorScheme.light), ("dark", ColorScheme.dark)] {
+            for (name, entry) in solarScenarios {
+                for family in WatchComplicationFamily.allCases {
+                    try render(WatchSnapshotView(entry: entry, kind: .solarComplication(family), scheme: scheme, locale: locale),
+                               name: "complication-solar-\(family.rawValue)-\(name)-\(schemeName)", to: directory)
+                    count += 1
+                }
+            }
+        }
+        // Accented rendering (dark only: watch faces are dark) for the gauge families.
+        for (name, entry) in solarScenarios {
+            for family in [WatchComplicationFamily.circular, .corner] {
+                try render(WatchSnapshotView(entry: entry, kind: .solarComplication(family), scheme: .dark, locale: locale, renderingMode: .accented),
+                           name: "complication-solar-\(family.rawValue)-\(name)-dark-accented", to: directory)
+                count += 1
+            }
+        }
+        for (name, entry) in scenarios {
+            for family in [WatchComplicationFamily.circular, .corner] {
+                try render(WatchSnapshotView(entry: entry, kind: .complication(family), scheme: .dark, locale: locale, renderingMode: .accented),
+                           name: "complication-\(family.rawValue)-\(name)-dark-accented", to: directory)
+                count += 1
+            }
+        }
         // One German page to check translations.
         Format.locale = Locale(identifier: "de_DE")
         try render(WatchSnapshotView(entry: notConfigured, kind: .solarPage, scheme: .dark, locale: Locale(identifier: "de_DE")),

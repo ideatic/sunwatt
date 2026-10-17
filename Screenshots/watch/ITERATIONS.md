@@ -17,3 +17,12 @@ Complication sizes are approximations (circular 50, rectangular 172x76, inline 1
 Captured with `xcrun simctl io <udid> screenshot` (`sim-price.png`, `sim-solar.png`; `-solar` launch argument opens the solar page).
 - System text styles render larger than in the renderer, so the 36 pt figure shrank to its scale floor. Fix: figure sizes 30 (price) and 32 (solar).
 - The vertical page indicator overlapped the data time. Fix: 10 pt trailing padding on both pages.
+
+## Iteration 4 (colored price gauge + "Solar today" complication)
+Renderer now also writes `complication-solar-<family>-<state>-<scheme>.png` (states: day, night, stale, error, unconfigured, midnight), `-dark-accented` variants for circular and corner (solar and price), and the price circular gauge. The macOS renderer draws the system gauge with the whole gradient on the track and a dot at the value; watchOS fills only up to the value. Accented renders drop colors but cannot emulate the system tint.
+- Render 1: stale state replaced the sun with a clock, so the complication lost its identity; inline error text "Solar data unavailable" was cut off.
+- Fix: sun/moon stays (muted when stale), the clock sits beside the data time; inline error uses a short new string "Solar unavailable" (7 languages).
+
+## Iteration 5
+- Re-rendered all families. Circular: value + "kWh" fit in the ring, sun at the gauge gap. Rectangular: headline, kW + time row, mini curve all fit at 172x76. Inline and corner fit in Spanish. Accented circular: ring position (marker dot) still reads.
+- Open point: on a real watch the circular gauge label placement is decided by watchOS; check on device.
