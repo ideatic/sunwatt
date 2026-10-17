@@ -20,8 +20,8 @@ Existing widget renders are in `Screenshots/widgets/` (small, medium, large, Loc
 
 ## Screens, in order (iPhone, iPad, Mac)
 
-1. Price widgets on the Home Screen: small + medium + large, price high, coloured. Caption key `price`.
-2. Solar widget (today curve, current kW). Caption key `solar`.
+1. Solar widgets (today curve, current kW): the main feature. Caption key `solar`.
+2. Price widgets on the Home Screen: small + medium + large, price high, coloured. Caption key `price`.
 3. Cheapest hours: large widget or dashboard card with "cheapest upcoming hours". Caption key `cheap`.
 4. Lock Screen widgets (rectangular + circular) and the Control Center control. Caption key `lock`.
 5. App dashboard with the interactive chart and country picker. Caption key `app`.
@@ -29,7 +29,7 @@ Existing widget renders are in `Screenshots/widgets/` (small, medium, large, Loc
 
 Apple Watch (3 shots): price complication on a watch face; Watch app with today's chart; solar value. Captions: `watch` (only 1 line on watch art, optional).
 
-Capture in light mode for 1, 2, 3, 5 and dark mode for 4, 6, so the set shows both looks. Use demo data only: no real plant name or address.
+All slides use the warm day background so the set reads as one; the Lock Screen keeps its night wallpaper inside the phone. Use demo data only: no real plant name or address.
 
 ## Captions (max 40 characters)
 

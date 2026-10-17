@@ -55,15 +55,14 @@ enum StoreDevice: String, CaseIterable {
 
     /// The Mac has no Lock Screen widgets.
     var shots: [StoreShot] {
-        self == .mac ? [.price, .solar, .cheap, .app] : StoreShot.allCases
+        self == .mac ? [.solar, .price, .cheap, .app] : StoreShot.allCases
     }
 }
 
-/// The screens in store order (AppStore/SCREENSHOTS.md).
+/// The screens in store order (AppStore/SCREENSHOTS.md). Solar first: it is the main feature.
 enum StoreShot: String, CaseIterable {
-    case price, solar, cheap, lock, app
+    case solar, price, cheap, lock, app
 
-    var isDark: Bool { self == .lock }
 
     func caption(_ folder: String) -> String {
         Self.captions[rawValue]?[folder] ?? Self.captions[rawValue]?["en-US"] ?? ""
@@ -108,7 +107,7 @@ struct StoreScreenshotView: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
-                .foregroundStyle(shot.isDark ? Color.white : Color(red: 0.16, green: 0.10, blue: 0.05))
+                .foregroundStyle(Color(red: 0.16, green: 0.10, blue: 0.05))
                 .padding(.horizontal, canvas.width * 0.08)
                 .padding(.top, canvas.height * (device == .mac ? 0.06 : 0.065))
                 .frame(maxWidth: .infinity)
@@ -131,10 +130,11 @@ struct StoreScreenshotView: View {
         .environment(\.locale, Locale(identifier: language.locale))
     }
 
-    /// AI-made backdrop from AppStore/art (no text, no UI), the gradient below when the file is missing.
+    /// AI-made backdrop from AppStore/art (no text, no UI), the gradient below when the file is missing. Every slide
+    /// uses the day light so the set reads as one; the Lock Screen keeps its night look inside the phone.
     @ViewBuilder
     private var background: some View {
-        let name = "bg-\(shot.isDark ? "night" : "day")-\(device == .mac ? "landscape" : "portrait")"
+        let name = "bg-day-\(device == .mac ? "landscape" : "portrait")"
         if let image = NSImage(contentsOf: Self.artDirectory.appendingPathComponent("\(name).png")) {
             Image(nsImage: image).resizable().aspectRatio(contentMode: .fill)
                 .frame(width: device.canvas.width, height: device.canvas.height).clipped()
@@ -147,9 +147,7 @@ struct StoreScreenshotView: View {
         .appending(path: "../../../../AppStore/art").standardized
 
     private var gradient: some View {
-        let colors: [Color] = shot.isDark
-            ? [Color(red: 0.07, green: 0.09, blue: 0.20), Color(red: 0.26, green: 0.14, blue: 0.30)]
-            : [Color(red: 1.00, green: 0.93, blue: 0.78), Color(red: 1.00, green: 0.80, blue: 0.62)]
+        let colors: [Color] = [Color(red: 1.00, green: 0.93, blue: 0.78), Color(red: 1.00, green: 0.80, blue: 0.62)]
         return LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
     }
 
