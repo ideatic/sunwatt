@@ -105,11 +105,16 @@ public enum SolarAccount: Hashable, Sendable {
     case solarEdge(SolarAPICredentials, local: ModbusEndpoint? = nil)
     case pvOutput(SolarAPICredentials, local: ModbusEndpoint? = nil)
 
+    /// The first plant's account.
     public init?(settings: SunWattSettings) {
-        switch settings.solarProvider {
+        self.init(plant: settings.primaryPlant)
+    }
+
+    public init?(plant: SolarPlant) {
+        switch plant.provider {
         case .fusionSolar:
-            let kiosk = KioskEndpoint(parsing: settings.kioskURL)
-            if let local = HuaweiLocalEndpoint(parsing: settings.huaweiLocalHost, unitID: settings.huaweiLocalUnitID) {
+            let kiosk = KioskEndpoint(parsing: plant.kioskURL)
+            if let local = HuaweiLocalEndpoint(parsing: plant.huaweiLocalHost, unitID: plant.huaweiLocalUnitID) {
                 self = .huaweiLocal(local, kiosk: kiosk)
             } else if let kiosk {
                 self = .fusionSolar(kiosk)
@@ -117,10 +122,10 @@ public enum SolarAccount: Hashable, Sendable {
                 return nil
             }
         case .solarEdge, .pvOutput:
-            guard let credentials = SolarAPICredentials(siteID: settings.solarSiteID, apiKey: settings.solarAPIKey) else { return nil }
+            guard let credentials = SolarAPICredentials(siteID: plant.siteID, apiKey: plant.apiKey) else { return nil }
             // An address that does not parse is ignored, like the Huawei one: the cloud keeps working.
-            let local = ModbusEndpoint(parsing: settings.sunSpecHost, unitID: settings.sunSpecUnitID)
-            guard let account = Self.api(settings.solarProvider, credentials, local: local) else { return nil }
+            let local = ModbusEndpoint(parsing: plant.sunSpecHost, unitID: plant.sunSpecUnitID)
+            guard let account = Self.api(plant.provider, credentials, local: local) else { return nil }
             self = account
         }
     }

@@ -43,6 +43,10 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
     public var sunSpecHost: String
     /// Modbus unit ID of the SunSpec inverter (found by "Test inverter"; 1, SMA 126).
     public var sunSpecUnitID: Int
+    /// Name of the first plant (the fields above), shown when there are several. Empty: the provider's station name.
+    public var primaryPlantName: String
+    /// Further plants (`SolarPlant`). Empty for a single plant: then nothing in the UI changes.
+    public var additionalPlants: [SolarPlant]
 
     public init(
         kioskURL: String = "",
@@ -57,7 +61,9 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         huaweiLocalHost: String = "",
         huaweiLocalUnitID: Int = 1,
         sunSpecHost: String = "",
-        sunSpecUnitID: Int = 1
+        sunSpecUnitID: Int = 1,
+        primaryPlantName: String = "",
+        additionalPlants: [SolarPlant] = []
     ) {
         self.kioskURL = kioskURL
         self.showTomorrowPrices = showTomorrowPrices
@@ -72,11 +78,14 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         self.huaweiLocalUnitID = huaweiLocalUnitID
         self.sunSpecHost = sunSpecHost
         self.sunSpecUnitID = sunSpecUnitID
+        self.primaryPlantName = primaryPlantName
+        self.additionalPlants = additionalPlants
     }
 
     private enum CodingKeys: String, CodingKey {
         case kioskURL, showTomorrowPrices, priceRegion, onboardingCompleted, solarProvider, solarSiteID, solarAPIKey
         case kioskLinkSavedAt, kioskExpiryNoticeDismissed, huaweiLocalHost, huaweiLocalUnitID, sunSpecHost, sunSpecUnitID
+        case primaryPlantName, additionalPlants
     }
 
     /// Missing keys (older stored settings) fall back to defaults.
@@ -96,6 +105,9 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         huaweiLocalUnitID = try c.decodeIfPresent(Int.self, forKey: .huaweiLocalUnitID) ?? 1
         sunSpecHost = try c.decodeIfPresent(String.self, forKey: .sunSpecHost) ?? ""
         sunSpecUnitID = try c.decodeIfPresent(Int.self, forKey: .sunSpecUnitID) ?? 1
+        primaryPlantName = try c.decodeIfPresent(String.self, forKey: .primaryPlantName) ?? ""
+        // A plant that cannot be read is dropped rather than losing every setting.
+        additionalPlants = (try? c.decodeIfPresent([SolarPlant].self, forKey: .additionalPlants)) ?? []
     }
 }
 

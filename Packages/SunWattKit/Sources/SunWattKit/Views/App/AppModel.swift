@@ -395,12 +395,13 @@ public final class AppModel {
         } catch {
             result = .failure(error)
         }
-        if SolarAccount(settings: settings) == account {
+        // Kept for the plant with this account (the cache ID leaves out the inverter address).
+        if let plant = settings.plants.first(where: { SolarAccount(plant: $0)?.cacheID == account.cacheID }) {
             switch result {
             case .success(var snapshot):
                 snapshot.endpointID = account.cacheID
-                store.saveSolar(snapshot)
-                store.clearSolarFailure()
+                store.saveSolar(snapshot, plantID: plant.id)
+                store.clearSolarFailure(accountID: account.cacheID)
             case .failure(let error):
                 if account.provider.minimumFetchInterval > 0, !(error is CancellationError) {
                     store.noteSolarFailure(accountID: account.cacheID, at: Date(), message: error.localizedDescription)

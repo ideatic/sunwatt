@@ -69,71 +69,31 @@ public struct SunWattLoader: Sendable {
     public func load(deadline: TimeInterval = 15, maxCacheAge: TimeInterval = 0) async -> SunWattData {
         if Task.isCancelled { return cached() }
         let settings = store.settings
-        let solarSource = makeSolar(settings)
         let nowDate = now()
-        if maxCacheAge > 0,
-           let recent = recentCache(settings: settings, solarConfigured: solarSource != nil, maxAge: maxCacheAge, now: nowDate) {
+        if maxCacheAge > 0, let recent = recentCache(settings: settings, maxAge: maxCacheAge, now: nowDate) {
             return recent
         }
         let priceSource = makePrices(settings.priceRegion)
-        let reusedSolar = solarSource == nil ? nil : recentSolar(settings: settings, now: nowDate)
-        // A rate-limited provider that failed moments ago is not asked again yet: its failure is reused.
-        let recentFailure = solarSource == nil || reusedSolar != nil ? nil : recentSolarFailure(settings: settings, now: nowDate)
-        // While the cloud is not asked, the inverter on the home network still is (live data at home).
-        let cloudFetched = reusedSolar == nil && recentFailure == nil
-        let liveSource = solarSource == nil || cloudFetched ? nil : makeLiveSolar(settings)
-        async let solarResult = Self.fetchSolar(solarSource, reusing: reusedSolar, failure: recentFailure, live: liveSource, deadline: deadline)
         async let priceResult = Self.fetchPrices(priceSource, includeTomorrow: settings.showTomorrowPrices, deadline: deadline)
-        let solarOutcome = await solarResult
+        // Every plant at once, each with its own cache, limits and failures.
+        let plants = settings.plants
+        let loader = self
+        let solarResults = await withTaskGroup(of: (Int, PlantSolarData?).self) { group in
+            for (index, plant) in plants.enumerated() {
+                group.addTask { (index, await loader.loadPlant(plant, settings: settings, deadline: deadline, now: nowDate)) }
+            }
+            var results = [PlantSolarData?](repeating: nil, count: plants.count)
+            for await (index, result) in group { results[index] = result }
+            return results
+        }
         let priceOutcome = await priceResult
-        if Task.isCancelled || Self.isCancellation(solarOutcome) || Self.isCancellation(priceOutcome) {
+        // A nil plant result: that plant's fetch was cancelled.
+        if Task.isCancelled || solarResults.contains(where: { $0 == nil }) || Self.isCancellation(priceOutcome) {
             return cached()
         }
 
         var data = SunWattData(solar: nil, prices: nil, solarStatus: .notConfigured, priceStatus: .fresh)
-
-        if solarSource == nil {
-            data.solarStatus = unconfiguredStatus(settings)
-        } else {
-            switch solarOutcome {
-            case .success(var snapshot):
-                store.clearKioskRejection()
-                if cloudFetched {
-                    if snapshot.isLive == true, snapshot.cloudFetchedAt == nil, let account = SolarAccount(settings: settings),
-                       account.provider.minimumFetchInterval > 0 {
-                        // Only the inverter answered: the cloud failed and is not asked again for its interval.
-                        store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: SunWattError.unavailable.localizedDescription)
-                    } else {
-                        store.clearSolarFailure()
-                    }
-                }
-                if snapshot.isLive == true, let cached = cachedSolar(for: settings) {
-                    snapshot = Self.fillingIn(snapshot, from: cached)
-                }
-                snapshot.endpointID = Self.endpointID(for: settings)
-                store.saveSolar(snapshot)
-                data.solar = snapshot
-                data.solarStatus = .fresh
-            case .failure(let error):
-                if recentFailure == nil, let account = SolarAccount(settings: settings), account.provider.minimumFetchInterval > 0 {
-                    store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: error.localizedDescription)
-                }
-                if (error as? SunWattError) == .kioskLinkRejected, let id = Self.endpointID(for: settings) {
-                    store.noteKioskRejected(linkID: id, at: nowDate)
-                }
-                if isKioskLinkExpired(settings: settings, now: nowDate) {
-                    // Rejected for a while: the link most likely expired. Ask for a new one instead of showing old data.
-                    data.solarStatus = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
-                    data.solarLinkExpired = true
-                } else if let cached = cachedSolar(for: settings) {
-                    // Also covers a cache from a previous Madrid day: its curve belongs to another day.
-                    data.solar = cached
-                    data.solarStatus = .stale(since: cached.fetchedAt)
-                } else {
-                    data.solarStatus = .error(message: error.localizedDescription)
-                }
-            }
-        }
+        data.setPlants(solarResults.compactMap { $0 })
 
         let cachedPrices = store.loadPrices().flatMap { $0.region == settings.priceRegion ? $0 : nil }
         switch priceOutcome {
@@ -157,28 +117,97 @@ public struct SunWattLoader: Sendable {
         return data
     }
 
+    /// One plant's part of a load: fetch (or reuse, under the provider's limit), store, fall back to its cache.
+    /// `settings` are the whole settings; the plant is put in the place of the first one, so every helper written for
+    /// "the" plant works on it. Nil when cancelled.
+    private func loadPlant(_ plant: SolarPlant, settings: SunWattSettings, deadline: TimeInterval, now nowDate: Date) async -> PlantSolarData? {
+        let settings = settings.focused(on: plant)
+        let plantID = plant.id
+        guard let solarSource = makeSolar(settings) else {
+            return PlantSolarData(id: plantID, name: plant.displayName(stationName: nil), solar: nil, status: unconfiguredStatus(settings))
+        }
+        let reusedSolar = recentSolar(settings: settings, plantID: plantID, now: nowDate)
+        // A rate-limited provider that failed moments ago is not asked again yet: its failure is reused.
+        let recentFailure = reusedSolar != nil ? nil : recentSolarFailure(settings: settings, now: nowDate)
+        // While the cloud is not asked, the inverter on the home network still is (live data at home).
+        let cloudFetched = reusedSolar == nil && recentFailure == nil
+        let liveSource = cloudFetched ? nil : makeLiveSolar(settings)
+        let outcome = await Self.fetchSolar(solarSource, reusing: reusedSolar, failure: recentFailure, live: liveSource, deadline: deadline)
+        if Task.isCancelled || Self.isCancellation(outcome) { return nil }
+
+        let account = SolarAccount(settings: settings)
+        var result = PlantSolarData(id: plantID, name: "", solar: nil, status: .fresh)
+        switch outcome {
+        case .success(var snapshot):
+            if let link = account?.kioskEndpoint?.cacheID { store.clearKioskRejection(linkID: link) }
+            if cloudFetched, let account {
+                if snapshot.isLive == true, snapshot.cloudFetchedAt == nil, account.provider.minimumFetchInterval > 0 {
+                    // Only the inverter answered: the cloud failed and is not asked again for its interval.
+                    store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: SunWattError.unavailable.localizedDescription)
+                } else {
+                    store.clearSolarFailure(accountID: account.cacheID)
+                }
+            }
+            if snapshot.isLive == true, let cached = cachedSolar(for: settings, plantID: plantID) {
+                snapshot = Self.fillingIn(snapshot, from: cached)
+            }
+            snapshot.endpointID = Self.endpointID(for: settings)
+            store.saveSolar(snapshot, plantID: plantID)
+            result.solar = snapshot
+            result.status = .fresh
+        case .failure(let error):
+            if recentFailure == nil, let account, account.provider.minimumFetchInterval > 0 {
+                store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: error.localizedDescription)
+            }
+            if (error as? SunWattError) == .kioskLinkRejected, let link = account?.kioskEndpoint?.cacheID {
+                store.noteKioskRejected(linkID: link, at: nowDate)
+            }
+            if isKioskLinkExpired(settings: settings, now: nowDate) {
+                // Rejected for a while: the link most likely expired. Ask for a new one instead of showing old data.
+                result.status = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
+                result.linkExpired = true
+            } else if let cached = cachedSolar(for: settings, plantID: plantID) {
+                // Also covers a cache from a previous Madrid day: its curve belongs to another day.
+                result.solar = cached
+                result.status = .stale(since: cached.fetchedAt)
+            } else {
+                result.status = .error(message: error.localizedDescription)
+            }
+        }
+        result.name = plant.displayName(stationName: result.solar?.stationName)
+        return result
+    }
+
     /// Cached data only (no network), for placeholders and snapshots.
     /// Prices cached for a different region than the current setting count as absent.
     public func cached() -> SunWattData {
         let settings = store.settings
         let unavailable = SourceStatus.error(message: SunWattError.unavailable.localizedDescription)
         var data = SunWattData(solar: nil, prices: nil, solarStatus: unavailable, priceStatus: unavailable)
-        if makeSolar(settings) == nil {
-            data.solarStatus = unconfiguredStatus(settings)
-        } else if let solar = cachedSolar(for: settings) {
-            data.solar = solar
-            data.solarStatus = .stale(since: solar.fetchedAt)
-        }
-        if isKioskLinkExpired(settings: settings, now: now()) {
-            data.solar = nil
-            data.solarStatus = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
-            data.solarLinkExpired = true
-        }
+        data.setPlants(settings.plants.map { cachedPlant($0, settings: settings) })
         if let prices = store.loadPrices(), prices.region == settings.priceRegion {
             data.prices = prices
             data.priceStatus = .stale(since: prices.fetchedAt)
         }
         return data
+    }
+
+    private func cachedPlant(_ plant: SolarPlant, settings: SunWattSettings) -> PlantSolarData {
+        let settings = settings.focused(on: plant)
+        var result = PlantSolarData(id: plant.id, name: "", solar: nil, status: .error(message: SunWattError.unavailable.localizedDescription))
+        if makeSolar(settings) == nil {
+            result.status = unconfiguredStatus(settings)
+        } else if let solar = cachedSolar(for: settings, plantID: plant.id) {
+            result.solar = solar
+            result.status = .stale(since: solar.fetchedAt)
+        }
+        if isKioskLinkExpired(settings: settings, now: now()) {
+            result.solar = nil
+            result.status = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
+            result.linkExpired = true
+        }
+        result.name = plant.displayName(stationName: result.solar?.stationName)
+        return result
     }
 
     /// A live inverter reading without the kiosk part (kiosk unreachable): today's earlier curve, the plant name and
@@ -226,18 +255,18 @@ public struct SunWattLoader: Sendable {
         SolarAccount(settings: settings)?.cacheID
     }
 
-    /// The stored solar snapshot, only when it was fetched from the solar account now in `settings`.
+    /// The stored solar snapshot of the plant, only when it was fetched from the solar account now in `settings`.
     /// A snapshot without an identifier (written before it existed) never matches.
-    private func cachedSolar(for settings: SunWattSettings) -> SolarSnapshot? {
-        guard let id = Self.endpointID(for: settings), let solar = store.loadSolar(), solar.endpointID == id else { return nil }
+    private func cachedSolar(for settings: SunWattSettings, plantID: String) -> SolarSnapshot? {
+        guard let id = Self.endpointID(for: settings), let solar = store.loadSolar(plantID: plantID), solar.endpointID == id else { return nil }
         return solar
     }
 
     /// The stored snapshot when the provider limits how often it may be fetched (`SolarProvider.minimumFetchInterval`)
     /// and it is younger than that limit, from the current Madrid day.
-    private func recentSolar(settings: SunWattSettings, now: Date) -> SolarSnapshot? {
+    private func recentSolar(settings: SunWattSettings, plantID: String, now: Date) -> SolarSnapshot? {
         guard let provider = SolarAccount(settings: settings)?.provider, provider.minimumFetchInterval > 0,
-              let solar = cachedSolar(for: settings) else { return nil }
+              let solar = cachedSolar(for: settings, plantID: plantID) else { return nil }
         // A live snapshot is new at every inverter read; the limit counts from the last cloud fetch.
         let cloudTime = solar.isLive == true ? (solar.cloudFetchedAt ?? .distantPast) : solar.fetchedAt
         let age = now.timeIntervalSince(cloudTime)
@@ -256,30 +285,34 @@ public struct SunWattLoader: Sendable {
         return StoredFailure(message: failure.message)
     }
 
-    /// Stored data of every source in use, fetched less than `maxAge` seconds ago; nil when any part is missing or older.
-    private func recentCache(settings: SunWattSettings, solarConfigured: Bool, maxAge: TimeInterval, now: Date) -> SunWattData? {
+    /// Stored data of every source in use (every plant and the prices), fetched less than `maxAge` seconds ago; nil
+    /// when any part is missing or older.
+    private func recentCache(settings: SunWattSettings, maxAge: TimeInterval, now: Date) -> SunWattData? {
         func isRecent(_ fetchedAt: Date) -> Bool {
             let age = now.timeIntervalSince(fetchedAt)
             return age >= 0 && age < maxAge
         }
-        var data = SunWattData(solar: nil, prices: nil, solarStatus: .notConfigured, priceStatus: .fresh)
-        if solarConfigured {
+        var plants: [PlantSolarData] = []
+        for plant in settings.plants {
+            let focused = settings.focused(on: plant)
+            guard makeSolar(focused) != nil else {
+                plants.append(PlantSolarData(id: plant.id, name: plant.displayName(stationName: nil), solar: nil, status: unconfiguredStatus(focused)))
+                continue
+            }
             // Solar the provider would not fetch again yet (SolarEdge: 20 min) counts as recent too; otherwise every
             // widget of a SolarEdge user would miss the shared window and fetch prices at the same time (HTTP 429).
             // A live snapshot (at home) only counts for the window itself, so widgets keep reading the inverter.
-            let interval = SolarAccount(settings: settings)?.provider.minimumFetchInterval ?? 0
-            guard let solar = cachedSolar(for: settings) else { return nil }
+            let interval = SolarAccount(settings: focused)?.provider.minimumFetchInterval ?? 0
+            guard let solar = cachedSolar(for: focused, plantID: plant.id) else { return nil }
             let solarMaxAge = solar.isLive == true ? maxAge : max(maxAge, interval)
             guard now.timeIntervalSince(solar.fetchedAt) >= 0, now.timeIntervalSince(solar.fetchedAt) < solarMaxAge,
                   Constants.madridCalendar.isDate(solar.fetchedAt, inSameDayAs: now) else { return nil }
-            data.solar = solar
-            data.solarStatus = .fresh
-        } else {
-            data.solarStatus = unconfiguredStatus(settings)
+            plants.append(PlantSolarData(id: plant.id, name: plant.displayName(stationName: solar.stationName), solar: solar, status: .fresh))
         }
         guard let prices = store.loadPrices(), prices.region == settings.priceRegion, isRecent(prices.fetchedAt),
               prices.points.contains(where: { $0.contains(now) }) else { return nil }
-        data.prices = prices
+        var data = SunWattData(solar: nil, prices: prices, solarStatus: .notConfigured, priceStatus: .fresh)
+        data.setPlants(plants)
         return data
     }
 

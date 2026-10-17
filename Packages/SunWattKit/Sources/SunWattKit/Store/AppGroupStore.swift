@@ -35,6 +35,9 @@ public final class AppGroupStore: @unchecked Sendable {
 
     private static let kioskSecret = "kioskURL"
     private static let apiKeySecret = "solarAPIKey"
+    /// Secrets of the further plants, one pair per plant id.
+    private static func kioskSecret(plant id: String) -> String { "plant.\(id).kioskURL" }
+    private static func apiKeySecret(plant id: String) -> String { "plant.\(id).apiKey" }
 
     /// Group defaults + group directory when the container exists, standard defaults + Application Support otherwise.
     private static func defaultLocation() -> (defaults: UserDefaults, directory: URL) {
@@ -57,6 +60,11 @@ public final class AppGroupStore: @unchecked Sendable {
             if let secrets {
                 if let kiosk = secrets.secret(Self.kioskSecret) { value.kioskURL = kiosk }
                 if let key = secrets.secret(Self.apiKeySecret) { value.solarAPIKey = key }
+                for index in value.additionalPlants.indices {
+                    let id = value.additionalPlants[index].id
+                    if let kiosk = secrets.secret(Self.kioskSecret(plant: id)) { value.additionalPlants[index].kioskURL = kiosk }
+                    if let key = secrets.secret(Self.apiKeySecret(plant: id)) { value.additionalPlants[index].apiKey = key }
+                }
             }
             return value
         }
@@ -67,6 +75,19 @@ public final class AppGroupStore: @unchecked Sendable {
             if let secrets {
                 if secrets.setSecret(newValue.kioskURL, for: Self.kioskSecret) { stored.kioskURL = "" }
                 if secrets.setSecret(newValue.solarAPIKey, for: Self.apiKeySecret) { stored.solarAPIKey = "" }
+                for index in stored.additionalPlants.indices {
+                    let plant = stored.additionalPlants[index]
+                    if secrets.setSecret(plant.kioskURL, for: Self.kioskSecret(plant: plant.id)) { stored.additionalPlants[index].kioskURL = "" }
+                    if secrets.setSecret(plant.apiKey, for: Self.apiKeySecret(plant: plant.id)) { stored.additionalPlants[index].apiKey = "" }
+                }
+                // A removed plant's secrets go too.
+                let kept = Set(newValue.additionalPlants.map(\.id))
+                let previous = defaults.data(forKey: Self.settingsKey)
+                    .flatMap { try? JSONDecoder().decode(SunWattSettings.self, from: $0) }?.additionalPlants ?? []
+                for plant in previous where !kept.contains(plant.id) {
+                    secrets.setSecret("", for: Self.kioskSecret(plant: plant.id))
+                    secrets.setSecret("", for: Self.apiKeySecret(plant: plant.id))
+                }
             }
             guard let data = try? JSONEncoder().encode(stored) else { return }
             defaults.set(data, forKey: Self.settingsKey)
@@ -75,62 +96,86 @@ public final class AppGroupStore: @unchecked Sendable {
 
     // MARK: Failed fetches of rate-limited providers
 
-    private static let solarFailureKey = "sunwatt.solarFailure"
-    private struct SolarFailure: Codable { var accountID: String; var at: Date; var message: String }
+    private static let solarFailureKey = "sunwatt.solarFailures"
+    private struct SolarFailure: Codable { var at: Date; var message: String }
 
     /// The last failed fetch of the solar account with this cache ID: when, and the message to show.
     public func solarFailure(accountID: String) -> (at: Date, message: String)? {
         lock.lock(); defer { lock.unlock() }
-        guard let data = defaults.data(forKey: Self.solarFailureKey),
-              let value = try? JSONDecoder().decode(SolarFailure.self, from: data), value.accountID == accountID else { return nil }
+        guard let value = failuresLocked()[accountID] else { return nil }
         return (value.at, value.message)
     }
 
     public func noteSolarFailure(accountID: String, at date: Date, message: String) {
         lock.lock(); defer { lock.unlock() }
-        if let data = try? JSONEncoder().encode(SolarFailure(accountID: accountID, at: date, message: message)) {
-            defaults.set(data, forKey: Self.solarFailureKey)
-        }
+        var all = failuresLocked()
+        all[accountID] = SolarFailure(at: date, message: message)
+        if let data = try? JSONEncoder().encode(all) { defaults.set(data, forKey: Self.solarFailureKey) }
     }
 
-    public func clearSolarFailure() {
+    /// Forgets the failure of this account; nil: of every account.
+    public func clearSolarFailure(accountID: String? = nil) {
         lock.lock(); defer { lock.unlock() }
-        defaults.removeObject(forKey: Self.solarFailureKey)
+        guard let accountID else { defaults.removeObject(forKey: Self.solarFailureKey); return }
+        var all = failuresLocked()
+        guard all.removeValue(forKey: accountID) != nil else { return }
+        if let data = try? JSONEncoder().encode(all) { defaults.set(data, forKey: Self.solarFailureKey) }
     }
 
-    private static let kioskRejectionKey = "sunwatt.kioskRejection"
-    private struct KioskRejection: Codable { var linkID: String; var since: Date }
+    private func failuresLocked() -> [String: SolarFailure] {
+        defaults.data(forKey: Self.solarFailureKey).flatMap { try? JSONDecoder().decode([String: SolarFailure].self, from: $0) } ?? [:]
+    }
+
+    private static let kioskRejectionKey = "sunwatt.kioskRejections"
 
     /// Since when the kiosk link with this cache ID has been rejected without a success in between. Nil when it
-    /// was not rejected (or another link was).
+    /// was not rejected.
     public func kioskRejectedSince(linkID: String) -> Date? {
         lock.lock(); defer { lock.unlock() }
-        guard let data = defaults.data(forKey: Self.kioskRejectionKey),
-              let value = try? JSONDecoder().decode(KioskRejection.self, from: data), value.linkID == linkID else { return nil }
-        return value.since
+        return rejectionsLocked()[linkID]
     }
 
     /// Records a rejection of the link; keeps the first time when it was already rejected.
     /// Returns the time the rejections started.
     @discardableResult
     public func noteKioskRejected(linkID: String, at date: Date) -> Date {
-        if let since = kioskRejectedSince(linkID: linkID) { return since }
         lock.lock(); defer { lock.unlock() }
-        if let data = try? JSONEncoder().encode(KioskRejection(linkID: linkID, since: date)) {
-            defaults.set(data, forKey: Self.kioskRejectionKey)
-        }
+        var all = rejectionsLocked()
+        if let since = all[linkID] { return since }
+        all[linkID] = date
+        if let data = try? JSONEncoder().encode(all) { defaults.set(data, forKey: Self.kioskRejectionKey) }
         return date
     }
 
-    /// A successful fetch (or a new link) ends the rejection.
-    public func clearKioskRejection() {
+    /// A successful fetch (or a new link) ends the rejection of this link; nil: of every link.
+    public func clearKioskRejection(linkID: String? = nil) {
         lock.lock(); defer { lock.unlock() }
-        defaults.removeObject(forKey: Self.kioskRejectionKey)
+        guard let linkID else { defaults.removeObject(forKey: Self.kioskRejectionKey); return }
+        var all = rejectionsLocked()
+        guard all.removeValue(forKey: linkID) != nil else { return }
+        if let data = try? JSONEncoder().encode(all) { defaults.set(data, forKey: Self.kioskRejectionKey) }
     }
 
-    public func loadSolar() -> SolarSnapshot? { read(SolarSnapshot.self, file: "solar.json") }
+    private func rejectionsLocked() -> [String: Date] {
+        defaults.data(forKey: Self.kioskRejectionKey).flatMap { try? JSONDecoder().decode([String: Date].self, from: $0) } ?? [:]
+    }
+
+    /// The last good snapshot of a plant (`SolarPlant.id`; the first plant by default, in the file it always had).
+    public func loadSolar(plantID: String = SolarPlant.primaryID) -> SolarSnapshot? {
+        read(SolarSnapshot.self, file: Self.solarFile(plantID))
+    }
+
     /// Skipped when the stored snapshot has a newer `fetchedAt`.
-    public func saveSolar(_ snapshot: SolarSnapshot) { write(snapshot, file: "solar.json", fetchedAt: snapshot.fetchedAt) }
+    public func saveSolar(_ snapshot: SolarSnapshot, plantID: String = SolarPlant.primaryID) {
+        write(snapshot, file: Self.solarFile(plantID), fetchedAt: snapshot.fetchedAt)
+    }
+
+    private static func solarFile(_ plantID: String) -> String {
+        guard plantID != SolarPlant.primaryID else { return "solar.json" }
+        // Plant ids are UUIDs; anything else is reduced to safe file name characters.
+        let safe = String(plantID.unicodeScalars.filter { CharacterSet.alphanumerics.contains($0) || $0 == "-" })
+        return "solar-\(safe).json"
+    }
     public func loadPrices() -> PriceSeries? { read(PriceSeries.self, file: "prices.json") }
     /// Skipped when the stored series has a newer `fetchedAt`.
     public func savePrices(_ series: PriceSeries) { write(series, file: "prices.json", fetchedAt: series.fetchedAt) }
