@@ -39,8 +39,23 @@ import Testing
     @Test func shortcutsCatalogIsComplete() throws {
         try checkComplete("App/Intents/AppShortcuts.xcstrings")
         let catalog = try strings(at: "App/Intents/AppShortcuts.xcstrings")
-        #expect(catalog.count == 6)
-        for key in catalog.keys { #expect(key.contains("${applicationName}"), "\(key)") }
+        // Keys are exactly the phrases in SunWattShortcuts.swift.
+        let source = try String(contentsOf: Self.root.appendingPathComponent("App/Intents/SunWattShortcuts.swift"), encoding: .utf8)
+        let phrases = source.split(separator: "\n")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { $0.hasPrefix("\"") && $0.contains("\\(.applicationName)") }
+            .map { String($0.dropFirst().prefix { $0 != "\"" }).replacingOccurrences(of: "\\(.applicationName)", with: "${applicationName}") }
+        #expect(Set(phrases) == Set(catalog.keys))
+        // Siri needs the app name once in every phrase, and a phrase may not be repeated within a language.
+        for language in Self.translated {
+            let values = catalog.values.compactMap {
+                (((($0 as? [String: Any])?["localizations"] as? [String: Any])?[language] as? [String: Any])?["stringUnit"] as? [String: Any])?["value"] as? String
+            }
+            #expect(Set(values).count == catalog.count, "\(language) duplicates")
+            for value in values {
+                #expect(value.components(separatedBy: "${applicationName}").count == 2, "\(language): \(value)")
+            }
+        }
     }
 
     @Test func shortcutTitlesCatalogIsComplete() throws {
