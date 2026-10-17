@@ -61,6 +61,15 @@ public struct AppRootView: View {
             ToolbarItem(placement: .primaryAction) {
                 if !model.showsOnboarding { AppRefreshButton(model: model, showsShortcut: false) }
             }
+            // The Settings window is otherwise only in the app menu (and ⌘,), which many users never look at.
+            ToolbarItem(placement: .primaryAction) {
+                if !model.showsOnboarding {
+                    SettingsLink {
+                        Label { atext("Settings") } icon: { Image(systemName: "gearshape") }
+                    }
+                    .help(Text("Settings", tableName: "App", bundle: .module))
+                }
+            }
         }
         .frame(minWidth: 760, minHeight: 560)
         #endif

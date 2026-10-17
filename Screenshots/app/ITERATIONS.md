@@ -57,3 +57,11 @@ New kinds: `dashboardPlants` (3 demo plants: Home, Barn, Beach house), `settings
 - SolarEdge/PVOutput API key fields are secret (dots), like the system code.
 - Checked: onboarding API account (es), Settings API account (de, full height): labels on one line, no truncation.
 - Widget guide and onboarding widget PNGs changed too: their widget previews show the new medium layout.
+
+## 2026-10-17: Settings button in the Mac toolbar
+
+- Critique (owner): on the Mac the Settings window was only in the app menu (and ⌘,); the dashboard had no visible
+  way in. The iPhone and iPad have a gear in the header.
+- Change: a gear `SettingsLink` next to Refresh in the Mac window toolbar (hidden during onboarding, like Refresh).
+  The Mac title-bar mock in the renders shows it too. Other PNGs in this folder changed only because earlier
+  commits (gauge centring, AM/PM times) had not been rendered here yet.

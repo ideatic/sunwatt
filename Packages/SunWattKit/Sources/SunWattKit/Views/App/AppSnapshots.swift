@@ -386,7 +386,12 @@ private struct TitleBarMock: View {
             Text(verbatim: title).font(.system(size: 13, weight: .semibold))
             Spacer()
             if showsRefresh {
-                Image(systemName: "arrow.clockwise").font(.system(size: 13, weight: .medium)).foregroundStyle(.secondary)
+                // Same toolbar as the app: refresh, then the Settings button.
+                HStack(spacing: 16) {
+                    Image(systemName: "arrow.clockwise")
+                    Image(systemName: "gearshape")
+                }
+                .font(.system(size: 13, weight: .medium)).foregroundStyle(.secondary)
             }
         }
         .padding(.horizontal, 14)
