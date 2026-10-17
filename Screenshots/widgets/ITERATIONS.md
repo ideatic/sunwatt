@@ -66,6 +66,7 @@ Critique (all 67 PNGs reviewed: light/dark, day/night/stale/error, accented/vibr
 - Checked: medium night/day/stale light and dark, de and fr, price-only and solar-only, large, small, watch price page. No truncation; "Sin producción" fits on one line.
 - Watch corner PNGs also changed: they were older than commit e162de0 (corner value fit), not this change.
 - Follow-up (user): data time on the left, daily energy on the right of the second solar row.
+- Follow-up (user): price level ("Cheap") on the right under the price, stale badge on the left, as in the solar column.
 - Follow-up (user): the large widget header uses the same compact rows (header 76 → 56 pt, the charts get the rest). Checked day, night dark, stale, German.
 
 ## Open points

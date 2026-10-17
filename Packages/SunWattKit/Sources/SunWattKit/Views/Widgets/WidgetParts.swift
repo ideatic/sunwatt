@@ -280,12 +280,13 @@ struct PriceColumn: View {
             PriceFigure(price: price, size: figureSize)
                 .layoutPriority(1)
         }
+        // As in the solar column: data age on the left, what the figure means under it on the right.
         HStack(spacing: 4) {
-            LevelLabel(price: price)
-            Spacer(minLength: 4)
             if let since = price.staleSince {
                 StaleBadge(since: since, timeZone: price.timeZone)
             }
+            Spacer(minLength: 4)
+            LevelLabel(price: price)
         }
         .padding(.top, 1)
     }
