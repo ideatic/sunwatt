@@ -280,10 +280,12 @@ public struct WatchSolarCornerContent: View {
             WatchSolarSymbol(state: state, size: 13)
             switch state {
             case .data, .noDataYet:
+                // Fixed width so large totals ("123,4") shrink instead of being cut by the corner.
                 Text(verbatim: energyText(solar, state))
                     .font(Theme.Font.figure(15))
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(0.5)
                     .lineLimit(1)
+                    .frame(maxWidth: 30)
             default:
                 EmptyView()
             }

@@ -105,15 +105,20 @@ public struct WatchCornerContent: View {
 
     public var body: some View {
         let price = PriceModel(entry: entry, window: .wholeDay)
-        VStack(spacing: -1) {
-            Image(systemName: price.series == nil ? "exclamationmark.triangle" : Theme.Price.symbol)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(price.series == nil ? AnyShapeStyle(.secondary) : AnyShapeStyle(Theme.Price.color(fraction: price.fraction ?? 0.5)))
+        Group {
             if price.series != nil {
+                // Only the number: with the symbol above it, "0,177" was wider than the corner and was cut on a real
+                // face. The fixed width lets minimumScaleFactor shrink it.
                 Text(verbatim: Format.eurPerKWh(price.current?.eurPerKWh))
                     .font(Theme.Font.figure(15))
-                    .minimumScaleFactor(0.6)
+                    .foregroundStyle(Theme.Price.color(fraction: price.fraction ?? 0.5))
+                    .minimumScaleFactor(0.5)
                     .lineLimit(1)
+                    .frame(maxWidth: 30)
+            } else {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.secondary)
             }
         }
         .widgetAccentable()
