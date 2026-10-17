@@ -1,0 +1,27 @@
+SunWatt - notes for App Review
+
+No login. The app has no accounts and no sign-in screen. Nothing to enter except an optional link (see below).
+
+What the app does
+SunWatt shows widgets with (1) the electricity price and (2) the output of a home solar plant (Huawei FusionSolar). The price part works with no setup.
+
+How to test without a solar plant
+A demo FusionSolar kiosk link is not available. The kiosk link belongs to a private solar plant and we cannot share one. The solar part is optional:
+1. Open the app. On the first screen of the onboarding (how to get the FusionSolar kiosk link), tap "Skip". The solar section is skipped.
+2. Choose a country (for example Spain, or any other in the list). The dashboard shows the current price, today's chart and the cheapest upcoming hours. Tomorrow's prices appear in the evening, when the data provider publishes them.
+3. Add a widget: long-press the Home Screen, tap "+", search "SunWatt". Choose small, medium or large. In the widget settings choose "Price" (not "Solar"). Lock Screen widgets and the Control Center control can be added the same way.
+4. Tap a widget to refresh it.
+5. Siri / Shortcuts: say "What's the electricity price in SunWatt?".
+
+With no kiosk link, the solar widgets show a short message that solar is not set up. This is expected.
+
+Network and data
+The app contacts only:
+- apidatos.ree.es (Red Eléctrica, public PVPC prices for Spain)
+- api.energy-charts.info (Energy-Charts, Fraunhofer ISE, CC BY 4.0, day-ahead prices for other countries)
+- the FusionSolar server named in the kiosk link the user pastes (only if the user adds one)
+No API keys. No tracking, no analytics, no ads. Nothing is sent to the developer. Settings and last data are stored on the device (App Group shared with the widgets).
+
+Other
+Not affiliated with Huawei, Red Eléctrica or Fraunhofer ISE. Public data is used under its terms (CC BY 4.0 with attribution in the app). The app needs an internet connection to load prices.
+Contact: REPLACE-ME@example.com

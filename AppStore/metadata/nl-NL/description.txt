@@ -1,0 +1,36 @@
+SunWatt toont twee cijfers die je elke dag checkt: wat je zonnepanelen nu opwekken en wat stroom nu kost.
+
+STROOMPRIJS
+• Nederland: day-ahead groothandelsprijs, uur voor uur
+• Ook Duitsland en Luxemburg, Oostenrijk, België, Frankrijk, Portugal, Noord-Italië en Spanje (PVPC)
+• Huidige prijs gekleurd naar niveau, zodat je direct ziet of het goedkoop of duur is
+• Grafiek van vandaag en de goedkoopste komende uren
+• Prijzen voor morgen zodra ze zijn gepubliceerd
+
+ZONNE-OPBRENGST
+Plak de Kiosk-link van je Huawei FusionSolar-installatie en zie het huidige vermogen in kW, de energie van vandaag in kWh en de opbrengstcurve. Bij de eerste start leg je in minder dan een minuut uit hoe je de link krijgt.
+
+WIDGETS
+• Kleine, middelgrote en grote widgets voor het beginscherm
+• Widgets voor het toegangsscherm, rechthoekig en rond
+• Bediening in het Bedieningscentrum met de huidige prijs
+• Kies zon, prijs of allebei
+• Hele dag, of de afgelopen 6 en komende 12 uur
+• Tik op een widget om te verversen
+• Licht, donker, getint en doorzichtig
+
+SIRI EN SNELKOPPELINGEN
+Vraag "Wat is de stroomprijs in SunWatt?", of vraag naar je zonne-opbrengst en de goedkoopste uren. Gebruik ze in je eigen snelkoppelingen en automatiseringen.
+
+APPLE WATCH
+Een Watch-app en complicaties brengen de prijs naar je pols.
+
+IN DE APP
+• Dashboard met interactieve grafieken
+• Landkeuze
+• Gids om de widgets toe te voegen
+
+PRIVÉ VAN ONTWERP
+Geen account. Geen tracking. Geen analyse. Geen advertenties. SunWatt maakt alleen verbinding met de FusionSolar-server in je Kiosk-link en met openbare prijsdiensten. Instellingen en laatste gegevens blijven op je apparaat. Er wordt niets naar de ontwikkelaar gestuurd.
+
+SunWatt is gratis. De app is niet verbonden met Huawei, Red Eléctrica of Fraunhofer ISE. Day-ahead-prijzen komen van Energy-Charts (Fraunhofer ISE), licentie CC BY 4.0. De groothandelsprijs is niet de prijs op je rekening.

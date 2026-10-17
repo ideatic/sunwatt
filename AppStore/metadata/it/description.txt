@@ -1,0 +1,36 @@
+SunWatt mostra due numeri che controlli ogni giorno: quanto producono i tuoi pannelli solari e quanto costa l'elettricità adesso.
+
+PREZZO DELL'ELETTRICITÀ
+• Nord Italia: prezzo all'ingrosso day-ahead, ora per ora
+• Anche Francia, Germania e Lussemburgo, Austria, Belgio, Paesi Bassi, Portogallo e Spagna (PVPC)
+• Prezzo attuale colorato per livello, per capire subito se è basso o alto
+• Grafico di oggi e prossime ore più convenienti
+• Prezzi di domani appena pubblicati
+
+PRODUZIONE SOLARE
+Incolla il link Kiosk del tuo impianto Huawei FusionSolar e vedi la potenza attuale in kW, l'energia di oggi in kWh e la curva di produzione. Al primo avvio una guida spiega come ottenere il link in meno di un minuto.
+
+WIDGET
+• Widget piccolo, medio e grande per la schermata Home
+• Widget per la schermata di blocco, rettangolare e circolare
+• Controllo nel Centro di Controllo con il prezzo attuale
+• Solare, prezzo o entrambi
+• Giornata intera, oppure le 6 ore precedenti e le 12 successive
+• Tocca un widget per aggiornarlo
+• Aspetto chiaro, scuro, tinto e trasparente
+
+SIRI E COMANDI RAPIDI
+Chiedi "Qual è il prezzo dell'elettricità in SunWatt?", oppure la produzione solare e le ore più convenienti. Usali nei tuoi comandi rapidi e automazioni.
+
+APPLE WATCH
+App per Watch e complicazioni con il prezzo al polso.
+
+NELL'APP
+• Dashboard con grafici interattivi
+• Scelta del paese
+• Guida per aggiungere i widget
+
+PRIVATA PER SCELTA
+Nessun account. Nessun tracciamento. Nessuna analisi. Nessuna pubblicità. SunWatt contatta solo il server FusionSolar del tuo link Kiosk e i servizi pubblici dei prezzi. Impostazioni e ultimi dati restano sul tuo dispositivo. Nulla viene inviato allo sviluppatore.
+
+SunWatt è gratis. Non è affiliata a Huawei, Red Eléctrica o Fraunhofer ISE. I prezzi day-ahead provengono da Energy-Charts (Fraunhofer ISE), licenza CC BY 4.0. Il prezzo all'ingrosso non è il prezzo della tua bolletta.

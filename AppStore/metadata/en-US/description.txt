@@ -1,0 +1,36 @@
+SunWatt puts two numbers you check every day where you can see them: how much your solar panels are producing, and what electricity costs right now.
+
+SOLAR
+Paste your Huawei FusionSolar kiosk link and see your current power in kW, today's energy in kWh and today's production curve. The onboarding shows you how to get the link in under a minute.
+
+ELECTRICITY PRICE
+• Spain: the regulated PVPC price from Red Eléctrica
+• Portugal, France, Germany & Luxembourg, Austria, Belgium, Netherlands and North Italy: day-ahead wholesale prices
+• Current price coloured by level, so you see at a glance if it is cheap or expensive
+• Today's chart and the cheapest upcoming hours
+• Tomorrow's prices as soon as they are published
+
+WIDGETS
+• Small, medium and large Home Screen widgets
+• Lock Screen widgets, rectangular and circular
+• A Control Center control with the current price
+• Choose solar, price or both
+• Show the whole day, or the previous 6 hours plus the next 12
+• Tap a widget to refresh it
+• Light, dark, tinted and clear looks
+
+SIRI AND SHORTCUTS
+Ask "What's the electricity price in SunWatt?", or get your solar production and the cheapest hours. Use them in your own shortcuts and automations, for example to start the dishwasher when power is cheap.
+
+APPLE WATCH
+A Watch app and complications keep the price on your wrist.
+
+IN THE APP
+• Dashboard with interactive charts
+• Country picker
+• Guide to add widgets to your Home Screen
+
+PRIVATE BY DESIGN
+No account. No tracking. No analytics. No ads. SunWatt only talks to the FusionSolar server in your kiosk link and to the public price services. Your settings and last data stay on your device. Nothing is sent to the developer.
+
+SunWatt is free. It is not affiliated with Huawei, Red Eléctrica or Fraunhofer ISE. Day-ahead prices for countries other than Spain come from Energy-Charts (Fraunhofer ISE), licensed CC BY 4.0. Wholesale prices are not the price on your bill.

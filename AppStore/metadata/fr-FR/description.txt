@@ -1,0 +1,36 @@
+SunWatt affiche les deux chiffres que vous consultez tous les jours : ce que produisent vos panneaux solaires et ce que coûte l'électricité en ce moment.
+
+PRIX DE L'ÉLECTRICITÉ
+• France : prix du marché day-ahead, heure par heure
+• Aussi l'Allemagne et le Luxembourg, l'Autriche, la Belgique, les Pays-Bas, le Nord de l'Italie, le Portugal et l'Espagne (PVPC)
+• Prix actuel coloré selon son niveau, pour voir d'un coup d'œil s'il est bas ou élevé
+• Courbe du jour et prochaines heures les moins chères
+• Prix de demain dès leur publication
+
+PRODUCTION SOLAIRE
+Collez le lien Kiosk de votre installation Huawei FusionSolar pour voir la puissance actuelle en kW, l'énergie du jour en kWh et la courbe de production. Le premier lancement vous explique comment obtenir ce lien en moins d'une minute.
+
+WIDGETS
+• Widgets petit, moyen et grand pour l'écran d'accueil
+• Widgets d'écran verrouillé, rectangulaire et circulaire
+• Contrôle du Centre de contrôle avec le prix actuel
+• Solaire, prix ou les deux
+• Journée entière, ou les 6 heures précédentes et les 12 suivantes
+• Touchez un widget pour l'actualiser
+• Apparence claire, sombre, teintée et transparente
+
+SIRI ET RACCOURCIS
+Demandez « Quel est le prix de l'électricité dans SunWatt ? », ou la production solaire et les heures les moins chères. Utilisez-les dans vos propres raccourcis et automatisations.
+
+APPLE WATCH
+Une app pour la montre et des complications pour garder le prix au poignet.
+
+DANS L'APP
+• Tableau de bord avec graphiques interactifs
+• Choix du pays
+• Guide pour ajouter les widgets
+
+CONFIDENTIEL PAR CONCEPTION
+Pas de compte. Pas de suivi. Pas de mesure d'audience. Pas de publicité. SunWatt ne contacte que le serveur FusionSolar de votre lien Kiosk et les services publics de prix. Vos réglages et les dernières données restent sur votre appareil. Rien n'est envoyé au développeur.
+
+SunWatt est gratuit. Il n'est pas affilié à Huawei, à Red Eléctrica ni au Fraunhofer ISE. Les prix day-ahead viennent d'Energy-Charts (Fraunhofer ISE), licence CC BY 4.0. Le prix de gros n'est pas le prix de votre facture.

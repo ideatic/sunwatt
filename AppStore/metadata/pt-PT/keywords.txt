@@ -1,0 +1,1 @@
+eletricidade,preço,painéis,energia,kWh,fotovoltaico,mercado,horas baratas,widget,amanhã,tarifa
