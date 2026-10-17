@@ -39,13 +39,14 @@ hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0}
 <p>The app contacts only these servers, to get the data it shows:</p>
 <ul>
 <li>The Huawei FusionSolar server named in the kiosk link you paste (only if you add a link), to read your plant data.</li>
+<li>The Huawei FusionSolar server you enter for a FusionSolar API account (only if you set one up, a fusionsolar.huawei.com address), to read your plant data. Your user name and system code are sent to it over HTTPS.</li>
 <li><code>monitoringapi.solaredge.com</code> (the official SolarEdge Monitoring API, only if you set up SolarEdge), to read your plant data. Your site ID and API key are sent to SolarEdge over HTTPS.</li>
 <li><code>pvoutput.org</code> (the PVOutput API, only if you set up PVOutput), to read your system data. Your system ID and API key are sent to PVOutput over HTTPS.</li>
 <li>Your inverter on your home network (only if you enter its address in Settings): the Smart Dongle of a Huawei inverter, or a SunSpec inverter such as SolarEdge, SMA or Fronius, to read live production with Modbus TCP. This connection never leaves your home network, and SunWatt only reads.</li>
 <li><code>apidatos.ree.es</code> (Red Eléctrica), for the regulated PVPC price in Spain.</li>
 <li><code>api.energy-charts.info</code> (Energy-Charts, Fraunhofer ISE, licence CC BY 4.0), for day-ahead wholesale prices in Portugal, France, Germany &amp; Luxembourg, Austria, Belgium, the Netherlands and North Italy.</li>
 </ul>
-<p>These servers receive normal network requests (such as your IP address) as any website does. We do not control them. SunWatt sends them no account, device identifier or analytics data.</p>
+<p>These servers receive normal network requests (such as your IP address) as any website does. We do not control them. SunWatt sends them no device identifier or analytics data, and no account other than the one you set up for that service.</p>
 
 <h2>Data on your device</h2>
 <p>Your settings (country, widget options, kiosk link, SolarEdge or PVOutput ID and API key) and the last data received stay on your device. They are shared only between the app and its widgets through an App Group on the same device, and with your own paired Apple Watch so its app and complications work. They are never sent to us. We cannot see them.</p>
@@ -55,6 +56,9 @@ hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0}
 
 <h2>SolarEdge and PVOutput API keys</h2>
 <p>An API key gives access to your plant data (on PVOutput, the same key can also add data to your system). SunWatt uses it only to read your data, and sends it only to that provider. Anyone who has the key can use it, so keep it private. You can revoke it at any time in the provider's portal: in SolarEdge under Admin &gt; Site Access &gt; API Access, in PVOutput under Settings &gt; API Settings (turn off API access or generate a new key). The old key stops working.</p>
+
+<h2>FusionSolar API account</h2>
+<p>The user name and system code of a FusionSolar API account give access to your plant data. SunWatt uses them only to read your data, keeps the system code in the keychain of your device, and sends them only to the FusionSolar server you enter (a fusionsolar.huawei.com address). Your installer can change the system code or delete the account in FusionSolar at any time.</p>
 
 <h2>Tracking, analytics, advertising</h2>
 <p>None. There are no third-party SDKs for analytics or ads, and no tracking across apps or websites.</p>
@@ -84,13 +88,14 @@ hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0}
 <p>La app solo se conecta a estos servidores para obtener los datos que muestra:</p>
 <ul>
 <li>El servidor de Huawei FusionSolar indicado en el enlace Kiosk que pegues (solo si añades un enlace), para leer los datos de tu planta.</li>
+<li>El servidor de Huawei FusionSolar que introduzcas para una cuenta de API de FusionSolar (solo si configuras una, una dirección de fusionsolar.huawei.com), para leer los datos de tu planta. Tu nombre de usuario y tu código del sistema se envían a ese servidor por HTTPS.</li>
 <li><code>monitoringapi.solaredge.com</code> (la API oficial de monitorización de SolarEdge, solo si configuras SolarEdge), para leer los datos de tu planta. El ID del sitio y tu clave API se envían a SolarEdge por HTTPS.</li>
 <li><code>pvoutput.org</code> (la API de PVOutput, solo si configuras PVOutput), para leer los datos de tu sistema. El ID de tu sistema y tu clave API se envían a PVOutput por HTTPS.</li>
 <li>Tu inversor en la red de tu casa (solo si introduces su dirección en Ajustes): el Smart Dongle de un inversor Huawei o un inversor SunSpec, como los de SolarEdge, SMA o Fronius, para leer la producción en directo con Modbus TCP. Esta conexión nunca sale de la red de tu casa, y SunWatt solo lee datos.</li>
 <li><code>apidatos.ree.es</code> (Red Eléctrica), para el precio PVPC regulado en España.</li>
 <li><code>api.energy-charts.info</code> (Energy-Charts, Fraunhofer ISE, licencia CC BY 4.0), para los precios del mercado mayorista (day-ahead) de Portugal, Francia, Alemania y Luxemburgo, Austria, Bélgica, Países Bajos y norte de Italia.</li>
 </ul>
-<p>Estos servidores reciben peticiones de red normales (por ejemplo tu dirección IP), como cualquier sitio web. No los controlamos. SunWatt no les envía cuenta, identificadores del dispositivo ni analíticas.</p>
+<p>Estos servidores reciben peticiones de red normales (por ejemplo tu dirección IP), como cualquier sitio web. No los controlamos. SunWatt no envía ningún identificador de dispositivo ni datos de analítica, ni ninguna cuenta distinta de la que configuraste para ese servicio.</p>
 
 <h2>Datos en tu dispositivo</h2>
 <p>Tus ajustes (país, opciones de widgets, enlace Kiosk, ID y clave API de SolarEdge o PVOutput) y los últimos datos recibidos se quedan en tu dispositivo. Solo los comparten la app y sus widgets mediante un App Group en el mismo dispositivo, y tu propio Apple Watch emparejado para que funcionen su app y sus complicaciones. Nunca se nos envían. Nosotros no podemos verlos.</p>
@@ -100,6 +105,9 @@ hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0}
 
 <h2>Claves API de SolarEdge y PVOutput</h2>
 <p>Una clave API da acceso a los datos de tu planta (en PVOutput, la misma clave también permite añadir datos a tu sistema). SunWatt solo la usa para leer tus datos y solo la envía a ese proveedor. Quien tenga la clave puede usarla, así que guárdala bien. Puedes revocarla cuando quieras en el portal del proveedor: en SolarEdge, en Admin &gt; Site Access &gt; API Access; en PVOutput, en Settings &gt; API Settings (desactiva el acceso API o genera una clave nueva). La clave antigua dejará de funcionar.</p>
+
+<h2>Cuenta de API de FusionSolar</h2>
+<p>El nombre de usuario y el código del sistema de una cuenta de API de FusionSolar dan acceso a los datos de tu planta. SunWatt los usa solo para leer tus datos, guarda el código del sistema en el llavero de tu dispositivo y los envía únicamente al servidor de FusionSolar que introduzcas (una dirección de fusionsolar.huawei.com). Tu instalador puede cambiar el código del sistema o eliminar la cuenta en FusionSolar en cualquier momento.</p>
 
 <h2>Rastreo, analíticas, publicidad</h2>
 <p>Ninguno. No hay SDK de terceros para analíticas o anuncios, ni rastreo entre apps o sitios web.</p>

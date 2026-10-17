@@ -1,0 +1,223 @@
+{
+  "success": true,
+  "failCode": 0,
+  "data": [
+    {
+      "collectTime": 1792188000000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792191600000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792195200000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792198800000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792202400000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792206000000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792209600000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792213200000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": 0.12,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792216800000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": 0.9,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792220400000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": 2.3,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792224000000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": 3.6,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792227600000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": 4.4,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792231200000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": 4.9,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792234800000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": 4.7,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792238400000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792242000000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792245600000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792249200000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792252800000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792256400000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792260000000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792263600000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792267200000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    },
+    {
+      "collectTime": 1792270800000,
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "inverter_power": null,
+        "radiation_intensity": null,
+        "power_profit": null
+      }
+    }
+  ],
+  "message": null
+}

@@ -19,6 +19,9 @@ struct SolarSetupEditor: View {
         let provider = model.settings(focusedOn: plantID).solarProvider
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             SolarProviderPicker(selection: providerBinding)
+            if provider.pickerGroup == .fusionSolar {
+                FusionSolarConnectionPicker(selection: providerBinding)
+            }
             switch provider.profile.setup {
             case .kioskLink:
                 KioskLinkEditor(model: model, plantID: plantID, initialTest: initialTest)
@@ -30,6 +33,18 @@ struct SolarSetupEditor: View {
                 if showsInverter {
                     hairline
                     InverterLinkEditor(model: model, plantID: plantID)
+                }
+            case .northboundAccount:
+                NorthboundAccountEditor(model: model, plantID: plantID, initialTest: initialTest)
+                hairline
+                atext("Your installer creates an API account in FusionSolar (Company Management → Northbound Management) and gives you its user name and system code. Unlike a kiosk link it does not expire. The server is the one in your FusionSolar address, for example eu5.fusionsolar.huawei.com.")
+                    .font(.system(.footnote, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                if showsInverter {
+                    hairline
+                    InverterLinkEditor(model: model, plantID: plantID)
+                        .id(provider)
                 }
             case .apiKey:
                 SolarAPIEditor(model: model, provider: provider, plantID: plantID, initialTest: initialTest)
@@ -52,7 +67,7 @@ struct SolarSetupEditor: View {
             get: { model.settings(focusedOn: plantID).solarProvider },
             set: { new in
                 model.updatePlant(plantID) { settings in
-                    if settings.solarProvider != new, new.usesAPIKey {
+                    if settings.solarProvider != new, new.usesCredentialFields {
                         settings.solarSiteID = ""
                         settings.solarAPIKey = ""
                     }
@@ -79,7 +94,7 @@ struct SolarSetupEditor: View {
     /// Where the ID and key are found, per provider (exhaustive: a new provider needs its own text).
     private func apiHelp(_ provider: SolarProvider) -> Text {
         switch provider {
-        case .fusionSolar: Text(verbatim: "")
+        case .fusionSolar, .fusionSolarAPI: Text(verbatim: "")
         case .solarEdge: atext("In the SolarEdge monitoring portal open Admin, then Site Access and API Access. Accept the terms, then copy the API key and the site ID.")
         case .pvOutput: atext("On pvoutput.org open Settings. Turn on API Access, then copy the API Key and the System Id shown on that page.")
         }
@@ -107,9 +122,9 @@ struct SolarProviderPicker: View {
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, Theme.Spacing.xs)
             HStack(spacing: 6) {
-                ForEach(SolarProvider.allCases) { provider in
-                    let isSelected = provider == selection
-                    Button { selection = provider } label: {
+                ForEach(SolarProvider.pickerCases) { provider in
+                    let isSelected = provider == selection.pickerGroup
+                    Button { if !isSelected { selection = provider } } label: {
                         Text(verbatim: provider.shortName)
                             .font(.system(.footnote, design: .rounded).weight(isSelected ? .bold : .medium))
                             .lineLimit(1)
@@ -204,14 +219,14 @@ struct SolarAPIEditor: View {
     /// Field label and key example per provider (exhaustive: a new provider needs its own).
     private var idLabel: LocalizedStringKey {
         switch provider {
-        case .fusionSolar, .pvOutput: "System ID"
+        case .fusionSolar, .fusionSolarAPI, .pvOutput: "System ID"
         case .solarEdge: "Site ID"
         }
     }
 
     private var keyPrompt: String {
         switch provider {
-        case .fusionSolar, .pvOutput: "a1b2c3d4…"
+        case .fusionSolar, .fusionSolarAPI, .pvOutput: "a1b2c3d4…"
         case .solarEdge: "ABCD1234…"
         }
     }
@@ -651,6 +666,156 @@ struct PlantNameEditor: View {
         guard value != plant.name else { return }
         plant.name = value
         model.updateSettings { $0.updatePlant(plant) }
+    }
+}
+
+/// FusionSolar: "Kiosk link" or "API account" (Northbound API), two ways to connect the same service.
+struct FusionSolarConnectionPicker: View {
+    @Binding var selection: SolarProvider
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        let palette = AppPalette(scheme)
+        HStack(spacing: 4) {
+            option(.fusionSolar, palette: palette) { atext("Kiosk link") }
+            option(.fusionSolarAPI, palette: palette) { atext("API account") }
+        }
+        .padding(3)
+        .background(Capsule().fill(palette.fill))
+    }
+
+    private func option(_ provider: SolarProvider, palette: AppPalette, label: () -> Text) -> some View {
+        let isSelected = selection == provider
+        return Button { selection = provider } label: {
+            label()
+                .font(.system(.footnote, design: .rounded).weight(isSelected ? .bold : .medium))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 7)
+                .background(Capsule().fill(isSelected ? palette.card : Color.clear))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+/// FusionSolar API account: server, user name and system code, with a connection test. Saved like the API editor.
+struct NorthboundAccountEditor: View {
+    let model: AppModel
+    let plantID: String
+    @State private var host: String
+    @State private var userName: String
+    @State private var systemCode: String
+    @State private var test: KioskTestState
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.scenePhase) private var scenePhase
+
+    init(model: AppModel, plantID: String = SolarPlant.primaryID, initialTest: KioskTestState = .idle) {
+        self.model = model
+        self.plantID = plantID
+        let settings = model.settings(focusedOn: plantID)
+        _host = State(initialValue: settings.northboundHost)
+        _userName = State(initialValue: settings.solarSiteID)
+        _systemCode = State(initialValue: settings.solarAPIKey)
+        _test = State(initialValue: initialTest)
+    }
+
+    private enum Input { case empty, valid, invalid }
+
+    private var input: Input {
+        let user = userName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let code = systemCode.trimmingCharacters(in: .whitespacesAndNewlines)
+        if user.isEmpty && code.isEmpty { return .empty }
+        return NorthboundCredentials(host: host, userName: user, systemCode: code) != nil ? .valid : .invalid
+    }
+
+    var body: some View {
+        let palette = AppPalette(scheme)
+        let input = input
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            fieldLabel("User name")
+            AppTextField(prompt: "api_user", text: $userName, onCommit: commit)
+            fieldLabel("System code")
+            AppTextField(prompt: "••••••••", text: $systemCode, onCommit: commit)
+            fieldLabel("Server")
+            AppTextField(prompt: NorthboundCredentials.defaultHost, text: $host, onCommit: commit)
+            validationRow(input, palette: palette)
+            HStack(spacing: Theme.Spacing.s) {
+                Button { runTest() } label: {
+                    Label { atext("Test connection") } icon: { Image(systemName: "bolt.horizontal.circle") }
+                }
+                .buttonStyle(SoftButtonStyle(compact: true))
+                .disabled(input != .valid)
+                .opacity(input != .valid ? 0.5 : 1)
+                Spacer(minLength: 0)
+            }
+            .padding(.top, Theme.Spacing.xs)
+            SolarTestResult(state: test)
+        }
+        .onChange(of: "\(host)\n\(userName)\n\(systemCode)") { _, _ in test = .idle }
+        .task(id: "\(host)\n\(userName)\n\(systemCode)") {
+            guard self.input == .valid else { return }
+            do { try await Task.sleep(for: KioskURLDraft.defaultDebounce) } catch { return }
+            commit()
+        }
+        .onDisappear { commit() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { commit() }
+        }
+    }
+
+    private func fieldLabel(_ key: LocalizedStringKey) -> some View {
+        atext(key)
+            .font(.system(.footnote, design: .rounded).weight(.semibold))
+            .padding(.horizontal, Theme.Spacing.xs)
+    }
+
+    private func validationRow(_ input: Input, palette: AppPalette) -> some View {
+        HStack(alignment: .top, spacing: 6) {
+            switch input {
+            case .empty:
+                Image(systemName: "key").foregroundStyle(.secondary)
+                atext("Enter the user name and the system code.").foregroundStyle(.secondary)
+            case .valid:
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.success)
+                atext("Ready. Test the connection to check it.").foregroundStyle(palette.success)
+            case .invalid:
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(palette.warning)
+                Text(verbatim: SunWattError.invalidNorthboundAccount.localizedDescription).foregroundStyle(palette.warning)
+            }
+        }
+        .font(.system(.footnote, design: .rounded).weight(.medium))
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.horizontal, Theme.Spacing.xs)
+    }
+
+    /// Saves the three fields at once, only while this is still the plant's provider.
+    private func commit() {
+        let saved = model.settings(focusedOn: plantID)
+        guard saved.solarProvider == .fusionSolarAPI else { return }
+        let server = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        let user = userName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let code = systemCode.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard server != saved.northboundHost || user != saved.solarSiteID || code != saved.solarAPIKey else { return }
+        model.updatePlant(plantID) {
+            $0.northboundHost = server
+            $0.solarSiteID = user
+            $0.solarAPIKey = code
+        }
+    }
+
+    private func runTest() {
+        commit()
+        test = .testing
+        let server = host, user = userName, code = systemCode
+        Task {
+            switch await model.testNorthbound(host: server, userName: user, systemCode: code) {
+            case .success(let solar): test = .success(solar)
+            case .failure(let error): test = .failure(error.localizedDescription)
+            }
+        }
     }
 }
 

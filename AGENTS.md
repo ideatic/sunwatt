@@ -6,10 +6,11 @@ Guide for coding agents (and humans) working on SunWatt. Read this first, then `
 
 SunWatt shows home energy data in widgets and an app:
 
-- **Solar production** from one of three providers (`SolarProvider`, chosen under "Solar system"):
+- **Solar production** from one of four providers (`SolarProvider`, chosen under "Solar system"):
   - Huawei FusionSolar *kiosk link* (public read-only URL with a `kk=` token),
   - SolarEdge Monitoring API (site ID + API key; `overview` + `power`, 2 requests per fetch),
   - PVOutput (system ID + API key in headers; covers many inverter brands).
+  - Huawei FusionSolar *API account* (Northbound API: user name + system code from the installer, server `*.fusionsolar.huawei.com`; rate-limited, at most one fetch every 10 min).
   - Optional live data at home over Modbus TCP: the Huawei dongle (FusionSolar) or a SunSpec inverter (SolarEdge, PVOutput users), read-only (DECISIONS D18, D20).
 - **Electricity price**: Spain retail PVPC (Red Eléctrica, `apidatos.ree.es`); Portugal, France, Germany+Luxembourg, Austria, Belgium, Netherlands, North Italy day-ahead wholesale (Energy-Charts, `api.energy-charts.info`, Fraunhofer ISE, CC BY 4.0). Wholesale is labelled "Day-ahead price", never sold as retail.
 
@@ -38,7 +39,7 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 ### Inside `SunWattKit/Sources/SunWattKit`
 
 - `Models/`: `SolarPlant` (one plant; the first lives in the original settings fields, further ones in `additionalPlants`), `PriceRegion` (8 regions, time zone, source), `PriceSeries` (+ analysis: min/max/cheapest hours, + building/aggregation 15 min → hourly), `SolarSnapshot`, `Settings`, `SunWattData`.
-- `Services/`: `HTTPClient` protocol (stubbed in tests), `FusionSolarKioskClient`, `KioskEndpoint` (parse/validate link, `cacheID` = SHA-256 of host+token), `SolarEdgeClient`, `PVOutputClient` (+ `SolarLocalTime` helpers), `LocalInverter` (`ModbusEndpoint`, `LocalInverterSolarClient`: cloud + inverter), `HuaweiModbus`, `SunSpec`, `InverterFinder` ("Find inverter" scan), `HTMLEntities`, `PVPCClient`, `EnergyChartsClient`.
+- `Services/`: `HTTPClient` protocol (stubbed in tests), `FusionSolarKioskClient`, `KioskEndpoint` (parse/validate link, `cacheID` = SHA-256 of host+token), `NorthboundClient` (FusionSolar API account), `SolarEdgeClient`, `PVOutputClient` (+ `SolarLocalTime` helpers), `LocalInverter` (`ModbusEndpoint`, `LocalInverterSolarClient`: cloud + inverter), `HuaweiModbus`, `SunSpec`, `InverterFinder` ("Find inverter" scan), `HTMLEntities`, `PVPCClient`, `EnergyChartsClient`.
 - `Models/SolarAccount`: `SolarProvider`, `SolarAPICredentials` (validated ID + key), `SolarAccount` (validated settings → client + `cacheID`). Every solar consumer goes through `SolarAccount(settings:)` / `SolarAccount(plant:)`; do not read `kioskURL` directly. Code written for one plant serves any plant through `SunWattSettings.focused(on:)`; with one plant nothing in the UI may change (`SunWattData.plantName` is nil, `otherPlants` empty).
 - `Store/AppGroupStore`: settings + last good data in the App Group, local fallback when the group container is missing.
 - `Timeline/`: `SunWattLoader` (fetch with deadline + cache window), `TimelineBuilder` (widget entries, stale flags), `PriceRangeDataSource`.
@@ -48,7 +49,7 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 
 ## Rules that must not break
 
-1. **Kiosk token and API keys are secrets.** Never commit a kiosk URL or a SolarEdge/PVOutput key, never log them, never put them in error text or descriptions (`HTTPFetch.perform(redacting:)`, custom `description`/`customMirror`), never write them to a disk cache (the dedicated ephemeral `URLSession` has no URL cache). They are stored in the keychain (`KeychainSecretStore`, DECISIONS D19), not in the settings plist. Release builds must not contain `kiosk.local`.
+1. **Kiosk token and API keys are secrets.** Never commit a kiosk URL, a SolarEdge/PVOutput key or a FusionSolar API system code (or its session token), never log them, never put them in error text or descriptions (`HTTPFetch.perform(redacting:)`, custom `description`/`customMirror`), never write them to a disk cache (the dedicated ephemeral `URLSession` has no URL cache). They are stored in the keychain (`KeychainSecretStore`, DECISIONS D19), not in the settings plist. Release builds must not contain `kiosk.local`.
 2. **No personal data in fixtures.** Real captures are fine, but replace station name, address and station id (`stationDn`) with demo values *before* the first commit. History was rewritten once to remove such data (DECISIONS D5); do not reintroduce it.
 3. **Widget budget.** Widget extensions get ~30 s. `SunWattLoader.load(deadline:)` defaults to 15 s per source; keep every network path under that deadline and cancellable.
 4. **Rate limits.** SolarEdge: 300 requests/day per site; `SolarProvider.minimumFetchInterval` (20 min) makes the loader reuse younger solar data, and a failure younger than that, even on explicit refreshes. PVOutput: 60/hour. **Energy-Charts rate-limits (HTTP 429).** One request per refresh (today+tomorrow as one range). Widgets, controls and intents pass `maxCacheAge: SunWattLoader.sharedCacheWindow` (120 s); only explicit refreshes use 0. A 429 falls back to cached data.

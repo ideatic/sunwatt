@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "failCode": 0,
+  "data": [
+    {
+      "devId": 1000000033812345,
+      "sn": "DEMO000001",
+      "dataItemMap": {
+        "active_power": 4.812,
+        "day_cap": 14.37,
+        "total_cap": 44150.55,
+        "run_state": 1,
+        "inverter_state": 512.0
+      }
+    }
+  ],
+  "message": null
+}

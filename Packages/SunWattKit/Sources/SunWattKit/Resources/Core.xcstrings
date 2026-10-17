@@ -861,6 +861,129 @@
           }
         }
       }
+    },
+    "Enter the user name and the system code of your FusionSolar API account." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce el nombre de usuario y el código del sistema de tu cuenta de API de FusionSolar."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduza o nome de utilizador e o código do sistema da sua conta API do FusionSolar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez le nom d’utilisateur et le code système de votre compte API FusionSolar."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib den Benutzernamen und den Systemcode deines FusionSolar-API-Kontos ein."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci il nome utente e il codice di sistema del tuo account API di FusionSolar."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voer de gebruikersnaam en de systeemcode van het FusionSolar-API-account in."
+          }
+        }
+      }
+    },
+    "FusionSolar did not accept the user name or the system code. Check both with your installer." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FusionSolar no ha aceptado el nombre de usuario ni el código del sistema. Compruébalos con tu instalador."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O FusionSolar não aceitou o nome de utilizador nem o código do sistema. Verifique ambos com o seu instalador."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FusionSolar n’a pas accepté le nom d’utilisateur ou le code système. Vérifiez les deux avec votre installateur."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FusionSolar hat den Benutzernamen oder den Systemcode nicht akzeptiert. Prüfe beides mit deinem Installateur."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FusionSolar non ha accettato il nome utente o il codice di sistema. Controllali entrambi con il tuo installatore."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De gebruikersnaam of de systeemcode is geweigerd door FusionSolar. Controleer beide bij de installateur."
+          }
+        }
+      }
+    },
+    "The provider allows only a few requests at a time. SunWatt will try again in a few minutes." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El proveedor solo admite unas pocas solicitudes en un periodo corto. SunWatt volverá a intentarlo en unos minutos."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O serviço só permite alguns pedidos de cada vez. O SunWatt voltará a tentar dentro de alguns minutos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fournisseur limite le nombre de requêtes sur une courte période. SunWatt réessaiera dans quelques minutes."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Anbieter erlaubt nur wenige Anfragen in kurzer Zeit. SunWatt versucht es in wenigen Minuten erneut."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il fornitore consente solo poche richieste alla volta. SunWatt riproverà tra qualche minuto."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De aanbieder staat maar een paar verzoeken in korte tijd toe. SunWatt probeert het over een paar minuten opnieuw."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

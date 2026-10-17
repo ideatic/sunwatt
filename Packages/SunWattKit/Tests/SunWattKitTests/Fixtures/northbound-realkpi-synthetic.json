@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "failCode": 0,
+  "data": [
+    {
+      "stationCode": "NE=12345678",
+      "dataItemMap": {
+        "day_power": "14.37",
+        "month_power": "412.6",
+        "total_power": "44150.55",
+        "day_income": "2.1",
+        "real_health_state": "3"
+      }
+    }
+  ],
+  "message": null
+}

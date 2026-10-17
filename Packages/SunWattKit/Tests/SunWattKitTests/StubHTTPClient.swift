@@ -4,7 +4,7 @@ import Foundation
 /// Fixture-backed HTTP client. Routes by a substring of the request URL; records every request.
 final class StubHTTPClient: HTTPClient, @unchecked Sendable {
     enum Reply {
-        case ok(Data, status: Int = 200)
+        case ok(Data, status: Int = 200, headers: [String: String] = [:])
         case failure(Error)
     }
 
@@ -31,8 +31,8 @@ final class StubHTTPClient: HTTPClient, @unchecked Sendable {
             return routes.first { url.contains($0.match) }?.reply ?? fallback
         }
         switch reply {
-        case .ok(let data, let status):
-            let response = HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: nil)!
+        case .ok(let data, let status, let headers):
+            let response = HTTPURLResponse(url: request.url!, statusCode: status, httpVersion: nil, headerFields: headers)!
             return (data, response)
         case .failure(let error):
             throw error

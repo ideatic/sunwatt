@@ -32,8 +32,8 @@ public extension URLSession {
 ///   live snapshots.
 /// - **Errors.** Only `CancellationError` (the task was cancelled; never wrapped) or `SunWattError`:
 ///   `.network` (no connection, timeout), `.http(status:)` (any other non-2xx), `.badResponse` (the body cannot be
-///   read), `.unavailable` (no data for today yet), and the account errors `.kioskLinkRejected`,
-///   `.solarCredentialsRejected`, `.inverterUnreachable`. The loader shows them to the user, so their text must
+///   read), `.unavailable` (no data for today yet), `.rateLimited` (asked too often), and the account errors
+///   `.kioskLinkRejected`, `.solarCredentialsRejected`, `.northboundAccountRejected`, `.inverterUnreachable`. The loader shows them to the user, so their text must
 ///   never contain the kiosk token or an API key (`HTTPFetch.perform(redacting:)`).
 /// - **Budget.** One fetch must finish well within `SunWattLoader.load(deadline:)` (15 s) and stop when cancelled.
 ///   Rate limits are the provider's `SolarProviderProfile.minimumFetchInterval`, applied by the loader, not here.
@@ -81,6 +81,13 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
     case invalidSolarCredentials
     /// SolarEdge / PVOutput answered 401 or 403: wrong key or ID, or the API access is off.
     case solarCredentialsRejected
+    /// FusionSolar API account: the user name or system code is missing, or the server is not a FusionSolar one.
+    case invalidNorthboundAccount
+    /// FusionSolar API account: the login was refused (wrong user name or system code, or not an API account).
+    case northboundAccountRejected
+    /// The provider refused because SunWatt asked too often (FusionSolar API failCode 407). Kept for the provider's
+    /// fetch interval, then asked again.
+    case rateLimited
     case notConfigured
     case http(status: Int)
     case badResponse(String)
@@ -95,6 +102,9 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
         case .inverterUnreachable: L10n.string("The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is turned on (in a Huawei dongle: “Enable (unrestricted)”).")
         case .invalidSolarCredentials: L10n.string("The ID must be a number and the API key letters and digits only.")
         case .solarCredentialsRejected: L10n.string("The API key or the ID was rejected. Check both, and that API access is on.")
+        case .invalidNorthboundAccount: L10n.string("Enter the user name and the system code of your FusionSolar API account.")
+        case .northboundAccountRejected: L10n.string("FusionSolar did not accept the user name or the system code. Check both with your installer.")
+        case .rateLimited: L10n.string("The provider allows only a few requests at a time. SunWatt will try again in a few minutes.")
         case .notConfigured: L10n.string("Set up your solar system in Settings.")
         case .http(let status): L10n.string("The server responded with code \(status).")
         case .badResponse(let detail): L10n.string("Invalid response: \(detail)")

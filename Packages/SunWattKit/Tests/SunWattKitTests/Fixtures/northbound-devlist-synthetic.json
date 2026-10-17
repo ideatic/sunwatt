@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "failCode": 0,
+  "data": [
+    {
+      "id": 1000000033812345,
+      "devTypeId": 1,
+      "devName": "Inverter-1",
+      "esnCode": "DEMO000001",
+      "stationCode": "NE=12345678"
+    },
+    {
+      "id": 1000000033812399,
+      "devTypeId": 62,
+      "devName": "Dongle-1",
+      "esnCode": "DEMO000002",
+      "stationCode": "NE=12345678"
+    }
+  ],
+  "message": null
+}

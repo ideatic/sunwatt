@@ -427,6 +427,24 @@ public final class AppModel {
             return .failure(SunWattError.unavailable)
         }
         guard let account = SolarAccount.api(provider, credentials) else { return .failure(SunWattError.invalidSolarCredentials) }
+        return await test(account)
+    }
+
+    /// Logs in to a FusionSolar API account and fetches once with the typed values (not necessarily saved).
+    public func testNorthbound(host: String, userName: String, systemCode: String) async -> Result<SolarSnapshot, Error> {
+        guard let credentials = NorthboundCredentials(host: host, userName: userName, systemCode: systemCode) else {
+            return .failure(SunWattError.invalidNorthboundAccount)
+        }
+        if isDemo {
+            try? await Task.sleep(for: .milliseconds(400))
+            if let solar = SampleData.entry(.day).data.solar { return .success(solar) }
+            return .failure(SunWattError.unavailable)
+        }
+        return await test(.fusionSolarAPI(credentials))
+    }
+
+    /// One fetch of `account`. Rate-limited providers: the test is the fetch, see below.
+    private func test(_ account: SolarAccount) async -> Result<SolarSnapshot, Error> {
         // The test is the fetch: the refresh scheduled by saving the fields would send the same requests again
         // (SolarEdge allows 300 a day). Its result is kept for the saved account, then the dashboard refreshes
         // without asking the provider again (see `SolarProvider.minimumFetchInterval`).

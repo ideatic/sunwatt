@@ -54,6 +54,13 @@ struct SolarContractCase: Sendable, CustomTestStringConvertible {
                 PVOutputClient(credentials: SolarAPICredentials(siteID: "42", apiKey: contractKey)!, http: http, now: { now }, calendar: Constants.madridCalendar)
             },
         SolarContractCase(
+            name: "FusionSolar API", now: madrid(2026, 10, 17, 13, 40),
+            routes: northboundRoutes, secret: "SYSTEMCODE99", rejected: .northboundAccountRejected,
+            expectsLive: false) { http, now in
+                NorthboundClient(credentials: NorthboundCredentials(host: "", userName: "api_user", systemCode: "SYSTEMCODE99")!,
+                                 http: http, now: { now }, sessions: NorthboundSessionStore())
+            },
+        SolarContractCase(
             name: "Huawei inverter", now: madrid(2026, 6, 1, 12, 35), routes: nil, secret: nil, rejected: nil,
             expectsLive: true) { _, now in
                 LocalInverterSolarClient(local: HuaweiModbusClient(endpoint: ModbusEndpoint(host: "x"), makeTransport: { _ in
@@ -69,12 +76,23 @@ struct SolarContractCase: Sendable, CustomTestStringConvertible {
             },
     ]
 
+    /// Every reply carries a session token header (the FusionSolar API login sends it; others ignore it).
     func stub() throws -> StubHTTPClient {
         let http = StubHTTPClient()
-        for (match, fixture) in routes ?? [] { http.on(match, .ok(try Fixture.data(fixture))) }
+        for (match, fixture) in routes ?? [] { http.on(match, .ok(try Fixture.data(fixture), headers: ["xsrf-token": "test-token"])) }
         return http
     }
 }
+
+/// FusionSolar API interfaces → fixtures.
+let northboundRoutes: [(String, String)] = [
+    ("/thirdData/login", "northbound-login-synthetic.json"),
+    ("/thirdData/getStationList", "northbound-stationlist-synthetic.json"),
+    ("/thirdData/getStationRealKpi", "northbound-realkpi-synthetic.json"),
+    ("/thirdData/getDevList", "northbound-devlist-synthetic.json"),
+    ("/thirdData/getDevRealKpi", "northbound-devrealkpi-synthetic.json"),
+    ("/thirdData/getKpiStationHour", "northbound-hour-synthetic.json"),
+]
 
 @Suite struct SolarDataSourceContractTests {
     @Test(arguments: SolarContractCase.all)

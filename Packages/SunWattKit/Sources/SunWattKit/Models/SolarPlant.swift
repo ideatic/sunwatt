@@ -24,6 +24,8 @@ public struct SolarPlant: Hashable, Sendable, Identifiable, CustomStringConverti
     public var huaweiLocalUnitID: Int
     public var sunSpecHost: String
     public var sunSpecUnitID: Int
+    /// FusionSolar API account: the server; empty: `NorthboundCredentials.defaultHost`.
+    public var northboundHost: String
 
     public init(
         id: String = UUID().uuidString,
@@ -37,7 +39,8 @@ public struct SolarPlant: Hashable, Sendable, Identifiable, CustomStringConverti
         huaweiLocalHost: String = "",
         huaweiLocalUnitID: Int = 1,
         sunSpecHost: String = "",
-        sunSpecUnitID: Int = 1
+        sunSpecUnitID: Int = 1,
+        northboundHost: String = ""
     ) {
         self.id = id
         self.name = name
@@ -51,6 +54,7 @@ public struct SolarPlant: Hashable, Sendable, Identifiable, CustomStringConverti
         self.huaweiLocalUnitID = huaweiLocalUnitID
         self.sunSpecHost = sunSpecHost
         self.sunSpecUnitID = sunSpecUnitID
+        self.northboundHost = northboundHost
     }
 
     public var isPrimary: Bool { id == Self.primaryID }
@@ -77,7 +81,7 @@ public struct SolarPlant: Hashable, Sendable, Identifiable, CustomStringConverti
 extension SolarPlant: Codable {
     private enum CodingKeys: String, CodingKey {
         case id, name, provider, kioskURL, siteID, apiKey, kioskLinkSavedAt, kioskExpiryNoticeDismissed
-        case huaweiLocalHost, huaweiLocalUnitID, sunSpecHost, sunSpecUnitID
+        case huaweiLocalHost, huaweiLocalUnitID, sunSpecHost, sunSpecUnitID, northboundHost
     }
 
     /// Missing keys (older or newer versions) fall back to defaults.
@@ -95,6 +99,7 @@ extension SolarPlant: Codable {
         huaweiLocalUnitID = try c.decodeIfPresent(Int.self, forKey: .huaweiLocalUnitID) ?? 1
         sunSpecHost = try c.decodeIfPresent(String.self, forKey: .sunSpecHost) ?? ""
         sunSpecUnitID = try c.decodeIfPresent(Int.self, forKey: .sunSpecUnitID) ?? 1
+        northboundHost = try c.decodeIfPresent(String.self, forKey: .northboundHost) ?? ""
     }
 }
 
@@ -106,7 +111,8 @@ public extension SunWattSettings {
                 id: SolarPlant.primaryID, name: primaryPlantName, provider: solarProvider, kioskURL: kioskURL,
                 siteID: solarSiteID, apiKey: solarAPIKey, kioskLinkSavedAt: kioskLinkSavedAt,
                 kioskExpiryNoticeDismissed: kioskExpiryNoticeDismissed, huaweiLocalHost: huaweiLocalHost,
-                huaweiLocalUnitID: huaweiLocalUnitID, sunSpecHost: sunSpecHost, sunSpecUnitID: sunSpecUnitID)
+                huaweiLocalUnitID: huaweiLocalUnitID, sunSpecHost: sunSpecHost, sunSpecUnitID: sunSpecUnitID,
+                northboundHost: northboundHost)
         }
         set {
             primaryPlantName = newValue.name
@@ -120,6 +126,7 @@ public extension SunWattSettings {
             huaweiLocalUnitID = newValue.huaweiLocalUnitID
             sunSpecHost = newValue.sunSpecHost
             sunSpecUnitID = newValue.sunSpecUnitID
+            northboundHost = newValue.northboundHost
         }
     }
 

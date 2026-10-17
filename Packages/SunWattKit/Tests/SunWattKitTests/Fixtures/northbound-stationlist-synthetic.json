@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "failCode": 0,
+  "data": [
+    {
+      "stationCode": "NE=12345678",
+      "stationName": "Demo plant",
+      "stationAddr": "Demo street 1",
+      "capacity": 15.0
+    }
+  ],
+  "message": null
+}

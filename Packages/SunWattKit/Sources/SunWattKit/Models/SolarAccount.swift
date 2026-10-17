@@ -9,6 +9,9 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
     case solarEdge
     /// pvoutput.org: system ID + API key. Many inverter brands upload there.
     case pvOutput
+    /// Huawei FusionSolar Northbound API ("API account"): user name + system code of an account the installer creates.
+    /// Shown as the second way to connect FusionSolar, not as its own button.
+    case fusionSolarAPI
 
     public var id: String { rawValue }
 
@@ -33,8 +36,21 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
                 displayName: "PVOutput", shortName: "PVOutput", setup: .apiKey,
                 portalURL: URL(string: "https://pvoutput.org/account.jsp"),
                 minimumFetchInterval: 0, localInverter: .sunSpec, keepsCloudHome: true)
+        case .fusionSolarAPI:
+            // Huawei limits how often each interface may be called (HTTP 200 with failCode 407) and allows one session
+            // per account; a fetch is 3 to 5 calls. Every 10 minutes keeps an iPhone and a Watch inside the limits.
+            SolarProviderProfile(
+                displayName: "Huawei FusionSolar API", shortName: "FusionSolar", setup: .northboundAccount,
+                portalURL: URL(string: "https://\(NorthboundCredentials.defaultHost)"),
+                minimumFetchInterval: 10 * 60, localInverter: .huawei, keepsCloudHome: false, pickerGroup: .fusionSolar)
         }
     }
+
+    /// The providers with their own button in the picker (the others are a second way to connect one of them).
+    public static var pickerCases: [SolarProvider] { allCases.filter { $0.pickerGroup == $0 } }
+
+    /// The picker button that shows as selected for this provider.
+    public var pickerGroup: SolarProvider { profile.pickerGroup ?? self }
 
     /// Brand name, the same in every language.
     public var displayName: String { profile.displayName }
@@ -44,6 +60,9 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
     public var portalURL: URL? { profile.portalURL }
     /// True when the provider is set up with an ID + API key (not a link).
     public var usesAPIKey: Bool { profile.setup == .apiKey }
+    /// True when the provider's credentials are kept in `solarSiteID` and `solarAPIKey` (ID + key, or user name +
+    /// system code): switching between such providers clears them.
+    public var usesCredentialFields: Bool { profile.setup != .kioskLink }
     /// Solar data younger than this is reused instead of fetched, even on an explicit refresh.
     public var minimumFetchInterval: TimeInterval { profile.minimumFetchInterval }
 }
@@ -56,6 +75,8 @@ public struct SolarProviderProfile: Sendable {
         case kioskLink
         /// An ID + API key (`SolarAPICredentials`), kept in the keychain.
         case apiKey
+        /// A user name + system code (`NorthboundCredentials`) on a FusionSolar server; the code in the keychain.
+        case northboundAccount
     }
 
     /// Brand name, the same in every language.
@@ -73,6 +94,20 @@ public struct SolarProviderProfile: Sendable {
     /// Keep the cloud's home consumption next to live inverter data that has no meter reading (the provider's own
     /// meter measures it). False: the inverter's meter is the only source (Huawei).
     public let keepsCloudHome: Bool
+    /// The picker button this provider belongs to when it is another way to connect that provider; nil: its own.
+    public let pickerGroup: SolarProvider?
+
+    init(displayName: String, shortName: String, setup: Setup, portalURL: URL?, minimumFetchInterval: TimeInterval,
+         localInverter: LocalInverterKind, keepsCloudHome: Bool, pickerGroup: SolarProvider? = nil) {
+        self.displayName = displayName
+        self.shortName = shortName
+        self.setup = setup
+        self.portalURL = portalURL
+        self.minimumFetchInterval = minimumFetchInterval
+        self.localInverter = localInverter
+        self.keepsCloudHome = keepsCloudHome
+        self.pickerGroup = pickerGroup
+    }
 }
 
 /// Site/system ID + API key of SolarEdge or PVOutput. Both values are trimmed; the ID must be digits only and the
@@ -104,6 +139,8 @@ public enum SolarAccount: Hashable, Sendable {
     /// `local`: a SunSpec inverter on the home network (optional), read for live data while it answers.
     case solarEdge(SolarAPICredentials, local: ModbusEndpoint? = nil)
     case pvOutput(SolarAPICredentials, local: ModbusEndpoint? = nil)
+    /// FusionSolar Northbound API account; `local`: the Huawei dongle on the home network (optional).
+    case fusionSolarAPI(NorthboundCredentials, local: ModbusEndpoint? = nil)
 
     /// The first plant's account.
     public init?(settings: SunWattSettings) {
@@ -127,13 +164,16 @@ public enum SolarAccount: Hashable, Sendable {
             let local = ModbusEndpoint(parsing: plant.sunSpecHost, unitID: plant.sunSpecUnitID)
             guard let account = Self.api(plant.provider, credentials, local: local) else { return nil }
             self = account
+        case .fusionSolarAPI:
+            guard let credentials = NorthboundCredentials(host: plant.northboundHost, userName: plant.siteID, systemCode: plant.apiKey) else { return nil }
+            self = .fusionSolarAPI(credentials, local: HuaweiLocalEndpoint(parsing: plant.huaweiLocalHost, unitID: plant.huaweiLocalUnitID))
         }
     }
 
     /// The account of an ID + API key provider; nil for a provider set up otherwise.
     public static func api(_ provider: SolarProvider, _ credentials: SolarAPICredentials, local: ModbusEndpoint? = nil) -> SolarAccount? {
         switch provider {
-        case .fusionSolar: nil
+        case .fusionSolar, .fusionSolarAPI: nil
         case .solarEdge: .solarEdge(credentials, local: local)
         case .pvOutput: .pvOutput(credentials, local: local)
         }
@@ -144,7 +184,7 @@ public enum SolarAccount: Hashable, Sendable {
         switch self {
         case .fusionSolar(let endpoint): endpoint
         case .huaweiLocal(_, let kiosk): kiosk
-        case .solarEdge, .pvOutput: nil
+        case .solarEdge, .pvOutput, .fusionSolarAPI: nil
         }
     }
 
@@ -153,7 +193,7 @@ public enum SolarAccount: Hashable, Sendable {
         switch self {
         case .fusionSolar: nil
         case .huaweiLocal(let local, _): local
-        case .solarEdge(_, let local), .pvOutput(_, let local): local
+        case .solarEdge(_, let local), .pvOutput(_, let local), .fusionSolarAPI(_, let local): local
         }
     }
 
@@ -162,7 +202,8 @@ public enum SolarAccount: Hashable, Sendable {
         switch self {
         case .fusionSolar: nil
         case .huaweiLocal(let local, _): HuaweiModbusClient(endpoint: local, makeTransport: makeTransport)
-        case .solarEdge(_, let local), .pvOutput(_, let local): local.map { SunSpecClient(endpoint: $0, makeTransport: makeTransport) }
+        case .solarEdge(_, let local), .pvOutput(_, let local), .fusionSolarAPI(_, let local):
+            local.map { provider.profile.localInverter.reader($0, makeTransport: makeTransport) }
         }
     }
 
@@ -171,6 +212,7 @@ public enum SolarAccount: Hashable, Sendable {
         case .fusionSolar, .huaweiLocal: .fusionSolar
         case .solarEdge: .solarEdge
         case .pvOutput: .pvOutput
+        case .fusionSolarAPI: .fusionSolarAPI
         }
     }
 
@@ -188,6 +230,9 @@ public enum SolarAccount: Hashable, Sendable {
             // The inverter address is not part of it: adding one keeps the cloud cache.
             let text = "\(provider.rawValue)\n\(credentials.siteID)\n\(credentials.apiKey)"
             return SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
+        case .fusionSolarAPI(let credentials, _):
+            let text = "\(provider.rawValue)\n\(credentials.host)\n\(credentials.userName)\n\(credentials.systemCode)"
+            return SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
         }
     }
 
@@ -201,6 +246,8 @@ public enum SolarAccount: Hashable, Sendable {
             withLocal(local, cloud: SolarEdgeClient(credentials: credentials, http: http))
         case .pvOutput(let credentials, let local):
             withLocal(local, cloud: PVOutputClient(credentials: credentials, http: http))
+        case .fusionSolarAPI(let credentials, let local):
+            withLocal(local, cloud: NorthboundClient(credentials: credentials, http: http))
         }
     }
 
@@ -221,12 +268,19 @@ public extension SunWattSettings {
     /// True when the user typed anything for the selected provider (valid or not).
     var hasSolarInput: Bool {
         func filled(_ s: String) -> Bool { !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-        return solarProvider.usesAPIKey ? filled(solarSiteID) || filled(solarAPIKey) : filled(kioskURL) || filled(huaweiLocalHost)
+        switch solarProvider.profile.setup {
+        case .kioskLink: return filled(kioskURL) || filled(huaweiLocalHost)
+        case .apiKey, .northboundAccount: return filled(solarSiteID) || filled(solarAPIKey)
+        }
     }
 
     /// The error to show when there is input for the selected provider but it is not valid.
     var invalidSolarInputError: SunWattError {
-        if solarProvider.usesAPIKey { return .invalidSolarCredentials }
+        switch solarProvider.profile.setup {
+        case .apiKey: return .invalidSolarCredentials
+        case .northboundAccount: return .invalidNorthboundAccount
+        case .kioskLink: break
+        }
         let hostFilled = !huaweiLocalHost.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         if hostFilled, HuaweiLocalEndpoint(parsing: huaweiLocalHost, unitID: huaweiLocalUnitID) == nil { return .invalidInverterAddress }
         return .invalidKioskURL

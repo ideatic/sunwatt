@@ -32,6 +32,7 @@
 - [x] Home consumption for plants with a meter at home (SolarEdge, PVOutput), hidden for export-only plants (DECISIONS D16). Dashboard section + large widget line; new screenshot kind `dashboardHome`.
 
 - [x] Kiosk link expiry: rejection detection (30 min), expired state in app, widgets, watch and Siri, renew notice a month before (DECISIONS D17). Screenshot kinds `dashboardKioskExpiring`, `dashboardKioskExpired`. Missing: a real expired-kiosk response as fixture; support page FAQ.
+- [x] FusionSolar API account (Northbound API): login with user name + system code, station KPI, power now, hourly curve, rate limit, dongle on the home network; Settings switch "Kiosk link" / "API account" (DECISIONS D23). Not yet tried with a real account.
 - [x] Several solar plants: settings, per-plant secrets and caches, loader, rotating widgets (or a pinned plant), dashboard pager, plant management in Settings, Siri/control totals, watch pages and total complications (DECISIONS D22). Not yet rendered (needs macOS) or tried on a device.
 - [x] Provider contracts written on the protocols, shared `ProviderContractTests` for every solar/price/inverter source, `SolarProviderProfile` (DECISIONS D21).
 - [x] SunSpec live data for SolarEdge and PVOutput (SolarEdge, SMA, Fronius, … on the home network): reader, test/find on ports 502/1502, today from the lifetime counter, SolarEdge limit kept (DECISIONS D20). Not yet tried on real hardware.
