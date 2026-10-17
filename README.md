@@ -1,3 +1,5 @@
+<p align="center"><img src="App/Assets.xcassets/AppIcon.appiconset/mac-256.png" width="128" height="128" alt="SunWatt app icon"></p>
+
 # SunWatt
 
 Widgets for your home energy: solar production (Huawei FusionSolar kiosk link, SolarEdge or PVOutput) and the electricity price (Spain PVPC, plus day-ahead prices for Portugal, France, Germany & Luxembourg, Austria, Belgium, Netherlands and North Italy).
