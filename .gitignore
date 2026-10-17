@@ -17,3 +17,6 @@ build/
 AppStore/screenshots/
 # Design renders: made by SunWattSnapshots / SunWattWatchSnapshots, kept local. The ITERATIONS.md logs stay in git.
 Screenshots/**/*.png
+
+# App Review contact phone: private, never committed (the repo is public).
+AppStore/metadata/review_information/phone_number.txt
