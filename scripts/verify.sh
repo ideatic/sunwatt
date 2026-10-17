@@ -20,3 +20,7 @@ xcodebuild -project HomeDash.xcodeproj -scheme HomeDash -destination "$SIM" -der
 echo "== macOS build (unsigned: macOS App Groups need a team, see DECISIONS.md D4)"
 xcodebuild -project HomeDash.xcodeproj -scheme HomeDash -destination 'platform=macOS' -derivedDataPath "$DD" build CODE_SIGNING_ALLOWED=NO 2>&1 \
   | grep -E "error:|\*\* BUILD" || true
+
+echo "== watchOS build"
+xcodebuild -project HomeDash.xcodeproj -scheme HomeDashWatch -destination 'generic/platform=watchOS Simulator' -derivedDataPath "$DD" build 2>&1 \
+  | grep -E "error:|\*\* BUILD" || true

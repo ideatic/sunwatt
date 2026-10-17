@@ -31,6 +31,10 @@ targets:
       - target: HomeDashWidgets
         embed: true
         codeSign: true
+      - target: HomeDashWatch
+        embed: true
+        codeSign: true
+        platformFilter: iOS
     entitlements:
       path: App/HomeDash.entitlements
       properties:
@@ -81,6 +85,57 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ideatic.homedash.widgets
         TARGETED_DEVICE_FAMILY: "1,2"
+  HomeDashWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "27.0"
+    sources:
+      - path: Watch
+    dependencies:
+      - package: HomeDashKit
+      - target: HomeDashWatchWidgets
+        embed: true
+        codeSign: true
+    entitlements:
+      path: Watch/HomeDashWatch.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.ideatic.homedash]
+    info:
+      path: Watch/Info.plist
+      properties:
+        CFBundleDisplayName: SunWatt
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, es, pt, fr, de, it, nl]
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: com.ideatic.homedash
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ideatic.homedash.watchkitapp
+  HomeDashWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    deploymentTarget: "27.0"
+    sources:
+      - path: WatchWidgets
+    dependencies:
+      - package: HomeDashKit
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    entitlements:
+      path: WatchWidgets/HomeDashWatchWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.ideatic.homedash]
+    info:
+      path: WatchWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: SunWatt
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, es, pt, fr, de, it, nl]
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ideatic.homedash.watchkitapp.widgets
 schemes:
   HomeDash:
     build:
@@ -93,3 +148,10 @@ schemes:
       config: Debug
       targets:
         - package: HomeDashKit/HomeDashKitTests
+  HomeDashWatch:
+    build:
+      targets:
+        HomeDashWatch: all
+        HomeDashWatchWidgets: all
+    run:
+      config: Debug
