@@ -67,6 +67,7 @@ Critique (all 67 PNGs reviewed: light/dark, day/night/stale/error, accented/vibr
 - Watch corner PNGs also changed: they were older than commit e162de0 (corner value fit), not this change.
 - Follow-up (user): data time on the left, daily energy on the right of the second solar row.
 - Follow-up (user): price level ("Cheap") on the right under the price, stale badge on the left, as in the solar column.
+- Follow-up (user): the icon row keeps the height of the figure when it shows "No production" (hidden "0 kW" placeholder), so day and night rows and charts line up with the price column.
 - Follow-up (user): the large widget header uses the same compact rows (header 76 → 56 pt, the charts get the rest). Checked day, night dark, stale, German.
 
 ## Open points

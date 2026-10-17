@@ -219,8 +219,13 @@ struct SolarColumn: View {
             SolarIcon(idle: solar.isIdle)
             if let name = solar.plantName { PlantNameLabel(name: name) }
             Spacer(minLength: 4)
-            SolarFigure(solar: solar, size: figureSize, singleLine: true)
-                .layoutPriority(1)
+            // A hidden figure keeps the row as tall as "5,3 kW" when it shows "No production", so the rows below
+            // and the curve stay level with the price column.
+            ZStack(alignment: .trailing) {
+                FigureText(value: "0", unit: "kW", size: figureSize).hidden()
+                SolarFigure(solar: solar, size: figureSize, singleLine: true)
+            }
+            .layoutPriority(1)
         }
         HStack(spacing: 4) {
             DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
