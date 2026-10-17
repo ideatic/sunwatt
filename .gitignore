@@ -15,3 +15,5 @@ build/
 
 # Store screenshots: rendered before upload (AppStore/SCREENSHOTS.md), not kept in git (333 MB for 7 languages).
 AppStore/screenshots/
+# Design renders: made by SunWattSnapshots / SunWattWatchSnapshots, kept local. The ITERATIONS.md logs stay in git.
+Screenshots/**/*.png

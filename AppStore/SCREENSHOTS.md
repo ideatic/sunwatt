@@ -16,7 +16,7 @@ Apple scales down from the largest size in each family. Upload the sizes below. 
 
 Rules: PNG or JPEG, no alpha, sRGB. 1 to 10 screenshots per device and per language. Use the same 5 to 6 screens in all 7 languages (en-US, es-ES, pt-PT, fr-FR, de-DE, it, nl-NL).
 
-Existing widget renders are in `Screenshots/widgets/` (small, medium, large, Lock Screen). Use them as art for the framed screens, but the final shots must be real captures from the simulator at the sizes above.
+Widget and app renders (`swift run SunWattSnapshots ../../Screenshots/widgets`, git-ignored) are handy to check a single widget; the store set itself comes from `--store` above.
 
 ## Screens, in order (iPhone, iPad, Mac)
 

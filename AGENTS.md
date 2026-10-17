@@ -30,7 +30,8 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 | `Watch/`, `WatchWidgets/` | watchOS app and complications. |
 | `Packages/SunWattKit/` | Shared package with almost all code. Targets are thin shells around it. |
 | `Packages/SunWattKit/Sources/SunWattSnapshots`, `SunWattWatchSnapshots` | Render widgets, app screens and watch views to PNG. |
-| `Screenshots/` | Rendered PNGs, simulator captures, design logs (`*/ITERATIONS.md`). |
+| `Screenshots/` | Design logs (`*/ITERATIONS.md`, in git). Renders and simulator captures land here locally and are git-ignored. |
+| `docs/readme/` | The images the README shows (copies of renders; refresh them by hand when the look changes). |
 | `AppStore/` | Store metadata in 7 languages, privacy answers, review notes, `check_metadata.py`. |
 | `docs/` | Privacy/support pages (to host) and `RELEASE.md`. |
 | `scripts/` | `verify.sh` (full check), `release.sh` (archive/upload), export options. |
@@ -133,7 +134,7 @@ swift run SunWattSnapshots --app ../../Screenshots/app
 swift run SunWattWatchSnapshots ../../Screenshots/watch
 ```
 
-After any visual change: render, look at the PNGs (light/dark, day/night/stale/error, long languages like German), log the critique and the changes in the folder's `ITERATIONS.md`.
+After any visual change: render, look at the PNGs (light/dark, day/night/stale/error, long languages like German), log the critique and the changes in the folder's `ITERATIONS.md`. The PNGs are git-ignored (render before and after a change to compare); only the logs are committed. If the change alters a picture in the README, copy the new render into `docs/readme/`.
 
 ### Adding things
 

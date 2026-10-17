@@ -6,7 +6,36 @@ Widgets for your home energy: solar production (Huawei FusionSolar kiosk link, S
 
 Platforms: iOS 27, iPadOS 27, macOS 27, watchOS 27. Languages: English, Spanish, Portuguese, French, German, Italian, Dutch.
 
-![Large widget](Screenshots/widgets/large-day-light.png)
+## Screenshots
+
+Home Screen widgets (small, medium, large):
+
+<p>
+  <img src="docs/readme/small-day-light.png" height="180" alt="Small widget">
+  <img src="docs/readme/medium-day-light.png" height="180" alt="Medium widget">
+  <img src="docs/readme/large-day-light.png" height="360" alt="Large widget">
+</p>
+
+Lock Screen widgets (rectangular, circular) and the Apple Watch app and complication:
+
+<p>
+  <img src="docs/readme/accessoryRectangular-day-dark.png" height="90" alt="Lock Screen rectangular widget">
+  <img src="docs/readme/accessoryCircular-day-dark.png" height="90" alt="Lock Screen circular widget">
+</p>
+<p>
+  <img src="docs/readme/app-price-day-dark.png" height="240" alt="Apple Watch price page">
+  <img src="docs/readme/app-solar-day-dark.png" height="240" alt="Apple Watch solar page">
+  <img src="docs/readme/complication-rectangular-day-dark.png" height="120" alt="Apple Watch rectangular complication">
+</p>
+
+The app on iPhone and Mac:
+
+<p>
+  <img src="docs/readme/phone-dashboardDay-light.png" height="420" alt="iPhone dashboard">
+  <img src="docs/readme/mac-dashboardDay-light.png" height="420" alt="Mac dashboard">
+</p>
+
+Demo data. All renders come from `SunWattSnapshots` / `SunWattWatchSnapshots` (commands under "Build and test").
 
 ## What is in it
 
@@ -25,8 +54,9 @@ Platforms: iOS 27, iPadOS 27, macOS 27, watchOS 27. Languages: English, Spanish,
 | `Widgets/` | Widget extension (iOS + macOS): widget, controls, App Intent configuration. |
 | `Watch/`, `WatchWidgets/` | watchOS app and complications. |
 | `Packages/SunWattKit/` | Shared Swift package: models, clients, store, timeline, design system, all views, intents. Tested with `swift test`. |
-| `Packages/SunWattKit/Sources/SunWattSnapshots/` | Renders every widget and app screen to PNG (`Screenshots/`). |
-| `Screenshots/` | Rendered widgets, app screens, watch, simulator captures, and the design iteration logs. |
+| `Packages/SunWattKit/Sources/SunWattSnapshots/` | Renders every widget and app screen to PNG (into `Screenshots/`, git-ignored). |
+| `Screenshots/` | Design iteration logs (`*/ITERATIONS.md`). Renders land here locally and are git-ignored. |
+| `docs/readme/` | The few images this README shows. |
 | `AppStore/`, `docs/` | Store texts in 7 languages, privacy answers, review notes, privacy/support web pages. |
 | `scripts/verify.sh` | Regenerates the project, runs all tests, builds iOS Simulator, macOS and watchOS. |
 | `DECISIONS.md`, `PROGRESS.md` | Decisions with reasons, and the build log of the project. |
