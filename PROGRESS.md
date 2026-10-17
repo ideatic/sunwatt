@@ -63,7 +63,7 @@
 - [x] `ITSAppUsesNonExemptEncryption = NO` in all four Info.plists (set in `project.yml`, checked in built Release bundles)
 - [x] Privacy manifests (`PrivacyInfo.xcprivacy`) for app, widgets, watch app, watch widgets and the SunWattKit resource bundle (UserDefaults 1C8F.1, plus CA92.1 where standard defaults are the fallback; no file-timestamp, boot-time or disk-space APIs used). Present in the built iOS, macOS and watchOS Release bundles.
 - [ ] User: host `docs/` (e.g. GitHub Pages) and replace `REPLACE-ME` URLs/email
-- [ ] User: create the app record in App Store Connect, confirm screenshot sizes
+- [x] User: app record created in App Store Connect ("SunWatt: Solar & Power"; metadata name.txt says "SunWatt: Solar & Power Price", align one before upload). Screenshot sizes confirmed in the renderer.
 
 ## Release (step by step in `docs/RELEASE.md`)
 - [x] `DEVELOPMENT_TEAM` EX68NKELW9, version 1.0.0, build number in one place (`CURRENT_PROJECT_VERSION` in `project.yml`)
