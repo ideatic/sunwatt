@@ -18,6 +18,10 @@
 # The build number lives in ONE place: CURRENT_PROJECT_VERSION in project.yml. Edit MARKETING_VERSION there by hand.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# Xcode packages the .ipa with /usr/bin/rsync, which starts "rsync" from PATH as its other side. A Homebrew rsync
+# (3.x) first in PATH rejects its options ("--extended-attributes: unknown option") and the export fails with
+# "Copy failed". Apple's tools first; Homebrew stays reachable for xcodegen.
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 MODE=dry-run
 BUMP=1

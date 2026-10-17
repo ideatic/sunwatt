@@ -109,7 +109,20 @@ for platform in "${PLATFORMS[@]}"; do
     --force true
   )
   if [[ -n "$SHOTS" ]]; then
-    ARGS+=(--skip_screenshots false --screenshots_path "$SHOTS" --overwrite_screenshots)
+    # One folder per platform: iPhone + iPad shots for ios, Mac shots for osx. deliver picks the device by pixel
+    # size and would otherwise try to put the Mac shots on the iOS version.
+    PLATFORM_SHOTS="build/screenshots-$platform"
+    rm -rf "$PLATFORM_SHOTS"
+    for dir in "$SHOTS"/*/; do
+      locale="$(basename "$dir")"
+      mkdir -p "$PLATFORM_SHOTS/$locale"
+      if [[ "$platform" == osx ]]; then
+        cp "$dir"*_mac_*.png "$PLATFORM_SHOTS/$locale/"
+      else
+        cp "$dir"*_iphone*_*.png "$dir"*_ipad*_*.png "$PLATFORM_SHOTS/$locale/"
+      fi
+    done
+    ARGS+=(--skip_screenshots false --screenshots_path "$PLATFORM_SHOTS" --overwrite_screenshots)
   else
     ARGS+=(--skip_screenshots true)
   fi
