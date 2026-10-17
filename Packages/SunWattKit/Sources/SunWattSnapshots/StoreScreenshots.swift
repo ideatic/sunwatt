@@ -115,21 +115,38 @@ struct StoreScreenshotView: View {
             GeometryReader { proxy in
                 let natural = contentSize
                 let scale = min(proxy.size.width / natural.width, proxy.size.height / natural.height)
+                // Devices hang from the top; floating widgets sit in the middle of the space.
+                let centered = shot == .price || shot == .solar
                 content
                     .frame(width: natural.width, height: natural.height)
-                    .scaleEffect(scale, anchor: .top)
-                    .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
+                    .scaleEffect(scale, anchor: centered ? .center : .top)
+                    .frame(width: proxy.size.width, height: proxy.size.height, alignment: centered ? .center : .top)
             }
             .padding(.top, canvas.height * 0.035)
-            .padding(.horizontal, canvas.width * 0.06)
-            .padding(.bottom, device == .mac ? canvas.height * 0.05 : 0)
+            .padding(.horizontal, canvas.width * 0.07)
+            .padding(.bottom, canvas.height * (device == .mac ? 0.06 : 0.05))
         }
         .frame(width: canvas.width, height: canvas.height)
         .background(background)
         .environment(\.locale, Locale(identifier: language.locale))
     }
 
+    /// AI-made backdrop from AppStore/art (no text, no UI), the gradient below when the file is missing.
+    @ViewBuilder
     private var background: some View {
+        let name = "bg-\(shot.isDark ? "night" : "day")-\(device == .mac ? "landscape" : "portrait")"
+        if let image = NSImage(contentsOf: Self.artDirectory.appendingPathComponent("\(name).png")) {
+            Image(nsImage: image).resizable().aspectRatio(contentMode: .fill)
+                .frame(width: device.canvas.width, height: device.canvas.height).clipped()
+        } else {
+            gradient
+        }
+    }
+
+    static let artDirectory = URL(filePath: #filePath).deletingLastPathComponent()
+        .appending(path: "../../../../AppStore/art").standardized
+
+    private var gradient: some View {
         let colors: [Color] = shot.isDark
             ? [Color(red: 0.07, green: 0.09, blue: 0.20), Color(red: 0.26, green: 0.14, blue: 0.30)]
             : [Color(red: 1.00, green: 0.93, blue: 0.78), Color(red: 1.00, green: 0.80, blue: 0.62)]
@@ -145,7 +162,7 @@ struct StoreScreenshotView: View {
         // The Mac canvas is wide and short: widgets side by side; iPhone and iPad stack them.
         case .price: device == .mac ? CGSize(width: 364 + 24 + 170, height: 382) : CGSize(width: 364, height: 382 + 16 + 170)
         case .solar: device == .mac ? CGSize(width: 364 + 24 + 170, height: 170 * 2 + 16) : CGSize(width: 364, height: 170 * 3 + 16 * 2)
-        case .lock: CGSize(width: 393, height: 852)
+        case .lock: framedSize(CGSize(width: 393, height: 852))
         case .cheap, .app:
             device == .mac ? AppSnapshotView.size(for: .mac) : framedSize(AppSnapshotView.size(for: device.appDevice))
         }
@@ -209,7 +226,7 @@ struct StoreScreenshotView: View {
             .frame(width: family.size.width, height: family.size.height)
             .background(WidgetBackground())
             .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.widget, style: .continuous))
-            .shadow(color: .black.opacity(0.14), radius: 12, y: 5)
+            .shadow(color: Color(red: 0.45, green: 0.22, blue: 0.05).opacity(0.18), radius: 18, y: 10)
             .environment(\.colorScheme, .light)
             .environment(\.widgetRenderingMode, .fullColor)
     }
@@ -233,11 +250,25 @@ struct StoreScreenshotView: View {
         } else {
             let radius: CGFloat = device == .iphone ? 52 : 34
             screen
+                .overlay(alignment: .top) { if device == .iphone { dynamicIsland } }
                 .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-                .padding(Self.bezel)
-                .background(RoundedRectangle(cornerRadius: radius + Self.bezel, style: .continuous).fill(Color.black))
-                .shadow(color: .black.opacity(0.25), radius: 20, y: 10)
+                .modifier(DeviceFrame(radius: radius, bezel: Self.bezel))
         }
+    }
+
+    @ViewBuilder
+    private var lockWallpaper: some View {
+        if let image = NSImage(contentsOf: Self.artDirectory.appendingPathComponent("bg-night-portrait.png")) {
+            Image(nsImage: image).resizable().aspectRatio(contentMode: .fill).frame(width: 393, height: 852).clipped()
+        } else {
+            LinearGradient(
+                colors: [Color(red: 0.12, green: 0.16, blue: 0.36), Color(red: 0.55, green: 0.30, blue: 0.40)],
+                startPoint: .top, endPoint: .bottom)
+        }
+    }
+
+    private var dynamicIsland: some View {
+        Capsule().fill(Color.black).frame(width: 122, height: 35).padding(.top, 11)
     }
 
     // MARK: Lock Screen
@@ -268,14 +299,10 @@ struct StoreScreenshotView: View {
         }
         .foregroundStyle(.white)
         .frame(width: 393, height: 852)
-        .background(
-            LinearGradient(
-                colors: [Color(red: 0.12, green: 0.16, blue: 0.36), Color(red: 0.55, green: 0.30, blue: 0.40)],
-                startPoint: .top, endPoint: .bottom))
+        .background(lockWallpaper)
+        .overlay(alignment: .top) { dynamicIsland }
         .clipShape(RoundedRectangle(cornerRadius: 52, style: .continuous))
-        .padding(Self.bezel)
-        .background(RoundedRectangle(cornerRadius: 52 + Self.bezel, style: .continuous).fill(Color.black))
-        .frame(width: 393, height: 852)
+        .modifier(DeviceFrame(radius: 52, bezel: Self.bezel))
         .environment(\.colorScheme, .dark)
     }
 
@@ -375,5 +402,25 @@ func writeOpaque(_ view: some View, name: String, scale: CGFloat, to directory: 
     CGImageDestinationAddImage(destination, flat, nil)
     guard CGImageDestinationFinalize(destination) else {
         throw NSError(domain: "SunWattSnapshots", code: 3, userInfo: [NSLocalizedDescriptionKey: "Cannot finalize \(url.path)"])
+    }
+}
+
+/// Black bezel with a thin titanium edge and a soft, warm drop shadow.
+struct DeviceFrame: ViewModifier {
+    let radius: CGFloat
+    let bezel: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .padding(bezel)
+            .background(RoundedRectangle(cornerRadius: radius + bezel, style: .continuous).fill(Color.black))
+            .overlay(
+                RoundedRectangle(cornerRadius: radius + bezel, style: .continuous)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [Color(white: 0.78), Color(white: 0.38), Color(white: 0.70)],
+                            startPoint: .topLeading, endPoint: .bottomTrailing),
+                        lineWidth: 2.5))
+            .shadow(color: Color(red: 0.35, green: 0.16, blue: 0.04).opacity(0.28), radius: 30, y: 18)
     }
 }
