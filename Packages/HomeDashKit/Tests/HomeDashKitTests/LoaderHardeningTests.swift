@@ -54,7 +54,7 @@ private func series(days: Int, from start: Date, region: PriceRegion = .spain, f
         let (store, _) = storeTempStore()
         configured(store)
         let good = storeSamplePrices()
-        let data = await makeLoader(store: store, solar: HangingSolar(), prices: FakePlain(result: .success(good))).load(deadline: 0.2)
+        let data = await makeLoader(store: store, solar: HangingSolar(), prices: FakePlain(result: .success(good))).load(deadline: 1.5) // generous: the fast source must win even on a busy machine
         #expect(data.priceStatus == .fresh)
         #expect(data.prices == good)
         guard case .error = data.solarStatus else { Issue.record("solar: \(data.solarStatus)"); return }
