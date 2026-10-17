@@ -75,4 +75,5 @@
 - [x] Archive without `-allowProvisioningUpdates` fails with "No profiles for ..." (expected until the first `--upload`)
 - [x] Build 202610172346 uploaded (iOS + watch, macOS), store texts and screenshots (iPhone, iPad, Mac, Apple Watch, 7 languages) uploaded with `scripts/upload_metadata.sh`, App Privacy "Data Not Collected" published, age rating 4+, free in 175 countries, TestFlight internal group "Team". Review notes carry the demo kiosk link, added at upload from `private/kiosk.local` (never in git); the contact phone is in a git-ignored file.
 - [x] 2026-10-18: iOS and macOS 1.0 submitted for App Review (manual release after approval).
+- [ ] 1.0.1: chart axis labels readable in dark mode (pushed) and widget tap opens the app (DECISIONS D25, commit kept local until 1.0.1 ships: it changes the support page and store texts). Push main, build, upload texts with `scripts/upload_metadata.sh --upload`.
 - [ ] Owner: after approval, press "Release" in App Store Connect. Optionally create a new kiosk link afterwards (the reviewers' copy stops working).
