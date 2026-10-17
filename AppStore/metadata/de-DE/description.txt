@@ -1,0 +1,36 @@
+SunWatt zeigt zwei Zahlen, die Sie täglich prüfen: wie viel Ihre Solaranlage gerade erzeugt und was Strom jetzt kostet.
+
+STROMPREIS
+• Deutschland und Luxemburg: Day-Ahead-Börsenpreis, stundenweise
+• Außerdem Österreich, Belgien, Niederlande, Frankreich, Portugal, Norditalien und Spanien (PVPC)
+• Aktueller Preis farblich nach Niveau, damit Sie sofort sehen, ob er günstig oder teuer ist
+• Tagesverlauf und die günstigsten kommenden Stunden
+• Preise für morgen, sobald sie veröffentlicht sind
+
+SOLARPRODUKTION
+Fügen Sie den Kiosk-Link Ihrer Huawei-FusionSolar-Anlage ein und sehen Sie die aktuelle Leistung in kW, die Energie von heute in kWh und die Tageskurve. Beim ersten Start erfahren Sie in unter einer Minute, wie Sie den Link bekommen.
+
+WIDGETS
+• Kleine, mittlere und große Widgets für den Home-Bildschirm
+• Widgets für den Sperrbildschirm, rechteckig und rund
+• Steuerelement im Kontrollzentrum mit dem aktuellen Preis
+• Solar, Preis oder beides
+• Ganzer Tag, oder die letzten 6 und nächsten 12 Stunden
+• Widget antippen, um es zu aktualisieren
+• Hell, dunkel, getönt und klar
+
+SIRI UND KURZBEFEHLE
+Fragen Sie „Wie hoch ist der Strompreis in SunWatt?“ oder nach Solarproduktion und günstigsten Stunden. Nutzen Sie das in eigenen Kurzbefehlen und Automationen.
+
+APPLE WATCH
+Watch-App und Komplikationen bringen den Preis ans Handgelenk.
+
+IN DER APP
+• Dashboard mit interaktiven Diagrammen
+• Länderauswahl
+• Anleitung zum Hinzufügen der Widgets
+
+PRIVAT VON ANFANG AN
+Kein Konto. Kein Tracking. Keine Analyse. Keine Werbung. SunWatt verbindet sich nur mit dem FusionSolar-Server Ihres Kiosk-Links und mit öffentlichen Preisdiensten. Einstellungen und letzte Daten bleiben auf Ihrem Gerät. Nichts wird an den Entwickler gesendet.
+
+SunWatt ist kostenlos. Es ist nicht mit Huawei, Red Eléctrica oder dem Fraunhofer ISE verbunden. Day-Ahead-Preise stammen von Energy-Charts (Fraunhofer ISE), Lizenz CC BY 4.0. Der Börsenpreis ist nicht der Preis auf Ihrer Rechnung.

@@ -1,0 +1,36 @@
+O SunWatt mostra dois valores que consultas todos os dias: quanto os teus painéis solares estão a produzir e quanto custa a eletricidade agora.
+
+PREÇO DA ELETRICIDADE
+• Portugal: preço do mercado diário (day-ahead), hora a hora
+• Também França, Alemanha e Luxemburgo, Áustria, Bélgica, Países Baixos, Norte de Itália e Espanha (PVPC)
+• Preço atual com cor consoante o nível, para saberes logo se está barato ou caro
+• Gráfico de hoje e as próximas horas mais baratas
+• Preços de amanhã assim que forem publicados
+
+PRODUÇÃO SOLAR
+Cola a ligação Kiosk da tua central Huawei FusionSolar e vê a potência atual em kW, a energia de hoje em kWh e a curva de produção do dia. A primeira utilização explica como obter a ligação em menos de um minuto.
+
+WIDGETS
+• Widgets pequeno, médio e grande para o ecrã principal
+• Widgets para o ecrã bloqueado, retangular e circular
+• Controlo no Centro de Controlo com o preço atual
+• Escolhe solar, preço ou ambos
+• Dia completo, ou as 6 horas anteriores e as 12 seguintes
+• Toca num widget para atualizar
+• Aspeto claro, escuro, colorido e transparente
+
+SIRI E ATALHOS
+Pergunta "Qual é o preço da eletricidade no SunWatt?", ou pede a produção solar e as horas mais baratas. Usa nos teus atalhos e automatizações.
+
+APPLE WATCH
+App para o relógio e complicações com o preço no pulso.
+
+NA APP
+• Painel com gráficos interativos
+• Seleção de país
+• Guia para adicionar os widgets
+
+PRIVADA POR DESIGN
+Sem conta. Sem rastreio. Sem análises. Sem anúncios. O SunWatt só comunica com o servidor FusionSolar da tua ligação Kiosk e com os serviços públicos de preços. As definições e os últimos dados ficam no teu dispositivo. Nada é enviado ao programador.
+
+O SunWatt é gratuito. Não é afiliado da Huawei, da Red Eléctrica nem do Fraunhofer ISE. Os preços do mercado diário vêm do Energy-Charts (Fraunhofer ISE), licença CC BY 4.0. O preço grossista não é o preço da tua fatura.

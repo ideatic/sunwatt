@@ -1,0 +1,1 @@
+elettricità,prezzo,luce,energia,kWh,fotovoltaico,pannelli,PUN,mercato,widget,domani,tariffa

@@ -1,0 +1,1 @@
+Erste Version. Widgets für Solarproduktion und Strompreis auf iPhone, iPad, Mac und Apple Watch.

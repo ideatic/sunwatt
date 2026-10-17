@@ -1,0 +1,1 @@
+luz,PVPC,fotovoltaica,placas,energía,kWh,tarifa,horas baratas,autoconsumo,widget,mañana,red
