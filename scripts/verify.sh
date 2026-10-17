@@ -36,7 +36,7 @@ run() {
   STEP=$((STEP + 1))
   out="$(xcodebuild "$@" "${EXTRA[@]}" 2>&1)" || FAILED=1
   print -r -- "$out" > "build/logs/xcodebuild-$STEP.log"
-  print -r -- "$out" | grep -E "error:|\*\* (BUILD|TEST)|Test run with" || true
+  print -r -- "$out" | grep -E "error:|recorded an issue|\*\* (BUILD|TEST)|Test run with" || true
 }
 
 echo "== iOS Simulator build + test"
