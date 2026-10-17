@@ -1,40 +1,42 @@
-SunWatt mostra due numeri che controlli ogni giorno: quanto producono i tuoi pannelli solari e quanto costa l'elettricità adesso.
+SunWatt mostra due numeri che controlli ogni giorno: quanto producono i tuoi pannelli solari e quanto costa l’elettricità adesso.
 
-PREZZO DELL'ELETTRICITÀ
-• Nord Italia: prezzo all'ingrosso day-ahead, ora per ora
+PREZZO DELL’ELETTRICITÀ
+• Italia: prezzo del mercato del giorno prima (day-ahead, zona Nord), ora per ora
 • Anche Francia, Germania e Lussemburgo, Austria, Belgio, Paesi Bassi, Portogallo e Spagna (PVPC)
 • Prezzo attuale colorato per livello, per capire subito se è basso o alto
 • Grafico di oggi e prossime ore più convenienti
 • Prezzi di domani appena pubblicati
 
 PRODUZIONE SOLARE
-Collega il tuo impianto e vedi la potenza attuale in kW, l'energia di oggi in kWh e la curva di produzione. Funziona con:
-• Huawei FusionSolar: incolla il link Kiosk del tuo impianto oppure inserisci l'account API che il tuo installatore crea per te
-• SolarEdge: inserisci l'ID del sito e la chiave API
-• PVOutput: inserisci l'ID del sistema e la chiave API. PVOutput funziona con molte marche di inverter, come Fronius, SMA, Enphase, GoodWe e Growatt
+Collega il tuo impianto fotovoltaico e vedi la potenza attuale in kW, l’energia di oggi in kWh e la curva di produzione. Funziona con:
+• Huawei FusionSolar: incolla il link Kiosk del tuo impianto oppure inserisci l’account API che il tuo installatore crea per te
+• SolarEdge: inserisci l’ID del sito e la chiave API
+• PVOutput: inserisci l’ID dell’impianto e la chiave API. PVOutput funziona con molte marche di inverter, come Fronius, SMA, Enphase, GoodWe e Growatt
 Al primo avvio una guida spiega dove trovare ogni dato in pochi minuti.
+In casa puoi avere dati in tempo reale, in sola lettura, dal dongle Huawei o da un inverter SunSpec.
 
 WIDGET
 • Widget piccolo, medio e grande per la schermata Home
 • Widget per la schermata di blocco, rettangolare e circolare
-• Controllo nel Centro di Controllo con il prezzo attuale
-• Solare, prezzo o entrambi
+• Due controlli nel Centro di Controllo: prezzo e produzione solare
+• Scegli solare, prezzo o entrambi
 • Giornata intera, oppure le 6 ore precedenti e le 12 successive
 • Tocca un widget per aggiornarlo
 • Aspetto chiaro, scuro, tinto e trasparente
 
 SIRI E COMANDI RAPIDI
-Chiedi "Qual è il prezzo dell'elettricità in SunWatt?", oppure la produzione solare e le ore più convenienti. Usali nei tuoi comandi rapidi e automazioni.
+Chiedi a Siri il prezzo attuale dell’elettricità, la produzione solare di adesso o le ore più convenienti. Usali nei tuoi comandi rapidi e automazioni.
 
 APPLE WATCH
-App per Watch e complicazioni con il prezzo al polso.
+App per Watch e complicazioni con prezzo e produzione solare al polso.
 
-NELL'APP
+NELL’APP
 • Dashboard con grafici interattivi
+• Più impianti
 • Scelta del paese
 • Guida per aggiungere i widget
 
 PRIVATA PER SCELTA
-Nessun account. Nessun tracciamento. Nessuna analisi. Nessuna pubblicità. SunWatt contatta solo il servizio solare che scegli (FusionSolar, SolarEdge o PVOutput) e i servizi pubblici dei prezzi. Impostazioni, chiavi e ultimi dati restano sul tuo dispositivo. Nulla viene inviato allo sviluppatore.
+Nessun account. Nessun tracciamento. Nessuna statistica d’uso. Nessuna pubblicità. SunWatt contatta solo il servizio solare che scegli (FusionSolar, SolarEdge o PVOutput) e i servizi pubblici dei prezzi. Impostazioni, chiavi e ultimi dati restano sul tuo dispositivo. Nulla viene inviato allo sviluppatore.
 
-SunWatt è gratis. Non è affiliata a Huawei, SolarEdge, PVOutput, Red Eléctrica o Fraunhofer ISE. I prezzi day-ahead provengono da Energy-Charts (Fraunhofer ISE), licenza CC BY 4.0. Il prezzo all'ingrosso non è il prezzo della tua bolletta.
+SunWatt è gratis. Non è affiliata a Huawei, SolarEdge, PVOutput, Red Eléctrica o Fraunhofer ISE. I prezzi del giorno prima provengono da Energy-Charts (Fraunhofer ISE), licenza CC BY 4.0. Il prezzo del mercato all’ingrosso non è il PUN e non è il prezzo della tua bolletta.

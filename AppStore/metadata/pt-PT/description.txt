@@ -1,7 +1,7 @@
-O SunWatt mostra dois valores que consultas todos os dias: quanto os teus painéis solares estão a produzir e quanto custa a eletricidade agora.
+O SunWatt mostra dois valores que consultas todos os dias: quanto os teus painéis solares estão a produzir e o preço da eletricidade no mercado. Funciona em iPhone, iPad, Mac e Apple Watch.
 
 PREÇO DA ELETRICIDADE
-• Portugal: preço do mercado diário (day-ahead), hora a hora
+• Portugal: preço do mercado diário (MIBEL, day-ahead), hora a hora
 • Também França, Alemanha e Luxemburgo, Áustria, Bélgica, Países Baixos, Norte de Itália e Espanha (PVPC)
 • Preço atual com cor consoante o nível, para saberes logo se está barato ou caro
 • Gráfico de hoje e as próximas horas mais baratas
@@ -12,29 +12,31 @@ Liga o teu sistema de monitorização e vê a potência atual em kW, a energia d
 • Huawei FusionSolar: cola a ligação Kiosk da tua central ou introduz a conta API que o teu instalador cria para ti
 • SolarEdge: introduz o ID do site e a chave API
 • PVOutput: introduz o ID do sistema e a chave API. O PVOutput funciona com muitas marcas de inversores, como Fronius, SMA, Enphase, GoodWe e Growatt
+• Em casa, podes ter dados em direto através do dongle da Huawei ou de um inversor SunSpec (opcional)
+• Suporta várias instalações solares
 A primeira utilização explica onde encontrar cada dado em poucos minutos.
 
 WIDGETS
 • Widgets pequeno, médio e grande para o ecrã principal
 • Widgets para o ecrã bloqueado, retangular e circular
-• Controlo no Centro de Controlo com o preço atual
+• Dois controlos no Centro de Controlo: preço e solar
 • Escolhe solar, preço ou ambos
 • Dia completo, ou as 6 horas anteriores e as 12 seguintes
-• Toca num widget para atualizar
+• Toca num widget para o atualizar
 • Aspeto claro, escuro, colorido e transparente
 
 SIRI E ATALHOS
-Pergunta "Qual é o preço da eletricidade no SunWatt?", ou pede a produção solar e as horas mais baratas. Usa nos teus atalhos e automatizações.
+Pergunta ao Siri pelo preço atual da eletricidade, pela produção solar de agora ou pelas horas mais baratas. Usa nos teus atalhos e automatizações.
 
 APPLE WATCH
-App para o relógio e complicações com o preço no pulso.
+App para o relógio e complicações com o preço e a produção solar no pulso.
 
 NA APP
 • Painel com gráficos interativos
 • Seleção de país
 • Guia para adicionar os widgets
 
-PRIVADA POR DESIGN
+PRIVACIDADE POR DESIGN
 Sem conta. Sem rastreio. Sem análises. Sem anúncios. O SunWatt só comunica com o serviço de monitorização que escolheres (FusionSolar, SolarEdge ou PVOutput) e com os serviços públicos de preços. As definições, as chaves e os últimos dados ficam no teu dispositivo. Nada é enviado ao programador.
 
 O SunWatt é gratuito. Não é afiliado da Huawei, da SolarEdge, do PVOutput, da Red Eléctrica nem do Fraunhofer ISE. Os preços do mercado diário vêm do Energy-Charts (Fraunhofer ISE), licença CC BY 4.0. O preço grossista não é o preço da tua fatura.

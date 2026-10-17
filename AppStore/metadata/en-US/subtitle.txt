@@ -1,1 +1,1 @@
-Widgets for your home energy
+Electricity price & PV widgets

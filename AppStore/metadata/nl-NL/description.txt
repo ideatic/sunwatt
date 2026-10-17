@@ -1,40 +1,42 @@
-SunWatt toont twee cijfers die je elke dag checkt: wat je zonnepanelen nu opwekken en wat stroom nu kost.
+SunWatt toont twee cijfers die je elke dag checkt: wat je zonnepanelen nu opwekken en wat stroom nu kost. Voor Nederland en België is dat de day-ahead-prijs, waar dynamische energiecontracten op volgen.
 
 STROOMPRIJS
-• Nederland: day-ahead groothandelsprijs, uur voor uur
-• Ook Duitsland en Luxemburg, Oostenrijk, België, Frankrijk, Portugal, Noord-Italië en Spanje (PVPC)
+• Nederland en België: day-ahead groothandelsprijs (EPEX), uur voor uur. Handig als je een dynamisch energiecontract hebt
+• Ook Duitsland en Luxemburg, Oostenrijk, Frankrijk, Portugal, Noord-Italië en Spanje (PVPC)
 • Huidige prijs gekleurd naar niveau, zodat je direct ziet of het goedkoop of duur is
 • Grafiek van vandaag en de goedkoopste komende uren
 • Prijzen voor morgen zodra ze zijn gepubliceerd
 
 ZONNE-OPBRENGST
 Koppel je monitoringsysteem en zie het huidige vermogen in kW, de energie van vandaag in kWh en de opbrengstcurve. Werkt met:
-• Huawei FusionSolar: plak de Kiosk-link van je installatie of voer het API-account in dat je installateur voor je aanmaakt
+• Huawei FusionSolar: plak de kiosklink van je installatie of voer het API-account in dat je installateur voor je aanmaakt
 • SolarEdge: vul je site-ID en API-sleutel in
 • PVOutput: vul je systeem-ID en API-sleutel in. PVOutput werkt met veel omvormermerken, zoals Fronius, SMA, Enphase, GoodWe en Growatt
-Bij de eerste start zie je in een paar minuten waar je alles vindt.
+• Optioneel live gegevens thuis, via de Huawei-dongle of een SunSpec-omvormer
+• Meerdere installaties mogelijk
+De introductie laat in een paar minuten zien waar je alles vindt.
 
 WIDGETS
 • Kleine, middelgrote en grote widgets voor het beginscherm
 • Widgets voor het toegangsscherm, rechthoekig en rond
-• Bediening in het Bedieningscentrum met de huidige prijs
+• Twee bedieningselementen in het Bedieningspaneel: prijs en zonne-opbrengst
 • Kies zon, prijs of allebei
 • Hele dag, of de afgelopen 6 en komende 12 uur
 • Tik op een widget om te verversen
 • Licht, donker, getint en doorzichtig
 
 SIRI EN SNELKOPPELINGEN
-Vraag "Wat is de stroomprijs in SunWatt?", of vraag naar je zonne-opbrengst en de goedkoopste uren. Gebruik ze in je eigen snelkoppelingen en automatiseringen.
+Vraag Siri naar de stroomprijs van nu, je zonne-opbrengst van nu of de goedkoopste uren. Gebruik ze in je eigen snelkoppelingen en automatiseringen, bijvoorbeeld om de vaatwasser te starten als stroom goedkoop is.
 
 APPLE WATCH
-Een Watch-app en complicaties brengen de prijs naar je pols.
+Een Watch-app en complicaties tonen de stroomprijs en je zonne-opbrengst op je pols.
 
 IN DE APP
 • Dashboard met interactieve grafieken
 • Landkeuze
 • Gids om de widgets toe te voegen
 
-PRIVÉ VAN ONTWERP
-Geen account. Geen tracking. Geen analyse. Geen advertenties. SunWatt maakt alleen verbinding met het monitoringsysteem dat je kiest (FusionSolar, SolarEdge of PVOutput) en met openbare prijsdiensten. Instellingen, sleutels en laatste gegevens blijven op je apparaat. Er wordt niets naar de ontwikkelaar gestuurd.
+PRIVACY VOOROP
+Geen account. Geen tracking. Geen analyses. Geen advertenties. SunWatt maakt alleen verbinding met het monitoringsysteem dat je kiest (FusionSolar, SolarEdge of PVOutput) en met openbare prijsdiensten. Instellingen, sleutels en laatste gegevens blijven op je apparaat. Er wordt niets naar de ontwikkelaar gestuurd.
 
-SunWatt is gratis. De app is niet gelieerd aan Huawei, SolarEdge, PVOutput, Red Eléctrica of Fraunhofer ISE. Day-ahead-prijzen komen van Energy-Charts (Fraunhofer ISE), licentie CC BY 4.0. De groothandelsprijs is niet de prijs op je rekening.
+SunWatt is gratis. De app is niet gelieerd aan Huawei, SolarEdge, PVOutput, Red Eléctrica of Fraunhofer ISE. Day-ahead-prijzen buiten Spanje komen van Energy-Charts (Fraunhofer ISE), licentie CC BY 4.0. De groothandelsprijs is niet de prijs op je rekening.

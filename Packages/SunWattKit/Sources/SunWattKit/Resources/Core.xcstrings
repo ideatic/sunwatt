@@ -277,7 +277,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Huawei non accetta più questo link del chiosco. I link del chiosco scadono dopo un anno: creane uno nuovo in FusionSolar e incollalo in SunWatt."
+            "value" : "Huawei non accetta più questo link Kiosk. I link Kiosk scadono dopo un anno: creane uno nuovo in FusionSolar e incollalo in SunWatt."
           }
         },
         "nl" : {
@@ -762,7 +762,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’URL del kiosk non è valido. Deve contenere il parametro kk."
+            "value" : "L’URL Kiosk non è valido. Deve contenere il parametro kk."
           }
         },
         "nl" : {

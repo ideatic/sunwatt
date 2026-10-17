@@ -1,1 +1,1 @@
-électricité,prix,énergie,kWh,photovoltaïque,panneaux,heures creuses,marché,widget,demain,tarif
+photovoltaïque,autoconsommation,énergie,kWh,onduleur,panneaux,heures,moins,chères,suivi,demain

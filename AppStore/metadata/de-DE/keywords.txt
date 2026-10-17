@@ -1,1 +1,1 @@
-Strom,Strompreis,Energie,kWh,Photovoltaik,Day-Ahead,Börsenstrompreis,günstig,Widget,morgen,Tarif
+Strom,Photovoltaik,Solaranlage,Wechselrichter,Stromtarif,dynamisch,Day-Ahead,Energie,kWh,Solarertrag

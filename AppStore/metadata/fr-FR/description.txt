@@ -1,40 +1,41 @@
-SunWatt affiche les deux chiffres que vous consultez tous les jours : ce que produisent vos panneaux solaires et ce que coûte l'électricité en ce moment.
-
-PRIX DE L'ÉLECTRICITÉ
-• France : prix du marché day-ahead, heure par heure
-• Aussi l'Allemagne et le Luxembourg, l'Autriche, la Belgique, les Pays-Bas, le Nord de l'Italie, le Portugal et l'Espagne (PVPC)
-• Prix actuel coloré selon son niveau, pour voir d'un coup d'œil s'il est bas ou élevé
-• Courbe du jour et prochaines heures les moins chères
-• Prix de demain dès leur publication
+SunWatt affiche les deux chiffres que vous consultez tous les jours : ce que produisent vos panneaux solaires et ce que coûte l’électricité en ce moment.
 
 PRODUCTION SOLAIRE
-Connectez votre système de suivi pour voir la puissance actuelle en kW, l'énergie du jour en kWh et la courbe de production. Compatible avec :
-• Huawei FusionSolar : collez le lien Kiosk de votre installation, ou saisissez le compte API que votre installateur crée pour vous
-• SolarEdge : saisissez l'ID du site et la clé API
-• PVOutput : saisissez l'ID du système et la clé API. PVOutput fonctionne avec de nombreuses marques d'onduleurs, comme Fronius, SMA, Enphase, GoodWe et Growatt
-Le premier lancement vous explique où trouver chaque information en quelques minutes.
+Connectez votre installation solaire pour voir la puissance actuelle en kW, l’énergie du jour en kWh et la courbe de production. Compatible avec :
+• Huawei FusionSolar : collez le lien Kiosk de votre installation, ou saisissez le compte API que votre installateur crée pour vous
+• SolarEdge : saisissez l’ID du site et la clé API
+• PVOutput : saisissez l’ID du système et la clé API. PVOutput fonctionne avec de nombreuses marques d’onduleurs, comme Fronius, SMA, Enphase, GoodWe et Growatt
+Plusieurs installations sont possibles. À la maison, vous pouvez aussi lire les données en direct de votre onduleur (dongle Huawei ou onduleur SunSpec).
+Le premier lancement vous explique en quelques minutes où trouver chaque information.
+
+PRIX DE L’ÉLECTRICITÉ
+• France : prix spot (marché day-ahead, EPEX), heure par heure
+• Aussi l’Allemagne et le Luxembourg, l’Autriche, la Belgique, les Pays-Bas, le Nord de l’Italie, le Portugal et l’Espagne (PVPC)
+• Prix actuel coloré selon son niveau, pour voir d’un coup d’œil s’il est bas ou élevé
+• Courbe du jour et prochaines heures les moins chères
+• Les prix de demain dès leur publication
 
 WIDGETS
-• Widgets petit, moyen et grand pour l'écran d'accueil
-• Widgets d'écran verrouillé, rectangulaire et circulaire
-• Contrôle du Centre de contrôle avec le prix actuel
+• Widgets petit, moyen et grand pour l’écran d’accueil
+• Widgets d’écran verrouillé, rectangulaire et circulaire
+• Contrôles du Centre de contrôle pour le prix et la production solaire
 • Solaire, prix ou les deux
 • Journée entière, ou les 6 heures précédentes et les 12 suivantes
-• Touchez un widget pour l'actualiser
+• Touchez un widget pour l’actualiser
 • Apparence claire, sombre, teintée et transparente
 
 SIRI ET RACCOURCIS
-Demandez « Quel est le prix de l'électricité dans SunWatt ? », ou la production solaire et les heures les moins chères. Utilisez-les dans vos propres raccourcis et automatisations.
+Demandez à Siri le prix actuel de l’électricité, la production solaire du moment ou les heures les moins chères. Utilisez ces actions dans vos propres raccourcis et automatisations.
 
 APPLE WATCH
-Une app pour la montre et des complications pour garder le prix au poignet.
+Une app pour la montre et des complications affichent le prix et la production solaire à votre poignet.
 
-DANS L'APP
+DANS L’APP
 • Tableau de bord avec graphiques interactifs
 • Choix du pays
 • Guide pour ajouter les widgets
 
-CONFIDENTIEL PAR CONCEPTION
-Pas de compte. Pas de suivi. Pas de mesure d'audience. Pas de publicité. SunWatt ne contacte que le service solaire que vous choisissez (FusionSolar, SolarEdge ou PVOutput) et les services publics de prix. Vos réglages, vos clés API et les dernières données restent sur votre appareil. Rien n'est envoyé au développeur.
+CONFIDENTIALITÉ DÈS LA CONCEPTION
+Pas de compte. Pas de suivi. Pas de mesure d’audience. Pas de publicité. SunWatt ne contacte que le service solaire que vous choisissez (FusionSolar, SolarEdge ou PVOutput) et les services publics de prix. Vos réglages, vos clés API et les dernières données restent sur votre appareil. Rien n’est envoyé au développeur.
 
-SunWatt est gratuit. Il n'est pas affilié à Huawei, à SolarEdge, à PVOutput, à Red Eléctrica ni au Fraunhofer ISE. Les prix day-ahead viennent d'Energy-Charts (Fraunhofer ISE), licence CC BY 4.0. Le prix de gros n'est pas le prix de votre facture.
+SunWatt est gratuit. Il n’est pas affilié à Huawei, à SolarEdge, à PVOutput, à Red Eléctrica ni au Fraunhofer ISE. Les prix day-ahead viennent d’Energy-Charts (Fraunhofer ISE), licence CC BY 4.0. Le prix de gros n’est pas le prix de votre facture.

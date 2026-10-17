@@ -146,3 +146,11 @@ Each entry: decision, why, how to change it.
 - `NorthboundClient`: log in, keep the session token in memory (`NorthboundSessionStore`, not on disk), log in again once when the session ended (failCode 305). One fetch: station KPI (today, month, total) + inverter power now (getDevList once, then getDevRealKpi), and the hourly curve at most once an hour (a failed curve keeps the old one). Rate limit (failCode 407) → `SunWattError.rateLimited`; fetches limited to one every 10 minutes (`minimumFetchInterval`).
 - The Huawei dongle on the home network works with it as with the kiosk link.
 - Not tested against a real account (no account available); fixtures are synthetic, built from Huawei's interface documentation. To change the interfaces read, edit `NorthboundClient.fetch()` and its fixtures.
+
+## D24. Store texts: ASO rules (LQA + ASO review, 2026-10-17)
+- No third-party trademarks or market-operator names (Huawei, FusionSolar, SolarEdge, PVOutput, EPEX, OMIE, Apple Watch, ...) in the keyword field, subtitle or name. Why: App Review guideline 2.3.7. The descriptions name the supported services, only to say what SunWatt works with.
+- Keywords never repeat a word of the name or subtitle (Apple already indexes those) and fill close to 100 characters with what users of that country search.
+- Wholesale prices are never sold as a retail tariff: "day-ahead"/"mercado diario"/"Börsenstrompreis"/"prix spot (day-ahead)"; Italy says it is not the PUN, Portugal avoids "preço da luz" in the name.
+- Localized names keep the "SunWatt:" prefix (en-US "SunWatt: Solar & Power", the App Store Connect record name).
+- Every description lists the same facts: both Control Center controls (price and solar), Watch app and complications with price and solar, several plants, optional live data at home. Siri is described, never quoted (phrases differ per language).
+- Italian app strings: "link Kiosk" (never "chiosco"), price label "Day-ahead" / "Prezzo day-ahead", Siri phrases "… su SunWatt", typographic apostrophe.

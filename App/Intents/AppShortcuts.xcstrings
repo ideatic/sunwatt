@@ -70,7 +70,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "${applicationName} prezzo dell'elettricità"
+            "value": "${applicationName} prezzo dell’elettricità"
           }
         },
         "nl": {
@@ -190,7 +190,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chiedi a ${applicationName} il prezzo dell'elettricità"
+            "value": "Chiedi a ${applicationName} il prezzo dell’elettricità"
           }
         },
         "nl": {
@@ -270,7 +270,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quando conviene consumare energia in ${applicationName}"
+            "value": "Quando conviene consumare energia su ${applicationName}"
           }
         },
         "nl": {
@@ -310,7 +310,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ore più convenienti in ${applicationName}"
+            "value": "Ore più convenienti su ${applicationName}"
           }
         },
         "nl": {
@@ -430,7 +430,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Controlla il prezzo dell'elettricità con ${applicationName}"
+            "value": "Controlla il prezzo dell’elettricità con ${applicationName}"
           }
         },
         "nl": {
@@ -470,7 +470,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prezzo dell'elettricità in ${applicationName}"
+            "value": "Prezzo dell’elettricità su ${applicationName}"
           }
         },
         "nl": {
@@ -510,7 +510,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Come vanno i miei pannelli solari in ${applicationName}"
+            "value": "Come vanno i miei pannelli solari su ${applicationName}"
           }
         },
         "nl": {
@@ -550,7 +550,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quanto producono i miei pannelli solari in ${applicationName}"
+            "value": "Quanto producono i miei pannelli solari su ${applicationName}"
           }
         },
         "nl": {
@@ -590,7 +590,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quanto costa l'elettricità adesso in ${applicationName}"
+            "value": "Quanto costa l’elettricità adesso su ${applicationName}"
           }
         },
         "nl": {
@@ -630,7 +630,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quanta energia hanno prodotto oggi i miei pannelli in ${applicationName}"
+            "value": "Quanta energia hanno prodotto oggi i miei pannelli su ${applicationName}"
           }
         },
         "nl": {
@@ -670,7 +670,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quanto costa la luce in questo momento in ${applicationName}"
+            "value": "Quanto costa la luce in questo momento su ${applicationName}"
           }
         },
         "nl": {
@@ -710,7 +710,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quanta energia solare sto producendo in ${applicationName}"
+            "value": "Quanta energia solare sto producendo su ${applicationName}"
           }
         },
         "nl": {
@@ -750,7 +750,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quanta energia solare ho prodotto oggi in ${applicationName}"
+            "value": "Quanta energia solare ho prodotto oggi su ${applicationName}"
           }
         },
         "nl": {
@@ -790,7 +790,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'elettricità costa poco adesso in ${applicationName}"
+            "value": "L’elettricità costa poco adesso su ${applicationName}?"
           }
         },
         "nl": {
@@ -830,7 +830,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'elettricità è cara adesso in ${applicationName}"
+            "value": "L’elettricità è cara adesso su ${applicationName}?"
           }
         },
         "nl": {
@@ -870,7 +870,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prezzo della corrente adesso in ${applicationName}"
+            "value": "Prezzo della corrente adesso su ${applicationName}"
           }
         },
         "nl": {
@@ -910,7 +910,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Produzione solare in ${applicationName}"
+            "value": "Produzione solare su ${applicationName}"
           }
         },
         "nl": {
@@ -950,7 +950,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cosa stanno producendo i miei pannelli adesso in ${applicationName}"
+            "value": "Cosa stanno producendo i miei pannelli adesso su ${applicationName}"
           }
         },
         "nl": {
@@ -990,7 +990,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quanto costa la corrente oggi in ${applicationName}"
+            "value": "Quanto costa la corrente oggi su ${applicationName}"
           }
         },
         "nl": {
@@ -1030,7 +1030,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Qual è la mia produzione solare di oggi in ${applicationName}"
+            "value": "Qual è la mia produzione solare di oggi su ${applicationName}"
           }
         },
         "nl": {
@@ -1070,7 +1070,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Qual è il prezzo dell'elettricità in ${applicationName}"
+            "value": "Qual è il prezzo dell’elettricità su ${applicationName}"
           }
         },
         "nl": {
@@ -1110,7 +1110,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quando costa meno l'elettricità in ${applicationName}"
+            "value": "Quando costa meno l’elettricità su ${applicationName}"
           }
         },
         "nl": {
@@ -1150,7 +1150,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quando costa meno la corrente oggi in ${applicationName}"
+            "value": "Quando costa meno la corrente oggi su ${applicationName}"
           }
         },
         "nl": {
@@ -1190,7 +1190,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quando conviene ricaricare l'auto in ${applicationName}"
+            "value": "Quando conviene ricaricare l’auto su ${applicationName}"
           }
         },
         "nl": {
@@ -1230,7 +1230,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quando conviene far partire la lavastoviglie in ${applicationName}"
+            "value": "Quando conviene far partire la lavastoviglie su ${applicationName}"
           }
         },
         "nl": {
@@ -1270,7 +1270,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quando conviene far partire la lavatrice in ${applicationName}"
+            "value": "Quando conviene far partire la lavatrice su ${applicationName}"
           }
         },
         "nl": {

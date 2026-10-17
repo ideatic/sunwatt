@@ -1,1 +1,1 @@
-First release. Solar and electricity price widgets for iPhone, iPad, Mac and Apple Watch.
+First release. Solar and electricity price widgets for iPhone, iPad, Mac and Apple Watch, with Siri and Shortcuts.

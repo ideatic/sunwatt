@@ -271,7 +271,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giorno prima"
+            "value" : "Day-ahead"
           }
         },
         "nl" : {
@@ -1097,7 +1097,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Link chiosco scaduto"
+            "value" : "Link Kiosk scaduto"
           }
         },
         "nl" : {

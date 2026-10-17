@@ -1,1 +1,1 @@
-electricity,energy,kWh,PVPC,widget,photovoltaic,tariff,spot,cheapest,hours,day-ahead,panels,grid
+energy,kWh,PVPC,photovoltaic,tariff,panels,inverter,spot,cheapest,hours,day-ahead,grid,monitor,home

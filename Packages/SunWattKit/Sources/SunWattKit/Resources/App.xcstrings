@@ -148,7 +148,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aggiungine un'altra"
+            "value" : "Aggiungine un altro"
           }
         },
         "nl" : {
@@ -312,7 +312,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chiunque abbia questo link può vedere i dati del tuo impianto. Huawei aggiorna i dati del chiosco circa ogni 30 minuti."
+            "value" : "Chiunque abbia questo link può vedere i dati del tuo impianto. Huawei aggiorna i dati Kiosk circa ogni 30 minuti."
           }
         },
         "nl" : {
@@ -681,7 +681,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Controlla link"
+            "value" : "Controlla il link"
           }
         },
         "nl" : {
@@ -763,7 +763,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verifica che questo dispositivo sia connesso al Wi-Fi di casa, che SunSpec su Modbus TCP sia attivo nell'inverter e che SunWatt possa usare la rete locale (Impostazioni → Privacy e sicurezza → Rete locale)."
+            "value" : "Verifica che questo dispositivo sia connesso al Wi-Fi di casa, che SunSpec su Modbus TCP sia attivo nell’inverter e che SunWatt possa usare la rete locale (Impostazioni → Privacy e sicurezza → Rete locale)."
           }
         },
         "nl" : {
@@ -886,7 +886,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scegli la lingua dell'app nelle Impostazioni di iOS"
+            "value" : "Scegli la lingua dell’app nelle Impostazioni di iOS"
           }
         },
         "nl" : {
@@ -1091,7 +1091,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connessione…"
+            "value" : "Connessione in corso…"
           }
         },
         "nl" : {
@@ -1214,7 +1214,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clic con Control sulla scrivania"
+            "value" : "Fai clic sulla scrivania tenendo premuto Control"
           }
         },
         "nl" : {
@@ -1624,7 +1624,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prezzi dell'elettricità"
+            "value" : "Prezzi dell’elettricità"
           }
         },
         "nl" : {
@@ -1911,7 +1911,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ottieni il link del chiosco"
+            "value" : "Ottieni il link Kiosk"
           }
         },
         "nl" : {
@@ -2075,7 +2075,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Come ottengo il link del chiosco?"
+            "value" : "Come ottengo il link Kiosk?"
           }
         },
         "nl" : {
@@ -2157,7 +2157,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indirizzo IP dell'inverter"
+            "value" : "Indirizzo IP dell’inverter"
           }
         },
         "nl" : {
@@ -2198,7 +2198,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si trova in alto nella pagina dell'impianto."
+            "value" : "Si trova in alto nella pagina dell’impianto."
           }
         },
         "nl" : {
@@ -2239,7 +2239,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "È nell'angolo in alto a sinistra. Poi tocca Aggiungi widget."
+            "value" : "È nell’angolo in alto a sinistra. Poi tocca Aggiungi widget."
           }
         },
         "nl" : {
@@ -2280,7 +2280,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "È la riga sotto l'ora."
+            "value" : "È la riga sotto l’ora."
           }
         },
         "nl" : {
@@ -2526,7 +2526,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Facoltativo. Se l'inverter supporta SunSpec su Modbus TCP (SolarEdge, SMA, Fronius e altri marchi; potrebbe essere necessario attivarlo, ad esempio tramite il tuo installatore), SunWatt lo legge direttamente mentre sei a casa, ogni pochi secondi. Altrove usa il servizio %@."
+            "value" : "Facoltativo. Se l’inverter supporta SunSpec su Modbus TCP (SolarEdge, SMA, Fronius e altri marchi; potrebbe essere necessario attivarlo, ad esempio tramite il tuo installatore), SunWatt lo legge direttamente mentre sei a casa, ogni pochi secondi. Altrove usa il servizio %@."
           }
         },
         "nl" : {
@@ -2567,7 +2567,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nome dell'impianto"
+            "value" : "Nome dell’impianto"
           }
         },
         "nl" : {
@@ -2772,7 +2772,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max."
+            "value" : "Max"
           }
         },
         "nl" : {
@@ -2813,7 +2813,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Min."
+            "value" : "Min"
           }
         },
         "nl" : {
@@ -3182,7 +3182,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scegli il tuo paese per vederne il prezzo nell'app e nel widget."
+            "value" : "Scegli il tuo paese per vederne il prezzo nell’app e nel widget."
           }
         },
         "nl" : {
@@ -3223,7 +3223,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scegli il tuo impianto dall'elenco."
+            "value" : "Scegli il tuo impianto dall’elenco."
           }
         },
         "nl" : {
@@ -3510,7 +3510,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prezzi e produzione solare sul tuo schermo, a colpo d'occhio."
+            "value" : "Prezzi e produzione solare sul tuo schermo, a colpo d’occhio."
           }
         },
         "nl" : {
@@ -4289,7 +4289,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt legge i dati del tuo impianto tramite il link pubblico del chiosco FusionSolar. Crei quel link una sola volta, sul sito web."
+            "value" : "SunWatt legge i dati del tuo impianto tramite il link Kiosk pubblico di FusionSolar. Crei quel link una sola volta, sul sito web."
           }
         },
         "nl" : {
@@ -4412,7 +4412,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Attiva l'interruttore."
+            "value" : "Attiva l’interruttore."
           }
         },
         "nl" : {
@@ -4576,7 +4576,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tocca l'area dei widget"
+            "value" : "Tocca l’area dei widget"
           }
         },
         "nl" : {
@@ -4822,7 +4822,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Questo non è un link del chiosco. Deve iniziare con https:// e contenere kk=."
+            "value" : "Questo non è un link Kiosk. Deve iniziare con https:// e contenere kk=."
           }
         },
         "nl" : {
@@ -4904,7 +4904,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quest'anno"
+            "value" : "Quest’anno"
           }
         },
         "nl" : {
@@ -5191,7 +5191,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Attiva la vista chiosco"
+            "value" : "Attiva la vista Kiosk"
           }
         },
         "nl" : {
@@ -5355,7 +5355,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usa un browser su un computer e il server che ti ha indicato l'installatore, per esempio eu5.fusionsolar.huawei.com. Il link del chiosco si crea sul sito web."
+            "value" : "Usa un browser su un computer e il server che ti ha indicato l’installatore, per esempio eu5.fusionsolar.huawei.com. Il link Kiosk si crea sul sito web."
           }
         },
         "nl" : {
@@ -5396,7 +5396,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Link del chiosco valido (%@)"
+            "value" : "Link Kiosk valido (%@)"
           }
         },
         "nl" : {
@@ -5519,7 +5519,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dove acquisti l'elettricità?"
+            "value" : "Dove acquisti l’elettricità?"
           }
         },
         "nl" : {
@@ -5560,7 +5560,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prezzo all'ingrosso del giorno dopo"
+            "value" : "Prezzo day-ahead all’ingrosso"
           }
         },
         "nl" : {
@@ -5765,7 +5765,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Puoi aggiungere l'impianto solare più tardi in Impostazioni."
+            "value" : "Puoi aggiungere l’impianto solare più tardi in Impostazioni."
           }
         },
         "nl" : {
@@ -5888,7 +5888,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La tua produzione solare e il prezzo dell'elettricità, sempre a colpo d'occhio."
+            "value" : "La tua produzione solare e il prezzo dell’elettricità, sempre a colpo d’occhio."
           }
         },
         "nl" : {
@@ -6092,7 +6092,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prezzo e Solare oggi. Tieni premuto il quadrante, tocca Modifica, poi Complicazioni e SunWatt. Le impostazioni arrivano dall'iPhone."
+            "value" : "Prezzo e Solare oggi. Tieni premuto il quadrante, tocca Modifica, poi Complicazioni e SunWatt. Le impostazioni arrivano dall’iPhone."
           }
         },
         "nl" : {
@@ -6133,7 +6133,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di’ “Qual è il prezzo dell'elettricità in SunWatt?”"
+            "value" : "Di’ “Qual è il prezzo dell’elettricità su SunWatt?”"
           }
         },
         "nl" : {
@@ -6386,7 +6386,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt è un'app indipendente. Non è affiliata a Huawei, SolarEdge, PVOutput, Red Eléctrica o Fraunhofer ISE."
+            "value" : "SunWatt è un’app indipendente. Non è affiliata a Huawei, SolarEdge, PVOutput, Red Eléctrica o Fraunhofer ISE."
           }
         },
         "nl" : {
@@ -7001,7 +7001,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Link chiosco scaduto"
+            "value" : "Link Kiosk scaduto"
           }
         },
         "nl" : {
@@ -7124,7 +7124,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il tuo link del chiosco potrebbe smettere di funzionare intorno al %@. Creane uno nuovo in FusionSolar e incollalo qui."
+            "value" : "Il tuo link Kiosk potrebbe smettere di funzionare intorno al %@. Creane uno nuovo in FusionSolar e incollalo qui."
           }
         },
         "nl" : {
@@ -7206,7 +7206,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Facoltativo. Se nel dongle Huawei Modbus TCP è impostato su “Enable (unrestricted)”, SunWatt legge l’inverter direttamente mentre sei a casa, ogni pochi secondi. Altrove usa il link del chiosco."
+            "value" : "Facoltativo. Se nel dongle Huawei Modbus TCP è impostato su “Enable (unrestricted)”, SunWatt legge l’inverter direttamente mentre sei a casa, ogni pochi secondi. Altrove usa il link Kiosk."
           }
         },
         "nl" : {
@@ -7493,7 +7493,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Link del chiosco"
+            "value" : "Link Kiosk"
           }
         },
         "nl" : {
@@ -7700,7 +7700,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il tuo installatore crea un account API in FusionSolar (Company Management → Northbound Management) e ti fornisce il nome utente e la password (codice di sistema). A differenza del link del chiosco, non scade. Il server è quello indicato nel tuo indirizzo FusionSolar, per esempio eu5.fusionsolar.huawei.com."
+            "value" : "Il tuo installatore crea un account API in FusionSolar (Company Management → Northbound Management) e ti fornisce il nome utente e la password (codice di sistema). A differenza del link Kiosk, non scade. Il server è quello indicato nel tuo indirizzo FusionSolar, per esempio eu5.fusionsolar.huawei.com."
           }
         },
         "nl" : {

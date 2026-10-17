@@ -1,1 +1,1 @@
-luz,PVPC,fotovoltaica,placas,energía,kWh,tarifa,horas baratas,autoconsumo,widget,mañana,red
+fotovoltaica,autoconsumo,tarifa,horas,baratas,electricidad,energía,inversor,mercado,diario,ahorro

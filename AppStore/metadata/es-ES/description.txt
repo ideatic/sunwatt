@@ -1,40 +1,42 @@
-SunWatt pone a la vista dos datos que miras cada día: cuánto producen tus placas solares y cuánto cuesta la luz ahora mismo.
+Tus placas solares y el precio de la luz, de un vistazo: cuánto produce tu instalación fotovoltaica y cuánto cuesta la electricidad ahora mismo, en widgets, pantalla de bloqueo, Centro de control y Apple Watch.
 
 PRECIO DE LA LUZ (PVPC)
 • Precio PVPC regulado de Red Eléctrica, hora a hora
-• El precio actual con color según el nivel: barato, normal o caro
+• Precio actual con color según el nivel: barato, normal o caro
 • Gráfica de hoy y las próximas horas más baratas
-• Precios de mañana en cuanto se publican (normalmente por la tarde)
-• Ideal para decidir cuándo poner la lavadora, el lavavajillas o cargar el coche
+• Precios de mañana en cuanto se publican
+• Para decidir cuándo poner la lavadora, el lavavajillas o cargar el coche
 
-PRODUCCIÓN SOLAR
-Conecta tu instalación y verás la potencia actual en kW, la energía de hoy en kWh y la curva de producción del día. Funciona con:
-• Huawei FusionSolar: pega el enlace Kiosk de tu planta o introduce la cuenta de API que tu instalador crea para ti
+PRODUCCIÓN SOLAR Y AUTOCONSUMO
+Conecta tu instalación solar y verás la potencia actual en kW, la energía de hoy en kWh y la curva de producción del día. Funciona con:
+• Huawei FusionSolar: pega el enlace Kiosk de tu planta o introduce la cuenta de API que te crea tu instalador
 • SolarEdge: introduce el ID del sitio y la clave API
 • PVOutput: introduce el ID de tu sistema y la clave API. PVOutput funciona con muchas marcas de inversores, como Fronius, SMA, Enphase, GoodWe o Growatt
-El primer arranque te explica dónde encontrar cada dato en un par de minutos.
+• Varias instalaciones a la vez
+• Datos en directo desde casa, si quieres: con el dongle de Huawei o con un inversor SunSpec
+La primera vez, la app te explica dónde encontrar cada dato en un par de minutos.
 
 WIDGETS
 • Widgets pequeño, mediano y grande para la pantalla de inicio
-• Widgets de pantalla de bloqueo, rectangular y circular
-• Control en el Centro de control con el precio actual
+• Widgets rectangulares y circulares para la pantalla de bloqueo
+• Controles en el Centro de control para el precio y la producción solar
 • Elige solar, precio o ambos
 • Día completo, o las 6 horas anteriores y las 12 siguientes
 • Toca un widget para actualizarlo
 • Aspecto claro, oscuro, teñido y transparente
 
 SIRI Y ATAJOS
-Pregunta "¿Cuál es el precio de la luz en SunWatt?", o pide tu producción solar y las horas más baratas. Úsalo en tus propios atajos y automatizaciones.
+Pregunta a Siri por el precio de la luz ahora, tu producción solar o las horas más baratas. Úsalo en tus propios atajos y automatizaciones, por ejemplo para poner el lavavajillas cuando la luz es barata.
 
 APPLE WATCH
-App para el reloj y complicaciones con el precio en la muñeca.
+App para el reloj y complicaciones con el precio de la luz y tu producción solar en la muñeca.
 
 EN LA APP
 • Panel con gráficas interactivas
 • Selector de país: España (PVPC), Portugal, Francia, Alemania y Luxemburgo, Austria, Bélgica, Países Bajos y norte de Italia
 • Guía para añadir los widgets
 
-PRIVADA POR DISEÑO
+PRIVACIDAD POR DISEÑO
 Sin cuenta. Sin rastreo. Sin analíticas. Sin anuncios. SunWatt solo se conecta con el servicio de monitorización que elijas (FusionSolar, SolarEdge o PVOutput) y con los servicios que publican los precios. Tus ajustes, tus claves y los últimos datos se quedan en tu dispositivo. No se envía nada al desarrollador.
 
-SunWatt es gratis. No está afiliada a Huawei, SolarEdge, PVOutput, Red Eléctrica ni Fraunhofer ISE. Los precios del mercado mayorista de otros países proceden de Energy-Charts (Fraunhofer ISE), licencia CC BY 4.0. El precio mayorista no es el de tu factura.
+SunWatt es gratis. No tiene ninguna relación con Huawei, SolarEdge, PVOutput, Red Eléctrica ni Fraunhofer ISE. Los precios del mercado diario de los demás países proceden de Energy-Charts (Fraunhofer ISE), licencia CC BY 4.0. El precio del mercado diario no es el de tu factura.

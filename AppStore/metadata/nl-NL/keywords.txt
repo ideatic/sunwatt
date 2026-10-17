@@ -1,1 +1,1 @@
-stroom,stroomprijs,energie,kWh,zonnepanelen,dynamisch,day-ahead,goedkoop,widget,morgen
+stroom,dynamisch,energieprijs,energiecontract,omvormer,opbrengst,day-ahead,goedkoop,widget,kWh,pv

@@ -1,33 +1,34 @@
-SunWatt zeigt zwei Zahlen, die Sie täglich prüfen: wie viel Ihre Solaranlage gerade erzeugt und was Strom jetzt kostet.
+SunWatt zeigt zwei Zahlen, die Sie täglich prüfen: wie viel Ihre Photovoltaikanlage gerade erzeugt und was Strom jetzt kostet. Als Widget, auf dem Sperrbildschirm, im Kontrollzentrum und auf der Apple Watch.
 
 STROMPREIS
-• Deutschland und Luxemburg: Day-Ahead-Börsenpreis, stundenweise
-• Außerdem Österreich, Belgien, Niederlande, Frankreich, Portugal, Norditalien und Spanien (PVPC)
+• Deutschland und Luxemburg sowie Österreich: Day-Ahead-Börsenstrompreis (EPEX Spot), stundenweise. Praktisch, wenn Sie einen dynamischen Stromtarif haben
+• Außerdem Belgien, Niederlande, Frankreich, Portugal, Norditalien und Spanien (PVPC)
 • Aktueller Preis farblich nach Niveau, damit Sie sofort sehen, ob er günstig oder teuer ist
 • Tagesverlauf und die günstigsten kommenden Stunden
 • Preise für morgen, sobald sie veröffentlicht sind
 
 SOLARPRODUKTION
-Verbinden Sie Ihre Solaranlage und sehen Sie die aktuelle Leistung in kW, die Energie von heute in kWh und die Tageskurve. Unterstützt werden:
+Verbinden Sie Ihre Solaranlage und sehen Sie die aktuelle Leistung in kW, die Energie von heute in kWh und die Tageskurve. Mehrere Anlagen sind möglich. Unterstützt werden:
 • Huawei FusionSolar: Kiosk-Link Ihrer Anlage einfügen oder das API-Konto eingeben, das Ihr Installateur für Sie anlegt
 • SolarEdge: Standort-ID und API-Schlüssel eingeben
 • PVOutput: System-ID und API-Schlüssel eingeben. PVOutput funktioniert mit vielen Wechselrichter-Marken wie Fronius, SMA, Enphase, GoodWe und Growatt
+• Optional Live-Daten bei Ihnen zu Hause: vom Huawei-Dongle oder von einem SunSpec-Wechselrichter im lokalen Netz
 Beim ersten Start erfahren Sie in wenigen Minuten, wo Sie die Angaben finden.
 
 WIDGETS
 • Kleine, mittlere und große Widgets für den Home-Bildschirm
 • Widgets für den Sperrbildschirm, rechteckig und rund
-• Steuerelement im Kontrollzentrum mit dem aktuellen Preis
+• Steuerelemente im Kontrollzentrum für Preis und Solar
 • Solar, Preis oder beides
 • Ganzer Tag, oder die letzten 6 und nächsten 12 Stunden
 • Widget antippen, um es zu aktualisieren
 • Hell, dunkel, getönt und klar
 
 SIRI UND KURZBEFEHLE
-Fragen Sie „Wie hoch ist der Strompreis in SunWatt?“ oder nach Solarproduktion und günstigsten Stunden. Nutzen Sie das in eigenen Kurzbefehlen und Automationen.
+Fragen Sie Siri nach dem aktuellen Strompreis, der Solarproduktion oder den günstigsten Stunden. Nutzen Sie das auch in eigenen Kurzbefehlen und Automationen.
 
 APPLE WATCH
-Watch-App und Komplikationen bringen den Preis ans Handgelenk.
+Watch-App und Komplikationen bringen Preis und Solarleistung ans Handgelenk.
 
 IN DER APP
 • Dashboard mit interaktiven Diagrammen
@@ -35,6 +36,6 @@ IN DER APP
 • Anleitung zum Hinzufügen der Widgets
 
 PRIVAT VON ANFANG AN
-Kein Konto. Kein Tracking. Keine Analyse. Keine Werbung. SunWatt verbindet sich nur mit dem Solardienst, den Sie wählen (FusionSolar, SolarEdge oder PVOutput), und mit öffentlichen Preisdiensten. Einstellungen, API-Schlüssel und letzte Daten bleiben auf Ihrem Gerät. Nichts wird an den Entwickler gesendet.
+Kein Konto. Kein Tracking. Keine Analyse-Tools. Keine Werbung. SunWatt verbindet sich nur mit dem Solardienst, den Sie wählen (FusionSolar, SolarEdge oder PVOutput), und mit öffentlichen Preisdiensten. Einstellungen, API-Schlüssel und letzte Daten bleiben auf Ihrem Gerät. Nichts wird an den Entwickler gesendet.
 
 SunWatt ist kostenlos. Es ist nicht mit Huawei, SolarEdge, PVOutput, Red Eléctrica oder dem Fraunhofer ISE verbunden. Day-Ahead-Preise stammen von Energy-Charts (Fraunhofer ISE), Lizenz CC BY 4.0. Der Börsenpreis ist nicht der Preis auf Ihrer Rechnung.

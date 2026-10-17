@@ -1050,7 +1050,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il prezzo dell’elettricità ora è %@ €/kWh. È conveniente."
+            "value" : "Il prezzo dell’elettricità ora è %@ €/kWh. È basso."
           }
         },
         "nl" : {
@@ -1091,7 +1091,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il prezzo dell’elettricità ora è %@ €/kWh. È costoso."
+            "value" : "Il prezzo dell’elettricità ora è %@ €/kWh. È alto."
           }
         },
         "nl" : {
@@ -1343,7 +1343,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il tuo link del chiosco di FusionSolar è scaduto. Creane uno nuovo e incollalo nelle impostazioni di SunWatt."
+            "value" : "Il tuo link Kiosk di FusionSolar è scaduto. Creane uno nuovo e incollalo nelle impostazioni di SunWatt."
           }
         },
         "nl" : {

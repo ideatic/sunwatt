@@ -1,1 +1,1 @@
-elettricità,prezzo,luce,energia,kWh,fotovoltaico,pannelli,PUN,mercato,widget,domani,tariffa
+elettricità,kWh,pannelli,autoconsumo,MGP,mercato,impianto,produzione,orario,inverter,risparmio,casa
