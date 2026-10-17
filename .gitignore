@@ -12,3 +12,6 @@ build/
 
 # Claude Code agent worktrees
 .claude/worktrees/
+
+# Store screenshots: rendered before upload (AppStore/SCREENSHOTS.md), not kept in git (333 MB for 7 languages).
+AppStore/screenshots/

@@ -71,7 +71,7 @@ Uploads `AppStore/metadata/` (7 locales) with fastlane deliver. It never uploads
 
 4. Dry run (default): `scripts/upload_metadata.sh`. It checks the metadata and prints what it would upload. It does not contact Apple and needs no key.
 5. Real upload, only when the owner says so: `scripts/upload_metadata.sh --upload`. It runs deliver twice (`ios`, then `osx`). Use `--platform ios|osx|both` to limit it.
-6. Screenshots are off by default. `--screenshots <dir>` adds them and overwrites the store screenshots. deliver reads `<dir>/<locale>/*.png` (folders `en-US`, `es-ES`, ...). The folders in `Screenshots/` are not in that layout yet. See step f).
+6. Screenshots are off by default. `--screenshots <dir>` adds them and overwrites the store screenshots. deliver reads `<dir>/<locale>/*.png` (folders `en-US`, `es-ES`, ...). Render them first, they are not in git: `swift run --package-path Packages/SunWattKit SunWattSnapshots --store AppStore/screenshots` (all 7 languages, see `AppStore/SCREENSHOTS.md`).
 
 The app record (step a) must exist first.
 
