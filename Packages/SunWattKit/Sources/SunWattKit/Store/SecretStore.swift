@@ -1,5 +1,6 @@
 import Foundation
 import Security
+import os
 
 /// Where the kiosk link and the SolarEdge/PVOutput API key are kept (they give access to the plant's data).
 public protocol SecretStore: Sendable {
@@ -60,6 +61,11 @@ public struct KeychainSecretStore: SecretStore {
             add[kSecValueData as String] = data
             add[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
             status = SecItemAdd(add as CFDictionary, nil)
+        }
+        if status != errSecSuccess {
+            // The status only (e.g. -34018: missing keychain entitlement); never the name's value.
+            Logger(subsystem: "com.ideatic.sunwatt", category: "keychain")
+                .error("Keychain write failed: \(status, privacy: .public)")
         }
         return status == errSecSuccess
     }

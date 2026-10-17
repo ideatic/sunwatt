@@ -81,7 +81,7 @@ Recommended: one record (Universal Purchase). The Mac app uses the same bundle I
 
 Separate Mac record: only if you want a different name, price, or release date for the Mac. It needs a different bundle ID, which breaks the shared App Group on iOS and Mac and the shared code path. Not worth it for a free app.
 
-Mac notes: the Mac app is sandboxed with the App Group (`group.com.ideatic.sunwatt`). The signed archive needs the profile from step c). See `DECISIONS.md` D4.
+Mac notes: the Mac app is sandboxed with the team-prefixed App Group (`EX68NKELW9.com.ideatic.sunwatt`, no profile entry needed). The signed archive needs the profile from step c). See `DECISIONS.md` D4.
 
 ## h) Submit
 

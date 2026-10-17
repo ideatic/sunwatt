@@ -67,7 +67,7 @@ cd Packages/SunWattKit && swift run SunWattSnapshots ../../Screenshots/widgets &
 
 - Team: ideatic Development, S.L.U. (`EX68NKELW9`), automatic signing.
 - Bundle IDs: `com.ideatic.sunwatt` (app), `.widgets`, `.watchkitapp`, `.watchkitapp.widgets`.
-- App Group `group.com.ideatic.sunwatt` on all four targets. It shares settings and the last good data between the app and the widgets (and, on the watch, between the watch app and its complications).
+- App Group `group.com.ideatic.sunwatt` on all four targets (on the Mac: `EX68NKELW9.com.ideatic.sunwatt`, DECISIONS D4). It shares settings and the last good data between the app and the widgets (and, on the watch, between the watch app and its complications).
 - macOS: a `group.` App Group needs a provisioning profile, so local macOS builds without signing (`CODE_SIGNING_ALLOWED=NO`) only compile. Without the group container the store falls back to local storage.
 - Release: see `docs/RELEASE.md` and `scripts/release.sh` (safe dry run by default; `--upload` sends to App Store Connect).
 

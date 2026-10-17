@@ -18,7 +18,7 @@ Surfaces: widgets (small, medium, large, Lock Screen rectangular + circular), Co
 
 Platforms: iOS / iPadOS / macOS / watchOS **27.0** (Xcode 27). Languages: en (source), es, pt, fr, de, it, nl. Light and dark mode.
 
-Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX68NKELW9`, bundle IDs `com.ideatic.sunwatt`, `.widgets`, `.watchkitapp`, `.watchkitapp.widgets`, App Group `group.com.ideatic.sunwatt`.
+Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX68NKELW9`, bundle IDs `com.ideatic.sunwatt`, `.widgets`, `.watchkitapp`, `.watchkitapp.widgets`, App Group `group.com.ideatic.sunwatt` (Mac: `EX68NKELW9.com.ideatic.sunwatt`, DECISIONS D4).
 
 ## Repository layout
 

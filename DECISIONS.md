@@ -17,7 +17,12 @@ Each entry: decision, why, how to change it.
 
 ## D4. Signing
 - `DEVELOPMENT_TEAM` is `EX68NKELW9` (ideatic Development, S.L.U.), automatic signing. iOS Simulator builds work, App Group included.
-- macOS: a `group.` App Group entitlement needs a provisioning profile, which exists only after the first `scripts/release.sh --upload` (or signing in Xcode). Until then `scripts/verify.sh` builds macOS with `CODE_SIGNING_ALLOWED=NO` (compile + link only), so the local macOS app and widget do not run with the App Group.
+- macOS uses a team-prefixed App Group, `EX68NKELW9.com.ideatic.sunwatt` (`Constants.appGroupID` under `#if os(macOS)`, `App/SunWatt-macOS.entitlements`, `Widgets/SunWattWidgets-macOS.entitlements`, set with `CODE_SIGN_ENTITLEMENTS[sdk=macosx*]`). iOS and watchOS keep `group.com.ideatic.sunwatt`.
+  - Why (2026-10-17): a `group.` ID on the Mac needs a provisioning profile that lists it. The local Debug build got the generic "Mac Team Provisioning Profile: *", macOS blocked the group, the app saved settings in its private container, and the Mac widget said "Solar not set up". A team-prefixed group needs no profile entry. The Mac and iOS apps never share a container, so different IDs cost nothing.
+  - The keychain group for the secrets is the same string, allowed by `keychain-access-groups` in the Mac entitlements (the team profile covers `EX68NKELW9.*`).
+  - At launch the app moves settings from the private fallback into the group (`AppGroupStore.adoptSettings(from:)`) and moves any secret still in the plist into the keychain (`moveSecretsToKeychain()`).
+  - Change: to go back to one ID, register `group.com.ideatic.sunwatt` for the Mac App IDs (profile with the App Group), delete the two `-macOS` entitlements files and the `#if`.
+- `scripts/verify.sh` builds macOS with `CODE_SIGNING_ALLOWED=NO` (compile + link only).
 - The store falls back to a local container when the App Group container is unavailable, so the app still works (without sharing) when unsigned.
 - Change: `DEVELOPMENT_TEAM` in `project.yml` (see README).
 

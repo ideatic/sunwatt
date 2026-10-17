@@ -94,6 +94,32 @@ public final class AppGroupStore: @unchecked Sendable {
         }
     }
 
+    /// Moves settings saved in the private fallback (`local`) into the shared store, once: Mac builds before the
+    /// team-prefixed App Group could not open the group, so the app kept settings and secrets in its own plist and the
+    /// widget saw none. Does nothing when the shared store already has settings or both are the same defaults.
+    /// The app calls it at launch; the widget extension never does (its private defaults are empty).
+    public func adoptSettings(from local: UserDefaults) {
+        guard local !== defaults, defaults.data(forKey: Self.settingsKey) == nil,
+              let data = local.data(forKey: Self.settingsKey),
+              let old = try? JSONDecoder().decode(SunWattSettings.self, from: data)
+        else { return }
+        settings = old
+        // The old plist may hold the kiosk link or API key in clear text: drop it.
+        local.removeObject(forKey: Self.settingsKey)
+    }
+
+    /// Saves the settings again when the plist still holds a secret (older installs, or written while the keychain
+    /// could not be used), so it moves to the keychain at launch instead of at the next save. No-op without keychain.
+    public func moveSecretsToKeychain() {
+        guard secrets != nil,
+              let stored = defaults.data(forKey: Self.settingsKey)
+                .flatMap({ try? JSONDecoder().decode(SunWattSettings.self, from: $0) }),
+              !stored.kioskURL.isEmpty || !stored.solarAPIKey.isEmpty
+                || stored.additionalPlants.contains(where: { !$0.kioskURL.isEmpty || !$0.apiKey.isEmpty })
+        else { return }
+        settings = settings
+    }
+
     // MARK: Failed fetches of rate-limited providers
 
     private static let solarFailureKey = "sunwatt.solarFailures"

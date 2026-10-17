@@ -71,3 +71,64 @@ func storeSamplePrices(day: Date = madrid(2026, 6, 1, 0, 0), fetchedAt: Date = m
         _ = AppGroupStore()
     }
 }
+
+/// Mac builds before the team-prefixed App Group kept settings in the app's private plist; the widget saw none.
+@Suite struct AdoptLocalSettingsTests {
+    @Test func movesPrivateSettingsAndSecretsIntoTheSharedStore() throws {
+        let local = UserDefaults(suiteName: "test-\(UUID())")!
+        let old = SunWattSettings(kioskURL: testKioskURL, showTomorrowPrices: false)
+        local.set(try JSONEncoder().encode(old), forKey: "sunwatt.settings")
+        let secrets = MemorySecrets()
+        let shared = UserDefaults(suiteName: "test-\(UUID())")!
+        let store = AppGroupStore(defaults: shared, directory: FileManager.default.temporaryDirectory
+            .appendingPathComponent("adopt-\(UUID())"), secrets: secrets)
+
+        store.adoptSettings(from: local)
+
+        #expect(store.settings.kioskURL == testKioskURL)
+        #expect(store.settings.showTomorrowPrices == false)
+        #expect(local.data(forKey: "sunwatt.settings") == nil)
+        let plist = try #require(shared.data(forKey: "sunwatt.settings"))
+        #expect(!String(decoding: plist, as: UTF8.self).contains("TESTKK"))
+    }
+
+    @Test func keepsSharedSettingsThatAlreadyExist() throws {
+        let local = UserDefaults(suiteName: "test-\(UUID())")!
+        local.set(try JSONEncoder().encode(SunWattSettings(kioskURL: "https://old.test/?kk=OLD")), forKey: "sunwatt.settings")
+        let (store, _) = storeTempStore()
+        store.settings = SunWattSettings(kioskURL: testKioskURL)
+
+        store.adoptSettings(from: local)
+
+        #expect(store.settings.kioskURL == testKioskURL)
+        #expect(local.data(forKey: "sunwatt.settings") != nil)
+    }
+}
+
+@Suite struct MoveSecretsToKeychainTests {
+    @Test func secretInThePlistMovesAtLaunch() throws {
+        let shared = UserDefaults(suiteName: "test-\(UUID())")!
+        shared.set(try JSONEncoder().encode(SunWattSettings(kioskURL: testKioskURL)), forKey: "sunwatt.settings")
+        let secrets = MemorySecrets()
+        let store = AppGroupStore(defaults: shared, directory: FileManager.default.temporaryDirectory
+            .appendingPathComponent("move-\(UUID())"), secrets: secrets)
+
+        store.moveSecretsToKeychain()
+
+        #expect(secrets.secret("kioskURL") == testKioskURL)
+        let plist = try #require(shared.data(forKey: "sunwatt.settings"))
+        #expect(!String(decoding: plist, as: UTF8.self).contains("TESTKK"))
+        #expect(store.settings.kioskURL == testKioskURL)
+    }
+
+    @Test func withoutKeychainTheSecretStaysReadable() throws {
+        let shared = UserDefaults(suiteName: "test-\(UUID())")!
+        shared.set(try JSONEncoder().encode(SunWattSettings(kioskURL: testKioskURL)), forKey: "sunwatt.settings")
+        let store = AppGroupStore(defaults: shared, directory: FileManager.default.temporaryDirectory
+            .appendingPathComponent("move-\(UUID())"), secrets: MemorySecrets(works: false))
+
+        store.moveSecretsToKeychain()
+
+        #expect(store.settings.kioskURL == testKioskURL)
+    }
+}

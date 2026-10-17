@@ -6,6 +6,8 @@ struct SunWattApp: App {
     @State private var model: AppModel
 
     init() {
+        AppGroupStore.shared.adoptSettings(from: .standard)
+        AppGroupStore.shared.moveSecretsToKeychain()
         #if DEBUG
         DebugKioskPrefill.apply()
         #endif

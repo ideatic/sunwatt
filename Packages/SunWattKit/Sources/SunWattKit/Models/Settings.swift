@@ -118,7 +118,15 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
 }
 
 public enum Constants {
+    /// App Group shared by the app and its widgets (and the watch app and its complications). On the Mac the ID starts
+    /// with the team ID: macOS lets a signed app use such a group without a provisioning profile that lists it, while a
+    /// `group.` ID needs one (a Debug build with the generic Mac team profile then falls back to private storage and
+    /// the widget sees no settings). iOS and watchOS need the `group.` form. DECISIONS D4.
+    #if os(macOS)
+    public static let appGroupID = "EX68NKELW9.com.ideatic.sunwatt"
+    #else
     public static let appGroupID = "group.com.ideatic.sunwatt"
+    #endif
     public static let madrid = TimeZone(identifier: "Europe/Madrid")!
     /// Gregorian calendar fixed to Europe/Madrid. Use this for all day/hour math.
     public static let madridCalendar: Calendar = {
