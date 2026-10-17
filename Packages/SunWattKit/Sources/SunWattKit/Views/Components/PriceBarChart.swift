@@ -108,7 +108,7 @@ public struct PriceBarChart: View {
                             Text(verbatim: ChartLayout.axisNumber(v, decimals: 2) + (isTop && v > 0 ? " €" : ""))
                                 .font(.system(.caption2, design: .rounded))
                                 .monospacedDigit()
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Color.secondary)
                                 .frame(width: 34, alignment: .trailing)
                         }
                     }
@@ -123,7 +123,7 @@ public struct PriceBarChart: View {
                         if let date = value.as(Date.self) {
                             Text(verbatim: Format.hour(date, timeZone: series.region.timeZone))
                                 .font(.system(.caption2, design: .rounded))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Color.secondary)
                         }
                     }
                 }

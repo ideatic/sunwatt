@@ -85,6 +85,11 @@ func jobs() -> [Job] {
     // Solar not configured, prices fine.
     result.append(Job(name: "medium-notconfigured-light", entry: SampleData.notConfiguredEntry(), family: .medium))
     result.append(Job(name: "small-notconfigured-light", entry: SampleData.notConfiguredEntry(), family: .small))
+    // After midnight: no production yet today, empty production chart with its axes (dark, as on a Mac desktop).
+    var afterMidnight = day
+    afterMidnight.date = day.date.addingTimeInterval(11 * 3600)
+    result.append(Job(name: "large-midnight-dark", entry: afterMidnight, family: .large, scheme: .dark))
+    result.append(Job(name: "large-midnight-light", entry: afterMidnight, family: .large))
 
     // Rendering modes (dark). The system tint is not simulated: these show the monochrome hierarchy.
     for family in [SunWattFamily.small, .medium, .accessoryRectangular, .accessoryCircular] {

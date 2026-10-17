@@ -85,3 +85,9 @@ Critique (all 67 PNGs reviewed: light/dark, day/night/stale/error, accented/vibr
   rectangular widget between them looked lower. The gauge is smaller than the 76 pt slot and the widget view
   aligned every family to the top-left.
 - Change: `SunWattWidgetView` centres the `accessoryCircular` family; the other families stay top-left.
+
+## 2026-10-18: chart axis labels in dark mode
+
+- Owner report (Mac, dark): the kW labels of the large widget's production chart were almost invisible after midnight (empty chart).
+- Cause: the labels used the hierarchical `.secondary` on top of the dimming Charts already applies to axis labels. Proven with a red test label (full strength), so it was not an opacity.
+- Change: all axis labels in `SolarCurveChart` and `PriceBarChart` use `Color.secondary`. New renders `large-midnight-dark/light` cover the empty chart. Checked large day/night/midnight in light and dark: both axes now read the same.

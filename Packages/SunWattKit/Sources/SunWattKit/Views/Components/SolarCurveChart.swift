@@ -91,7 +91,10 @@ public struct SolarCurveChart: View {
                             Text(verbatim: ChartLayout.axisNumber(v, decimals: 1) + (v == ticks.last && v > 0 ? " kW" : ""))
                                 .font(.system(.caption2, design: .rounded))
                                 .monospacedDigit()
-                                .foregroundStyle(.secondary)
+                                // Axis labels use `Color.secondary`, not the hierarchical `.secondary`: Charts already
+                                // dims axis labels, and stacking the two makes them almost vanish in dark mode
+                                // (seen on the empty chart after midnight). Same in PriceBarChart.
+                                .foregroundStyle(Color.secondary)
                                 .frame(width: 34, alignment: .trailing)
                         }
                     }
@@ -104,7 +107,7 @@ public struct SolarCurveChart: View {
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.07))
                     AxisValueLabel(anchor: .top) {
                         if let date = value.as(Date.self) {
-                            Text(verbatim: Format.hour(date)).font(.system(.caption2, design: .rounded)).foregroundStyle(.secondary)
+                            Text(verbatim: Format.hour(date)).font(.system(.caption2, design: .rounded)).foregroundStyle(Color.secondary)
                         }
                     }
                 }
