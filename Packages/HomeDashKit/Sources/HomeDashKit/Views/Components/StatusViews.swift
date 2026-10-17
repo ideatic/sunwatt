@@ -29,17 +29,24 @@ public struct StaleBadge: View {
     }
 }
 
-/// Plain "data as of" time, shown when the data is fresh.
+/// "Data as of" time for fresh data: a tiny clock plus the time, no pill. The stale state uses `StaleBadge`
+/// (pill with `clock.arrow.circlepath`), so the two read as one family.
 struct DataTimeLabel: View {
     let time: Date
     var timeZone: TimeZone = Constants.madrid
 
     var body: some View {
-        Text(verbatim: Format.time(time, timeZone: timeZone))
-            .font(.system(.caption2, design: .rounded).weight(.medium))
-            .monospacedDigit()
-            .foregroundStyle(.secondary)
-            .lineLimit(1)
+        HStack(spacing: 3) {
+            Image(systemName: "clock")
+                .font(.system(size: 9, weight: .medium))
+            Text(verbatim: Format.time(time, timeZone: timeZone))
+                .monospacedDigit()
+        }
+        .font(.system(.caption2, design: .rounded).weight(.medium))
+        .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Data from \(Format.time(time, timeZone: timeZone))", tableName: "Widgets", bundle: .module))
     }
 }
 
@@ -61,7 +68,8 @@ struct DataTimeMarker: View {
     }
 }
 
-/// Friendly full-area message for a source that has no data or is not set up.
+/// Friendly full-area message for a source that has no data or is not set up: symbol, title, one-line hint and,
+/// when a cached time exists, "Last update 11:35".
 public struct SourceStateView: View {
     public enum Kind: Sendable {
         case notConfigured
@@ -73,31 +81,54 @@ public struct SourceStateView: View {
 
     public let kind: Kind
     public var compact: Bool
+    public var lastUpdate: Date?
+    public var timeZone: TimeZone
 
     @Environment(\.widgetRenderingMode) private var mode
 
-    public init(kind: Kind, compact: Bool = false) {
+    public init(kind: Kind, compact: Bool = false, lastUpdate: Date? = nil, timeZone: TimeZone = Constants.madrid) {
         self.kind = kind
         self.compact = compact
+        self.lastUpdate = lastUpdate
+        self.timeZone = timeZone
     }
 
     public var body: some View {
-        VStack(spacing: compact ? Theme.Spacing.xs : Theme.Spacing.s) {
+        VStack(spacing: compact ? 3 : Theme.Spacing.xs) {
             Image(systemName: symbol)
-                .font(.system(size: compact ? 18 : 26, weight: .semibold, design: .rounded))
+                .font(.system(size: compact ? 18 : 28, weight: .semibold, design: .rounded))
                 .foregroundStyle(tint)
                 .widgetAccentable()
-            message
-                .font(.system(compact ? .caption2 : .footnote, design: .rounded).weight(.medium))
+                .padding(.bottom, compact ? 1 : 3)
+            title
+                .font(.system(compact ? .caption : .subheadline, design: .rounded).weight(.semibold))
+                .foregroundStyle(.primary)
+                .lineLimit(2)
+            hint
+                .font(.system(.caption2, design: .rounded).weight(.medium))
                 .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.8)
+                .lineLimit(compact ? 3 : 2)
+            if let lastUpdate {
+                wtext("Last update \(Format.time(lastUpdate, timeZone: timeZone))")
+                    .font(.system(.caption2, design: .rounded).weight(.medium))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .padding(.top, 1)
+            }
         }
+        .multilineTextAlignment(.center)
+        .minimumScaleFactor(0.8)
+        .padding(.horizontal, compact ? 0 : Theme.Spacing.xs)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var symbol: String {
-        kind == .notConfigured ? "gearshape" : "exclamationmark.triangle"
+        switch kind {
+        case .notConfigured: "gearshape"
+        case .unavailable: "wifi.exclamationmark"
+        default: "exclamationmark.triangle"
+        }
     }
 
     private var tint: AnyShapeStyle {
@@ -105,13 +136,17 @@ public struct SourceStateView: View {
         return kind == .notConfigured ? AnyShapeStyle(HierarchicalShapeStyle.secondary) : AnyShapeStyle(Theme.Solar.orange)
     }
 
-    private var message: Text {
+    private var title: Text {
         switch kind {
-        case .notConfigured: wtext("Set up the kiosk in the app")
+        case .notConfigured: wtext("Solar not set up")
         case .solarError: wtext("Solar data unavailable")
         case .priceError: wtext("Prices unavailable")
         case .unavailable: wtext("Data unavailable")
         }
+    }
+
+    private var hint: Text {
+        kind == .notConfigured ? wtext("Set up the kiosk in HomeDash") : wtext("Open HomeDash to check the connection")
     }
 }
 

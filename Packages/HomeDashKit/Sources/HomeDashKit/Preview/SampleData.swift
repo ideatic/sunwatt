@@ -100,15 +100,16 @@ public enum SampleData {
         )
     }
 
-    /// Bell-shaped production (peak ~5 kW at midday) with small deterministic cloud dips; zero outside 08:00-19:45.
+    /// Smooth bell-shaped production (peak ~5.3 kW around 13:50) with one gentle, wide cloud dip in the afternoon;
+    /// zero outside 08:00-19:45. No high-frequency terms, so the curve has no teeth.
     static func power(atMinute minute: Int) -> Double {
         let sunrise = 480.0, sunset = 1185.0
         let m = Double(minute)
         guard m > sunrise, m < sunset else { return 0 }
         let x = (m - sunrise) / (sunset - sunrise)
         let bell = pow(sin(Double.pi * x), 1.35)
-        let clouds = 1 - 0.06 * abs(sin(m / 17)) - 0.05 * (sin(m / 41) + 1) / 2
-        return ((5.25 * bell * clouds) * 100).rounded() / 100
+        let dip = 0.06 * exp(-pow((m - 950) / 45, 2))
+        return ((5.3 * bell * (1 - dip)) * 100).rounded() / 100
     }
 
     private static func date(_ hour: Int, _ minute: Int) -> Date {

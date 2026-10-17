@@ -3,7 +3,7 @@ import Charts
 import WidgetKit
 
 /// Hourly price bars: rounded, coloured green -> yellow -> red relative to the day's range. The current hour is
-/// full opacity on a soft highlight column, past hours are dimmed.
+/// full opacity with an outline and a small marker above it; past hours are dimmed (neutral blend in dark mode).
 public struct PriceBarChart: View {
     public enum Style: Sendable {
         /// Bars only, no axes. For small and medium widgets.
@@ -18,6 +18,7 @@ public struct PriceBarChart: View {
     public let style: Style
 
     @Environment(\.widgetRenderingMode) private var mode
+    @Environment(\.colorScheme) private var scheme
 
     public init(series: PriceSeries, points: [PricePoint], now: Date, style: Style = .mini) {
         self.series = series
@@ -30,51 +31,82 @@ public struct PriceBarChart: View {
         let palette = WidgetPalette(mode: mode)
         let calendar = series.region.calendar
         let isFull = style == .full
-        let yDomain = ChartLayout.priceYDomain(points: points)
+        let baseDomain = ChartLayout.priceYDomain(points: points)
+        let span = baseDomain.upperBound - baseDomain.lowerBound
+        let current = points.first { $0.contains(now) }
+        // Headroom above the tallest bar for the "now" marker.
+        let yDomain = baseDomain.lowerBound...(baseDomain.upperBound + (current == nil ? 0 : span * 0.14))
+        let minHeight = span * (isFull ? Theme.Price.minBarFractionFull : Theme.Price.minBarFractionMini)
         let xDomain: ClosedRange<Date> = ChartLayout.priceDomain(points: points) ?? (now...now.addingTimeInterval(1))
         let inset = (points.first?.duration ?? 3600) * 0.09
+        let halo = (points.first?.duration ?? 3600) * 0.025
         let average: Double? = points.isEmpty ? nil : points.map { $0.eurPerKWh }.reduce(0.0, +) / Double(points.count)
 
         Chart {
-            ForEach(points.filter { $0.contains(now) }) { point in
+            if let current {
+                // Outline: a slightly larger rectangle behind the bar.
                 RectangleMark(
-                    xStart: .value("From", point.start),
-                    xEnd: .value("To", point.end),
-                    yStart: .value("Floor", yDomain.lowerBound),
-                    yEnd: .value("Ceiling", yDomain.upperBound)
+                    xStart: .value("From", current.start.addingTimeInterval(inset - halo)),
+                    xEnd: .value("To", current.end.addingTimeInterval(-(inset - halo))),
+                    yStart: .value("Zero", min(0, barEnd(current, minHeight)) - span * (isFull ? 0.012 : 0.02)),
+                    yEnd: .value("€/kWh", max(0, barEnd(current, minHeight)) + span * (isFull ? 0.012 : 0.02))
                 )
-                .foregroundStyle(Color.primary.opacity(0.10))
+                .foregroundStyle(Color.primary.opacity(0.6))
                 .cornerRadius(Theme.Radius.bar + 1)
             }
             ForEach(points) { point in
+                let state = PriceBarState.state(of: point, now: now)
                 RectangleMark(
                     xStart: .value("From", point.start.addingTimeInterval(inset)),
                     xEnd: .value("To", point.end.addingTimeInterval(-inset)),
                     yStart: .value("Zero", 0.0),
-                    yEnd: .value("€/kWh", point.eurPerKWh)
+                    yEnd: .value("€/kWh", barEnd(point, minHeight))
                 )
-                .foregroundStyle(palette.priceColor(fraction: series.fraction(of: point)))
-                .opacity(PriceBarState.state(of: point, now: now).opacity)
+                .foregroundStyle(barStyle(palette, point: point, state: state))
+                .opacity(state == .past ? Theme.Price.pastOpacity(for: scheme) : state.opacity)
                 .cornerRadius(Theme.Radius.bar)
+            }
+            if let current {
+                PointMark(
+                    x: .value("Now", current.start.addingTimeInterval(current.duration / 2)),
+                    y: .value("Top", max(0, barEnd(current, minHeight)) + span * (isFull ? 0.012 : 0.02))
+                )
+                .symbolSize(0)
+                .annotation(position: .top, spacing: 1) {
+                    Image(systemName: "arrowtriangle.down.fill")
+                        .font(.system(size: isFull ? 7 : 6))
+                        .foregroundStyle(Color.primary)
+                }
             }
             if isFull, let average {
                 RuleMark(y: .value("Average", average))
                     .lineStyle(StrokeStyle(lineWidth: 0.75, dash: [2, 3]))
                     .foregroundStyle(Color.primary.opacity(0.30))
             }
-            if isFull, xDomain.contains(now) {
-                RuleMark(x: .value("Now", now))
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                    .foregroundStyle(Color.primary.opacity(0.35))
-            }
         }
         .chartXScale(domain: xDomain)
         .chartYScale(domain: yDomain)
-        .chartYAxis(.hidden)
+        .chartYAxis {
+            if isFull {
+                AxisMarks(position: .trailing, values: ChartLayout.priceTicks(yMax: baseDomain.upperBound)) { value in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.07))
+                    AxisValueLabel(anchor: .leading) {
+                        if let v = value.as(Double.self) {
+                            let isTop = v == ChartLayout.priceTicks(yMax: baseDomain.upperBound).last
+                            Text(verbatim: ChartLayout.axisNumber(v, decimals: 2) + (isTop && v > 0 ? " €" : ""))
+                                .font(.system(.caption2, design: .rounded))
+                                .monospacedDigit()
+                                .foregroundStyle(.secondary)
+                                .frame(width: 34, alignment: .trailing)
+                        }
+                    }
+                }
+            }
+        }
         .chartXAxis {
             if isFull {
                 AxisMarks(values: ChartLayout.axisHours(points: points, step: 3, calendar: calendar)) { value in
-                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.08))
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.07))
                     AxisValueLabel(anchor: .top) {
                         if let date = value.as(Date.self) {
                             Text(verbatim: Format.hour(date, timeZone: series.region.timeZone))
@@ -86,5 +118,16 @@ public struct PriceBarChart: View {
             }
         }
         .accessibilityHidden(true)
+    }
+
+    /// Bar end value with a minimum visible height (very cheap hours keep a sliver of their color).
+    private func barEnd(_ point: PricePoint, _ minHeight: Double) -> Double {
+        let value = point.eurPerKWh
+        return value >= 0 ? max(value, minHeight) : min(value, -minHeight)
+    }
+
+    private func barStyle(_ palette: WidgetPalette, point: PricePoint, state: PriceBarState) -> AnyShapeStyle {
+        guard palette.isFullColor, state == .past else { return palette.priceColor(fraction: series.fraction(of: point)) }
+        return AnyShapeStyle(Theme.Price.pastColor(Theme.Price.color(fraction: series.fraction(of: point) ?? 0.5), scheme: scheme))
     }
 }
