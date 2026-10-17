@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 /// Chrome shared by the sheets (settings, widget guide, kiosk help): title, "Done", scrolling content on the
@@ -47,3 +49,4 @@ struct SheetContainer<Content: View>: View {
             .frame(maxWidth: .infinity)
     }
 }
+#endif

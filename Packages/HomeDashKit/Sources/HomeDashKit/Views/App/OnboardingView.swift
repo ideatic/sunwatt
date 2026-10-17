@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 enum OnboardingPage: Int, CaseIterable, Hashable {
@@ -344,3 +346,4 @@ struct OnboardingScreen: View {
             .background(AppBackground())
     }
 }
+#endif

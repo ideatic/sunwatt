@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 /// Scrollable dashboard of the app: solar, price, widget status and footer. Pure content (no scroll view,
@@ -498,3 +500,4 @@ struct DashboardScreen: View {
         .background(AppBackground())
     }
 }
+#endif

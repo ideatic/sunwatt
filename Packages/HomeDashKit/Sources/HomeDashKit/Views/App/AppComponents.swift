@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 // Small reusable pieces of the app screens.
@@ -327,3 +329,4 @@ func sourceAttribution(_ region: PriceRegion) -> Text {
         ? atext("Prices: \(region.sourceName)")
         : atext("Prices: \(region.sourceName), CC BY 4.0")
 }
+#endif

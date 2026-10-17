@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 /// A real widget view scaled down: the same `HomeDashWidgetView` the widget extension shows, with sample data.
@@ -226,3 +228,4 @@ struct WidgetGuideScreen: View {
         }
     }
 }
+#endif

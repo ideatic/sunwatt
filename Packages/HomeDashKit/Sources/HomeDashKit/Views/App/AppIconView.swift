@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 /// The HomeDash icon: a sun with a bolt on a warm gradient. Used in onboarding and rendered by the snapshot
@@ -75,3 +77,4 @@ public struct AppIconView: View {
         .frame(width: s, height: s)
     }
 }
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 import Charts
 
@@ -237,3 +239,4 @@ struct InteractivePriceChart: View {
         return PriceBarState.state(of: point, now: now).opacity
     }
 }
+#endif

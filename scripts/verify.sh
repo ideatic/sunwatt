@@ -20,14 +20,22 @@ tail -n 1 "$LOG"
 echo "== xcodegen"
 xcodegen generate --quiet
 
+FAILED=0
+# Runs xcodebuild, prints only errors and the result line, records failure.
+run() {
+  local out
+  out="$(xcodebuild "$@" 2>&1)" || FAILED=1
+  print -r -- "$out" | grep -E "error:|\*\* (BUILD|TEST)|Test run with" || true
+}
+
 echo "== iOS Simulator build + test"
-xcodebuild -project HomeDash.xcodeproj -scheme HomeDash -destination "$SIM" -derivedDataPath "$DD" test 2>&1 \
-  | grep -E "error:|\*\* (BUILD|TEST)|Test run with" || true
+run -project HomeDash.xcodeproj -scheme HomeDash -destination "$SIM" -derivedDataPath "$DD" test
 
 echo "== macOS build (unsigned: macOS App Groups need a team, see DECISIONS.md D4)"
-xcodebuild -project HomeDash.xcodeproj -scheme HomeDash -destination 'platform=macOS' -derivedDataPath "$DD" build CODE_SIGNING_ALLOWED=NO 2>&1 \
-  | grep -E "error:|\*\* BUILD" || true
+run -project HomeDash.xcodeproj -scheme HomeDash -destination 'platform=macOS' -derivedDataPath "$DD" build CODE_SIGNING_ALLOWED=NO
 
 echo "== watchOS build"
-xcodebuild -project HomeDash.xcodeproj -scheme HomeDashWatch -destination 'generic/platform=watchOS Simulator' -derivedDataPath "$DD" build 2>&1 \
-  | grep -E "error:|\*\* BUILD" || true
+run -project HomeDash.xcodeproj -scheme HomeDashWatch -destination 'generic/platform=watchOS Simulator' -derivedDataPath "$DD" build
+
+if (( FAILED )); then echo "VERIFY FAILED"; exit 1; fi
+echo "VERIFY OK"

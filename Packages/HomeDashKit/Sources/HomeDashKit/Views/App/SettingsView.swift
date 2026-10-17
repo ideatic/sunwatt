@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 #if canImport(UIKit)
 import UIKit
@@ -390,3 +392,4 @@ struct SettingsScreen: View {
         }
     }
 }
+#endif

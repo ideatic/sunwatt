@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 import Observation
 import WidgetKit
@@ -310,3 +312,4 @@ public final class AppModel {
         return KioskEndpoint(parsing: settings.kioskURL) != nil
     }
 }
+#endif

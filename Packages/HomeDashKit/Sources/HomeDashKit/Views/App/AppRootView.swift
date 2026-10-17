@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 private struct SheetPresenterKey: EnvironmentKey { static let defaultValue: (@MainActor (AppSheet) -> Void)? = nil }
@@ -132,3 +134,4 @@ public struct AppSettingsWindowView: View {
             }
     }
 }
+#endif

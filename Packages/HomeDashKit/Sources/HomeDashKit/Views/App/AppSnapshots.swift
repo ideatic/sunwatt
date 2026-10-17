@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 /// App screens drawn for `ImageRenderer` (iPhone-size and Mac-window-size), with fake system chrome around them.
@@ -262,3 +264,4 @@ private struct TitleBarMock: View {
         .overlay(alignment: .bottom) { Rectangle().fill(Color.primary.opacity(0.12)).frame(height: 0.5) }
     }
 }
+#endif

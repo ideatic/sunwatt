@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 // App-only design tokens and helpers. They sit on top of `Theme` (shared with the widgets) and add what a
@@ -184,3 +186,4 @@ struct QuietButtonStyle: ButtonStyle {
             .contentShape(Rectangle())
     }
 }
+#endif

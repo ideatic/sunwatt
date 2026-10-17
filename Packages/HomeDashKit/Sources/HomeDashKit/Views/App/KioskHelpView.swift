@@ -1,3 +1,5 @@
+#if os(iOS) || os(macOS)
+// App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
 /// Link button. The system `Link` in the app, a drawn look-alike in snapshots (links do not render there).
@@ -152,3 +154,4 @@ struct KioskHelpScreen: View {
         }
     }
 }
+#endif
