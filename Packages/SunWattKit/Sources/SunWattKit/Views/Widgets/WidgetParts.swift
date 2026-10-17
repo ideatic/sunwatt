@@ -219,13 +219,9 @@ struct SolarColumn: View {
             SolarIcon(idle: solar.isIdle)
             if let name = solar.plantName { PlantNameLabel(name: name) }
             Spacer(minLength: 4)
-            // A hidden figure keeps the row as tall as "5,3 kW" when it shows "No production", so the rows below
-            // and the curve stay level with the price column.
-            ZStack(alignment: .trailing) {
-                FigureText(value: "0", unit: "kW", size: figureSize).hidden()
-                SolarFigure(solar: solar, size: figureSize, singleLine: true)
-            }
-            .layoutPriority(1)
+            SolarFigure(solar: solar, size: figureSize, singleLine: true)
+                .modifier(FigureRowHeight(size: figureSize))
+                .layoutPriority(1)
         }
         HStack(spacing: 4) {
             DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
@@ -233,6 +229,20 @@ struct SolarColumn: View {
             SolarDailyCaption(solar: solar)
         }
         .padding(.top, 1)
+    }
+}
+
+/// Gives a compact header row the height of an unscaled figure. "No production" is shorter than "5,3 kW", and a
+/// long price shrinks to fit (`minimumScaleFactor`); without a fixed height the second rows and the charts of the
+/// solar and price columns would not line up.
+struct FigureRowHeight: ViewModifier {
+    let size: CGFloat
+
+    func body(content: Content) -> some View {
+        ZStack(alignment: .trailing) {
+            FigureText(value: "0", unit: "kW", size: size).hidden()
+            content
+        }
     }
 }
 
@@ -283,6 +293,7 @@ struct PriceColumn: View {
             PriceIcon(fraction: price.fraction)
             Spacer(minLength: 4)
             PriceFigure(price: price, size: figureSize)
+                .modifier(FigureRowHeight(size: figureSize))
                 .layoutPriority(1)
         }
         // As in the solar column: data age on the left, what the figure means under it on the right.
