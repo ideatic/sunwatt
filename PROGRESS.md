@@ -32,6 +32,7 @@
 - [x] Home consumption for plants with a meter at home (SolarEdge, PVOutput), hidden for export-only plants (DECISIONS D16). Dashboard section + large widget line; new screenshot kind `dashboardHome`.
 
 - [x] Kiosk link expiry: rejection detection (30 min), expired state in app, widgets, watch and Siri, renew notice a month before (DECISIONS D17). Screenshot kinds `dashboardKioskExpiring`, `dashboardKioskExpired`. Missing: a real expired-kiosk response as fixture; support page FAQ.
+- [x] Siri phrases: 6 per action in every language, everyday wording ("la luz", "placas"), app name also accepted as "Sun Watt" / "Sunwat" (`INAlternativeAppNames`). Siri still needs the app name in the sentence (Apple rule); a personal Shortcut can use any phrase. To check on device: Spanish phrases recognised.
 
 - [x] Huawei inverter on the home network (Modbus TCP, DECISIONS D18): live data at home, kiosk elsewhere. Tested in CI against a fake dongle (also over real TCP on loopback). **Not tested on the real SDongleA-05 yet**: needs Modbus TCP "Enable (unrestricted)" on the dongle.
 

@@ -52,6 +52,10 @@ targets:
         LSApplicationCategoryType: public.app-category.utilities
         # Huawei inverter on the home network (Modbus TCP), optional. Localized in InfoPlist.xcstrings.
         NSLocalNetworkUsageDescription: SunWatt reads your Huawei inverter on your home network to show live solar production.
+        # Other ways Siri may hear the app name in App Shortcut phrases.
+        INAlternativeAppNames:
+          - INAlternativeAppName: Sun Watt
+          - INAlternativeAppName: Sunwat
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
