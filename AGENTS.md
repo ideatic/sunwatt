@@ -57,6 +57,45 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 7. **Attribution.** Energy-Charts "Fraunhofer ISE, CC BY 4.0" must stay visible in the app (dashboard, settings, onboarding).
 8. **Privacy manifests** (`PrivacyInfo.xcprivacy`) exist for every target and the package bundle. Adding a required-reason API means updating them.
 9. **No "add widget" API** exists; the app shows a guide and detects installed widgets via `WidgetCenter.currentConfigurations()`.
+10. **Providers keep their contracts.** Every solar provider, price source and local inverter reader keeps the contract written on its protocol (`SolarDataSource`, `PriceDataSource`, `LocalInverterReader`) and has a case in `ProviderContractTests`. Change a contract only together with its doc comment, its contract tests and every conforming type.
+
+## Code standards and patterns
+
+How the code is meant to look. Follow the surrounding code first; these rules say what that code is doing on purpose.
+
+### Architecture
+
+- **Thin targets, shared package.** App, widgets and watch targets only wire things up; logic, models and views live in `SunWattKit`, where they are testable on any platform with an SDK.
+- **Protocols at every boundary.** Network (`HTTPClient`), data sources (`SolarDataSource`, `PriceDataSource`), inverters (`LocalInverterReader`, `ModbusTransport`) and secrets (`SecretStore`) sit behind protocols. Code that uses them never knows the concrete type; tests replace them with stubs.
+- **Contracts are written on the protocol.** A doc comment states the data guarantees, the allowed errors and what each means, the time budget and the side effects. Conforming types follow it; `ProviderContractTests` checks it. When a client cannot meet the contract (e.g. negative night power), fix the client, not the contract.
+- **One profile per variant.** What distinguishes providers lives in `SolarProviderProfile` (`SolarProvider.profile`) and `PriceRegionProfile` / `PriceSource` (`PriceRegion.profile`). Ask the profile (`profile.setup == .kioskLink`, `profile.source.isRetailTariff`, `profile.localInverter`) instead of comparing with a case (`== .fusionSolar`, `== .spain`).
+- **Exhaustive switches, no `default:`** on `SolarProvider`, `PriceRegion`, `PriceSource`, `LocalInverterKind` and similar enums. A new case must not compile until every place that depends on it (texts, clients, profiles) has been written. Per-variant UI texts are such switches too.
+- **Validated values, not raw settings.** Settings are parsed once into validated types (`SolarAccount(settings:)`, `SolarAPICredentials`, `KioskEndpoint`, `ModbusEndpoint`); everything else takes those. Invalid input is a `nil`, not a crash or a half-built object.
+- **One way in for each job.** Solar always through `SolarAccount`, prices through `PriceDataSourceFactory`/`PriceSource.client`, loading through `SunWattLoader`, storage through `AppGroupStore`. Do not add a second path around them.
+
+### Swift
+
+- **Swift 6, strict concurrency.** Types crossing tasks are `Sendable` (`@unchecked Sendable` only with a lock and a comment). UI models are `@MainActor`. Use `async`/`await`; no completion handlers, no blocking waits, no `DispatchSemaphore`.
+- **Cancellation and deadlines.** Every network or inverter path is cancellable and runs under a deadline (`SunWattLoader.race`). `CancellationError` passes through unwrapped; never turn it into a user-facing error.
+- **Errors.** Throw `SunWattError` (or `CancellationError`); map anything else at the boundary (`HTTPFetch.perform`, `ModbusSession.run`). User-facing texts are localized and never contain secrets.
+- **Injected dependencies and time.** Clients take `http`, `now`, `calendar`, `makeTransport` as parameters with production defaults. Do not call `Date()` or a shared singleton deep inside logic that tests need to control.
+- **Value types and pure functions** for parsing and analysis (`parse(_:fetchedAt:)`, `PriceSeries` analysis, `merge`, `fillingIn`): input in, value out, easy to test with fixtures.
+- **Stored data stays readable.** New `Codable` fields are optional or decoded with `decodeIfPresent` and a default, so settings and caches written by older versions still load. Rename stored keys only with a migration.
+- **No force unwraps** except for constants known to be valid (fixed URLs, time zone identifiers). No `print` in the app and package code (the snapshot command-line tools may print progress); never log secrets.
+- **Names and comments.** Plain names that say what a thing is. Doc comments explain why and the non-obvious rules (units, signs, time zones, limits), not what the next line does. Keep functions small; extract a helper when a block needs a comment to be understood.
+
+### UI
+
+- User-facing text only through the catalogs (`atext`, `wtext`, `L10n.string`), in all languages (Translations below); brand names verbatim.
+- Numbers through `Format` (user locale), units in the view (`kW`, `kWh`, `MWh` from `Format.energy`), colours and spacing from `Theme` / `AppPalette`.
+- After a visual change, render the screenshots and check them (Screenshots and design checks below).
+
+### Tests
+
+- Swift Testing. Every bug fix gets a test that fails without the fix; every new parser gets a real (anonymized) or synthetic fixture.
+- No real network or inverter in tests: `StubHTTPClient`, `FakeModbusTransport`, fakes for sources, temporary stores.
+- A new provider, price source or inverter kind adds one case to `ProviderContractTests` (`SolarContractCase`, `PriceContractCase`, `InverterContractCase`); keep the contract checks generic.
+- Tests run on CI (macOS); in a Linux session, push and read the CI result before calling a change done.
 
 ## Workflows
 
