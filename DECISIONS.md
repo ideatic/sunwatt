@@ -55,3 +55,8 @@ Each entry: decision, why, how to change it.
 
 ## D12. Live tests are opt-in
 - `HOMEDASH_LIVE=1 swift test --filter LiveTests` hits the real kiosk (URL from `Config/kiosk.local`) and all 8 price regions, 15 s apart. Not part of the normal run.
+
+## D13. Product name: SunWatt (user decision)
+- "HomeDash" sounded like a smart-home app. The visible name is now **SunWatt** (App Store name "SunWatt: Solar & Power Price").
+- Only user-visible text changes (display names, strings, store texts). Code names (`HomeDashKit`, targets, folders) and bundle IDs (`com.ideatic.homedash*`, App Group `group.com.ideatic.homedash`) stay, because users never see them and changing them breaks signing and stored data.
+- Change: `CFBundleDisplayName` in project.yml + the string catalogs + `AppStore/metadata/*/name.txt`.
