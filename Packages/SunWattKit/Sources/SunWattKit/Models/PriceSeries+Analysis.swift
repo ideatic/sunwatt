@@ -24,6 +24,38 @@ public struct PriceDayContext: Hashable, Sendable {
     }
 }
 
+/// Day contexts for the points of one render, built once: one `PriceDayContext` per market day that appears in
+/// `points` (a two-day chart builds two). Gives the same answers as `PriceSeries.fraction(of:)` / `level(of:)`
+/// without recomputing the hourly aggregation and the day statistics for every bar.
+public struct PriceDayContexts: Sendable {
+    private let calendar: Calendar
+    private var contexts: [Date: PriceDayContext] = [:]
+
+    public init(series: PriceSeries, points: [PricePoint]) {
+        calendar = series.region.calendar
+        for point in points {
+            guard let key = dayKey(of: point.start), contexts[key] == nil else { continue }
+            if let context = series.dayContext(for: point.start) { contexts[key] = context }
+        }
+    }
+
+    private func dayKey(of date: Date) -> Date? {
+        calendar.dateInterval(of: .day, for: date)?.start
+    }
+
+    /// Position 0...1 of `point` within its day's range; 0.5 when the day is unknown or flat.
+    public func fraction(of point: PricePoint) -> Double {
+        dayKey(of: point.start).flatMap { contexts[$0] }?.fraction(of: point) ?? 0.5
+    }
+
+    public func level(of point: PricePoint) -> PriceLevel {
+        PriceLevel.classify(fraction: fraction(of: point))
+    }
+
+    /// Number of distinct days built (tests).
+    var dayCount: Int { contexts.count }
+}
+
 /// Price analysis. All day math uses `region.calendar` (the market time zone of the series).
 public extension PriceSeries {
     /// Points aggregated to hourly (average of the 15-min points in each hour). Identity when already hourly.
@@ -76,11 +108,13 @@ public extension PriceSeries {
     }
 
     /// Level of `point` relative to its day's range (lower third = low, upper third = high).
+    /// Rebuilds the day context on every call: for many points use `PriceDayContexts` or `dayContext(for:)`.
     func level(of point: PricePoint) -> PriceLevel {
         PriceLevel.classify(fraction: fraction(of: point))
     }
 
     /// Position 0...1 of `point` within its day's min...max (0.5 if flat or unknown).
+    /// Rebuilds the day context on every call: for many points use `PriceDayContexts` or `dayContext(for:)`.
     func fraction(of point: PricePoint) -> Double {
         dayContext(for: point.start)?.fraction(of: point) ?? 0.5
     }

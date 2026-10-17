@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 /// Host + `kk` token extracted from a FusionSolar kiosk URL.
@@ -34,6 +35,11 @@ public struct KioskEndpoint: Hashable, Sendable, CustomStringConvertible, Custom
         guard let kk = items.first(where: { $0.name == "kk" })?.value, !kk.isEmpty else { return nil }
         self.host = host.lowercased()
         self.kk = kk
+    }
+
+    /// SHA-256 (hex) of host and token. Identifies this link in caches without storing the token.
+    public var cacheID: String {
+        SHA256.hash(data: Data("\(host)\n\(kk)".utf8)).map { String(format: "%02x", $0) }.joined()
     }
 
     public var description: String { "KioskEndpoint(host: \(host), kk: ***)" }

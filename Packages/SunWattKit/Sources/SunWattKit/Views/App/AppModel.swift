@@ -98,17 +98,25 @@ public final class AppModel {
     /// Called after saved settings change (the iPhone app forwards them to the watch).
     @ObservationIgnored public var onSettingsSaved: (@MainActor (SunWattSettings) -> Void)?
 
+    /// Seams for tests: the app talks to WidgetKit through these.
+    @ObservationIgnored var reloadWidgets: @MainActor () -> Void = { WidgetCenter.shared.reloadAllTimelines() }
+    @ObservationIgnored var countWidgets: @MainActor () async throws -> Int = { try await WidgetCenter.shared.currentConfigurations().count }
+
     @ObservationIgnored private let store: AppGroupStore
     @ObservationIgnored private let loader: SunWattLoader
+    /// The load in flight. A new refresh, or a change of region or kiosk link, cancels it.
+    @ObservationIgnored private var loadTask: Task<SunWattData, Never>?
+    /// Counts started loads; a finished load applies its result only if no newer load (or invalidation) happened.
+    @ObservationIgnored private var loadGeneration = 0
     @ObservationIgnored private var pendingRefresh: Task<Void, Never>?
     @ObservationIgnored private var lastRefresh: Date?
     @ObservationIgnored private var demoScenario: SampleData.Scenario?
     @ObservationIgnored private var demoNotConfigured = false
 
-    public init(launch: AppLaunchOptions = .current, store: AppGroupStore = .shared) {
+    public init(launch: AppLaunchOptions = .current, store: AppGroupStore = .shared, loader: SunWattLoader? = nil) {
         self.launch = launch
         self.store = store
-        self.loader = SunWattLoader(store: store)
+        self.loader = loader ?? SunWattLoader(store: store)
         self.now = Date()
         if launch.demo {
             let settings = SunWattSettings(
@@ -126,7 +134,7 @@ public final class AppModel {
             self.hasLoaded = false
             self.showsOnboarding = launch.screen == .onboarding || (launch.screen == nil && !settings.onboardingCompleted)
             self.sheet = Self.sheet(for: launch.screen)
-            let cached = loader.cached()
+            let cached = self.loader.cached()
             if cached.solar != nil || cached.prices != nil { self.data = cached }
         }
     }
@@ -189,28 +197,46 @@ public final class AppModel {
     }
 
     /// Loads both sources (saving to the store), then asks the widgets to reload.
-    public func refresh() async {
+    /// A refresh that starts while another load runs cancels that load and takes over, so the result always
+    /// belongs to the latest settings. `maxCacheAge` is passed to `SunWattLoader.load`: 0 (default) always fetches.
+    public func refresh(maxCacheAge: TimeInterval = 0) async {
         if isDemo {
             applyDemo(scenarioName: demoScenario?.rawValue ?? "day")
             return
         }
-        guard !isLoading else { return }
+        loadTask?.cancel()
+        loadGeneration += 1
+        let generation = loadGeneration
         isLoading = true
-        defer { isLoading = false }
-        let loaded = await loader.load()
+        let loader = loader
+        let task = Task { await loader.load(maxCacheAge: maxCacheAge) }
+        loadTask = task
+        let loaded = await withTaskCancellationHandler { await task.value } onCancel: { task.cancel() }
+        // Superseded by a newer refresh or a settings change: that one owns `isLoading` and the result.
+        guard generation == loadGeneration else { return }
+        loadTask = nil
+        isLoading = false
         guard !Task.isCancelled else { return }
         data = loaded
         now = Date()
         hasLoaded = true
         lastRefresh = Date()
-        WidgetCenter.shared.reloadAllTimelines()
+        reloadWidgets()
         await refreshWidgetCount()
     }
 
-    /// First load: cached data shows at once, then the network refresh runs.
+    /// Drops the load in flight (its result would belong to old settings).
+    private func invalidateLoad() {
+        loadTask?.cancel()
+        loadTask = nil
+        loadGeneration += 1
+        isLoading = false
+    }
+
+    /// First load: cached data shows at once, then the refresh runs. Data the widgets stored a moment ago is reused.
     public func start() async {
         await refreshWidgetCount()
-        if !isDemo, !showsOnboarding { await refresh() }
+        if !isDemo, !showsOnboarding { await refresh(maxCacheAge: SunWattLoader.sharedCacheWindow) }
     }
 
     /// Called when the app becomes active: re-checks the widgets, refreshes data older than 5 minutes.
@@ -218,14 +244,14 @@ public final class AppModel {
         await refreshWidgetCount()
         guard !isDemo, !showsOnboarding else { return }
         if let lastRefresh, Date().timeIntervalSince(lastRefresh) < 300 { return }
-        await refresh()
+        await refresh(maxCacheAge: SunWattLoader.sharedCacheWindow)
     }
 
     /// Reads the widgets the user has placed. A failure means "unknown", not zero.
     public func refreshWidgetCount() async {
         if isDemo { return }
         do {
-            widgetCount = try await WidgetCenter.shared.currentConfigurations().count
+            widgetCount = try await countWidgets()
         } catch {
             widgetCount = nil
         }
@@ -246,18 +272,22 @@ public final class AppModel {
         }
         store.settings = new
         onSettingsSaved?(new)
-        WidgetCenter.shared.reloadAllTimelines()
         let regionChanged = new.priceRegion != old.priceRegion
         let kioskChanged = new.kioskURL != old.kioskURL
             && (KioskInputState(new.kioskURL) != .invalid || KioskInputState(old.kioskURL) != .invalid)
         let tomorrowChanged = new.showTomorrowPrices != old.showTomorrowPrices
+        let needsFetch = regionChanged || kioskChanged || tomorrowChanged
+        // When data must be fetched, the widgets reload once the new data is stored (end of `refresh`): reloading
+        // them now would make every widget fetch the same data at the same time.
+        if !needsFetch { reloadWidgets() }
+        if regionChanged || kioskChanged { invalidateLoad() }
         if regionChanged {
             // Cached prices of another region do not apply: show placeholders until the new region loads.
             let cached = loader.cached()
             data = (cached.solar != nil || cached.prices != nil) ? cached : nil
             hasLoaded = false
         }
-        if regionChanged || kioskChanged || tomorrowChanged { scheduleRefresh() }
+        if needsFetch { scheduleRefresh() }
     }
 
     /// Waits for the user to stop changing settings (Energy-Charts rate-limits quick repeated requests).

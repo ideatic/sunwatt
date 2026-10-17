@@ -102,7 +102,8 @@ public struct SolarAnswer: Sendable, Equatable {
             return SolarAnswer(outcome: .notConfigured, currentKW: nil, todayKWh: nil, dialog: strings.text(
                 "Solar production is not set up. Add your FusionSolar link in the SunWatt settings."))
         }
-        guard let solar = data.solar, let power = solar.currentPowerKW else {
+        // A snapshot from yesterday has no power or daily energy for today (see `SunWattEntry.solarForDisplay`).
+        guard let solar = SunWattEntry(date: now, data: data).solarForDisplay, let power = solar.currentPowerKW else {
             return SolarAnswer(outcome: .unavailable, currentKW: nil, todayKWh: nil, dialog: strings.text(
                 "I cannot get the solar production right now. Check your connection and try again."))
         }
@@ -166,7 +167,8 @@ public struct ControlContent: Sendable, Equatable {
         if case .notConfigured = data.solarStatus {
             return ControlContent(title: strings.text("Not set up"), subtitle: "SunWatt")
         }
-        guard let solar = data.solar, let power = solar.currentPowerKW else {
+        // A snapshot from yesterday has no power or daily energy for today (see `SunWattEntry.solarForDisplay`).
+        guard let solar = SunWattEntry(date: now, data: data).solarForDisplay, let power = solar.currentPowerKW else {
             return ControlContent(title: strings.text("No data"), subtitle: strings.text("Tap to refresh"))
         }
         let today = solar.dailyEnergyKWh.map { strings.text("Today %@ kWh", strings.energy($0)) }

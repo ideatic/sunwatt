@@ -42,16 +42,30 @@ public struct SunWattLoader: Sendable {
         PriceDataSourceFactory.client(for: region)
     }
 
+    /// Cache window for callers that fire together (widget timelines, controls, intents, automatic app refreshes).
+    /// After a refresh or a settings change every widget reloads at once; with this window only the first one
+    /// fetches and the others read what it stored (Energy-Charts answers HTTP 429 to parallel requests).
+    public static let sharedCacheWindow: TimeInterval = 120
+
     /// Never throws: errors become `SourceStatus` values.
     /// Each fetch must finish within `deadline` seconds (a widget refresh has a small budget); a source that is
     /// too slow counts as failed, so cached data is shown as stale. When the task is cancelled, returns
     /// `cached()` without saving anything.
-    public func load(deadline: TimeInterval = 15) async -> SunWattData {
+    ///
+    /// `maxCacheAge`: when greater than 0 and the store holds data fetched less than this many seconds ago for
+    /// every source in use, that data is returned as `.fresh` without any network request. Solar counts only if
+    /// the kiosk link is configured, belongs to the stored snapshot and was fetched on the current Madrid day;
+    /// prices count only for the current region and when a point covers now. 0 (default) always fetches.
+    public func load(deadline: TimeInterval = 15, maxCacheAge: TimeInterval = 0) async -> SunWattData {
         if Task.isCancelled { return cached() }
         let settings = store.settings
         let solarSource = makeSolar(settings)
-        let priceSource = makePrices(settings.priceRegion)
         let nowDate = now()
+        if maxCacheAge > 0,
+           let recent = recentCache(settings: settings, solarConfigured: solarSource != nil, maxAge: maxCacheAge, now: nowDate) {
+            return recent
+        }
+        let priceSource = makePrices(settings.priceRegion)
         async let solarResult = Self.fetchSolar(solarSource, deadline: deadline)
         async let priceResult = Self.fetchPrices(priceSource, includeTomorrow: settings.showTomorrowPrices, deadline: deadline)
         let solarOutcome = await solarResult
@@ -66,12 +80,13 @@ public struct SunWattLoader: Sendable {
             data.solarStatus = unconfiguredStatus(settings)
         } else {
             switch solarOutcome {
-            case .success(let snapshot):
+            case .success(var snapshot):
+                snapshot.endpointID = Self.endpointID(for: settings)
                 store.saveSolar(snapshot)
                 data.solar = snapshot
                 data.solarStatus = .fresh
             case .failure(let error):
-                if let cached = store.loadSolar() {
+                if let cached = cachedSolar(for: settings) {
                     // Also covers a cache from a previous Madrid day: its curve belongs to another day.
                     data.solar = cached
                     data.solarStatus = .stale(since: cached.fetchedAt)
@@ -111,7 +126,7 @@ public struct SunWattLoader: Sendable {
         var data = SunWattData(solar: nil, prices: nil, solarStatus: unavailable, priceStatus: unavailable)
         if makeSolar(settings) == nil {
             data.solarStatus = unconfiguredStatus(settings)
-        } else if let solar = store.loadSolar() {
+        } else if let solar = cachedSolar(for: settings) {
             data.solar = solar
             data.solarStatus = .stale(since: solar.fetchedAt)
         }
@@ -119,6 +134,39 @@ public struct SunWattLoader: Sendable {
             data.prices = prices
             data.priceStatus = .stale(since: prices.fetchedAt)
         }
+        return data
+    }
+
+    /// Identifier of the kiosk link in `settings`; nil when it is not a valid kiosk link.
+    static func endpointID(for settings: SunWattSettings) -> String? {
+        KioskEndpoint(parsing: settings.kioskURL)?.cacheID
+    }
+
+    /// The stored solar snapshot, only when it was fetched from the kiosk link now in `settings`.
+    /// A snapshot without an identifier (written before it existed) never matches.
+    private func cachedSolar(for settings: SunWattSettings) -> SolarSnapshot? {
+        guard let id = Self.endpointID(for: settings), let solar = store.loadSolar(), solar.endpointID == id else { return nil }
+        return solar
+    }
+
+    /// Stored data of every source in use, fetched less than `maxAge` seconds ago; nil when any part is missing or older.
+    private func recentCache(settings: SunWattSettings, solarConfigured: Bool, maxAge: TimeInterval, now: Date) -> SunWattData? {
+        func isRecent(_ fetchedAt: Date) -> Bool {
+            let age = now.timeIntervalSince(fetchedAt)
+            return age >= 0 && age < maxAge
+        }
+        var data = SunWattData(solar: nil, prices: nil, solarStatus: .notConfigured, priceStatus: .fresh)
+        if solarConfigured {
+            guard let solar = cachedSolar(for: settings), isRecent(solar.fetchedAt),
+                  Constants.madridCalendar.isDate(solar.fetchedAt, inSameDayAs: now) else { return nil }
+            data.solar = solar
+            data.solarStatus = .fresh
+        } else {
+            data.solarStatus = unconfiguredStatus(settings)
+        }
+        guard let prices = store.loadPrices(), prices.region == settings.priceRegion, isRecent(prices.fetchedAt),
+              prices.points.contains(where: { $0.contains(now) }) else { return nil }
+        data.prices = prices
         return data
     }
 

@@ -32,7 +32,7 @@ struct SunWattProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: SunWattIntent, in context: Context) async -> Timeline<SunWattTimelineEntry> {
-        let data = await SunWattLoader().load()
+        let data = await SunWattLoader().load(maxCacheAge: SunWattLoader.sharedCacheWindow)
         let now = Date()
         let entries = TimelineBuilder.entries(for: data, now: now).map {
             SunWattTimelineEntry(entry: $0, content: configuration.content.content, window: configuration.priceWindow.window)

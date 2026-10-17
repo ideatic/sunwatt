@@ -204,6 +204,7 @@ struct InteractivePriceChart: View {
         let average: Double? = points.isEmpty ? nil : points.map(\.eurPerKWh).reduce(0, +) / Double(points.count)
         let outlined = selected ?? current
         let ticks = ChartLayout.priceTicks(yMax: baseDomain.upperBound)
+        let contexts = PriceDayContexts(series: series, points: points)
 
         Chart {
             if let outlined {
@@ -224,7 +225,7 @@ struct InteractivePriceChart: View {
                     yStart: .value("Zero", 0.0),
                     yEnd: .value("€/kWh", barEnd(point, minHeight))
                 )
-                .foregroundStyle(barColor(point, state: state))
+                .foregroundStyle(barColor(point, state: state, contexts: contexts))
                 .opacity(opacity(for: point, state: state, selected: selected))
                 .cornerRadius(Theme.Radius.bar)
             }
@@ -258,7 +259,7 @@ struct InteractivePriceChart: View {
                     ChartCallout(
                         title: "\(Format.eurPerKWh(selected.eurPerKWh)) €/kWh",
                         detail: "\(Format.time(selected.start, timeZone: timeZone))–\(Format.time(selected.end, timeZone: timeZone))",
-                        tint: Theme.Price.color(fraction: series.fraction(of: selected)))
+                        tint: Theme.Price.color(fraction: contexts.fraction(of: selected)))
                 }
             }
         }
@@ -299,8 +300,8 @@ struct InteractivePriceChart: View {
         return value >= 0 ? max(value, minHeight) : min(value, -minHeight)
     }
 
-    private func barColor(_ point: PricePoint, state: PriceBarState) -> Color {
-        let base = Theme.Price.color(fraction: series.fraction(of: point))
+    private func barColor(_ point: PricePoint, state: PriceBarState, contexts: PriceDayContexts) -> Color {
+        let base = Theme.Price.color(fraction: contexts.fraction(of: point))
         return state == .past ? Theme.Price.pastColor(base, scheme: scheme) : base
     }
 

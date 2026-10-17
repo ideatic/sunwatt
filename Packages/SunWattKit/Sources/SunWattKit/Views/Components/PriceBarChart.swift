@@ -41,6 +41,7 @@ public struct PriceBarChart: View {
         let inset = (points.first?.duration ?? 3600) * 0.09
         let halo = (points.first?.duration ?? 3600) * 0.025
         let average: Double? = points.isEmpty ? nil : points.map { $0.eurPerKWh }.reduce(0.0, +) / Double(points.count)
+        let contexts = PriceDayContexts(series: series, points: points)
 
         Chart {
             if let current {
@@ -62,7 +63,7 @@ public struct PriceBarChart: View {
                     yStart: .value("Zero", 0.0),
                     yEnd: .value("€/kWh", barEnd(point, minHeight))
                 )
-                .foregroundStyle(barStyle(palette, point: point, state: state))
+                .foregroundStyle(barStyle(palette, point: point, state: state, contexts: contexts))
                 .opacity(state == .past ? Theme.Price.pastOpacity(for: scheme) : state.opacity)
                 .cornerRadius(Theme.Radius.bar)
             }
@@ -126,8 +127,9 @@ public struct PriceBarChart: View {
         return value >= 0 ? max(value, minHeight) : min(value, -minHeight)
     }
 
-    private func barStyle(_ palette: WidgetPalette, point: PricePoint, state: PriceBarState) -> AnyShapeStyle {
-        guard palette.isFullColor, state == .past else { return palette.priceColor(fraction: series.fraction(of: point)) }
-        return AnyShapeStyle(Theme.Price.pastColor(Theme.Price.color(fraction: series.fraction(of: point) ?? 0.5), scheme: scheme))
+    private func barStyle(_ palette: WidgetPalette, point: PricePoint, state: PriceBarState, contexts: PriceDayContexts) -> AnyShapeStyle {
+        let fraction = contexts.fraction(of: point)
+        guard palette.isFullColor, state == .past else { return palette.priceColor(fraction: fraction) }
+        return AnyShapeStyle(Theme.Price.pastColor(Theme.Price.color(fraction: fraction), scheme: scheme))
     }
 }

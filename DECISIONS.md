@@ -60,3 +60,10 @@ Each entry: decision, why, how to change it.
 - "HomeDash" sounded like a smart-home app. The name is now **SunWatt** (App Store name "SunWatt: Solar & Power Price").
 - Full rename (user decision, before any release): display names, strings, store texts, and also code names (`SunWattKit`, targets, schemes, types, folders) and IDs (`com.ideatic.sunwatt*`, App Group `group.com.ideatic.sunwatt`). Done in one pass after all parallel branches were merged. No migration needed: nothing was released.
 - Not renamed: the repo folder on disk (`.../varios/homedash`). Rename it in Finder if you want.
+
+## D14. Shared cache window and cache identity (review fixes)
+- `SunWattLoader.load(deadline:maxCacheAge:)`: with `maxCacheAge > 0`, data stored less than that many seconds ago is returned as `.fresh` without network, when every source in use is recent (solar: configured, same kiosk link, same Madrid day; prices: same region, a point covers now). Widget timelines, controls and intents use `SunWattLoader.sharedCacheWindow` (120 s); `RefreshWidgetIntent` and explicit refreshes in the app use 0. Why: after one refresh every widget reloads at once, and N parallel requests make Energy-Charts answer 429.
+- The app no longer reloads the widgets right after a settings change that needs a fetch (region, kiosk link, tomorrow prices); `AppModel.refresh()` reloads them once the new data is stored.
+- `SolarSnapshot.endpointID` = SHA-256 of kiosk host + token (`KioskEndpoint.cacheID`, never the token). A cached snapshot with another or no identifier is ignored (old caches are refetched once).
+- After midnight (Europe/Madrid) a snapshot from an earlier day shows no curve, power or daily energy (`SunWattEntry.solarForDisplay`) and is marked stale.
+- Not done: requests in flight are not shared between widgets started at the same instant on a cold cache; only the window protects them.

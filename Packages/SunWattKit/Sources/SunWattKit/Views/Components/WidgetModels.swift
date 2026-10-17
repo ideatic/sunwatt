@@ -40,21 +40,22 @@ struct SolarModel {
 
     init(entry: SunWattEntry) {
         let data = entry.data
-        snapshot = data.solar
-        dataTime = data.solar.map { $0.dataAsOf ?? $0.fetchedAt }
+        let solar = entry.solarForDisplay
+        snapshot = solar
+        dataTime = solar.map { $0.dataAsOf ?? $0.fetchedAt }
         switch data.solarStatus {
         case .notConfigured:
             phase = .notConfigured
         case .error:
             phase = .error
         case .fresh, .stale:
-            if let solar = data.solar {
+            if let solar {
                 phase = solar.isIdle ? .idle : .active
             } else {
                 phase = .error
             }
         }
-        if entry.isSolarStale, let solar = data.solar {
+        if entry.isSolarStale, let solar {
             staleSince = solar.dataAsOf ?? solar.fetchedAt
         }
     }
@@ -87,15 +88,17 @@ struct PriceModel {
     }
 
     private mutating func fill(series: PriceSeries, entry: SunWattEntry, window: PriceWindow) {
+        // One day context for the whole model: the day's hours, statistics and the current hour's position.
+        let context = series.dayContext(for: entry.date)
         switch window {
-        case .wholeDay: points = series.hours(onDayOf: entry.date)
+        case .wholeDay: points = context?.hours ?? []
         case .around: points = series.hours(around: entry.date, before: 6, after: 12)
         }
         current = series.currentHour(at: entry.date)
-        stats = series.stats(onDayOf: entry.date)
-        if let current {
-            level = series.level(of: current)
-            fraction = series.fraction(of: current)
+        stats = context?.stats
+        if let current, let context {
+            level = context.level(of: current)
+            fraction = context.fraction(of: current)
         }
         if entry.isPriceStale {
             staleSince = series.fetchedAt
