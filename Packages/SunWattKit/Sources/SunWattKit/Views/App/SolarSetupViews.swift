@@ -129,6 +129,7 @@ struct SolarProviderPicker: View {
                             .font(.system(.footnote, design: .rounded).weight(isSelected ? .bold : .medium))
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
+                            .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 9)
                             .background(
