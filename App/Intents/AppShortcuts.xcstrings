@@ -121,6 +121,126 @@
         }
       }
     },
+    "Ask ${applicationName} for the cheapest hours": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregunta a ${applicationName} las horas más baratas"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pergunta ao ${applicationName} as horas mais baratas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demande à ${applicationName} les heures les moins chères"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frag ${applicationName} nach den günstigsten Stunden"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiedi a ${applicationName} le ore più convenienti"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vraag ${applicationName} naar de goedkoopste uren"
+          }
+        }
+      }
+    },
+    "Ask ${applicationName} for the electricity price": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregunta a ${applicationName} el precio de la luz"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pergunta ao ${applicationName} o preço da luz"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demande à ${applicationName} le prix de l'électricité"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frag ${applicationName} nach dem Strompreis"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiedi a ${applicationName} il prezzo dell'elettricità"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vraag ${applicationName} naar de stroomprijs"
+          }
+        }
+      }
+    },
+    "Ask ${applicationName} how much solar I'm producing": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregunta a ${applicationName} cuánta energía solar estoy produciendo"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pergunta ao ${applicationName} quanta energia solar estou a produzir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demande à ${applicationName} combien je produis en solaire"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frag ${applicationName}, wie viel Solarstrom ich gerade erzeuge"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiedi a ${applicationName} quanta energia solare sto producendo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vraag ${applicationName} hoeveel zonnestroom ik opwek"
+          }
+        }
+      }
+    },
     "Best time to use electricity in ${applicationName}": {
       "localizations": {
         "es": {
@@ -201,6 +321,126 @@
         }
       }
     },
+    "Check my solar panels with ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta mis placas solares con ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica os meus painéis solares com o ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifie mes panneaux solaires avec ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüf meine Solaranlage mit ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla i miei pannelli solari con ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bekijk mijn zonnepanelen met ${applicationName}"
+          }
+        }
+      }
+    },
+    "Check the cheapest hours with ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta las horas más baratas con ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica as horas mais baratas com o ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifie les heures les moins chères avec ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüf die günstigsten Stunden mit ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla le ore più convenienti con ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bekijk de goedkoopste uren met ${applicationName}"
+          }
+        }
+      }
+    },
+    "Check the electricity price with ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consulta el precio de la luz con ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica o preço da luz com o ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifie le prix de l'électricité avec ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüf den Strompreis mit ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla il prezzo dell'elettricità con ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bekijk de stroomprijs met ${applicationName}"
+          }
+        }
+      }
+    },
     "Electricity price in ${applicationName}": {
       "localizations": {
         "es": {
@@ -237,6 +477,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stroomprijs in ${applicationName}"
+          }
+        }
+      }
+    },
+    "How are my solar panels doing in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo van mis placas solares en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Como estão os meus painéis solares no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comment vont mes panneaux solaires dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie läuft meine Solaranlage in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come vanno i miei pannelli solari in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoe presteren mijn zonnepanelen in ${applicationName}"
           }
         }
       }
@@ -361,6 +641,46 @@
         }
       }
     },
+    "How much is electricity right now in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuánto vale la luz ahora mismo en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanto é a luz agora no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le courant coûte combien en ce moment dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie viel kostet Strom gerade in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanto costa la luce in questo momento in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoeveel kost stroom op dit moment in ${applicationName}"
+          }
+        }
+      }
+    },
     "How much solar am I producing in ${applicationName}": {
       "localizations": {
         "es": {
@@ -401,6 +721,46 @@
         }
       }
     },
+    "How much solar did I make today in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuánta energía solar he generado hoy en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanta energia solar produzi hoje no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combien d'énergie solaire j'ai produit aujourd'hui dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie viel Solarstrom hab ich heute in ${applicationName} erzeugt"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanta energia solare ho prodotto oggi in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoeveel zonnestroom heb ik vandaag gemaakt in ${applicationName}"
+          }
+        }
+      }
+    },
     "Is electricity cheap now in ${applicationName}": {
       "localizations": {
         "es": {
@@ -437,6 +797,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Is stroom nu goedkoop in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Is electricity expensive now in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Está cara la luz ahora en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A luz está cara agora no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'électricité est chère en ce moment dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ist Strom gerade teuer in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'elettricità è cara adesso in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Is stroom nu duur in ${applicationName}"
           }
         }
       }
@@ -517,6 +917,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zonne-opbrengst in ${applicationName}"
+          }
+        }
+      }
+    },
+    "What are my panels producing right now in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué producen ahora mis placas en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O que é que os meus painéis estão a produzir agora no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Que produisent mes panneaux en ce moment dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was liefern meine Panels gerade in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cosa stanno producendo i miei pannelli adesso in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wat leveren mijn panelen nu op in ${applicationName}"
+          }
+        }
+      }
+    },
+    "What does power cost today in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuánto cuesta la luz hoy en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanto custa a energia hoje no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combien coûte le courant aujourd'hui dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was kostet Strom heute in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanto costa la corrente oggi in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wat kost stroom vandaag in ${applicationName}"
           }
         }
       }
@@ -677,6 +1157,126 @@
           "stringUnit": {
             "state": "translated",
             "value": "Wanneer is stroom vandaag het goedkoopst in ${applicationName}"
+          }
+        }
+      }
+    },
+    "When is the cheapest time to charge my car in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuándo es más barato cargar el coche en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando é mais barato carregar o carro elétrico no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quand recharger ma voiture au meilleur prix dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wann lade ich mein Auto am günstigsten mit ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando conviene ricaricare l'auto in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wanneer laad ik mijn auto het goedkoopst op in ${applicationName}"
+          }
+        }
+      }
+    },
+    "When should I run the dishwasher in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuándo pongo el lavavajillas en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando devo pôr a máquina da louça a trabalhar no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quand est-ce que je lance le lave-vaisselle dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wann soll ich die Spülmaschine mit ${applicationName} laufen lassen"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando conviene far partire la lavastoviglie in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wanneer moet ik de vaatwasser aanzetten in ${applicationName}"
+          }
+        }
+      }
+    },
+    "When should I run the washing machine in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuándo pongo la lavadora en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando devo pôr a máquina de lavar roupa a trabalhar no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quand est-ce que je lance la machine à laver dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wann soll ich die Waschmaschine mit ${applicationName} laufen lassen"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando conviene far partire la lavatrice in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wanneer moet ik de wasmachine draaien in ${applicationName}"
           }
         }
       }
