@@ -4,22 +4,22 @@ Each entry: decision, why, how to change it.
 
 ## D1. SDK and deployment target: iOS 27.0 / macOS 27.0
 - Xcode 27.0 (27A266a) with iOS 27.0 and macOS 27.0 SDKs is installed. The iOS 27.0 simulator runtime was not installed; it was downloaded with `xcodebuild -downloadPlatform iOS` (8 GB). Simulator used: iPhone 18 Pro (iOS 27.0).
-- Change: `deploymentTarget` in `project.yml` and `platforms` in `Packages/HomeDashKit/Package.swift`.
+- Change: `deploymentTarget` in `project.yml` and `platforms` in `Packages/SunWattKit/Package.swift`.
 
 ## D2. Project generation: XcodeGen
-- `project.yml` is the source of truth. XcodeGen 2.46 was installed with Homebrew. `HomeDash.xcodeproj` is git-ignored and regenerated with `xcodegen generate` (also done by `scripts/verify.sh`).
+- `project.yml` is the source of truth. XcodeGen 2.46 was installed with Homebrew. `SunWatt.xcodeproj` is git-ignored and regenerated with `xcodegen generate` (also done by `scripts/verify.sh`).
 - Why: reproducible, reviewable diffs, no merge conflicts in pbxproj.
 - Change: commit the `.xcodeproj` (remove it from `.gitignore`) if you prefer to edit in Xcode.
 
 ## D3. One local package, one library target
-- `Packages/HomeDashKit` with folders `Models/`, `Services/`, `Store/`, `DesignSystem/`, `Views/`. Widget views also live in the package, so the snapshot renderer and tests can render them with `ImageRenderer` on macOS.
+- `Packages/SunWattKit` with folders `Models/`, `Services/`, `Store/`, `Timeline/`, `DesignSystem/`, `Views/`, `Intents/`, `Watch/`. Widget views also live in the package, so the snapshot renderer and tests can render them with `ImageRenderer` on macOS.
 - Why: separate modules buy nothing at this size and add `public` churn.
 
 ## D4. Signing
-- `DEVELOPMENT_TEAM` is empty, `CODE_SIGN_IDENTITY = "-"`. iOS Simulator builds work like this, App Group included.
-- macOS: a `group.` App Group entitlement needs a provisioning profile, so Xcode refuses to sign without a team. Tonight the macOS build is verified with `CODE_SIGNING_ALLOWED=NO` (compile + link only). The macOS app and widget can not run until you set your team.
+- `DEVELOPMENT_TEAM` is `EX68NKELW9` (ideatic Development, S.L.U.), automatic signing. iOS Simulator builds work, App Group included.
+- macOS: a `group.` App Group entitlement needs a provisioning profile, which exists only after the first `scripts/release.sh --upload` (or signing in Xcode). Until then `scripts/verify.sh` builds macOS with `CODE_SIGNING_ALLOWED=NO` (compile + link only), so the local macOS app and widget do not run with the App Group.
 - The store falls back to a local container when the App Group container is unavailable, so the app still works (without sharing) when unsigned.
-- Change: set `DEVELOPMENT_TEAM` in `project.yml` (see README).
+- Change: `DEVELOPMENT_TEAM` in `project.yml` (see README).
 
 ## D5. Kiosk data facts (from the real response, 2026-10-17 01:20)
 - `powerCurve.xAxis`: 288 labels "HH:mm" (5 min). `powerCurve.activePower`: 288 values, missing = `"-"` (single dash). `powerCurve.currentPower` is a string. `realKpi` came as numbers; the parser accepts numbers or strings.
@@ -48,13 +48,13 @@ Each entry: decision, why, how to change it.
 - Change: set `Format.locale` to a fixed locale at app start.
 
 ## D10. "Add widget" button
-- iOS 27 / macOS 27 have no public API to add a widget for the user (checked `WidgetKit.swiftinterface`). The app shows a step-by-step guide and uses `WidgetCenter.currentConfigurations()` to show whether a HomeDash widget is already installed.
+- iOS 27 / macOS 27 have no public API to add a widget for the user (checked `WidgetKit.swiftinterface`). The app shows a step-by-step guide and uses `WidgetCenter.currentConfigurations()` to show whether a SunWatt widget is already installed.
 
 ## D11. Network budget in widgets
-- `HomeDashLoader.load(deadline: 15)` races each fetch against a 15 s deadline (widget extensions get ~30 s). Dedicated ephemeral `URLSession.homeDash` (10 s request / 12 s resource timeout, no URL cache so the kiosk token is not written to disk).
+- `SunWattLoader.load(deadline: 15)` races each fetch against a 15 s deadline (widget extensions get ~30 s). Dedicated ephemeral `URLSession.sunWatt` (10 s request / 12 s resource timeout, no URL cache so the kiosk token is not written to disk).
 
 ## D12. Live tests are opt-in
-- `HOMEDASH_LIVE=1 swift test --filter LiveTests` hits the real kiosk (URL from `Config/kiosk.local`) and all 8 price regions, 15 s apart. Not part of the normal run.
+- `SUNWATT_LIVE=1 swift test --filter LiveTests` hits the real kiosk (URL from `Config/kiosk.local`) and all 8 price regions, 15 s apart; SolarEdge and PVOutput too when `Config/solaredge.local` / `Config/pvoutput.local` exist. Not part of the normal run.
 
 ## D13. Product name: SunWatt (user decision)
 - "HomeDash" sounded like a smart-home app. The name is now **SunWatt** (App Store name "SunWatt: Solar & Power Price").

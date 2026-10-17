@@ -1,6 +1,6 @@
 # Widget design iterations
 
-Rendered with `swift run HomeDashSnapshots ../../Screenshots/widgets` (from `Packages/HomeDashKit`).
+Rendered with `swift run SunWattSnapshots ../../Screenshots/widgets` (from `Packages/SunWattKit`). Entries below are the original log; names from before the HomeDash → SunWatt rename are kept as written.
 The system tint of accented/vibrant modes is not simulated; those files show the monochrome hierarchy only.
 
 ## Iteration 1 (first render, 67 PNGs)

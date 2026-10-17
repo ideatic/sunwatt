@@ -1,6 +1,6 @@
 # Watch snapshot iterations
 
-Renderer: `swift run HomeDashWatchSnapshots Screenshots/watch` (from `Packages/HomeDashKit`). Screen 208x248 pt (46 mm), 3x.
+Renderer: `swift run SunWattWatchSnapshots ../../Screenshots/watch` (from `Packages/SunWattKit`). Screen 208x248 pt (46 mm), 3x.
 Complication sizes are approximations (circular 50, rectangular 172x76, inline 190x24, corner 62); the corner arc is a stand-in for the system `widgetLabel` gauge.
 
 ## Iteration 1 (first render)
