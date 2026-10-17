@@ -27,4 +27,4 @@ The app has no API keys of its own. A SolarEdge or PVOutput API key is entered b
 
 Other
 Not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE. Public data is used under its terms (CC BY 4.0 with attribution in the app). The app needs an internet connection to load prices.
-Contact: REPLACE-ME@example.com
+Contact: contacto@ideatic.net

@@ -6,7 +6,7 @@ Team: ideatic Development, S.L.U. (`EX68NKELW9`). Bundle ID: `com.ideatic.sunwat
 
 1. appstoreconnect.apple.com > Apps > "+" > New App.
 2. Platforms: iOS and macOS. (watchOS comes with the iOS app.)
-3. Name: `SunWatt: Solar & Power Price`.
+3. Name: `SunWatt: Solar & Power`.
 4. Primary language: English (US). Reason: the metadata base is en-US, and the store falls back to it for languages you do not fill. Spanish is also fine if most users are in Spain. The other 6 languages stay as extra localizations.
 5. Bundle ID: `com.ideatic.sunwatt`. It is not in the list until step c) has run once. If you want to create the record first, register the ID by hand under Certificates, Identifiers & Profiles > Identifiers (App Groups capability on, group `group.com.ideatic.sunwatt`).
 6. SKU: `sunwatt-ios-001` (any unique text, never shown to users).
