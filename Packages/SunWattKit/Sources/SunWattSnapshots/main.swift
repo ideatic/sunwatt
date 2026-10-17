@@ -9,6 +9,7 @@ import SunWattKit
 // Usage: swift run SunWattSnapshots <output-dir>
 //        swift run SunWattSnapshots --app <output-dir>    app screens (iPhone and Mac window, light and dark)
 //        swift run SunWattSnapshots --icon <output-dir>   app icon PNGs (1024 px)
+//        swift run SunWattSnapshots --store <output-dir> [en-US es-ES ...]   App Store screenshots (fastlane layout)
 
 @MainActor
 struct Job {
@@ -154,13 +155,13 @@ func renderIcon(to directory: URL) throws {
 func main() {
     let arguments = CommandLine.arguments
     guard arguments.count >= 2 else {
-        FileHandle.standardError.write(Data("Usage: SunWattSnapshots [--app|--icon] <output-dir>\n".utf8))
+        FileHandle.standardError.write(Data("Usage: SunWattSnapshots [--app|--icon|--store] <output-dir> [languages]\n".utf8))
         exit(2)
     }
     let mode = arguments[1].hasPrefix("--") ? arguments[1] : nil
     let pathIndex = mode == nil ? 1 : 2
     guard arguments.count > pathIndex else {
-        FileHandle.standardError.write(Data("Usage: SunWattSnapshots [--app|--icon] <output-dir>\n".utf8))
+        FileHandle.standardError.write(Data("Usage: SunWattSnapshots [--app|--icon|--store] <output-dir> [languages]\n".utf8))
         exit(2)
     }
     let directory = URL(fileURLWithPath: arguments[pathIndex], isDirectory: true)
@@ -174,6 +175,10 @@ func main() {
         case "--icon":
             try renderIcon(to: directory)
             print("Wrote icon PNGs to \(directory.path)")
+            return
+        case "--store":
+            let count = try renderStore(to: directory, languages: Array(arguments.dropFirst(pathIndex + 1)))
+            print("Wrote \(count) store PNGs to \(directory.path)")
             return
         default:
             break

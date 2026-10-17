@@ -1,5 +1,7 @@
 # SunWatt: App Store screenshots
 
+Rendered, not captured: `cd Packages/SunWattKit && swift run SunWattSnapshots --store ../../AppStore/screenshots [en-US es-ES ...]` writes `AppStore/screenshots/<locale>/<n>_<device>_<shot>.png` (iPhone 6.9" 1320 x 2868, iPad 13" 2064 x 2752, Mac 2880 x 1800; no alpha; demo data; each language shows its own market). The Mac set has no Lock Screen shot. The Siri shot (6) is not rendered yet. Upload with `scripts/upload_metadata.sh --screenshots AppStore/screenshots`.
+
 Apple scales down from the largest size in each family. Upload the sizes below. Check current sizes in App Store Connect before capture: Apple changes the list when new devices ship.
 
 ## Required sizes

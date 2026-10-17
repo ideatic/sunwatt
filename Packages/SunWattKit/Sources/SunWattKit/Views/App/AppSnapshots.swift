@@ -49,13 +49,16 @@ public struct AppSnapshotView: View {
     public let locale: Locale
     /// Natural height instead of the device height (phone only), to review long screens.
     public let fullHeight: Bool
+    /// Market shown; nil keeps the default (Spain, France for French). Store screenshots pass each language's market.
+    public let priceRegion: PriceRegion?
 
-    public init(kind: Kind, device: Device, scheme: ColorScheme, locale: Locale, fullHeight: Bool = false) {
+    public init(kind: Kind, device: Device, scheme: ColorScheme, locale: Locale, fullHeight: Bool = false, priceRegion: PriceRegion? = nil) {
         self.kind = kind
         self.device = device
         self.scheme = scheme
         self.locale = locale
         self.fullHeight = fullHeight
+        self.priceRegion = priceRegion
     }
 
     public static func size(for device: Device) -> CGSize {
@@ -103,7 +106,11 @@ public struct AppSnapshotView: View {
         var settings = SunWattSettings(
             kioskURL: "https://eu5.fusionsolar.huawei.com/pvmswebsite/nologin/assets/build/cloud.html#/kiosk?kk=DEMO0000",
             priceRegion: .spain)
-        if locale.identifier.hasPrefix("fr") { settings.priceRegion = .france }
+        if let priceRegion {
+            settings.priceRegion = priceRegion
+        } else if locale.identifier.hasPrefix("fr") {
+            settings.priceRegion = .france
+        }
         switch kind {
         case .dashboardNight:
             return AppModel(demo: .night, settings: settings, widgetCount: 0)
