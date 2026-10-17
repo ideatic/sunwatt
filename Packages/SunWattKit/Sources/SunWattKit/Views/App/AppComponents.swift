@@ -136,6 +136,8 @@ struct AppTextField: View {
     @Binding var text: String
     /// Called when the user submits or leaves the field.
     var onCommit: (() -> Void)?
+    /// A secret (system code): shown as dots, not read aloud or kept in screenshots.
+    var isSecret = false
     @Environment(\.colorScheme) private var scheme
     @Environment(\.appSnapshot) private var snapshot
     @FocusState private var focused: Bool
@@ -147,11 +149,27 @@ struct AppTextField: View {
                 Group {
                     if text.isEmpty {
                         Text(verbatim: prompt).foregroundStyle(.tertiary)
+                    } else if isSecret {
+                        Text(verbatim: String(repeating: "•", count: min(text.count, 24))).lineLimit(1)
                     } else {
                         Text(verbatim: text).lineLimit(3)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+            } else if isSecret {
+                SecureField(text: $text, prompt: Text(verbatim: prompt)) { EmptyView() }
+                    .focused($focused)
+                    .onChange(of: focused) { _, isFocused in
+                        if !isFocused { onCommit?() }
+                    }
+                    .onSubmit { onCommit?() }
+                    .autocorrectionDisabled()
+                    #if os(iOS)
+                    .textInputAutocapitalization(.never)
+                    #endif
+                    #if os(macOS)
+                    .textFieldStyle(.plain)
+                    #endif
             } else {
                 TextField(text: $text, prompt: Text(verbatim: prompt), axis: .vertical) { EmptyView() }
                     .lineLimit(1...3)

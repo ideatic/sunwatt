@@ -169,11 +169,31 @@ public final class AppModel {
         } else {
             applyDemo(scenarioName: scenario.rawValue)
             if let home { data?.solar?.home = home }
+            addDemoPlants()
             if kioskLinkExpired {
                 data?.solar = nil
                 data?.solarStatus = .error(message: SunWattError.kioskLinkRejected.localizedDescription)
                 data?.solarLinkExpired = true
             }
+        }
+    }
+
+    /// Demo with several plants: the data of each further plant in `settings.additionalPlants`, the same day scaled by
+    /// 0.62, 0.35, ... so the pages differ. With one plant nothing changes.
+    private func addDemoPlants() {
+        guard settings.hasSeveralPlants, let base = data?.solar else { return }
+        data?.plantName = settings.primaryPlant.displayName(stationName: nil)
+        data?.otherPlants = settings.additionalPlants.enumerated().map { index, plant in
+            let factor = max(0.2, 0.62 - 0.27 * Double(index))
+            var snapshot = base
+            snapshot.currentPowerKW = base.currentPowerKW.map { $0 * factor }
+            snapshot.dailyEnergyKWh = base.dailyEnergyKWh.map { $0 * factor }
+            snapshot.monthEnergyKWh = base.monthEnergyKWh.map { $0 * factor }
+            snapshot.yearEnergyKWh = base.yearEnergyKWh.map { $0 * factor }
+            snapshot.cumulativeEnergyKWh = base.cumulativeEnergyKWh.map { $0 * factor }
+            snapshot.curve = base.curve.map { CurvePoint(time: $0.time, kW: $0.kW.map { $0 * factor }) }
+            snapshot.home = nil
+            return PlantSolarData(id: plant.id, name: plant.displayName(stationName: nil), solar: snapshot, status: .fresh)
         }
     }
 

@@ -22,9 +22,13 @@ public struct AppSnapshotView: View {
         case settingsTest
         case settingsInvalid
         case settingsSolarEdge
+        case settingsPlants
+        case settingsFusionSolarAPI
+        case dashboardPlants
         case onboardingWelcome
         case onboardingCountry
         case onboardingSolar
+        case onboardingSolarAPI
         case onboardingWidget
         case onboardingDone
         case widgetGuide
@@ -72,7 +76,7 @@ public struct AppSnapshotView: View {
     }
     private var isSheet: Bool {
         switch kind {
-        case .settings, .settingsTest, .settingsInvalid, .settingsSolarEdge, .widgetGuide, .widgetGuideLock, .kioskHelp: true
+        case .settings, .settingsTest, .settingsInvalid, .settingsSolarEdge, .settingsPlants, .settingsFusionSolarAPI, .widgetGuide, .widgetGuideLock, .kioskHelp: true
         default: false
         }
     }
@@ -134,6 +138,20 @@ public struct AppSnapshotView: View {
             settings.solarSiteID = "1234567"
             settings.solarAPIKey = "DEMO0KEY0DEMO0KEY0DEMO0KEY000000"
             return AppModel(demo: .day, settings: settings, widgetCount: 1)
+        case .dashboardPlants:
+            settings.primaryPlantName = "Home"
+            settings.additionalPlants = Self.demoPlants
+            return AppModel(demo: .day, settings: settings, widgetCount: 1)
+        case .settingsPlants:
+            settings.primaryPlantName = "Home"
+            settings.additionalPlants = [Self.demoPlants[0]]
+            return AppModel(demo: .day, settings: settings, widgetCount: 1)
+        case .settingsFusionSolarAPI:
+            Self.useDemoAPIAccount(&settings)
+            return AppModel(demo: .day, settings: settings, widgetCount: 1)
+        case .onboardingSolarAPI:
+            Self.useDemoAPIAccount(&settings)
+            return AppModel(demo: .day, settings: settings, widgetCount: 0, showsOnboarding: true)
         case .onboardingSolar:
             settings.kioskURL = ""
             return AppModel(demo: .day, settings: settings, widgetCount: 0, showsOnboarding: true)
@@ -144,10 +162,23 @@ public struct AppSnapshotView: View {
         }
     }
 
+    /// Two further plants (demo names, a SolarEdge site and a FusionSolar API account).
+    private static let demoPlants = [
+        SolarPlant(id: "demo-barn", name: "Barn", provider: .solarEdge, siteID: "1234567", apiKey: "DEMO0KEY0DEMO0KEY0DEMO0KEY000000"),
+        SolarPlant(id: "demo-beach", name: "Beach house", provider: .fusionSolarAPI, siteID: "demo_user", apiKey: "DEMO-system-code"),
+    ]
+
+    private static func useDemoAPIAccount(_ settings: inout SunWattSettings) {
+        settings.kioskURL = ""
+        settings.solarProvider = .fusionSolarAPI
+        settings.solarSiteID = "demo_user"
+        settings.solarAPIKey = "DEMO-system-code"
+    }
+
     private var onboardingPage: OnboardingPage {
         switch kind {
         case .onboardingCountry: .country
-        case .onboardingSolar: .solar
+        case .onboardingSolar, .onboardingSolarAPI: .solar
         case .onboardingWidget: .widget
         case .onboardingDone: .done
         default: .welcome
@@ -168,7 +199,7 @@ public struct AppSnapshotView: View {
                 priceSelection: SampleData.now.addingTimeInterval(6 * 3600))
         case .dashboardTomorrow:
             DashboardContent(model: model, startsOnTomorrow: true)
-        case .settings, .settingsInvalid, .settingsSolarEdge:
+        case .settings, .settingsInvalid, .settingsSolarEdge, .settingsPlants, .settingsFusionSolarAPI:
             SettingsContent(model: model)
         case .settingsTest:
             SettingsContent(model: model, initialTest: .success(SampleData.entry(.day).data.solar!))

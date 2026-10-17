@@ -122,22 +122,22 @@ func renderApp(to directory: URL) throws -> Int {
     }
     // iPad 13-inch: dashboard, settings, onboarding and widget guide, portrait and landscape.
     for device in [AppSnapshotView.Device.pad, .padLandscape] {
-        for kind in [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .onboardingWidget, .widgetGuide] {
+        for kind in [Kind.dashboardDay, .dashboardPlants, .settings, .settingsPlants, .settingsFusionSolarAPI, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .onboardingSolarAPI, .onboardingWidget, .widgetGuide] {
             for scheme in [ColorScheme.light, .dark] { try emit(kind, device, scheme) }
         }
     }
     // Natural height of the long phone screens (the 852 pt frame clips them).
-    for kind in [Kind.dashboardDay, .dashboardNight, .dashboardTomorrow, .settings, .widgetGuide, .kioskHelp] {
+    for kind in [Kind.dashboardDay, .dashboardNight, .dashboardTomorrow, .dashboardPlants, .settings, .settingsPlants, .settingsFusionSolarAPI, .widgetGuide, .kioskHelp] {
         for scheme in [ColorScheme.light, .dark] { try emit(kind, .phone, scheme, full: true) }
     }
     // Languages: English, long German strings, French (France prices).
     for (locale, kinds) in [
-        ("en_GB", [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .onboardingWidget, .widgetGuide, .kioskHelp]),
-        ("de_DE", [Kind.dashboardDay, .settings, .onboardingCountry, .onboardingSolar, .onboardingWidget, .widgetGuide, .kioskHelp]),
+        ("en_GB", [Kind.dashboardDay, .dashboardPlants, .settings, .settingsPlants, .settingsFusionSolarAPI, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .onboardingSolarAPI, .onboardingWidget, .widgetGuide, .kioskHelp]),
+        ("de_DE", [Kind.dashboardDay, .dashboardPlants, .settings, .settingsPlants, .settingsFusionSolarAPI, .onboardingSolarAPI, .onboardingCountry, .onboardingSolar, .onboardingWidget, .widgetGuide, .kioskHelp]),
         ("fr_FR", [Kind.dashboardDay]),
     ] {
         for kind in kinds {
-            try emit(kind, .phone, .light, locale: locale, full: kind == .dashboardDay || kind == .settings)
+            try emit(kind, .phone, .light, locale: locale, full: [Kind.dashboardDay, .dashboardPlants, .settings, .settingsPlants, .settingsFusionSolarAPI].contains(kind))
             try emit(kind, .mac, .light, locale: locale)
         }
     }

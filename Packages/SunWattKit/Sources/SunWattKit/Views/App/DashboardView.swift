@@ -213,27 +213,33 @@ private struct PlantPager<Page: View>: View {
     let entry: SunWattEntry
     @ViewBuilder let page: (SunWattEntry) -> Page
     @State private var shown: String?
+    @Environment(\.appSnapshot) private var snapshot
 
     var body: some View {
         let plants = entry.data.allPlants
         let current = shown ?? plants.first?.id
         VStack(spacing: Theme.Spacing.s) {
-            ScrollView(.horizontal) {
-                HStack(alignment: .top, spacing: 0) {
-                    ForEach(plants, id: \.id) { plant in
-                        page(SunWattEntry(date: entry.date, data: entry.data.showingPlant(id: plant.id)))
-                            // Room for the card shadow inside the clipped scroll view.
-                            .padding(.vertical, 8)
-                            .containerRelativeFrame(.horizontal)
-                            .id(plant.id)
+            if snapshot {
+                // ImageRenderer draws no scroll views: snapshots show the first page.
+                page(SunWattEntry(date: entry.date, data: entry.data.showingPlant(id: current ?? "")))
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(alignment: .top, spacing: 0) {
+                        ForEach(plants, id: \.id) { plant in
+                            page(SunWattEntry(date: entry.date, data: entry.data.showingPlant(id: plant.id)))
+                                // Room for the card shadow inside the clipped scroll view.
+                                .padding(.vertical, 8)
+                                .containerRelativeFrame(.horizontal)
+                                .id(plant.id)
+                        }
                     }
+                    .scrollTargetLayout()
                 }
-                .scrollTargetLayout()
+                .scrollTargetBehavior(.paging)
+                .scrollIndicators(.hidden)
+                .scrollPosition(id: $shown)
+                .padding(.vertical, -8)
             }
-            .scrollTargetBehavior(.paging)
-            .scrollIndicators(.hidden)
-            .scrollPosition(id: $shown)
-            .padding(.vertical, -8)
             HStack(spacing: 6) {
                 ForEach(plants, id: \.id) { plant in
                     Circle()

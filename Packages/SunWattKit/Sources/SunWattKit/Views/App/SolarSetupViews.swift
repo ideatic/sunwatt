@@ -609,11 +609,12 @@ struct PlantTabs: View {
     let plants: [Tab]
     @Binding var selection: String
     @Environment(\.colorScheme) private var scheme
+    @Environment(\.appSnapshot) private var snapshot
 
     var body: some View {
         let palette = AppPalette(scheme)
-        ScrollView(.horizontal) {
-            HStack(spacing: Theme.Spacing.s) {
+        // ImageRenderer draws no scroll views: snapshots lay the tabs out in a plain row.
+        let row = HStack(spacing: Theme.Spacing.s) {
                 ForEach(plants) { plant in
                     let isSelected = plant.id == selection
                     Button { selection = plant.id } label: {
@@ -629,8 +630,11 @@ struct PlantTabs: View {
                     .accessibilityAddTraits(isSelected ? .isSelected : [])
                 }
             }
+        if snapshot {
+            row.frame(maxWidth: .infinity, alignment: .leading).clipped()
+        } else {
+            ScrollView(.horizontal) { row }.scrollIndicators(.hidden)
         }
-        .scrollIndicators(.hidden)
     }
 }
 
@@ -738,7 +742,7 @@ struct NorthboundAccountEditor: View {
             fieldLabel("User name")
             AppTextField(prompt: "api_user", text: $userName, onCommit: commit)
             fieldLabel("System code")
-            AppTextField(prompt: "••••••••", text: $systemCode, onCommit: commit)
+            AppTextField(prompt: "••••••••", text: $systemCode, onCommit: commit, isSecret: true)
             fieldLabel("Server")
             AppTextField(prompt: NorthboundCredentials.defaultHost, text: $host, onCommit: commit)
             validationRow(input, palette: palette)
