@@ -223,9 +223,9 @@ struct SolarColumn: View {
                 .layoutPriority(1)
         }
         HStack(spacing: 4) {
-            SolarDailyCaption(solar: solar)
-            Spacer(minLength: 4)
             DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
+            Spacer(minLength: 4)
+            SolarDailyCaption(solar: solar)
         }
         .padding(.top, 1)
     }

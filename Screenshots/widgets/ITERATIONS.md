@@ -65,6 +65,7 @@ Critique (all 67 PNGs reviewed: light/dark, day/night/stale/error, accented/vibr
 - Tried and dropped: future bars at 62 % opacity. They looked brown over the dark background and did not help much; kept at 82 %.
 - Checked: medium night/day/stale light and dark, de and fr, price-only and solar-only, large, small, watch price page. No truncation; "Sin producción" fits on one line.
 - Watch corner PNGs also changed: they were older than commit e162de0 (corner value fit), not this change.
+- Follow-up (user): data time on the left, daily energy on the right of the second solar row.
 
 ## Open points
 - Real accented/vibrant tinting only shows on device.
