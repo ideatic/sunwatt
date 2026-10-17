@@ -24,7 +24,7 @@ Each entry: decision, why, how to change it.
 ## D5. Kiosk data facts (from the real response, 2026-10-17 01:20)
 - `powerCurve.xAxis`: 288 labels "HH:mm" (5 min). `powerCurve.activePower`: 288 values, missing = `"-"` (single dash). `powerCurve.currentPower` is a string. `realKpi` came as numbers; the parser accepts numbers or strings.
 - No server timestamp in the response. `SolarSnapshot.fetchedAt` = device clock; `dataAsOf` = time of the last non-nil curve point.
-- Fixture `kiosk-night.json` is real, but the station name, address and id were replaced with demo values. NOTE: the first commit (9ddfaba) still has the real name and address in history; squash or rewrite before pushing anywhere public.
+- Fixture `kiosk-night.json` is real, but the station name, address and id were replaced with demo values. Git history was rewritten on 2026-10-17 (`git filter-repo --replace-text`): no commit has the real values. `MORNING_REPORT.md` was removed from history at the same time.
 
 ## D6. PVPC data facts
 - `time_trunc=hour` returns PVPC (id 1001) hourly (24 points) and "Precio mercado spot" (id 600) in 15-min (96 points). `quarter-hour`, `fifteen-minutes`, `minute` are rejected (400). The model still supports 15-min points (`PriceGranularity`) and aggregates to hourly.

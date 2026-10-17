@@ -18,7 +18,7 @@
 - [x] Step 5: main app (onboarding with "Skip, prices only", dashboard with interactive charts, settings with kiosk test + how-to, country picker, add-widget guide with installed-widget detection, Mac window + Settings scene, iPad two-column layout, light/dark). 2 design iterations by the implementer + 1 visual pass after my review (app charts matched to widgets, iPad layout).
 - [x] Extra (user requests): Control Center controls (price, solar), Siri/Shortcuts (3 intents, 7 languages), tap-to-refresh widgets, Apple Watch app + 4 complication families, App Store texts in 7 languages, privacy/support pages, release setup.
 - [x] Full rename HomeDash -> SunWatt (code, targets, bundle IDs, App Group).
-- [x] Step 6: integration, README, `/code-review high` (7 findings, all fixed: shared cache window against parallel fetches / 429, kiosk field no longer saves per keystroke, refresh cancels stale loads, per-day price contexts, yesterday's solar hidden after midnight, solar cache tied to the kiosk link, watch settings race), MORNING_REPORT.
+- [x] Step 6: integration, README, `/code-review high` (7 findings, all fixed: shared cache window against parallel fetches / 429, kiosk field no longer saves per keystroke, refresh cancels stale loads, per-day price contexts, yesterday's solar hidden after midnight, solar cache tied to the kiosk link, watch settings race).
 - Final: 298 tests, `scripts/verify.sh` -> VERIFY OK (iOS Simulator tests, macOS build, watchOS build).
 - One unexplained failure: right after one merge, a single `swift test` run reported 176 issues; it never reproduced (20+ runs, clean builds). `verify.sh` now prints the failing tests and keeps the log if it happens again.
 
