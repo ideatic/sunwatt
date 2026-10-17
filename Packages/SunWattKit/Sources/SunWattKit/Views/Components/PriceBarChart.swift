@@ -39,20 +39,30 @@ public struct PriceBarChart: View {
         let minHeight = span * (isFull ? Theme.Price.minBarFractionFull : Theme.Price.minBarFractionMini)
         let xDomain: ClosedRange<Date> = ChartLayout.priceDomain(points: points) ?? (now...now.addingTimeInterval(1))
         let inset = (points.first?.duration ?? 3600) * 0.09
-        let halo = (points.first?.duration ?? 3600) * 0.025
+        // Ring around the current bar; wider in the mini style, where bars are only a few points wide.
+        let halo = (points.first?.duration ?? 3600) * (isFull ? 0.025 : 0.05)
         let average: Double? = points.isEmpty ? nil : points.map { $0.eurPerKWh }.reduce(0.0, +) / Double(points.count)
         let contexts = PriceDayContexts(series: series, points: points)
 
         Chart {
             if let current {
+                // Band behind the current hour over the whole height: visible even when its bar is a sliver.
+                RectangleMark(
+                    xStart: .value("From", current.start.addingTimeInterval(inset - halo * 2)),
+                    xEnd: .value("To", current.end.addingTimeInterval(-(inset - halo * 2))),
+                    yStart: .value("Bottom", min(yDomain.lowerBound, -span * 0.03)),
+                    yEnd: .value("Top", yDomain.upperBound)
+                )
+                .foregroundStyle(Color.primary.opacity(scheme == .dark ? 0.12 : 0.10))
+                .cornerRadius(Theme.Radius.bar + 2)
                 // Outline: a slightly larger rectangle behind the bar.
                 RectangleMark(
                     xStart: .value("From", current.start.addingTimeInterval(inset - halo)),
                     xEnd: .value("To", current.end.addingTimeInterval(-(inset - halo))),
-                    yStart: .value("Zero", min(0, barEnd(current, minHeight)) - span * (isFull ? 0.012 : 0.02)),
-                    yEnd: .value("€/kWh", max(0, barEnd(current, minHeight)) + span * (isFull ? 0.012 : 0.02))
+                    yStart: .value("Zero", min(0, barEnd(current, minHeight)) - span * (isFull ? 0.012 : 0.03)),
+                    yEnd: .value("€/kWh", max(0, barEnd(current, minHeight)) + span * (isFull ? 0.012 : 0.03))
                 )
-                .foregroundStyle(Color.primary.opacity(0.6))
+                .foregroundStyle(Color.primary.opacity(0.85))
                 .cornerRadius(Theme.Radius.bar + 1)
             }
             ForEach(points) { point in
@@ -70,12 +80,12 @@ public struct PriceBarChart: View {
             if let current {
                 PointMark(
                     x: .value("Now", current.start.addingTimeInterval(current.duration / 2)),
-                    y: .value("Top", max(0, barEnd(current, minHeight)) + span * (isFull ? 0.012 : 0.02))
+                    y: .value("Top", max(0, barEnd(current, minHeight)) + span * (isFull ? 0.012 : 0.03))
                 )
                 .symbolSize(0)
                 .annotation(position: .top, spacing: 1) {
                     Image(systemName: "arrowtriangle.down.fill")
-                        .font(.system(size: isFull ? 7 : 6))
+                        .font(.system(size: isFull ? 7 : 8))
                         .foregroundStyle(Color.primary)
                 }
             }

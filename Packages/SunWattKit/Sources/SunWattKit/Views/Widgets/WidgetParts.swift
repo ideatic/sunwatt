@@ -55,13 +55,15 @@ struct PriceIcon: View {
 struct SolarFigure: View {
     let solar: SolarModel
     var size: CGFloat
+    /// On the icon row of a medium widget "No production" must stay on one line.
+    var singleLine = false
 
     var body: some View {
         if solar.isIdle {
             wtext("No production")
                 .font(.system(size: size * 0.5, weight: .bold, design: .rounded))
                 .foregroundStyle(.secondary)
-                .lineLimit(2)
+                .lineLimit(singleLine ? 1 : 2)
                 .minimumScaleFactor(0.7)
                 .fixedSize(horizontal: false, vertical: true)
         } else {
@@ -172,24 +174,17 @@ struct SolarColumn: View {
     let now: Date
     var figureSize: CGFloat = 32
     var showsChart = true
+    /// Medium widget: the figure sits on the icon row and the daily energy shares a row with the data time,
+    /// so the curve gets the height of the two rows saved.
+    var compactHeader = false
 
     var body: some View {
         if solar.isAvailable {
             VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 4) {
-                    SolarIcon(idle: solar.isIdle)
-                    if let name = solar.plantName { PlantNameLabel(name: name) }
-                    Spacer(minLength: 2)
-                    DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
-                }
-                .frame(height: 20)
-                SolarFigure(solar: solar, size: figureSize)
-                    .padding(.top, 2)
-                SolarDailyCaption(solar: solar)
-                    .padding(.top, 1)
+                if compactHeader { compactRows } else { stackedRows }
                 if showsChart, let snapshot = solar.snapshot {
                     SolarCurveChart(snapshot: snapshot, now: now, style: .mini)
-                        .padding(.top, 8)
+                        .padding(.top, compactHeader ? 6 : 8)
                         .frame(maxHeight: .infinity)
                 } else {
                     Spacer(minLength: 0)
@@ -202,6 +197,38 @@ struct SolarColumn: View {
             }
         }
     }
+
+    @ViewBuilder
+    private var stackedRows: some View {
+        HStack(spacing: 4) {
+            SolarIcon(idle: solar.isIdle)
+            if let name = solar.plantName { PlantNameLabel(name: name) }
+            Spacer(minLength: 2)
+            DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
+        }
+        .frame(height: 20)
+        SolarFigure(solar: solar, size: figureSize)
+            .padding(.top, 2)
+        SolarDailyCaption(solar: solar)
+            .padding(.top, 1)
+    }
+
+    @ViewBuilder
+    private var compactRows: some View {
+        HStack(alignment: .center, spacing: 4) {
+            SolarIcon(idle: solar.isIdle)
+            if let name = solar.plantName { PlantNameLabel(name: name) }
+            Spacer(minLength: 4)
+            SolarFigure(solar: solar, size: figureSize, singleLine: true)
+                .layoutPriority(1)
+        }
+        HStack(spacing: 4) {
+            SolarDailyCaption(solar: solar)
+            Spacer(minLength: 4)
+            DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
+        }
+        .padding(.top, 1)
+    }
 }
 
 /// Price half of a medium widget or large header: header row, figure, level, optional mini bars.
@@ -209,25 +236,16 @@ struct PriceColumn: View {
     let price: PriceModel
     var figureSize: CGFloat = 32
     var showsChart = true
+    /// Medium widget: the figure sits on the icon row, so the bars get more height (see `SolarColumn`).
+    var compactHeader = false
 
     var body: some View {
         if price.series != nil {
             VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 4) {
-                    PriceIcon(fraction: price.fraction)
-                    Spacer(minLength: 2)
-                    if let since = price.staleSince {
-                        StaleBadge(since: since, timeZone: price.timeZone)
-                    }
-                }
-                .frame(height: 20)
-                PriceFigure(price: price, size: figureSize)
-                    .padding(.top, 2)
-                LevelLabel(price: price)
-                    .padding(.top, 1)
+                if compactHeader { compactRows } else { stackedRows }
                 if showsChart {
                     PriceMiniChart(price: price)
-                        .padding(.top, 8)
+                        .padding(.top, compactHeader ? 6 : 8)
                         .frame(maxHeight: .infinity)
                 } else {
                     Spacer(minLength: 0)
@@ -236,6 +254,40 @@ struct PriceColumn: View {
         } else {
             SourceStateView(kind: .priceError, compact: true, lastUpdate: price.series?.fetchedAt, timeZone: price.timeZone)
         }
+    }
+
+    @ViewBuilder
+    private var stackedRows: some View {
+        HStack(spacing: 4) {
+            PriceIcon(fraction: price.fraction)
+            Spacer(minLength: 2)
+            if let since = price.staleSince {
+                StaleBadge(since: since, timeZone: price.timeZone)
+            }
+        }
+        .frame(height: 20)
+        PriceFigure(price: price, size: figureSize)
+            .padding(.top, 2)
+        LevelLabel(price: price)
+            .padding(.top, 1)
+    }
+
+    @ViewBuilder
+    private var compactRows: some View {
+        HStack(alignment: .center, spacing: 4) {
+            PriceIcon(fraction: price.fraction)
+            Spacer(minLength: 4)
+            PriceFigure(price: price, size: figureSize)
+                .layoutPriority(1)
+        }
+        HStack(spacing: 4) {
+            LevelLabel(price: price)
+            Spacer(minLength: 4)
+            if let since = price.staleSince {
+                StaleBadge(since: since, timeZone: price.timeZone)
+            }
+        }
+        .padding(.top, 1)
     }
 }
 
