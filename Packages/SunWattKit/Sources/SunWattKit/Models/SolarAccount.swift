@@ -57,8 +57,9 @@ public enum SolarAccount: Hashable, Sendable {
     case fusionSolar(KioskEndpoint)
     /// FusionSolar with the inverter on the home network (Modbus TCP), plus the kiosk link when there is one.
     case huaweiLocal(HuaweiLocalEndpoint, kiosk: KioskEndpoint?)
-    case solarEdge(SolarAPICredentials)
-    case pvOutput(SolarAPICredentials)
+    /// `local`: a SunSpec inverter on the home network (optional), read for live data while it answers.
+    case solarEdge(SolarAPICredentials, local: ModbusEndpoint? = nil)
+    case pvOutput(SolarAPICredentials, local: ModbusEndpoint? = nil)
 
     public init?(settings: SunWattSettings) {
         switch settings.solarProvider {
@@ -71,12 +72,11 @@ public enum SolarAccount: Hashable, Sendable {
             } else {
                 return nil
             }
-        case .solarEdge:
+        case .solarEdge, .pvOutput:
             guard let credentials = SolarAPICredentials(siteID: settings.solarSiteID, apiKey: settings.solarAPIKey) else { return nil }
-            self = .solarEdge(credentials)
-        case .pvOutput:
-            guard let credentials = SolarAPICredentials(siteID: settings.solarSiteID, apiKey: settings.solarAPIKey) else { return nil }
-            self = .pvOutput(credentials)
+            // An address that does not parse is ignored, like the Huawei one: the cloud keeps working.
+            let local = ModbusEndpoint(parsing: settings.sunSpecHost, unitID: settings.sunSpecUnitID)
+            self = settings.solarProvider == .solarEdge ? .solarEdge(credentials, local: local) : .pvOutput(credentials, local: local)
         }
     }
 
@@ -86,6 +86,24 @@ public enum SolarAccount: Hashable, Sendable {
         case .fusionSolar(let endpoint): endpoint
         case .huaweiLocal(_, let kiosk): kiosk
         case .solarEdge, .pvOutput: nil
+        }
+    }
+
+    /// The inverter read on the home network, if set up: the Huawei dongle or a SunSpec inverter.
+    public var localInverter: ModbusEndpoint? {
+        switch self {
+        case .fusionSolar: nil
+        case .huaweiLocal(let local, _): local
+        case .solarEdge(_, let local), .pvOutput(_, let local): local
+        }
+    }
+
+    /// Reader for the inverter on the home network, if set up.
+    public func localReader(makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)? = nil) -> (any LocalInverterReader)? {
+        switch self {
+        case .fusionSolar: nil
+        case .huaweiLocal(let local, _): HuaweiModbusClient(endpoint: local, makeTransport: makeTransport)
+        case .solarEdge(_, let local), .pvOutput(_, let local): local.map { SunSpecClient(endpoint: $0, makeTransport: makeTransport) }
         }
     }
 
@@ -107,7 +125,8 @@ public enum SolarAccount: Hashable, Sendable {
             // Same plant as the kiosk link: keep its cache when the inverter address is added.
             if let kiosk { return kiosk.cacheID }
             return SHA256.hash(data: Data("huaweiLocal\n\(local.host)".utf8)).map { String(format: "%02x", $0) }.joined()
-        case .solarEdge(let credentials), .pvOutput(let credentials):
+        case .solarEdge(let credentials, _), .pvOutput(let credentials, _):
+            // The inverter address is not part of it: adding one keeps the cloud cache.
             let text = "\(provider.rawValue)\n\(credentials.siteID)\n\(credentials.apiKey)"
             return SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
         }
@@ -118,10 +137,24 @@ public enum SolarAccount: Hashable, Sendable {
         switch self {
         case .fusionSolar(let endpoint): FusionSolarKioskClient(endpoint: endpoint, http: http)
         case .huaweiLocal(let local, let kiosk):
-            HuaweiLocalSolarClient(local: HuaweiModbusClient(endpoint: local), kiosk: kiosk.map { FusionSolarKioskClient(endpoint: $0, http: http) })
-        case .solarEdge(let credentials): SolarEdgeClient(credentials: credentials, http: http)
-        case .pvOutput(let credentials): PVOutputClient(credentials: credentials, http: http)
+            LocalInverterSolarClient(local: HuaweiModbusClient(endpoint: local), kiosk: kiosk.map { FusionSolarKioskClient(endpoint: $0, http: http) })
+        case .solarEdge(let credentials, let local):
+            withLocal(local, cloud: SolarEdgeClient(credentials: credentials, http: http))
+        case .pvOutput(let credentials, let local):
+            withLocal(local, cloud: PVOutputClient(credentials: credentials, http: http))
         }
+    }
+
+    /// The inverter alone, without the cloud source: used while the cloud may not be asked again yet
+    /// (`SolarProvider.minimumFetchInterval`). Nil without an inverter on the home network.
+    public func liveOnlyClient() -> SolarDataSource? {
+        localReader().map { LocalInverterSolarClient(local: $0, cloud: nil, keepsCloudHome: provider != .fusionSolar) }
+    }
+
+    private func withLocal(_ local: ModbusEndpoint?, cloud: SolarDataSource) -> SolarDataSource {
+        guard let local else { return cloud }
+        // SolarEdge and PVOutput get home consumption from their own meters: kept next to the live power.
+        return LocalInverterSolarClient(local: SunSpecClient(endpoint: local), cloud: cloud, keepsCloudHome: true)
     }
 }
 

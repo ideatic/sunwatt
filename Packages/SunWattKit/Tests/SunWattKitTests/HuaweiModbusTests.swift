@@ -232,9 +232,9 @@ final class FakeModbusTransport: ModbusTransport, @unchecked Sendable {
         store.settings = SunWattSettings(kioskURL: testKioskURL, showTomorrowPrices: false, onboardingCompleted: true)
         let model = AppModel(launch: AppLaunchOptions(), store: store, loader: SunWattLoader(store: store, makeSolar: { _ in nil }, prices: FakePlain(result: .success(storeSamplePrices()))))
         model.makeModbusTransport = { endpoint in FakeModbusTransport(registers: fakeInverterRegisters(), unit: 0) }
-        guard case .success(let (reading, unit)) = await model.testInverter("192.168.1.50") else { Issue.record("expected success"); return }
-        #expect(unit == 0)
-        #expect(reading.activePowerKW == 2.912)
+        guard case .success(let match) = await model.testInverter("192.168.1.50") else { Issue.record("expected success"); return }
+        #expect(match.unitID == 0 && match.address == "192.168.1.50")
+        #expect(match.reading.activePowerKW == 2.912)
         if case .failure(let error) = await model.testInverter("nope!") {
             #expect(error as? SunWattError == .invalidInverterAddress)
         } else { Issue.record("expected failure") }

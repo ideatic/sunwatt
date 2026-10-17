@@ -74,6 +74,9 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
     public var home: HomeEnergy?
     /// True when the figures were read from the inverter on the home network just now (not through the cloud).
     public var isLive: Bool?
+    /// Live snapshots only: when the cloud part (kiosk, SolarEdge, PVOutput) was last fetched. Rate limits count from
+    /// this, not from `fetchedAt`, which every inverter read moves. Nil when the snapshot is the cloud data itself.
+    public var cloudFetchedAt: Date?
 
     public init(
         stationName: String? = nil,

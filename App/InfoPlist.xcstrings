@@ -2,49 +2,49 @@
   "sourceLanguage" : "en",
   "strings" : {
     "NSLocalNetworkUsageDescription" : {
-      "comment" : "Local Network permission prompt: reading the Huawei inverter on the home network (Modbus TCP).",
+      "comment" : "Local Network permission prompt: reading the inverter on the home network (Huawei dongle or SunSpec, Modbus TCP).",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt reads your Huawei inverter on your home network to show live solar production."
+            "value" : "SunWatt reads your inverter on your home network to show live solar production."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt lee tu inversor Huawei en la red de tu casa para mostrar la producción solar en tiempo real."
+            "value" : "SunWatt lee tu inversor en la red de tu casa para mostrar la producción solar en tiempo real."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O SunWatt lê o seu inversor Huawei na rede doméstica para mostrar a produção solar em tempo real."
+            "value" : "O SunWatt lê o seu inversor na rede doméstica para mostrar a produção solar em tempo real."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt lit votre onduleur Huawei sur votre réseau domestique pour afficher la production solaire en direct."
+            "value" : "SunWatt lit votre onduleur sur votre réseau domestique pour afficher la production solaire en direct."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt liest den Huawei-Wechselrichter im Heimnetz aus, um die Solarerzeugung in Echtzeit anzuzeigen."
+            "value" : "SunWatt liest den Wechselrichter im Heimnetz aus, um die Solarerzeugung in Echtzeit anzuzeigen."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt legge il tuo inverter Huawei sulla rete di casa per mostrare la produzione solare in tempo reale."
+            "value" : "SunWatt legge il tuo inverter sulla rete di casa per mostrare la produzione solare in tempo reale."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SunWatt leest je Huawei-omvormer op je thuisnetwerk om de zonne-opbrengst live te tonen."
+            "value" : "SunWatt leest je omvormer op je thuisnetwerk om de zonne-opbrengst live te tonen."
           }
         }
       }

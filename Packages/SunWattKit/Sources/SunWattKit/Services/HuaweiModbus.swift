@@ -8,42 +8,6 @@ import Network
 // SunWatt only reads holding registers (function 0x03); it never writes.
 // Register map: Huawei "SUN2000 MODBUS Interface Definitions".
 
-/// Address of the dongle on the home network: an IPv4 address or a host name, optionally ":port" (default 502),
-/// and the Modbus unit ID of the inverter behind it (usually 1).
-public struct HuaweiLocalEndpoint: Hashable, Sendable {
-    public var host: String
-    public var port: UInt16
-    public var unitID: UInt8
-
-    public init(host: String, port: UInt16 = 502, unitID: UInt8 = 1) {
-        self.host = host
-        self.port = port
-        self.unitID = unitID
-    }
-
-    /// Nil for anything that is not a plain host: no scheme, no path, no spaces.
-    public init?(parsing text: String, unitID: Int = 1) {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, (0...247).contains(unitID) else { return nil }
-        var host = trimmed
-        var port: UInt16 = 502
-        if let colon = trimmed.lastIndex(of: ":") {
-            guard let value = UInt16(trimmed[trimmed.index(after: colon)...]), value > 0 else { return nil }
-            port = value
-            host = String(trimmed[..<colon])
-        }
-        let allowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-")
-        guard (1...253).contains(host.count), host.unicodeScalars.allSatisfy(allowed.contains),
-              !host.hasPrefix("."), !host.hasPrefix("-"), !host.hasSuffix(".") else { return nil }
-        // Digits and dots only: must be a full IPv4 address.
-        if host.allSatisfy({ $0.isNumber || $0 == "." }) {
-            let parts = host.split(separator: ".", omittingEmptySubsequences: false)
-            guard parts.count == 4, parts.allSatisfy({ !$0.isEmpty && $0.count <= 3 && (Int($0) ?? 256) <= 255 }) else { return nil }
-        }
-        self.init(host: host, port: port, unitID: UInt8(unitID))
-    }
-}
-
 /// One reading of the inverter (and of the Huawei power meter, when there is one).
 public struct HuaweiInverterReading: Hashable, Sendable {
     /// Inverter active power now (kW). Slightly negative at night (standby consumption).
@@ -74,6 +38,8 @@ enum ModbusFrame {
         case badFrame
         /// The device answered with a Modbus exception (e.g. 2: illegal address, 11: gateway target failed).
         case exception(UInt8)
+        /// The device answers Modbus but is not the expected kind (e.g. no SunSpec marker, no inverter model).
+        case unexpectedDevice
     }
 
     /// MBAP header (transaction, protocol 0, length 6, unit) + function 0x03, start address, register count.
@@ -101,6 +67,14 @@ enum ModbusFrame {
 
     static func int32(_ registers: [UInt16], at index: Int) -> Int32 {
         Int32(bitPattern: uint32(registers, at: index))
+    }
+
+    /// Two ASCII characters per register, padded with zeros. Nil when empty or not printable.
+    static func text(_ registers: [UInt16]) -> String? {
+        let bytes = registers.flatMap { [UInt8($0 >> 8), UInt8($0 & 0xFF)] }.prefix { $0 != 0 }
+        guard bytes.allSatisfy({ (0x20...0x7E).contains($0) }) else { return nil }
+        let value = String(decoding: bytes, as: UTF8.self).trimmingCharacters(in: .whitespaces)
+        return value.isEmpty ? nil : value
     }
 }
 
@@ -133,21 +107,19 @@ public struct HuaweiModbusClient: Sendable {
     }
 
     public func read() async throws -> HuaweiInverterReading {
-        try await session { try await Self.reading($0) }
+        try await ModbusSession.run(endpoint, makeTransport: makeTransport) { try await Self.reading($0) }
     }
 
     /// The model name (registers 30000...30014, ASCII, e.g. "SUN2000-15KTL-M5"; nil if the dongle does not give it)
     /// and a reading, on one connection. Used by "Find inverter".
     public func identify() async throws -> (model: String?, reading: HuaweiInverterReading) {
-        try await session { registers in
-            let model = (try? await registers(30000, 15)).flatMap(Self.text)
+        try await ModbusSession.run(endpoint, makeTransport: makeTransport) { registers in
+            let model = (try? await registers(30000, 15)).flatMap(ModbusFrame.text)
             return (model, try await Self.reading(registers))
         }
     }
 
-    typealias ReadRegisters = (UInt16, UInt16) async throws -> [UInt16]
-
-    private static func reading(_ registers: ReadRegisters) async throws -> HuaweiInverterReading {
+    private static func reading(_ registers: ModbusSession.ReadRegisters) async throws -> HuaweiInverterReading {
         let inverter = try await registers(32080, 10)
         let energy = try await registers(32106, 10)
         // Meter: status 37100 (1 = normal), active power 37113 (I32, W, > 0 feeding the grid).
@@ -161,104 +133,6 @@ public struct HuaweiModbusClient: Sendable {
             totalEnergyKWh: Double(ModbusFrame.uint32(energy, at: 0)) / 100,
             deviceStatus: inverter[9],
             meterActivePowerKW: meterKW)
-    }
-
-    /// Two ASCII characters per register, padded with zeros.
-    static func text(_ registers: [UInt16]) -> String? {
-        let bytes = registers.flatMap { [UInt8($0 >> 8), UInt8($0 & 0xFF)] }.prefix { $0 != 0 }
-        guard bytes.allSatisfy({ (0x20...0x7E).contains($0) }) else { return nil }
-        let value = String(decoding: bytes, as: UTF8.self).trimmingCharacters(in: .whitespaces)
-        return value.isEmpty ? nil : value
-    }
-
-    /// Opens the connection, runs `body` with a register reader and closes it; errors mapped as for `read()`.
-    private func session<T>(_ body: (ReadRegisters) async throws -> T) async throws -> T {
-        guard let transport = makeTransport(endpoint) else { throw SunWattError.inverterUnreachable }
-        defer { transport.close() }
-        do {
-            try await transport.open()
-            let unit = endpoint.unitID
-            var transaction: UInt16 = 0
-            func registers(_ address: UInt16, _ count: UInt16) async throws -> [UInt16] {
-                transaction &+= 1
-                let request = ModbusFrame.readHoldingRegisters(transaction: transaction, unit: unit, address: address, count: count)
-                return try ModbusFrame.registers(from: try await transport.exchange(request), transaction: transaction, count: count)
-            }
-            return try await body(registers)
-        } catch is CancellationError {
-            throw CancellationError()
-        } catch let error as SunWattError {
-            throw error
-        } catch let error as ModbusFrame.Failure {
-            // The dongle answered, but not as expected (e.g. wrong unit ID): kept apart from "no connection".
-            throw error
-        } catch {
-            throw SunWattError.inverterUnreachable
-        }
-    }
-}
-
-/// FusionSolar with the inverter on the home network: both are read together. When the inverter answers (at home),
-/// its live figures replace the kiosk's and its reading is added to the kiosk curve; otherwise (away, or the dongle
-/// is busy) the kiosk snapshot is used as it is. Without a kiosk link, only the inverter.
-public struct HuaweiLocalSolarClient: SolarDataSource {
-    public let local: HuaweiModbusClient
-    public let kiosk: SolarDataSource?
-    /// Away from home the connection can hang until this deadline; keep it short.
-    public var localDeadline: TimeInterval = 5
-    public let now: @Sendable () -> Date
-
-    public init(local: HuaweiModbusClient, kiosk: SolarDataSource?, now: @escaping @Sendable () -> Date = { Date() }) {
-        self.local = local
-        self.kiosk = kiosk
-        self.now = now
-    }
-
-    public func fetch() async throws -> SolarSnapshot {
-        let local = local
-        async let fromKiosk = Self.fetch(kiosk)
-        let fromInverter = await SunWattLoader.race(deadline: localDeadline) { try await local.read() }
-        let kioskResult = await fromKiosk
-        switch fromInverter {
-        case .success(let reading):
-            return Self.merge(reading, into: try? kioskResult?.get(), at: now())
-        case .failure(let error):
-            if error is CancellationError { throw CancellationError() }
-            // Without a kiosk link every failure (timeout, refused, odd answer) reads as "the inverter did not answer".
-            guard let kioskResult else { throw SunWattError.inverterUnreachable }
-            return try kioskResult.get()
-        }
-    }
-
-    private static func fetch(_ source: SolarDataSource?) async -> Result<SolarSnapshot, Error>? {
-        guard let source else { return nil }
-        do { return .success(try await source.fetch()) } catch { return .failure(error) }
-    }
-
-    /// `base` (the kiosk snapshot, or the last one shown) with the live reading: power, today's and total energy,
-    /// a curve point at `date`, and home consumption when a Huawei meter is present.
-    public static func merge(_ reading: HuaweiInverterReading, into base: SolarSnapshot?, at date: Date) -> SolarSnapshot {
-        var snapshot = base ?? SolarSnapshot(currentPowerKW: nil, dailyEnergyKWh: nil, curve: [], fetchedAt: date, dataAsOf: nil)
-        let power = max(reading.activePowerKW, 0)
-        snapshot.currentPowerKW = power
-        snapshot.dailyEnergyKWh = reading.dailyEnergyKWh
-        snapshot.cumulativeEnergyKWh = reading.totalEnergyKWh
-        snapshot.fetchedAt = date
-        snapshot.dataAsOf = date
-        snapshot.isLive = true
-        // Today's curve only (a base from yesterday contributes nothing), plus this reading. Points of the last minute
-        // are replaced, so live reads every few seconds add at most one point a minute.
-        snapshot.curve = snapshot.curve.filter {
-            Constants.madridCalendar.isDate($0.time, inSameDayAs: date) && $0.time < date.addingTimeInterval(-55)
-        } + [CurvePoint(time: date, kW: power)]
-        if let meter = reading.meterActivePowerKW {
-            // Meter: > 0 feeding the grid. HomeEnergy.gridKW: > 0 buying.
-            let grid = -meter
-            snapshot.home = HomeEnergy(consumptionKW: max(power + grid, 0), gridKW: grid, dailyConsumptionKWh: nil)
-        } else {
-            snapshot.home = nil
-        }
-        return snapshot
     }
 }
 

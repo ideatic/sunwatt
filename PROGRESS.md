@@ -32,6 +32,7 @@
 - [x] Home consumption for plants with a meter at home (SolarEdge, PVOutput), hidden for export-only plants (DECISIONS D16). Dashboard section + large widget line; new screenshot kind `dashboardHome`.
 
 - [x] Kiosk link expiry: rejection detection (30 min), expired state in app, widgets, watch and Siri, renew notice a month before (DECISIONS D17). Screenshot kinds `dashboardKioskExpiring`, `dashboardKioskExpired`. Missing: a real expired-kiosk response as fixture; support page FAQ.
+- [x] SunSpec live data for SolarEdge and PVOutput (SolarEdge, SMA, Fronius, … on the home network): reader, test/find on ports 502/1502, today from the lifetime counter, SolarEdge limit kept (DECISIONS D20). Not yet tried on real hardware.
 - [x] "Find inverter": scans the home subnet for a Huawei dongle (port 502 + Modbus read), fills in the address and unit ID (DECISIONS D18). Not yet tried on a real dongle.
 - [x] Siri phrases: 10–11 per action (incl. "Ask SunWatt…", appliance questions like "when should I run the washing machine") in every language, everyday wording ("la luz", "placas"), app name also accepted as "Sun Watt" / "Sunwat" (`INAlternativeAppNames`). Siri still needs the app name in the sentence (Apple rule); a personal Shortcut can use any phrase. To check on device: Spanish phrases recognised.
 

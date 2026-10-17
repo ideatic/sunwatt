@@ -54,6 +54,11 @@ struct SolarSetupEditor: View {
                     .id(provider)
                 hairline
                 help(provider)
+                if showsInverter {
+                    hairline
+                    InverterLinkEditor(model: model)
+                        .id(provider)
+                }
             }
         }
     }
@@ -255,8 +260,9 @@ struct SolarAPIEditor: View {
     }
 }
 
-/// "Live data at home": the Huawei dongle's address on the home network (Modbus TCP), optional, with a network
-/// search ("Find inverter") and a test. Saved when the user submits, leaves the field or the view goes away.
+/// "Live data at home": the address of the inverter on the home network (Modbus TCP), optional, with a network search
+/// ("Find inverter") and a test. FusionSolar: the Huawei dongle; SolarEdge and PVOutput: a SunSpec inverter.
+/// Saved when the user submits, leaves the field or the view goes away.
 struct InverterLinkEditor: View {
     let model: AppModel
     @State private var host: String
@@ -269,35 +275,45 @@ struct InverterLinkEditor: View {
 
     enum InverterTestState {
         case idle, testing
-        case success(HuaweiInverterReading, model: String?)
+        case success(InverterFinder.Match)
         case failure(String)
     }
 
     enum SearchState {
         case idle, searching, none
-        case several([HuaweiInverterFinder.Match])
+        case several([InverterFinder.Match])
     }
 
     init(model: AppModel) {
         self.model = model
-        _host = State(initialValue: model.settings.huaweiLocalHost)
+        _host = State(initialValue: model.settings[keyPath: model.localInverterHostKey])
     }
+
+    private var isHuawei: Bool { model.localInverterKind == .huawei }
 
     var body: some View {
         let palette = AppPalette(scheme)
         let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
-        let valid = HuaweiLocalEndpoint(parsing: trimmed) != nil
+        let valid = ModbusEndpoint(parsing: trimmed) != nil
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
             Label { atext("Live data at home") } icon: { Image(systemName: "house.fill") }
                 .font(.system(.subheadline, design: .rounded).weight(.bold))
-            atext("Optional. If Modbus TCP is set to “Enable (unrestricted)” in the Huawei dongle, SunWatt reads the inverter directly while you are at home, every few seconds. Elsewhere it uses the kiosk link.")
-                .font(.system(.footnote, design: .rounded))
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-            atext("Dongle IP address")
-                .font(.system(.footnote, design: .rounded).weight(.semibold))
-                .padding(.horizontal, Theme.Spacing.xs)
-            AppTextField(prompt: "192.168.1.50", text: $host, onCommit: commit)
+            Group {
+                if isHuawei {
+                    atext("Optional. If Modbus TCP is set to “Enable (unrestricted)” in the Huawei dongle, SunWatt reads the inverter directly while you are at home, every few seconds. Elsewhere it uses the kiosk link.")
+                } else {
+                    atext("Optional. If your inverter offers SunSpec over Modbus TCP (SolarEdge, SMA, Fronius and other brands; it may have to be turned on, for example by your installer), SunWatt reads it directly while you are at home, every few seconds. Elsewhere it uses \(model.settings.solarProvider.displayName).")
+                }
+            }
+            .font(.system(.footnote, design: .rounded))
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            Group {
+                if isHuawei { atext("Dongle IP address") } else { atext("Inverter IP address") }
+            }
+            .font(.system(.footnote, design: .rounded).weight(.semibold))
+            .padding(.horizontal, Theme.Spacing.xs)
+            AppTextField(prompt: isHuawei ? "192.168.1.50" : "192.168.1.40", text: $host, onCommit: commit)
             if !trimmed.isEmpty, !valid {
                 HStack(alignment: .top, spacing: 6) {
                     Image(systemName: "exclamationmark.triangle.fill")
@@ -360,10 +376,16 @@ struct InverterLinkEditor: View {
                 Image(systemName: "magnifyingglass").foregroundStyle(palette.warning)
                 VStack(alignment: .leading, spacing: 2) {
                     atext("No inverter found").font(.system(.subheadline, design: .rounded).weight(.bold))
-                    atext("Check that this device is on the home Wi-Fi, that Modbus TCP is enabled in the dongle and that SunWatt may use the local network (Settings → Privacy & Security → Local Network).")
-                        .font(.system(.footnote, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                    Group {
+                        if isHuawei {
+                            atext("Check that this device is on the home Wi-Fi, that Modbus TCP is enabled in the dongle and that SunWatt may use the local network (Settings → Privacy & Security → Local Network).")
+                        } else {
+                            atext("Check that this device is on the home Wi-Fi, that SunSpec over Modbus TCP is enabled in the inverter and that SunWatt may use the local network (Settings → Privacy & Security → Local Network).")
+                        }
+                    }
+                    .font(.system(.footnote, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding(Theme.Spacing.m)
@@ -374,12 +396,12 @@ struct InverterLinkEditor: View {
                 atext("Several inverters answered. Choose yours:")
                     .font(.system(.footnote, design: .rounded).weight(.semibold))
                     .fixedSize(horizontal: false, vertical: true)
-                ForEach(matches, id: \.host) { match in
+                ForEach(matches, id: \.address) { match in
                     Button { choose(match) } label: {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(verbatim: match.model.map { "\($0) · \(match.host)" } ?? match.host)
+                            Text(verbatim: match.model.map { "\($0) · \(match.address)" } ?? match.address)
                                 .font(.system(.subheadline, design: .rounded).weight(.semibold))
-                            atext("\(Format.kW(max(match.reading.activePowerKW, 0))) kW now · \(Format.kWh(match.reading.dailyEnergyKWh)) kWh today")
+                            caption(match.reading)
                                 .font(.system(.footnote, design: .rounded))
                                 .foregroundStyle(.secondary)
                                 .monospacedDigit()
@@ -402,15 +424,15 @@ struct InverterLinkEditor: View {
                 ProgressView().controlSize(.small)
                 atext("Connecting…").font(.system(.footnote, design: .rounded)).foregroundStyle(.secondary)
             }
-        case .success(let reading, let model):
+        case .success(let match):
             HStack(alignment: .top, spacing: 8) {
                 Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.success)
                 VStack(alignment: .leading, spacing: 2) {
                     atext("Inverter found").font(.system(.subheadline, design: .rounded).weight(.bold))
-                    if let model {
+                    if let model = match.model {
                         Text(verbatim: model).font(.system(.footnote, design: .rounded).weight(.semibold))
                     }
-                    atext("\(Format.kW(max(reading.activePowerKW, 0))) kW now · \(Format.kWh(reading.dailyEnergyKWh)) kWh today")
+                    caption(match.reading)
                         .font(.system(.footnote, design: .rounded))
                         .foregroundStyle(.secondary)
                         .monospacedDigit()
@@ -436,10 +458,20 @@ struct InverterLinkEditor: View {
         }
     }
 
+    /// Power now, and today's energy when the inverter counts it (SunSpec inverters only have a lifetime counter).
+    private func caption(_ reading: LiveInverterReading) -> Text {
+        let power = Format.kW(max(reading.activePowerKW, 0))
+        if let daily = reading.dailyEnergyKWh {
+            return atext("\(power) kW now · \(Format.kWh(daily)) kWh today")
+        }
+        return atext("\(power) kW now")
+    }
+
     private func commit() {
         let value = host.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard value != model.settings.huaweiLocalHost else { return }
-        model.updateSettings { $0.huaweiLocalHost = value }
+        let key = model.localInverterHostKey
+        guard value != model.settings[keyPath: key] else { return }
+        model.updateSettings { $0[keyPath: key] = value }
     }
 
     private func runSearch() {
@@ -456,13 +488,14 @@ struct InverterLinkEditor: View {
     }
 
     /// Fills in and saves the found address and unit ID, and shows its reading as the test result.
-    private func choose(_ match: HuaweiInverterFinder.Match) {
+    private func choose(_ match: InverterFinder.Match) {
         search = .idle
-        resultHost = match.host
-        host = match.host
+        resultHost = match.address
+        host = match.address
         commit()
-        if match.unitID != model.settings.huaweiLocalUnitID { model.updateSettings { $0.huaweiLocalUnitID = match.unitID } }
-        test = .success(match.reading, model: match.model)
+        let key = model.localInverterUnitKey
+        if match.unitID != model.settings[keyPath: key] { model.updateSettings { $0[keyPath: key] = match.unitID } }
+        test = .success(match)
     }
 
     private func runTest() {
@@ -473,9 +506,9 @@ struct InverterLinkEditor: View {
         resultHost = value.trimmingCharacters(in: .whitespacesAndNewlines)
         Task {
             switch await model.testInverter(value) {
-            case .success(let (reading, unit)):
-                test = .success(reading, model: nil)
-                if unit != model.settings.huaweiLocalUnitID { model.updateSettings { $0.huaweiLocalUnitID = unit } }
+            case .success(let match):
+                // Saves the port that answered too (SunSpec without a port: 502 or 1502).
+                choose(match)
             case .failure(let error):
                 test = .failure(error.localizedDescription)
             }

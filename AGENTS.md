@@ -10,6 +10,7 @@ SunWatt shows home energy data in widgets and an app:
   - Huawei FusionSolar *kiosk link* (public read-only URL with a `kk=` token),
   - SolarEdge Monitoring API (site ID + API key; `overview` + `power`, 2 requests per fetch),
   - PVOutput (system ID + API key in headers; covers many inverter brands).
+  - Optional live data at home over Modbus TCP: the Huawei dongle (FusionSolar) or a SunSpec inverter (SolarEdge, PVOutput users), read-only (DECISIONS D18, D20).
 - **Electricity price**: Spain retail PVPC (Red Eléctrica, `apidatos.ree.es`); Portugal, France, Germany+Luxembourg, Austria, Belgium, Netherlands, North Italy day-ahead wholesale (Energy-Charts, `api.energy-charts.info`, Fraunhofer ISE, CC BY 4.0). Wholesale is labelled "Day-ahead price", never sold as retail.
 
 Surfaces: widgets (small, medium, large, Lock Screen rectangular + circular), Control Center controls (price, solar), Siri/Shortcuts intents (price now, solar now, cheapest hours), the app (onboarding, dashboard, settings, widget guide), Apple Watch app + complications (circular, rectangular, inline, corner).
@@ -37,7 +38,7 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 ### Inside `SunWattKit/Sources/SunWattKit`
 
 - `Models/`: `PriceRegion` (8 regions, time zone, source), `PriceSeries` (+ analysis: min/max/cheapest hours, + building/aggregation 15 min → hourly), `SolarSnapshot`, `Settings`, `SunWattData`.
-- `Services/`: `HTTPClient` protocol (stubbed in tests), `FusionSolarKioskClient`, `KioskEndpoint` (parse/validate link, `cacheID` = SHA-256 of host+token), `SolarEdgeClient`, `PVOutputClient` (+ `SolarLocalTime` helpers), `HTMLEntities`, `PVPCClient`, `EnergyChartsClient`.
+- `Services/`: `HTTPClient` protocol (stubbed in tests), `FusionSolarKioskClient`, `KioskEndpoint` (parse/validate link, `cacheID` = SHA-256 of host+token), `SolarEdgeClient`, `PVOutputClient` (+ `SolarLocalTime` helpers), `LocalInverter` (`ModbusEndpoint`, `LocalInverterSolarClient`: cloud + inverter), `HuaweiModbus`, `SunSpec`, `InverterFinder` ("Find inverter" scan), `HTMLEntities`, `PVPCClient`, `EnergyChartsClient`.
 - `Models/SolarAccount`: `SolarProvider`, `SolarAPICredentials` (validated ID + key), `SolarAccount` (validated settings → client + `cacheID`). Every solar consumer goes through `SolarAccount(settings:)`; do not read `kioskURL` directly.
 - `Store/AppGroupStore`: settings + last good data in the App Group, local fallback when the group container is missing.
 - `Timeline/`: `SunWattLoader` (fetch with deadline + cache window), `TimelineBuilder` (widget entries, stale flags), `PriceRangeDataSource`.

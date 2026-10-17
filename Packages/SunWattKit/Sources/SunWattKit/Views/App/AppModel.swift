@@ -411,50 +411,62 @@ public final class AppModel {
         return result
     }
 
-    // MARK: Huawei inverter on the home network
+    // MARK: Inverter on the home network (Huawei dongle or SunSpec)
 
-    /// Reads the inverter at `host` once, trying the saved unit ID first, then 1 and 0 (the IDs Huawei dongles use).
-    /// On success returns the reading and the unit ID that answered.
-    public func testInverter(_ host: String) async -> Result<(HuaweiInverterReading, Int), Error> {
-        guard HuaweiLocalEndpoint(parsing: host) != nil else { return .failure(SunWattError.invalidInverterAddress) }
-        if isDemo {
-            try? await Task.sleep(for: .milliseconds(400))
-            return .success((HuaweiInverterReading(activePowerKW: 2.9, dailyEnergyKWh: 5.1, totalEnergyKWh: 44150), 1))
-        }
-        var lastError: Error = SunWattError.inverterUnreachable
-        var tried: [Int] = []
-        for unit in [settings.huaweiLocalUnitID, 1, 0] where !tried.contains(unit) {
-            tried.append(unit)
-            guard let endpoint = HuaweiLocalEndpoint(parsing: host, unitID: unit) else { continue }
-            let client = HuaweiModbusClient(endpoint: endpoint, makeTransport: makeModbusTransport)
-            switch await SunWattLoader.race(deadline: 6, { try await client.read() }) {
-            case .success(let reading): return .success((reading, unit))
-            case .failure(let error):
-                lastError = error
-                // Only a Modbus answer (e.g. "gateway target failed") means another unit ID may work.
-                guard error is ModbusFrame.Failure else {
-                    return .failure(error is CancellationError ? error : SunWattError.inverterUnreachable)
-                }
-            }
-        }
-        return .failure(lastError is ModbusFrame.Failure ? SunWattError.inverterUnreachable : lastError)
+    /// What the selected provider reads on the home network: the Huawei dongle for FusionSolar, a SunSpec inverter
+    /// for SolarEdge and PVOutput.
+    public var localInverterKind: LocalInverterKind { LocalInverterKind(provider: settings.solarProvider) }
+
+    /// The settings that hold its address and unit ID.
+    var localInverterHostKey: WritableKeyPath<SunWattSettings, String> {
+        localInverterKind == .huawei ? \.huaweiLocalHost : \.sunSpecHost
     }
 
-    /// "Find inverter": Huawei dongles that answer on the home network.
-    public func findInverters() async -> [HuaweiInverterFinder.Match] {
+    var localInverterUnitKey: WritableKeyPath<SunWattSettings, Int> {
+        localInverterKind == .huawei ? \.huaweiLocalUnitID : \.sunSpecUnitID
+    }
+
+    /// Reads the inverter at `address` once: the saved unit ID first, then the kind's usual ones; for SunSpec without a
+    /// port, 502 and then 1502 (SolarEdge). On success the address to save (with the port that answered) and the unit ID.
+    public func testInverter(_ address: String) async -> Result<InverterFinder.Match, Error> {
+        guard let endpoint = ModbusEndpoint(parsing: address) else { return .failure(SunWattError.invalidInverterAddress) }
+        let kind = localInverterKind
+        if isDemo {
+            try? await Task.sleep(for: .milliseconds(400))
+            return .success(Self.demoInverter(kind))
+        }
+        let ports = ModbusEndpoint.hasPort(address) ? [endpoint.port] : kind.ports
+        var units = [settings[keyPath: localInverterUnitKey]]
+        units += kind.unitIDs.filter { !units.contains($0) }
+        return await InverterFinder.identify(kind: kind, host: endpoint.host, ports: ports, unitIDs: units, makeTransport: makeModbusTransport)
+    }
+
+    /// "Find inverter": inverters of the selected provider's kind that answer on the home network.
+    public func findInverters() async -> [InverterFinder.Match] {
+        let kind = localInverterKind
         if isDemo {
             try? await Task.sleep(for: .milliseconds(800))
-            return [HuaweiInverterFinder.Match(host: "192.168.1.50", unitID: 1, model: "SUN2000-6KTL-M1",
-                                               reading: HuaweiInverterReading(activePowerKW: 2.9, dailyEnergyKWh: 5.1, totalEnergyKWh: 44150))]
+            return [Self.demoInverter(kind)]
         }
-        return await makeInverterFinder().find()
+        return await makeInverterFinder(kind).find()
+    }
+
+    private static func demoInverter(_ kind: LocalInverterKind) -> InverterFinder.Match {
+        switch kind {
+        case .huawei:
+            InverterFinder.Match(address: "192.168.1.50", unitID: 1, model: "SUN2000-6KTL-M1",
+                                 reading: LiveInverterReading(activePowerKW: 2.9, dailyEnergyKWh: 5.1, totalEnergyKWh: 44150))
+        case .sunSpec:
+            InverterFinder.Match(address: "192.168.1.40:1502", unitID: 1, model: "SolarEdge SE5000H",
+                                 reading: LiveInverterReading(activePowerKW: 2.9, totalEnergyKWh: 18420))
+        }
     }
 
     /// Network scan for "Find inverter" (seam for tests).
-    @ObservationIgnored var makeInverterFinder: @Sendable () -> HuaweiInverterFinder = { HuaweiInverterFinder() }
+    @ObservationIgnored var makeInverterFinder: @Sendable (LocalInverterKind) -> InverterFinder = { InverterFinder(kind: $0) }
 
-    /// Transport for inverter reads (seam for tests).
-    @ObservationIgnored var makeModbusTransport: @Sendable (HuaweiLocalEndpoint) -> ModbusTransport? = HuaweiModbusClient.defaultTransport
+    /// Transport for inverter reads (seam for tests); nil: each reader's own.
+    @ObservationIgnored var makeModbusTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?
 
     /// While the app is on screen and the inverter answers, re-reads it every `liveInterval` seconds and updates the
     /// figures and the curve (nothing is stored; widgets keep their own refresh). Runs until cancelled.
@@ -471,13 +483,12 @@ public final class AppModel {
 
     /// One live read. Internal for tests.
     func liveTick() async {
-        guard !showsOnboarding, !isLoading, case .huaweiLocal(let endpoint, _)? = SolarAccount(settings: settings),
-              data?.solarLinkExpired != true else { return }
-        let client = HuaweiModbusClient(endpoint: endpoint, makeTransport: makeModbusTransport)
-        guard case .success(let reading) = await SunWattLoader.race(deadline: 5, { try await client.read() }),
-              case .huaweiLocal? = SolarAccount(settings: settings) else { return }
+        guard !showsOnboarding, !isLoading, let account = SolarAccount(settings: settings),
+              let reader = account.localReader(makeTransport: makeModbusTransport), data?.solarLinkExpired != true else { return }
+        guard case .success(let reading) = await SunWattLoader.race(deadline: 5, { try await reader.readLive() }),
+              SolarAccount(settings: settings) == account else { return }
         let date = Date()
-        var snapshot = HuaweiLocalSolarClient.merge(reading, into: data?.solar, at: date)
+        var snapshot = LocalInverterSolarClient.merge(reading, into: data?.solar, at: date, keepsBaseHome: account.provider != .fusionSolar)
         snapshot.endpointID = data?.solar?.endpointID
         if data == nil { data = SunWattData(solar: nil, prices: nil, solarStatus: .fresh, priceStatus: .stale(since: date)) }
         data?.solar = snapshot

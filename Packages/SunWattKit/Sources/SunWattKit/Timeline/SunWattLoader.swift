@@ -5,6 +5,9 @@ public struct SunWattLoader: Sendable {
     public let store: AppGroupStore
     /// Builds the solar source from settings; nil when the selected solar provider is not configured or invalid.
     public let makeSolar: @Sendable (SunWattSettings) -> SolarDataSource?
+    /// The inverter on the home network alone (no cloud request), read while the cloud source is rate-limited
+    /// (`SolarProvider.minimumFetchInterval`); nil without one.
+    public let makeLiveSolar: @Sendable (SunWattSettings) -> SolarDataSource?
     /// Builds the price source for the region chosen in settings.
     public let makePrices: @Sendable (PriceRegion) -> PriceDataSource
     public let now: @Sendable () -> Date
@@ -16,10 +19,12 @@ public struct SunWattLoader: Sendable {
         store: AppGroupStore = .shared,
         makeSolar: @escaping @Sendable (SunWattSettings) -> SolarDataSource? = SunWattLoader.defaultSolar,
         makePrices: @escaping @Sendable (PriceRegion) -> PriceDataSource = SunWattLoader.defaultPrices,
-        now: @escaping @Sendable () -> Date = { Date() }
+        now: @escaping @Sendable () -> Date = { Date() },
+        makeLiveSolar: @escaping @Sendable (SunWattSettings) -> SolarDataSource? = SunWattLoader.defaultLiveSolar
     ) {
         self.store = store
         self.makeSolar = makeSolar
+        self.makeLiveSolar = makeLiveSolar
         self.makePrices = makePrices
         self.now = now
     }
@@ -29,13 +34,18 @@ public struct SunWattLoader: Sendable {
         store: AppGroupStore = .shared,
         makeSolar: @escaping @Sendable (SunWattSettings) -> SolarDataSource? = SunWattLoader.defaultSolar,
         prices: PriceDataSource,
-        now: @escaping @Sendable () -> Date = { Date() }
+        now: @escaping @Sendable () -> Date = { Date() },
+        makeLiveSolar: @escaping @Sendable (SunWattSettings) -> SolarDataSource? = SunWattLoader.defaultLiveSolar
     ) {
-        self.init(store: store, makeSolar: makeSolar, makePrices: { _ in prices }, now: now)
+        self.init(store: store, makeSolar: makeSolar, makePrices: { _ in prices }, now: now, makeLiveSolar: makeLiveSolar)
     }
 
     public static let defaultSolar: @Sendable (SunWattSettings) -> SolarDataSource? = { settings in
         SolarAccount(settings: settings)?.client()
+    }
+
+    public static let defaultLiveSolar: @Sendable (SunWattSettings) -> SolarDataSource? = { settings in
+        SolarAccount(settings: settings)?.liveOnlyClient()
     }
 
     public static let defaultPrices: @Sendable (PriceRegion) -> PriceDataSource = { region in
@@ -69,7 +79,10 @@ public struct SunWattLoader: Sendable {
         let reusedSolar = solarSource == nil ? nil : recentSolar(settings: settings, now: nowDate)
         // A rate-limited provider that failed moments ago is not asked again yet: its failure is reused.
         let recentFailure = solarSource == nil || reusedSolar != nil ? nil : recentSolarFailure(settings: settings, now: nowDate)
-        async let solarResult = Self.fetchSolar(solarSource, reusing: reusedSolar, failure: recentFailure, deadline: deadline)
+        // While the cloud is not asked, the inverter on the home network still is (live data at home).
+        let cloudFetched = reusedSolar == nil && recentFailure == nil
+        let liveSource = solarSource == nil || cloudFetched ? nil : makeLiveSolar(settings)
+        async let solarResult = Self.fetchSolar(solarSource, reusing: reusedSolar, failure: recentFailure, live: liveSource, deadline: deadline)
         async let priceResult = Self.fetchPrices(priceSource, includeTomorrow: settings.showTomorrowPrices, deadline: deadline)
         let solarOutcome = await solarResult
         let priceOutcome = await priceResult
@@ -85,7 +98,15 @@ public struct SunWattLoader: Sendable {
             switch solarOutcome {
             case .success(var snapshot):
                 store.clearKioskRejection()
-                if reusedSolar == nil { store.clearSolarFailure() }
+                if cloudFetched {
+                    if snapshot.isLive == true, snapshot.cloudFetchedAt == nil, let account = SolarAccount(settings: settings),
+                       account.provider.minimumFetchInterval > 0 {
+                        // Only the inverter answered: the cloud failed and is not asked again for its interval.
+                        store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: SunWattError.unavailable.localizedDescription)
+                    } else {
+                        store.clearSolarFailure()
+                    }
+                }
                 if snapshot.isLive == true, let cached = cachedSolar(for: settings) {
                     snapshot = Self.fillingIn(snapshot, from: cached)
                 }
@@ -171,6 +192,15 @@ public struct SunWattLoader: Sendable {
             result.curve = earlier + live.curve
         }
         result.stationName = result.stationName ?? cached.stationName
+        // SunSpec has no daily counter: the previous figure plus what the lifetime counter grew (never less than the
+        // cloud's, which lags).
+        let derived = LocalInverterSolarClient.dailyEnergy(lifetimeKWh: live.cumulativeEnergyKWh, at: live.fetchedAt, previous: cached)
+        result.dailyEnergyKWh = [live.dailyEnergyKWh, derived].compactMap { $0 }.max()
+        result.cloudFetchedAt = live.cloudFetchedAt ?? (cached.isLive == true ? cached.cloudFetchedAt : cached.fetchedAt)
+        if result.home == nil, cached.home != nil, live.cloudFetchedAt == nil {
+            // Inverter alone (cloud not asked): keep the cloud's consumption figures until the next cloud fetch.
+            result.home = cached.home
+        }
         if calendar.isDate(cached.fetchedAt, equalTo: live.fetchedAt, toGranularity: .month) {
             result.monthEnergyKWh = result.monthEnergyKWh ?? cached.monthEnergyKWh
         }
@@ -208,9 +238,11 @@ public struct SunWattLoader: Sendable {
     private func recentSolar(settings: SunWattSettings, now: Date) -> SolarSnapshot? {
         guard let provider = SolarAccount(settings: settings)?.provider, provider.minimumFetchInterval > 0,
               let solar = cachedSolar(for: settings) else { return nil }
-        let age = now.timeIntervalSince(solar.fetchedAt)
+        // A live snapshot is new at every inverter read; the limit counts from the last cloud fetch.
+        let cloudTime = solar.isLive == true ? (solar.cloudFetchedAt ?? .distantPast) : solar.fetchedAt
+        let age = now.timeIntervalSince(cloudTime)
         guard age >= 0, age < provider.minimumFetchInterval,
-              Constants.madridCalendar.isDate(solar.fetchedAt, inSameDayAs: now) else { return nil }
+              Constants.madridCalendar.isDate(cloudTime, inSameDayAs: now) else { return nil }
         return solar
     }
 
@@ -234,9 +266,11 @@ public struct SunWattLoader: Sendable {
         if solarConfigured {
             // Solar the provider would not fetch again yet (SolarEdge: 20 min) counts as recent too; otherwise every
             // widget of a SolarEdge user would miss the shared window and fetch prices at the same time (HTTP 429).
-            let solarMaxAge = max(maxAge, SolarAccount(settings: settings)?.provider.minimumFetchInterval ?? 0)
-            guard let solar = cachedSolar(for: settings),
-                  now.timeIntervalSince(solar.fetchedAt) >= 0, now.timeIntervalSince(solar.fetchedAt) < solarMaxAge,
+            // A live snapshot (at home) only counts for the window itself, so widgets keep reading the inverter.
+            let interval = SolarAccount(settings: settings)?.provider.minimumFetchInterval ?? 0
+            guard let solar = cachedSolar(for: settings) else { return nil }
+            let solarMaxAge = solar.isLive == true ? maxAge : max(maxAge, interval)
+            guard now.timeIntervalSince(solar.fetchedAt) >= 0, now.timeIntervalSince(solar.fetchedAt) < solarMaxAge,
                   Constants.madridCalendar.isDate(solar.fetchedAt, inSameDayAs: now) else { return nil }
             data.solar = solar
             data.solarStatus = .fresh
@@ -276,7 +310,13 @@ public struct SunWattLoader: Sendable {
 
     /// `reusing`: a recent snapshot returned instead of fetching (see `recentSolar`); `failure`: a recent failure
     /// returned instead of fetching (see `recentSolarFailure`).
-    private static func fetchSolar(_ source: SolarDataSource?, reusing recent: SolarSnapshot?, failure: Error?, deadline: TimeInterval) async -> Result<SolarSnapshot, Error> {
+    /// `live`: the inverter alone, tried first when `recent` or `failure` is used instead of the cloud.
+    private static func fetchSolar(_ source: SolarDataSource?, reusing recent: SolarSnapshot?, failure: Error?, live: SolarDataSource?,
+                                   deadline: TimeInterval) async -> Result<SolarSnapshot, Error> {
+        if let live, recent != nil || failure != nil,
+           case .success(let snapshot) = await race(deadline: deadline, { try await live.fetch() }) {
+            return .success(snapshot)
+        }
         if let recent { return .success(recent) }
         if let failure { return .failure(failure) }
         guard let source else { return .failure(SunWattError.notConfigured) }

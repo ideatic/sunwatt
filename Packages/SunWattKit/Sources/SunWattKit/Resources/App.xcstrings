@@ -1,6 +1,47 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ kW now" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kW jetzt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kW ahora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kW maintenant"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kW ora"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kW nu"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kW agora"
+          }
+        }
+      }
+    },
     "%@ kWh today" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -653,6 +694,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verifique se este dispositivo está na rede Wi-Fi de casa, se o Modbus TCP está ativado no dongle e se o SunWatt pode usar a rede local (Definições → Privacidade e segurança → Rede local)."
+          }
+        }
+      }
+    },
+    "Check that this device is on the home Wi-Fi, that SunSpec over Modbus TCP is enabled in the inverter and that SunWatt may use the local network (Settings → Privacy & Security → Local Network)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen Sie, ob dieses Gerät mit dem WLAN zu Hause verbunden ist, ob SunSpec über Modbus TCP im Wechselrichter aktiviert ist und ob SunWatt das lokale Netzwerk verwenden darf (Einstellungen → Datenschutz & Sicherheit → Lokales Netzwerk)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba que este dispositivo está conectado al Wi-Fi de casa, que SunSpec sobre Modbus TCP está activado en el inversor y que SunWatt puede usar la red local (Ajustes → Privacidad y seguridad → Red local)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez que cet appareil est connecté au Wi-Fi de la maison, que SunSpec sur Modbus TCP est activé dans l'onduleur et que SunWatt est autorisé à utiliser le réseau local (Réglages → Confidentialité et sécurité → Réseau local)."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica che questo dispositivo sia connesso al Wi-Fi di casa, che SunSpec su Modbus TCP sia attivo nell'inverter e che SunWatt possa usare la rete locale (Impostazioni → Privacy e sicurezza → Rete locale)."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controleer of dit apparaat op het wifi-netwerk van thuis zit, of SunSpec over Modbus TCP is ingeschakeld in de omvormer en of SunWatt het lokale netwerk mag gebruiken (Instellingen → Privacy en beveiliging → Lokaal netwerk)."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifique se este dispositivo está na rede Wi-Fi de casa, se o SunSpec sobre Modbus TCP está ativado no inversor e se o SunWatt pode usar a rede local (Definições → Privacidade e segurança → Rede local)."
           }
         }
       }
@@ -1969,6 +2051,47 @@
         }
       }
     },
+    "Inverter IP address" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IP-Adresse des Wechselrichters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirección IP del inversor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresse IP de l'onduleur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indirizzo IP dell'inverter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IP-adres van de omvormer"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endereço IP do inversor"
+          }
+        }
+      }
+    },
     "It is at the top of the plant page." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2252,6 +2375,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum inversor encontrado"
+          }
+        }
+      }
+    },
+    "Optional. If your inverter offers SunSpec over Modbus TCP (SolarEdge, SMA, Fronius and other brands; it may have to be turned on, for example by your installer), SunWatt reads it directly while you are at home, every few seconds. Elsewhere it uses %@." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional. Wenn Ihr Wechselrichter SunSpec über Modbus TCP anbietet (SolarEdge, SMA, Fronius und andere Marken; dafür muss es unter Umständen erst aktiviert werden, zum Beispiel von Ihrem Installateur), liest SunWatt ihn zu Hause direkt aus, alle paar Sekunden. Unterwegs wird %@ genutzt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcional. Si tu inversor tiene SunSpec sobre Modbus TCP (SolarEdge, SMA, Fronius y otras marcas; puede que tu instalador tenga que activarlo), SunWatt lo lee directamente mientras estás en casa, cada pocos segundos. Fuera de casa usa %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Facultatif. Si votre onduleur propose SunSpec sur Modbus TCP (SolarEdge, SMA, Fronius et d'autres marques ; il peut falloir l'activer, par exemple avec votre installateur), SunWatt lit directement l'onduleur quand vous êtes chez vous, toutes les quelques secondes. Ailleurs, SunWatt utilise %@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Facoltativo. Se l'inverter supporta SunSpec su Modbus TCP (SolarEdge, SMA, Fronius e altri marchi; potrebbe essere necessario attivarlo, ad esempio tramite il tuo installatore), SunWatt lo legge direttamente mentre sei a casa, ogni pochi secondi. Altrove usa il servizio %@."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optioneel. Als je omvormer SunSpec over Modbus TCP aanbiedt (SolarEdge, SMA, Fronius en andere merken; het moet misschien worden ingeschakeld, bijvoorbeeld door je installateur), leest SunWatt hem rechtstreeks uit terwijl je thuis bent, elke paar seconden. Buiten huis gebruikt het %@."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opcional. Se o inversor oferecer SunSpec sobre Modbus TCP (SolarEdge, SMA, Fronius e outras marcas; pode ser necessário ativá-lo, por exemplo, através do seu instalador), o SunWatt lê o inversor diretamente enquanto estiver em casa, a cada poucos segundos. Fora de casa, usa os dados de %@."
           }
         }
       }
