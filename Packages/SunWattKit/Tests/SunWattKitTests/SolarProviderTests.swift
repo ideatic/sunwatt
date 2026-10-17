@@ -144,6 +144,19 @@ private func sampleCredentials(_ id: String = "1234567", _ key: String = edgeKey
         #expect(s.dataAsOf == early)
     }
 
+    @Test func lastUpdateFromYesterdayIsIgnoredAfterMidnight() throws {
+        // Overview last updated 2026-06-01 12:28; fetched at 00:30 the next day, before sunrise.
+        let night = madrid(2026, 6, 2, 0, 30)
+        let empty = Data(#"{"power":{"timeUnit":"QUARTER_OF_AN_HOUR","unit":"W","values":[{"date":"2026-06-02 00:00:00","value":null}]}}"#.utf8)
+        let s = try SolarEdgeClient.parse(
+            overview: Fixture.data("solaredge-overview-synthetic.json"), power: empty,
+            fetchedAt: night, calendar: Constants.madridCalendar)
+        #expect(s.dataAsOf == nil)
+        let entry = SunWattEntry(date: night, data: SunWattData(solar: s, prices: nil, solarStatus: .fresh, priceStatus: .fresh))
+        #expect(!entry.isSolarFromEarlierDay)
+        #expect(!entry.isSolarStale)
+    }
+
     @Test func badBodiesThrow() {
         #expect(throws: SunWattError.self) {
             try SolarEdgeClient.parse(overview: Data("{}".utf8), power: Data("{}".utf8), fetchedAt: providerNow, calendar: Constants.madridCalendar)
@@ -326,9 +339,11 @@ private func sampleCredentials(_ id: String = "1234567", _ key: String = edgeKey
         #expect(reused.solarStatus == .fresh)
         #expect(reused.solar?.fetchedAt == recent.fetchedAt)
 
-        // 25 minutes old: fetched again.
-        store.saveSolar(storeSampleSolar(fetchedAt: loaderNow.addingTimeInterval(-25 * 60), endpointID: id))
-        let fetched = await makeLoader(store: store, solar: FakeSolar(result: .success(newer)), prices: prices).load()
+        // 25 minutes old: fetched again. A fresh store: `saveSolar` never replaces a newer snapshot with an older one.
+        let (oldStore, _) = storeTempStore()
+        oldStore.settings = store.settings
+        oldStore.saveSolar(storeSampleSolar(fetchedAt: loaderNow.addingTimeInterval(-25 * 60), endpointID: id))
+        let fetched = await makeLoader(store: oldStore, solar: FakeSolar(result: .success(newer)), prices: prices).load()
         #expect(fetched.solar?.fetchedAt == loaderNow)
 
         // PVOutput has no limit.

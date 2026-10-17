@@ -75,7 +75,12 @@ public struct SolarEdgeClient: SolarDataSource {
             SolarLocalTime.number((o[key] as? [String: Any])?["energy"]).map { $0 / 1000 }
         }
         let currentKW = SolarLocalTime.number((o["currentPower"] as? [String: Any])?["power"]).map { $0 / 1000 }
-        let lastUpdate = (o["lastUpdateTime"] as? String).flatMap { SolarLocalTime.parse($0, calendar: calendar) }
+        // At night the inverter stops reporting, so after midnight lastUpdateTime is still yesterday evening. That
+        // time must not make a fresh snapshot look like yesterday's (`SunWattEntry.isSolarFromEarlierDay`): only a
+        // time from the fetch day counts.
+        let lastUpdate = (o["lastUpdateTime"] as? String)
+            .flatMap { SolarLocalTime.parse($0, calendar: calendar) }
+            .flatMap { calendar.isDate($0, inSameDayAs: fetchedAt) ? $0 : nil }
 
         guard let powerRoot = (try? JSONSerialization.jsonObject(with: power)) as? [String: Any],
               let p = powerRoot["power"] as? [String: Any] else {
