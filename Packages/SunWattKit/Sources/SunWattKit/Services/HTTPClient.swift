@@ -42,9 +42,10 @@ public protocol SolarDataSource: Sendable {
     func fetch() async throws -> SolarSnapshot
 }
 
-/// An electricity price source. Contract, checked for every source by `ProviderContractTests`:
+/// An electricity price source. Which one serves a region is in `PriceRegion.profile` (`PriceSource`). Contract,
+/// checked for every source by `ProviderContractTests`:
 ///
-/// - **Series.** `region` is the source's region; points sorted by start, not overlapping, each with a positive
+/// - **Series.** `region` is the region asked for; points sorted by start, not overlapping, each with a positive
 ///   duration (15 or 60 minutes, `granularity`); prices in €/MWh (negative allowed). `fetchedAt` is the device clock.
 ///   A market day may have 23 or 25 hours (DST).
 /// - **Errors.** `CancellationError` or `SunWattError` (`.network`, `.http(status:)`, `.badResponse`, `.unavailable`

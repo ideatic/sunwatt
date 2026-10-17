@@ -324,19 +324,28 @@ func regionName(_ region: PriceRegion) -> Text {
 }
 
 /// Tariff name as `Text`: "PVPC" in Spain, "Day-ahead price" elsewhere.
+/// Per price source (exhaustive: a new source does not compile until it has its texts).
 func tariffName(_ region: PriceRegion) -> Text {
-    region.isRetailTariff ? Text(verbatim: "PVPC") : Text(LocalizedStringKey("Day-ahead price"), tableName: "Core", bundle: .module)
+    switch region.profile.source {
+    case .redElectrica: Text(verbatim: "PVPC")
+    case .energyCharts: Text(LocalizedStringKey("Day-ahead price"), tableName: "Core", bundle: .module)
+    }
 }
 
 /// "Regulated PVPC price" / "Wholesale day-ahead price" note for a region.
 func tariffNote(_ region: PriceRegion) -> Text {
-    region.isRetailTariff ? atext("Regulated PVPC price") : atext("Wholesale day-ahead price")
+    switch region.profile.source {
+    case .redElectrica: atext("Regulated PVPC price")
+    case .energyCharts: atext("Wholesale day-ahead price")
+    }
 }
 
-/// Source line: "Prices: Red Eléctrica" or "Prices: Energy-Charts (Fraunhofer ISE), CC BY 4.0".
+/// Source line: "Prices: Red Eléctrica" or "Prices: Energy-Charts (Fraunhofer ISE), CC BY 4.0" (the licence
+/// attribution must stay visible).
 func sourceAttribution(_ region: PriceRegion) -> Text {
-    region.isRetailTariff
-        ? atext("Prices: \(region.sourceName)")
-        : atext("Prices: \(region.sourceName), CC BY 4.0")
+    switch region.profile.source {
+    case .redElectrica: atext("Prices: \(region.sourceName)")
+    case .energyCharts: atext("Prices: \(region.sourceName), CC BY 4.0")
+    }
 }
 #endif

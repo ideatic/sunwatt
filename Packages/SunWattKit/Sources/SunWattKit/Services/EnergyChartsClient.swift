@@ -98,17 +98,14 @@ public struct EnergyChartsClient: PriceDataSource {
 
 /// Picks the price client for a region.
 public enum PriceDataSourceFactory {
-    public static func client(for region: PriceRegion, http: HTTPClient = URLSession.sunWatt) -> PriceRangeDataSource {
-        switch region {
-        case .spain: PVPCClient(http: http)
-        default: EnergyChartsClient(region: region, http: http)
-        }
+    public static func client(for region: PriceRegion, http: HTTPClient = URLSession.sunWatt) -> PriceDataSource {
+        region.profile.source.client(for: region, http: http)
     }
 }
 
 public extension PriceRegion {
     /// `PriceDataSourceFactory.client(for:http:)`.
-    static func client(for region: PriceRegion, http: HTTPClient = URLSession.sunWatt) -> PriceRangeDataSource {
+    static func client(for region: PriceRegion, http: HTTPClient = URLSession.sunWatt) -> PriceDataSource {
         PriceDataSourceFactory.client(for: region, http: http)
     }
 }

@@ -68,7 +68,7 @@ public enum SampleData {
 
     /// Price series of the sample day for `region` (PVPC for Spain, illustrative day-ahead otherwise).
     public static func prices(region: PriceRegion = .spain, fetchedAt: Date = now) -> PriceSeries {
-        let values = region == .spain ? pvpcEurPerMWh : dayAheadEurPerMWh
+        let values = region.isRetailTariff ? pvpcEurPerMWh : dayAheadEurPerMWh
         let start = date(0, 0)
         let points = values.enumerated().map { hour, value in
             PricePoint(start: start.addingTimeInterval(Double(hour) * 3600), duration: 3600, eurPerMWh: value)

@@ -18,7 +18,10 @@ extension PriceLevel {
 extension PriceRegion {
     /// Short source label for the price footer.
     var sourceLabel: LocalizedStringKey {
-        isRetailTariff ? "PVPC" : "Day-ahead"
+        switch profile.source {
+        case .redElectrica: "PVPC"
+        case .energyCharts: "Day-ahead"
+        }
     }
 }
 

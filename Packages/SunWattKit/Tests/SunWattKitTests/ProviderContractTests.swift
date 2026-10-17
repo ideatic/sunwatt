@@ -273,3 +273,41 @@ struct InverterContractCase: Sendable, CustomTestStringConvertible {
         }
     }
 }
+
+// MARK: Price regions
+
+/// Every region's profile is consistent with its client, and every kind of source has a contract case above.
+@Suite struct PriceRegionProfileContractTests {
+    /// Exhaustive: a new kind of source must be named here (and get a `PriceContractCase`).
+    private func kind(_ source: PriceSource) -> String {
+        switch source {
+        case .redElectrica: "Red Eléctrica"
+        case .energyCharts: "Energy-Charts"
+        }
+    }
+
+    @Test(arguments: PriceRegion.allCases)
+    func profileMatchesTheClient(_ region: PriceRegion) throws {
+        let profile = region.profile
+        #expect(!profile.flag.isEmpty && !region.displayName.isEmpty)
+        #expect(region.calendar.timeZone.identifier == profile.timeZone.identifier)
+        #expect(region.isRetailTariff == profile.source.isRetailTariff)
+        let client = PriceDataSourceFactory.client(for: region)
+        switch profile.source {
+        case .redElectrica:
+            #expect(client is PVPCClient)
+        case .energyCharts(let zone):
+            #expect((client as? EnergyChartsClient)?.region == region)
+            let day = madrid(2026, 10, 17)
+            #expect(try EnergyChartsClient.url(zone: region, startDay: day, endDay: day).absoluteString.contains("bzn=\(zone)&"))
+            // Wholesale prices carry their licence; the app shows it next to them.
+            #expect(profile.source.license == "CC BY 4.0")
+        }
+    }
+
+    @Test func everyKindOfSourceHasAContractCase() {
+        let used = Set(PriceRegion.allCases.map { kind($0.profile.source) })
+        let covered = Set(PriceContractCase.all.map { kind($0.region.profile.source) })
+        #expect(used == covered)
+    }
+}
