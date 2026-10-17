@@ -30,10 +30,12 @@ struct SmallWidgetView: View {
                     SolarIcon(idle: solar.isIdle, size: 18)
                     if let name = solar.plantName { PlantNameLabel(name: name) }
                     Spacer(minLength: 2)
-                    DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil, showFresh: false)
+                    DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
                 }
                 .frame(height: 22)
-                SolarFigure(solar: solar, size: 40)
+                // "No production" on one line, in a row as tall as "5,3 kW": day and night line up.
+                SolarFigure(solar: solar, size: 40, singleLine: true)
+                    .modifier(FigureRowHeight(size: 40, alignment: .leading))
                     .padding(.top, 4)
                 SolarDailyCaption(solar: solar)
                     .padding(.top, 2)

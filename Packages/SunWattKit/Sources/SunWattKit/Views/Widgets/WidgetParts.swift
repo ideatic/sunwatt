@@ -237,9 +237,10 @@ struct SolarColumn: View {
 /// solar and price columns would not line up.
 struct FigureRowHeight: ViewModifier {
     let size: CGFloat
+    var alignment: Alignment = .trailing
 
     func body(content: Content) -> some View {
-        ZStack(alignment: .trailing) {
+        ZStack(alignment: alignment) {
             FigureText(value: "0", unit: "kW", size: size).hidden()
             content
         }

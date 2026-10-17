@@ -70,5 +70,11 @@ Critique (all 67 PNGs reviewed: light/dark, day/night/stale/error, accented/vibr
 - Follow-up (user): the icon row keeps the height of the figure when it shows "No production" (hidden "0 kW" placeholder, `FigureRowHeight`), so day and night rows and charts line up with the price column. The price row gets the same height: a long price shrinks to fit and its row was shorter, so "Cheap" sat higher than the time and "kWh today".
 - Follow-up (user): the large widget header uses the same compact rows (header 76 → 56 pt, the charts get the rest). Checked day, night dark, stale, German.
 
+## Small widget: one-line "No production", data time always shown (2026-10-17)
+- The small widget keeps its stacked layout (half the width: a figure on the icon row would shrink too much).
+- "No production" stays on one line in a row as tall as "5,3 kW" (`FigureRowHeight`, leading), so "kWh today" and the price pill sit at the same height day and night.
+- The data time shows at the top right also when the data is fresh (before: only the stale badge), as in the medium and large widgets.
+- Checked: day, night, dark, stale, solar only.
+
 ## Open points
 - Real accented/vibrant tinting only shows on device.
