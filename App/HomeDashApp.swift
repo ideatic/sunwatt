@@ -9,7 +9,14 @@ struct HomeDashApp: App {
         #if DEBUG
         DebugKioskPrefill.apply()
         #endif
-        _model = State(initialValue: AppModel())
+        let model = AppModel()
+        #if os(iOS)
+        if !model.isDemo {
+            PhoneWatchSync.shared.start()
+            model.onSettingsSaved = { PhoneWatchSync.shared.push($0) }
+        }
+        #endif
+        _model = State(initialValue: model)
     }
 
     var body: some Scene {

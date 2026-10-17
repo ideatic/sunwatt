@@ -93,6 +93,8 @@ public final class AppModel {
     /// Help sheet shown over `sheet` (e.g. the kiosk guide opened from Settings).
     public var nested: AppSheet?
     public var showsOnboarding: Bool
+    /// Called after saved settings change (the iPhone app forwards them to the watch).
+    @ObservationIgnored public var onSettingsSaved: (@MainActor (HomeDashSettings) -> Void)?
 
     @ObservationIgnored private let store: AppGroupStore
     @ObservationIgnored private let loader: HomeDashLoader
@@ -241,6 +243,7 @@ public final class AppModel {
             return
         }
         store.settings = new
+        onSettingsSaved?(new)
         WidgetCenter.shared.reloadAllTimelines()
         let regionChanged = new.priceRegion != old.priceRegion
         let kioskChanged = new.kioskURL != old.kioskURL
