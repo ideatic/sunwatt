@@ -56,6 +56,7 @@ python3 -I AppStore/check_metadata.py "$METADATA"
 
 LOCALES=()
 for dir in "$METADATA"/*/; do
+  [[ "$(basename "$dir")" == review_information ]] && continue
   LOCALES+=("$(basename "$dir")")
 done
 
@@ -100,6 +101,18 @@ ROOT="$PWD"
 WORK="$ROOT/build/deliver"
 mkdir -p "$WORK"
 : > "$WORK/Deliverfile"
+# The review notes end with the developer's demo kiosk link for App Review. It is a secret (AGENTS.md rule 1), so it
+# lives only in private/kiosk.local and is added to a copy of the metadata here, never to the tracked notes.txt.
+UPLOAD_METADATA="$WORK/metadata"
+rm -rf "$UPLOAD_METADATA"
+cp -R "$METADATA" "$UPLOAD_METADATA"
+if [[ -s private/kiosk.local ]]; then
+  printf '\n\nDemo kiosk link\n%s' "$(head -n 1 private/kiosk.local | tr -d '[:space:]')" \
+    >> "$UPLOAD_METADATA/review_information/notes.txt"
+  echo "Review notes: demo kiosk link added from private/kiosk.local"
+else
+  echo "Review notes: no private/kiosk.local, sent without a demo kiosk link"
+fi
 for platform in "${PLATFORMS[@]}"; do
   echo "== fastlane deliver ($platform)"
   ARGS=(
@@ -107,7 +120,7 @@ for platform in "${PLATFORMS[@]}"; do
     --api_key_path "$(cd "$(dirname "$KEY_PATH")" && pwd)/$(basename "$KEY_PATH")"
     --app_identifier "$APP_ID"
     --platform "$platform"
-    --metadata_path "$ROOT/$METADATA"
+    --metadata_path "$UPLOAD_METADATA"
     --skip_binary_upload true
     --submit_for_review false
     --automatic_release false

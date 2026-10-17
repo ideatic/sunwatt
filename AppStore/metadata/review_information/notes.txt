@@ -5,14 +5,20 @@ No login. The app has no accounts and no sign-in screen. Nothing to enter except
 What the app does
 SunWatt shows widgets with (1) the electricity price and (2) the output of a home solar plant. For solar, the user picks one provider under "Solar system": Huawei FusionSolar (kiosk link), SolarEdge (site ID + API key from the SolarEdge monitoring portal) or PVOutput (system ID + API key from pvoutput.org; many inverter brands upload to PVOutput). The price part works with no setup.
 
-How to test without a solar plant
-A demo FusionSolar kiosk link, SolarEdge key or PVOutput key is not available. They belong to a private solar plant and we cannot share one. The solar part is optional:
+How to test the solar part (demo plant)
+We give you a read-only Huawei FusionSolar kiosk link of the developer's own home solar plant. It is at the end of these notes, under "Demo kiosk link". It shows live production only (no account, no control over the plant). Please do not share it.
 1. Open the app. Tap "Get started" on the welcome page.
 2. Choose a country (for example Spain, or any other in the list) and continue.
-3. On the "Solar production" page (FusionSolar, SolarEdge or PVOutput), tap "Skip, prices only". Then finish the onboarding. The dashboard shows the current price, today's chart and the cheapest upcoming hours. Tomorrow's prices appear later in the day, when the data provider publishes them.
-4. Add a widget: touch and hold the Home Screen, tap "Edit" > "Add Widget", search "SunWatt". Choose small, medium or large. In the widget settings choose "Price" (not "Solar"). Lock Screen widgets and the Control Center control can be added the same way.
-5. Tap a widget to refresh it.
-6. Siri / Shortcuts: say "What's the electricity price in SunWatt?".
+3. On the "Solar production" page choose Huawei FusionSolar, paste the demo kiosk link in "Kiosk link" and tap "Test connection". It shows "Connected". Finish the onboarding.
+4. The dashboard shows today's solar curve and energy, plus the current price, today's price chart and the cheapest upcoming hours. Tomorrow's prices appear later in the day, when the data provider publishes them. At night the plant produces 0 kW; this is expected.
+5. Add a widget: touch and hold the Home Screen, tap "Edit" > "Add Widget", search "SunWatt". Choose small, medium or large; the widget shows solar and price. Lock Screen widgets and the Control Center controls can be added the same way.
+6. Tap a widget to refresh it.
+7. Siri / Shortcuts: say "What's the electricity price in SunWatt?".
+8. On the Mac, the gear button in the toolbar opens Settings ("Solar system").
+Huawei kiosk links can expire. If the link stops working, write to contacto@ideatic.net and we send a new one at once.
+
+How to test without a solar plant
+The solar part is optional. On the "Solar production" page tap "Skip, prices only", then finish the onboarding. In the widget settings choose "Price".
 
 With no solar system set up, the solar widgets show a short message that solar is not set up. This is expected.
 
