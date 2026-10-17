@@ -26,9 +26,17 @@
 - No public API to add a widget from the app (checked iOS 27 SDK). App shows a guide and detects installed widgets.
 
 ## Release checklist (from the metadata task)
-- [ ] Onboarding has a "Skip" path for solar (App Review notes rely on it)
-- [ ] Energy-Charts "Fraunhofer ISE, CC BY 4.0" attribution visible in the app
-- [ ] `ITSAppUsesNonExemptEncryption = NO` in all Info.plists
-- [ ] Privacy manifests (`PrivacyInfo.xcprivacy`) for app, widgets, watch
+- [x] Onboarding has a "Skip" path for solar (App Review notes rely on it): `Packages/SunWattKit/Sources/SunWattKit/Views/App/OnboardingView.swift:98` ("Skip, prices only", shown on the solar step when no kiosk link). Review notes wording says "Skip"; the button text is "Skip, prices only".
+- [x] Energy-Charts "Fraunhofer ISE, CC BY 4.0" attribution visible in the app: `Views/App/AppComponents.swift:326-331` (`sourceAttribution`), shown in `DashboardView.swift:148`, `SettingsView.swift:114`, `OnboardingView.swift:218`; sources list `SettingsView.swift:213-217` (also Red Eléctrica and the "not affiliated" line).
+- [x] `ITSAppUsesNonExemptEncryption = NO` in all four Info.plists (set in `project.yml`, checked in built Release bundles)
+- [x] Privacy manifests (`PrivacyInfo.xcprivacy`) for app, widgets, watch app, watch widgets and the SunWattKit resource bundle (UserDefaults 1C8F.1, plus CA92.1 where standard defaults are the fallback; no file-timestamp, boot-time or disk-space APIs used). Present in the built iOS, macOS and watchOS Release bundles.
 - [ ] User: host `docs/` (e.g. GitHub Pages) and replace `REPLACE-ME` URLs/email
 - [ ] User: create the app record in App Store Connect, confirm screenshot sizes
+
+## Release (step by step in `docs/RELEASE.md`)
+- [x] `DEVELOPMENT_TEAM` EX68NKELW9, version 1.0.0, build number in one place (`CURRENT_PROJECT_VERSION` in `project.yml`)
+- [x] iPad: 4 orientations, `UIRequiresFullScreen` false; category utilities (iOS and macOS)
+- [x] Release builds without signing: iOS, macOS, watchOS pass; `kiosk.local` is not in any Release bundle
+- [x] `scripts/release.sh` (dry run by default, `--upload` for the real run) and export options in `scripts/`
+- [x] Archive without `-allowProvisioningUpdates` fails with "No profiles for ..." (expected until the first `--upload`)
+- [ ] User: first `scripts/release.sh --upload`, TestFlight, screenshots, submit
