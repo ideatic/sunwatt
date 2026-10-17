@@ -33,3 +33,25 @@ Each entry: decision, why, how to change it.
 
 ## D7. Kiosk URL for debug builds
 - Lives in git-ignored `Config/kiosk.local`. Never in source, never logged.
+
+## D8. More countries (user request, 2026-10-17 night)
+- Spain keeps the retail PVPC price (Red Eléctrica). Portugal, France, Germany+Luxembourg, Austria, Belgium, Netherlands and North Italy use day-ahead wholesale prices from Energy-Charts (`api.energy-charts.info/price?bzn=...`, Fraunhofer ISE, CC BY 4.0, no token). All 8 verified live on 2026-10-17.
+- Why Energy-Charts: free, no key, one schema for many zones. Wholesale ≠ retail: the UI labels it "Day-ahead price".
+- Energy-Charts rate-limits hard (HTTP 429 after a few fast requests). One request per refresh (today+tomorrow as a range). A 429 falls back to cached data.
+- Portugal: a one-day request misses the last Lisbon hour (API quirk); the range request (today+tomorrow) includes it once tomorrow is published.
+- Time zones: price day math uses `PriceRegion.calendar` (Lisbon for Portugal, CET for the rest). Solar curve labels use Europe/Madrid (the user's plant).
+- Change: add a case to `PriceRegion` with its zone code and time zone.
+
+## D9. Languages and number format
+- en (source), es, pt, fr, de, it, nl. String catalogs: `Localizable.xcstrings` (data/errors/regions), `Widgets.xcstrings` (widget views), `App.xcstrings` (app screens), `Widgets/Resources/Localizable.xcstrings` (App Intent strings). Tests check every key has all 6 translations.
+- Numbers follow the user's locale (`Format.locale`, default `autoupdatingCurrent`), so Spanish users get the comma decimal separator. The spec asked for a Spanish number format; this keeps that for Spanish and stays correct for the other languages.
+- Change: set `Format.locale` to a fixed locale at app start.
+
+## D10. "Add widget" button
+- iOS 27 / macOS 27 have no public API to add a widget for the user (checked `WidgetKit.swiftinterface`). The app shows a step-by-step guide and uses `WidgetCenter.currentConfigurations()` to show whether a HomeDash widget is already installed.
+
+## D11. Network budget in widgets
+- `HomeDashLoader.load(deadline: 15)` races each fetch against a 15 s deadline (widget extensions get ~30 s). Dedicated ephemeral `URLSession.homeDash` (10 s request / 12 s resource timeout, no URL cache so the kiosk token is not written to disk).
+
+## D12. Live tests are opt-in
+- `HOMEDASH_LIVE=1 swift test --filter LiveTests` hits the real kiosk (URL from `Config/kiosk.local`) and all 8 price regions, 15 s apart. Not part of the normal run.
