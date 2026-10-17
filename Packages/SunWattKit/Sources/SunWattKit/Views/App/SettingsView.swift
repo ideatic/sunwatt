@@ -161,7 +161,7 @@ struct SettingsContent: View {
                     .buttonStyle(SoftButtonStyle(compact: true))
                 }
             }
-            .confirmationDialog(Text("Remove this plant?", tableName: "App", bundle: .module), isPresented: $confirmsRemoval, titleVisibility: .visible) {
+            .confirmationDialog(Text("Remove this plant", tableName: "App", bundle: .module), isPresented: $confirmsRemoval, titleVisibility: .visible) {
                 Button(role: .destructive) {
                     model.removePlant(plantID)
                     editingPlant = SolarPlant.primaryID
