@@ -14,7 +14,8 @@ enum AppIdiom: Sendable {
     case pad
     case desktop
 
-    static var platformDefault: AppIdiom {
+    /// Reads `UIDevice` on iOS, so it is main-actor only. `AppRootView` puts it in the environment.
+    @MainActor static var platformDefault: AppIdiom {
         #if os(macOS)
         .desktop
         #else
@@ -23,7 +24,13 @@ enum AppIdiom: Sendable {
     }
 }
 
-private struct AppIdiomKey: EnvironmentKey { static let defaultValue = AppIdiom.platformDefault }
+private struct AppIdiomKey: EnvironmentKey {
+    #if os(macOS)
+    static let defaultValue = AppIdiom.desktop
+    #else
+    static let defaultValue = AppIdiom.phone
+    #endif
+}
 private struct AppSnapshotKey: EnvironmentKey { static let defaultValue = false }
 
 extension EnvironmentValues {
