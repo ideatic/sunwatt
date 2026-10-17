@@ -15,14 +15,16 @@
   - Iter 3-4 (after my review): grey current-hour column replaced by outline + marker, min bar height, clean dark past bars, no stem under the mini curve dot, "€/kWh" not uppercased, y-axis scale in large, helpful error states with skeleton charts, smooth sample curves, clock icon on fresh data time.
 - Flaky test found once after a merge (loader deadline test with 0.2 s on a busy machine). Deadline raised; 6 + 3 clean runs since.
 
-## In progress
-- [~] Step 5: main app (onboarding, dashboard, settings, kiosk how-to, country picker, add-widget guide, Mac layout, dark mode) + simulator screenshots.
-
-## Pending
-- [ ] Step 6: integration, README, MORNING_REPORT
+- [x] Step 5: main app (onboarding with "Skip, prices only", dashboard with interactive charts, settings with kiosk test + how-to, country picker, add-widget guide with installed-widget detection, Mac window + Settings scene, iPad two-column layout, light/dark). 2 design iterations by the implementer + 1 visual pass after my review (app charts matched to widgets, iPad layout).
+- [x] Extra (user requests): Control Center controls (price, solar), Siri/Shortcuts (3 intents, 7 languages), tap-to-refresh widgets, Apple Watch app + 4 complication families, App Store texts in 7 languages, privacy/support pages, release setup.
+- [x] Full rename HomeDash -> SunWatt (code, targets, bundle IDs, App Group).
+- [x] Step 6: integration, README, `/code-review high` (7 findings, all fixed: shared cache window against parallel fetches / 429, kiosk field no longer saves per keystroke, refresh cancels stale loads, per-day price contexts, yesterday's solar hidden after midnight, solar cache tied to the kiosk link, watch settings race), MORNING_REPORT.
+- Final: 298 tests, `scripts/verify.sh` -> VERIFY OK (iOS Simulator tests, macOS build, watchOS build).
+- One unexplained failure: right after one merge, a single `swift test` run reported 176 issues; it never reproduced (20+ runs, clean builds). `verify.sh` now prints the failing tests and keeps the log if it happens again.
 
 ## Known issues
-- macOS signing needs a team (DECISIONS D4).
+- macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
+- Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).
 - No public API to add a widget from the app (checked iOS 27 SDK). App shows a guide and detects installed widgets.
 
 ## Release checklist (from the metadata task)
