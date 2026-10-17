@@ -256,11 +256,11 @@ private struct WidgetPage: View {
                     colors: [Color(red: 0.98, green: 0.62, blue: 0.40), Color(red: 0.55, green: 0.30, blue: 0.62), Color(red: 0.20, green: 0.22, blue: 0.48)],
                     startPoint: .topLeading, endPoint: .bottomTrailing)
                 HStack(spacing: Theme.Spacing.m) {
-                    MiniWidgetPreview(family: .small, width: 118, region: model.settings.priceRegion)
-                    MiniWidgetPreview(family: .medium, width: 190, region: model.settings.priceRegion)
+                    MiniWidgetPreview(family: .small, width: idiom == .phone ? 92 : 118, region: model.settings.priceRegion)
+                    MiniWidgetPreview(family: .medium, width: idiom == .phone ? 150 : 190, region: model.settings.priceRegion)
                 }
             }
-            .frame(height: 176)
+            .frame(height: idiom == .phone ? 132 : 176)
             .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card + 2, style: .continuous))
             .accessibilityHidden(true)
             Button { model.present(.widgetGuide) } label: {
@@ -272,7 +272,44 @@ private struct WidgetPage: View {
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, Theme.Spacing.xs)
+            MoreWaysCard()
         }
+    }
+}
+
+/// Other places SunWatt shows up: watch complications, Siri, Lock Screen and Control Center.
+/// Shared by the onboarding widget page and the widget guide. Hidden per device with `appIdiom`: the watch row
+/// is iPhone only, Lock Screen and Control Center are not on the Mac (the snapshot tool renders on macOS, so a
+/// runtime check shows the iPhone layout there).
+struct MoreWaysCard: View {
+    @Environment(\.appIdiom) private var idiom
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+            if idiom == .phone {
+                row("applewatch", "Apple Watch complications", "Price and Solar today. Touch and hold the watch face, tap Edit, then Complications and SunWatt. Settings come from your iPhone.")
+            }
+            row("waveform", "Siri and Shortcuts", "Say \u{201C}What's the electricity price in SunWatt?\u{201D}")
+            if idiom != .desktop {
+                row("lock.rectangle.on.rectangle.fill", "Lock Screen and Control Center", "Current price and solar power. In Control Center tap +, then Add a Control and SunWatt.")
+            }
+        }
+        .appCard(padding: Theme.Spacing.m)
+    }
+
+    private func row(_ symbol: String, _ title: LocalizedStringKey, _ detail: LocalizedStringKey) -> some View {
+        HStack(spacing: Theme.Spacing.m) {
+            SymbolTile(symbol: symbol, size: 34)
+            VStack(alignment: .leading, spacing: 1) {
+                atext(title).font(.system(.subheadline, design: .rounded).weight(.semibold))
+                atext(detail)
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 

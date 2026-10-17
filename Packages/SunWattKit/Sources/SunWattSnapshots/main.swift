@@ -122,7 +122,7 @@ func renderApp(to directory: URL) throws -> Int {
     }
     // iPad 13-inch: dashboard, settings, onboarding and widget guide, portrait and landscape.
     for device in [AppSnapshotView.Device.pad, .padLandscape] {
-        for kind in [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .widgetGuide] {
+        for kind in [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .onboardingWidget, .widgetGuide] {
             for scheme in [ColorScheme.light, .dark] { try emit(kind, device, scheme) }
         }
     }
@@ -132,8 +132,8 @@ func renderApp(to directory: URL) throws -> Int {
     }
     // Languages: English, long German strings, French (France prices).
     for (locale, kinds) in [
-        ("en_GB", [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .widgetGuide, .kioskHelp]),
-        ("de_DE", [Kind.dashboardDay, .settings, .onboardingCountry, .onboardingSolar, .widgetGuide, .kioskHelp]),
+        ("en_GB", [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .onboardingWidget, .widgetGuide, .kioskHelp]),
+        ("de_DE", [Kind.dashboardDay, .settings, .onboardingCountry, .onboardingSolar, .onboardingWidget, .widgetGuide, .kioskHelp]),
         ("fr_FR", [Kind.dashboardDay]),
     ] {
         for kind in kinds {
