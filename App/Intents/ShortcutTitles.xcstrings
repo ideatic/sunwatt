@@ -1,0 +1,36 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Cheapest hours": {
+      "localizations": {
+        "es": {"stringUnit": {"state": "translated", "value": "Horas más baratas"}},
+        "pt": {"stringUnit": {"state": "translated", "value": "Horas mais baratas"}},
+        "fr": {"stringUnit": {"state": "translated", "value": "Heures les moins chères"}},
+        "de": {"stringUnit": {"state": "translated", "value": "Günstigste Stunden"}},
+        "it": {"stringUnit": {"state": "translated", "value": "Ore più convenienti"}},
+        "nl": {"stringUnit": {"state": "translated", "value": "Goedkoopste uren"}}
+      }
+    },
+    "Electricity price": {
+      "localizations": {
+        "es": {"stringUnit": {"state": "translated", "value": "Precio de la electricidad"}},
+        "pt": {"stringUnit": {"state": "translated", "value": "Preço da eletricidade"}},
+        "fr": {"stringUnit": {"state": "translated", "value": "Prix de l’électricité"}},
+        "de": {"stringUnit": {"state": "translated", "value": "Strompreis"}},
+        "it": {"stringUnit": {"state": "translated", "value": "Prezzo dell’elettricità"}},
+        "nl": {"stringUnit": {"state": "translated", "value": "Stroomprijs"}}
+      }
+    },
+    "Solar production": {
+      "localizations": {
+        "es": {"stringUnit": {"state": "translated", "value": "Producción solar"}},
+        "pt": {"stringUnit": {"state": "translated", "value": "Produção solar"}},
+        "fr": {"stringUnit": {"state": "translated", "value": "Production solaire"}},
+        "de": {"stringUnit": {"state": "translated", "value": "Solarerzeugung"}},
+        "it": {"stringUnit": {"state": "translated", "value": "Produzione solare"}},
+        "nl": {"stringUnit": {"state": "translated", "value": "Zonne-opbrengst"}}
+      }
+    }
+  },
+  "version": "1.0"
+}

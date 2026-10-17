@@ -47,7 +47,13 @@ struct HomeDashWidgetEntryView: View {
 
     var body: some View {
         let family = HomeDashFamily(widgetFamily) ?? .medium
-        HomeDashWidgetView(entry: entry.entry, family: family, content: entry.content, window: entry.window)
+        // The whole surface is the tap target: refresh the data. Nothing looks like a button, and tapping no longer
+        // opens the app (so no widgetURL). Accessory widgets support Button(intent:) too.
+        Button(intent: RefreshWidgetIntent()) {
+            HomeDashWidgetView(entry: entry.entry, family: family, content: entry.content, window: entry.window)
+                .invalidatableContent()
+        }
+        .buttonStyle(.plain)
             .containerBackground(for: .widget) {
                 if family == .accessoryCircular {
                     AccessoryWidgetBackground()
@@ -68,7 +74,7 @@ struct HomeDashWidget: Widget {
             HomeDashWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("HomeDash")
-        .description("Solar production and electricity price.")
+        .description("Solar production and electricity price. Tap to refresh.")
         .supportedFamilies(Self.families)
     }
 

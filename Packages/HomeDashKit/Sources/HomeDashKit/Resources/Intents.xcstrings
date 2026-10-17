@@ -1,0 +1,1086 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Cheapest hours": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horas más baratas"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horas mais baratas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heures les moins chères"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Günstigste Stunden"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ore più convenienti"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goedkoopste uren"
+          }
+        }
+      }
+    },
+    "Electricity price now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio de la electricidad ahora"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preço da eletricidade agora"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prix de l’électricité maintenant"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strompreis jetzt"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prezzo dell’elettricità ora"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stroomprijs nu"
+          }
+        }
+      }
+    },
+    "I cannot find upcoming electricity prices right now. Check your connection and try again.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora mismo no encuentro los próximos precios de la electricidad. Comprueba tu conexión e inténtalo de nuevo."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neste momento não encontro os próximos preços da eletricidade. Verifica a tua ligação e tenta novamente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je ne trouve pas les prochains prix de l’électricité pour le moment. Vérifiez votre connexion et réessayez."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich finde gerade keine kommenden Strompreise. Prüfe deine Verbindung und versuche es erneut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al momento non trovo i prossimi prezzi dell’elettricità. Controlla la connessione e riprova."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ik kan nu geen komende stroomprijzen vinden. Controleer je verbinding en probeer het opnieuw."
+          }
+        }
+      }
+    },
+    "I cannot get the electricity price right now. Check your connection and try again.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora mismo no puedo obtener el precio de la electricidad. Comprueba tu conexión e inténtalo de nuevo."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neste momento não consigo obter o preço da eletricidade. Verifica a tua ligação e tenta novamente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je ne peux pas obtenir le prix de l’électricité pour le moment. Vérifiez votre connexion et réessayez."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich kann den Strompreis gerade nicht abrufen. Prüfe deine Verbindung und versuche es erneut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al momento non riesco a ottenere il prezzo dell’elettricità. Controlla la connessione e riprova."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ik kan de stroomprijs nu niet ophalen. Controleer je verbinding en probeer het opnieuw."
+          }
+        }
+      }
+    },
+    "I cannot get the solar production right now. Check your connection and try again.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora mismo no puedo obtener la producción solar. Comprueba tu conexión e inténtalo de nuevo."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neste momento não consigo obter a produção solar. Verifica a tua ligação e tenta novamente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je ne peux pas obtenir la production solaire pour le moment. Vérifiez votre connexion et réessayez."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich kann die Solarerzeugung gerade nicht abrufen. Prüfe deine Verbindung und versuche es erneut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al momento non riesco a ottenere la produzione solare. Controlla la connessione e riprova."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ik kan de zonne-opbrengst nu niet ophalen. Controleer je verbinding en probeer het opnieuw."
+          }
+        }
+      }
+    },
+    "No data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin datos"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem dados"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune donnée"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Daten"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun dato"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen gegevens"
+          }
+        }
+      }
+    },
+    "No production": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin producción"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem produção"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune production"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Erzeugung"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna produzione"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geen opbrengst"
+          }
+        }
+      }
+    },
+    "Not set up": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin configurar"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não configurado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non configuré"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht eingerichtet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non configurato"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niet ingesteld"
+          }
+        }
+      }
+    },
+    "Refresh": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizar"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualizar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiser"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualisieren"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorna"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vernieuwen"
+          }
+        }
+      }
+    },
+    "Solar production is not set up. Add your FusionSolar link in the SunWatt settings.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La producción solar no está configurada. Añade tu enlace de FusionSolar en los ajustes de SunWatt."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A produção solar não está configurada. Adiciona a tua ligação do FusionSolar nas definições do SunWatt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La production solaire n’est pas configurée. Ajoutez votre lien FusionSolar dans les réglages de SunWatt."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Solarerzeugung ist nicht eingerichtet. Füge deinen FusionSolar-Link in den SunWatt-Einstellungen hinzu."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La produzione solare non è configurata. Aggiungi il tuo link FusionSolar nelle impostazioni di SunWatt."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De zonne-opbrengst is niet ingesteld. Voeg je FusionSolar-link toe in de SunWatt-instellingen."
+          }
+        }
+      }
+    },
+    "Solar production now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Producción solar ahora"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produção solar agora"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Production solaire maintenant"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solarerzeugung jetzt"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produzione solare ora"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonne-opbrengst nu"
+          }
+        }
+      }
+    },
+    "Solar production now is %@ kW.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La producción solar ahora es de %@ kW."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A produção solar agora é de %@ kW."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La production solaire est actuellement de %@ kW."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Solarerzeugung liegt jetzt bei %@ kW."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La produzione solare ora è di %@ kW."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De zonne-opbrengst is nu %@ kW."
+          }
+        }
+      }
+    },
+    "Solar production now is %@ kW. Today: %@ kWh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La producción solar ahora es de %@ kW. Hoy: %@ kWh."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A produção solar agora é de %@ kW. Hoje: %@ kWh."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La production solaire est actuellement de %@ kW. Aujourd’hui : %@ kWh."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Solarerzeugung liegt jetzt bei %@ kW. Heute: %@ kWh."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La produzione solare ora è di %@ kW. Oggi: %@ kWh."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De zonne-opbrengst is nu %@ kW. Vandaag: %@ kWh."
+          }
+        }
+      }
+    },
+    "Tap to refresh": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca para actualizar"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca para atualizar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touchez pour actualiser"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippen zum Aktualisieren"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca per aggiornare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tik om te vernieuwen"
+          }
+        }
+      }
+    },
+    "Tells you how much your solar panels produce now and today.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te dice cuánto producen tus paneles solares ahora y hoy."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diz-te quanto os teus painéis solares produzem agora e hoje."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous indique combien vos panneaux solaires produisent maintenant et aujourd’hui."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nennt dir, wie viel deine Solarmodule jetzt und heute erzeugen."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ti dice quanto producono i tuoi pannelli solari ora e oggi."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertelt je hoeveel je zonnepanelen nu en vandaag opwekken."
+          }
+        }
+      }
+    },
+    "Tells you the current electricity price and how it compares with the rest of the day.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te dice el precio actual de la electricidad y cómo se compara con el resto del día."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diz-te o preço atual da eletricidade e como se compara com o resto do dia."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous indique le prix actuel de l’électricité et sa position par rapport au reste de la journée."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nennt dir den aktuellen Strompreis und wie er im Vergleich zum Rest des Tages liegt."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ti dice il prezzo attuale dell’elettricità e come si confronta con il resto della giornata."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertelt je de huidige stroomprijs en hoe die zich verhoudt tot de rest van de dag."
+          }
+        }
+      }
+    },
+    "Tells you the next cheapest hours to use electricity.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te dice las próximas horas más baratas para usar electricidad."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diz-te as próximas horas mais baratas para usar eletricidade."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous indique les prochaines heures les moins chères pour consommer de l’électricité."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nennt dir die nächsten günstigsten Stunden für den Stromverbrauch."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ti dice le prossime ore più convenienti per usare l’elettricità."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertelt je de eerstvolgende goedkoopste uren om stroom te gebruiken."
+          }
+        }
+      }
+    },
+    "The cheapest hour coming up is %@, at %@ €/kWh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La hora más barata próxima es %@, a %@ €/kWh."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A hora mais barata a seguir é %@, a %@ €/kWh."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’heure la moins chère à venir est %@, à %@ €/kWh."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die günstigste kommende Stunde ist %@, bei %@ €/kWh."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La prossima ora più conveniente è %@, a %@ €/kWh."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het goedkoopste komende uur is %@, voor %@ €/kWh."
+          }
+        }
+      }
+    },
+    "The cheapest hours coming up are %@, from %@ €/kWh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las horas más baratas próximas son %@, desde %@ €/kWh."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As horas mais baratas a seguir são %@, a partir de %@ €/kWh."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les heures les moins chères à venir sont %@, à partir de %@ €/kWh."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die günstigsten kommenden Stunden sind %@, ab %@ €/kWh."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le prossime ore più convenienti sono %@, da %@ €/kWh."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De goedkoopste komende uren zijn %@, vanaf %@ €/kWh."
+          }
+        }
+      }
+    },
+    "The electricity price now is %@ €/kWh. It is an average price.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El precio de la electricidad ahora es %@ €/kWh. Es un precio medio."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O preço da eletricidade agora é %@ €/kWh. É um preço médio."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le prix de l’électricité est actuellement de %@ €/kWh. C’est un prix moyen."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Strompreis liegt jetzt bei %@ €/kWh. Das ist ein durchschnittlicher Preis."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il prezzo dell’elettricità ora è %@ €/kWh. È un prezzo medio."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De stroomprijs is nu %@ €/kWh. Dat is een gemiddelde prijs."
+          }
+        }
+      }
+    },
+    "The electricity price now is %@ €/kWh. It is cheap.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El precio de la electricidad ahora es %@ €/kWh. Es barato."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O preço da eletricidade agora é %@ €/kWh. É barato."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le prix de l’électricité est actuellement de %@ €/kWh. C’est bon marché."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Strompreis liegt jetzt bei %@ €/kWh. Das ist günstig."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il prezzo dell’elettricità ora è %@ €/kWh. È conveniente."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De stroomprijs is nu %@ €/kWh. Dat is goedkoop."
+          }
+        }
+      }
+    },
+    "The electricity price now is %@ €/kWh. It is expensive.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El precio de la electricidad ahora es %@ €/kWh. Es caro."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O preço da eletricidade agora é %@ €/kWh. É caro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le prix de l’électricité est actuellement de %@ €/kWh. C’est cher."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Strompreis liegt jetzt bei %@ €/kWh. Das ist teuer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il prezzo dell’elettricità ora è %@ €/kWh. È costoso."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De stroomprijs is nu %@ €/kWh. Dat is duur."
+          }
+        }
+      }
+    },
+    "The last reading is from %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La última lectura es de las %@."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A última leitura é das %@."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le dernier relevé date de %@."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die letzte Messung ist von %@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’ultima lettura è delle %@."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De laatste meting is van %@."
+          }
+        }
+      }
+    },
+    "The plant is not producing now.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La instalación no está produciendo ahora."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A instalação não está a produzir agora."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’installation ne produit pas pour le moment."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Anlage erzeugt gerade nichts."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’impianto non sta producendo ora."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De installatie produceert nu niets."
+          }
+        }
+      }
+    },
+    "The plant is not producing now. Today: %@ kWh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La instalación no está produciendo ahora. Hoy: %@ kWh."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A instalação não está a produzir agora. Hoje: %@ kWh."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’installation ne produit pas pour le moment. Aujourd’hui : %@ kWh."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Anlage erzeugt gerade nichts. Heute: %@ kWh."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L’impianto non sta producendo ora. Oggi: %@ kWh."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De installatie produceert nu niets. Vandaag: %@ kWh."
+          }
+        }
+      }
+    },
+    "Today %@ kWh": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy %@ kWh"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoje %@ kWh"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aujourd’hui %@ kWh"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute %@ kWh"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oggi %@ kWh"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vandaag %@ kWh"
+          }
+        }
+      }
+    },
+    "Updates the SunWatt widgets with the latest data.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualiza los widgets de SunWatt con los datos más recientes."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atualiza os widgets do SunWatt com os dados mais recentes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Met à jour les widgets SunWatt avec les dernières données."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualisiert die SunWatt-Widgets mit den neuesten Daten."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorna i widget di SunWatt con i dati più recenti."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Werkt de SunWatt-widgets bij met de nieuwste gegevens."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
