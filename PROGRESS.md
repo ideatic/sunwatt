@@ -45,7 +45,7 @@
 
 - [x] Tap-to-refresh fixed (2026-10-17, simulator, iPad iOS 27): a `Button(intent:)` that wrapped the whole widget was ignored and the tap opened the app. The button is now an invisible overlay; a tap refreshes (cache files rewritten) and the app stays closed. No unit test: widget hit-testing only exists in the system renderer. Also checked on the iPhone 18 Pro simulator (2026-10-17, medium widget, live kiosk data): cache rewritten on tap, app stays closed.
 - [x] FusionSolar API account field shows Huawei's portal word: "Password (system code)" in all 7 languages (label, hint, help, two errors). SolarEdge/PVOutput API keys are secret fields (dots) like the system code.
-- [x] `scripts/upload_metadata.sh`: uploads store texts (and optional screenshots) with fastlane deliver; dry run by default, `--upload` only on the owner's word (docs/RELEASE.md, step f2). Not run against App Store Connect yet.
+- [x] `scripts/upload_metadata.sh`: uploads store texts (and optional screenshots) with fastlane deliver; dry run by default, `--upload` only on the owner's word (docs/RELEASE.md, step f2). Used for the first submission.
 - [x] Store screenshots rendered by `SunWattSnapshots --store` (fastlane layout, AppStore/screenshots). All 7 languages rendered and checked (2026-10-17). The folder is git-ignored; render it again before the upload.
 - [x] Design renders (`Screenshots/**/*.png`, 443 files) are git-ignored now; only the `ITERATIONS.md` logs stay in git. The README shows 10 copies from `docs/readme/` (widgets, Lock Screen, watch, iPhone and Mac app). Store screenshots are git-ignored too and rendered before upload (2026-10-17).
 - [x] Mac widget said "Solar not set up" (2026-10-17): the Debug build's generic Mac profile does not list `group.com.ideatic.sunwatt`, so macOS blocked the App Group and the app saved settings privately. The Mac now uses `EX68NKELW9.com.ideatic.sunwatt` (DECISIONS D4); the app moves old private settings into the group and plist secrets into the keychain at launch. Checked on this Mac: settings and solar/price caches in the group, kiosk link out of the plist; the owner saw the Mac widget show solar.
@@ -73,4 +73,6 @@
 - [x] Release builds without signing: iOS, macOS, watchOS pass; `kiosk.local` is not in any Release bundle
 - [x] `scripts/release.sh` (dry run by default, `--upload` for the real run) and export options in `scripts/`
 - [x] Archive without `-allowProvisioningUpdates` fails with "No profiles for ..." (expected until the first `--upload`)
-- [ ] User: first `scripts/release.sh --upload`, TestFlight, screenshots, submit
+- [x] Build 202610172346 uploaded (iOS + watch, macOS), store texts and screenshots (iPhone, iPad, Mac, Apple Watch, 7 languages) uploaded with `scripts/upload_metadata.sh`, App Privacy "Data Not Collected" published, age rating 4+, free in 175 countries, TestFlight internal group "Team". Review notes carry the demo kiosk link, added at upload from `private/kiosk.local` (never in git); the contact phone is in a git-ignored file.
+- [x] 2026-10-18: iOS and macOS 1.0 submitted for App Review (manual release after approval).
+- [ ] Owner: after approval, press "Release" in App Store Connect. Optionally create a new kiosk link afterwards (the reviewers' copy stops working).
