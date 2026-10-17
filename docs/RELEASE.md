@@ -14,12 +14,9 @@ Team: ideatic Development, S.L.U. (`EX68NKELW9`). Bundle ID: `com.ideatic.sunwat
 
 ## b) Host `docs/` and fix the URLs
 
-1. Publish the `docs/` folder with GitHub Pages (repo Settings > Pages > Deploy from branch > `/docs`) or on your own site.
-2. Replace `REPLACE-ME` in:
-   - `AppStore/metadata/*/privacy_url.txt`, `support_url.txt`, `marketing_url.txt`
-   - `AppStore/app_privacy.md`, `AppStore/review_notes.txt` (contact e-mail)
-   - `docs/privacy.html`, `docs/support.html` (contact e-mail)
-3. Check: `python3 AppStore/check_metadata.py AppStore/metadata`.
+1. GitHub Pages serves the `docs/` folder of `main` (repo Settings > Pages > Deploy from a branch > `main` / `/docs`) at `https://ideatic.github.io/sunwatt/`. `docs/.nojekyll` makes Pages serve the files as they are.
+2. The store URLs already point there: `…/sunwatt/` (marketing), `…/privacy.html`, `…/support.html` (`AppStore/metadata/*/*_url.txt`, `AppStore/app_privacy.md`). Contact e-mail: contacto@ideatic.net (pages, review notes).
+3. Check: `python3 AppStore/check_metadata.py AppStore/metadata`, and open the three URLs once after Pages is on.
 
 ## c) First build: `scripts/release.sh --upload`
 

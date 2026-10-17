@@ -159,7 +159,7 @@ Every new or changed user-facing string (string catalogs, App Store metadata, `d
 
 ### Release
 
-Step by step in `docs/RELEASE.md`. `scripts/release.sh` is a dry run by default; `--upload` changes the Apple Developer account and uploads to App Store Connect, so run it only when the owner says so. Check metadata with `python3 AppStore/check_metadata.py AppStore/metadata`. Open owner items are listed in `PROGRESS.md` (host `docs/`, replace `REPLACE-ME`, App Store Connect record).
+Step by step in `docs/RELEASE.md`. `scripts/release.sh` is a dry run by default; `--upload` changes the Apple Developer account and uploads to App Store Connect, so run it only when the owner says so. Check metadata with `python3 AppStore/check_metadata.py AppStore/metadata`. Open owner items are listed in `PROGRESS.md`. Privacy, support and marketing pages are `docs/` on GitHub Pages (`https://ideatic.github.io/sunwatt/`); edit them there.
 
 ## Working conventions
 

@@ -14,7 +14,7 @@ Why:
 
 "Collect" in Apple's terms means data sent off the device to the developer or a partner. Public price APIs get ordinary HTTP requests with no identifier. The solar request goes to the user's own plant provider (FusionSolar, SolarEdge or PVOutput) with the user's own link or API key. Check: do not add the privacy answers "Data Linked to You" or "Used to Track You".
 
-Privacy policy URL: `https://REPLACE-ME/sunwatt/privacy` (host `docs/privacy.html`).
+Privacy policy URL: `https://ideatic.github.io/sunwatt/privacy.html` (GitHub Pages, `docs/privacy.html` on `main`).
 
 ## Export compliance
 
