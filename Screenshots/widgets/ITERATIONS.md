@@ -60,12 +60,13 @@ Critique (all 67 PNGs reviewed: light/dark, day/night/stale/error, accented/vibr
 
 ## Medium widget: figures on the icon row, current hour band (2026-10-17)
 - User report (device, medium): the current price hour was hard to find, and the headers took height from the charts.
-- Change 1, layout (medium only; the large header keeps the stacked layout): the figure ("5,3 kW", "0,187 €/kWh", "No production") sits on the icon row, right-aligned. Daily energy and data time share the second row; level and stale badge likewise. The charts gain about 20 pt.
+- Change 1, layout (medium; later also the large header): the figure ("5,3 kW", "0,187 €/kWh", "No production") sits on the icon row, right-aligned. Daily energy and data time share the second row; level and stale badge likewise. The charts gain about 20 pt.
 - Change 2, current hour: a light band over the full chart height behind the current bar (primary 10 %, 12 % dark), a wider and stronger ring, and a larger marker in the mini style. It reads also when the current bar is a cheap-hour sliver. The full chart (large widget) and the watch get the band too.
 - Tried and dropped: future bars at 62 % opacity. They looked brown over the dark background and did not help much; kept at 82 %.
 - Checked: medium night/day/stale light and dark, de and fr, price-only and solar-only, large, small, watch price page. No truncation; "Sin producción" fits on one line.
 - Watch corner PNGs also changed: they were older than commit e162de0 (corner value fit), not this change.
 - Follow-up (user): data time on the left, daily energy on the right of the second solar row.
+- Follow-up (user): the large widget header uses the same compact rows (header 76 → 56 pt, the charts get the rest). Checked day, night dark, stale, German.
 
 ## Open points
 - Real accented/vibrant tinting only shows on device.

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// systemLarge: header with both figures, full production curve, full price chart, footer with stats and update time.
+/// systemLarge: compact header with both figures (as in the medium widget), full production curve, full price chart, footer with stats and update time.
 struct LargeWidgetView: View {
     let solar: SolarModel
     let price: PriceModel
@@ -11,7 +11,7 @@ struct LargeWidgetView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             header
-                .frame(height: 76)
+                .frame(height: 56)
             if content != .priceOnly { solarChart }
             if content != .solarOnly { priceChart }
             footer
@@ -23,14 +23,14 @@ struct LargeWidgetView: View {
         switch content {
         case .both:
             HStack(spacing: Theme.Spacing.m) {
-                SolarColumn(solar: solar, now: now, figureSize: 34, showsChart: false)
+                SolarColumn(solar: solar, now: now, figureSize: 34, showsChart: false, compactHeader: true)
                 Divider().padding(.vertical, Theme.Spacing.xs)
-                PriceColumn(price: price, figureSize: 34, showsChart: false)
+                PriceColumn(price: price, figureSize: 34, showsChart: false, compactHeader: true)
             }
         case .solarOnly:
-            SolarColumn(solar: solar, now: now, figureSize: 40, showsChart: false)
+            SolarColumn(solar: solar, now: now, figureSize: 40, showsChart: false, compactHeader: true)
         case .priceOnly:
-            PriceColumn(price: price, figureSize: 40, showsChart: false)
+            PriceColumn(price: price, figureSize: 40, showsChart: false, compactHeader: true)
         }
     }
 
