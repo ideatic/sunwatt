@@ -2,8 +2,9 @@ import Foundation
 
 /// Reads a site from the SolarEdge Monitoring API (`monitoringapi.solaredge.com`, API key + site ID).
 /// Two requests per fetch, sent together: `overview` (power now, energy today/month/year/lifetime, last update)
-/// and `power` (today's curve, 15-minute points). SolarEdge allows 300 requests a day per site and per key; with
-/// the 15-minute widget refresh and the shared cache window SunWatt stays under it.
+/// and `powerDetails` (today's 15-minute curves per meter: Production, and with a meter at home also Consumption,
+/// FeedIn, Purchased, SelfConsumption). A response without a Production meter falls back to `power` (one more
+/// request). SolarEdge allows 300 requests a day per site and per key (see `SolarProvider.minimumFetchInterval`).
 /// Times come as "yyyy-MM-dd HH:mm:ss" in the site's time zone; `calendar` must use that zone (default: the device's).
 public struct SolarEdgeClient: SolarDataSource {
     public static let host = "monitoringapi.solaredge.com"
@@ -28,19 +29,26 @@ public struct SolarEdgeClient: SolarDataSource {
     public func fetch() async throws -> SolarSnapshot {
         let date = now()
         async let overview = get(overviewURL)
-        async let power = get(powerURL(day: date))
-        let (overviewData, powerData) = try await (overview, power)
-        return try Self.parse(overview: overviewData, power: powerData, fetchedAt: date, calendar: calendar)
+        async let details = get(powerURL(day: date, path: "powerDetails"))
+        let (overviewData, detailsData) = try await (overview, details)
+        if Self.hasProduction(detailsData) {
+            return try Self.parse(overview: overviewData, power: detailsData, fetchedAt: date, calendar: calendar)
+        }
+        // No Production meter in the details: read the inverter curve, keep the meter readings for consumption.
+        let powerData = try await get(powerURL(day: date, path: "power"))
+        var snapshot = try Self.parse(overview: overviewData, power: powerData, fetchedAt: date, calendar: calendar)
+        snapshot.home = Self.home(fromDetails: detailsData, fetchedAt: date, calendar: calendar)
+        return snapshot
     }
 
     var overviewURL: URL { url(path: "overview", query: []) }
 
-    /// Today (in `calendar`) from 00:00:00 to 23:59:59.
-    func powerURL(day: Date) -> URL {
+    /// Today (in `calendar`) from 00:00:00 to 23:59:59, for `power` or `powerDetails`.
+    func powerURL(day: Date, path: String = "powerDetails") -> URL {
         let start = calendar.startOfDay(for: day)
         let c = calendar.dateComponents([.year, .month, .day], from: start)
         let dayText = String(format: "%04d-%02d-%02d", c.year ?? 0, c.month ?? 0, c.day ?? 0)
-        return url(path: "power", query: [
+        return url(path: path, query: [
             URLQueryItem(name: "startTime", value: "\(dayText) 00:00:00"),
             URLQueryItem(name: "endTime", value: "\(dayText) 23:59:59"),
         ])
@@ -82,24 +90,20 @@ public struct SolarEdgeClient: SolarDataSource {
             .flatMap { SolarLocalTime.parse($0, calendar: calendar) }
             .flatMap { calendar.isDate($0, inSameDayAs: fetchedAt) ? $0 : nil }
 
-        guard let powerRoot = (try? JSONSerialization.jsonObject(with: power)) as? [String: Any],
-              let p = powerRoot["power"] as? [String: Any] else {
-            throw SunWattError.badResponse("power")
+        // `power` (one curve) or `powerDetails` (one curve per meter).
+        let curve: [CurvePoint]
+        var home: HomeEnergy?
+        if let details = Self.meters(power) {
+            guard let production = details.meters["Production"] else { throw SunWattError.badResponse("powerDetails") }
+            curve = Self.curve(production, scale: details.scale, fetchedAt: fetchedAt, calendar: calendar)
+            home = Self.home(fromDetails: power, fetchedAt: fetchedAt, calendar: calendar)
+        } else {
+            guard let powerRoot = (try? JSONSerialization.jsonObject(with: power)) as? [String: Any],
+                  let p = powerRoot["power"] as? [String: Any] else {
+                throw SunWattError.badResponse("power")
+            }
+            curve = Self.curve(p["values"] as? [[String: Any]] ?? [], scale: Self.scale(p["unit"]), fetchedAt: fetchedAt, calendar: calendar)
         }
-        // The unit is "W" in practice; "kW" and "MW" are handled in case a site reports them.
-        let scale: Double = switch ((p["unit"] as? String) ?? "W").uppercased() {
-        case "KW": 1
-        case "MW": 1000
-        default: 0.001
-        }
-        let limit = fetchedAt.addingTimeInterval(5 * 60)
-        let values = p["values"] as? [[String: Any]] ?? []
-        let curve = values.compactMap { item -> CurvePoint? in
-            guard let text = item["date"] as? String, let time = SolarLocalTime.parse(text, calendar: calendar) else { return nil }
-            let kW = SolarLocalTime.number(item["value"]).map { $0 * scale }
-            return CurvePoint(time: time, kW: time > limit ? nil : kW)
-        }
-        .sorted { $0.time < $1.time }
 
         return SolarSnapshot(
             stationName: nil,
@@ -110,8 +114,73 @@ public struct SolarEdgeClient: SolarDataSource {
             cumulativeEnergyKWh: energyKWh("lifeTimeData"),
             curve: curve,
             fetchedAt: fetchedAt,
-            dataAsOf: lastUpdate.map { min($0, fetchedAt) } ?? curve.last { $0.kW != nil }?.time
+            dataAsOf: lastUpdate.map { min($0, fetchedAt) } ?? curve.last { $0.kW != nil }?.time,
+            home: home
         )
+    }
+
+    /// kW per unit. The unit is "W" in practice; "kW" and "MW" are handled in case a site reports them.
+    static func scale(_ unit: Any?) -> Double {
+        switch ((unit as? String) ?? "W").uppercased() {
+        case "KW": 1
+        case "MW": 1000
+        default: 0.001
+        }
+    }
+
+    /// Points in kW; values later than `fetchedAt` + 5 min lose their value.
+    static func curve(_ values: [[String: Any]], scale: Double, fetchedAt: Date, calendar: Calendar) -> [CurvePoint] {
+        let limit = fetchedAt.addingTimeInterval(5 * 60)
+        return values.compactMap { item -> CurvePoint? in
+            guard let text = item["date"] as? String, let time = SolarLocalTime.parse(text, calendar: calendar) else { return nil }
+            let kW = SolarLocalTime.number(item["value"]).map { $0 * scale }
+            return CurvePoint(time: time, kW: time > limit ? nil : kW)
+        }
+        .sorted { $0.time < $1.time }
+    }
+
+    /// The meters of a `powerDetails` body by type ("Production", "Consumption", "FeedIn", "Purchased", ...).
+    /// Nil when the body is not `powerDetails`.
+    static func meters(_ data: Data) -> (meters: [String: [[String: Any]]], scale: Double)? {
+        guard let root = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
+              let details = root["powerDetails"] as? [String: Any] else { return nil }
+        var meters: [String: [[String: Any]]] = [:]
+        for meter in details["meters"] as? [[String: Any]] ?? [] {
+            if let type = meter["type"] as? String { meters[type] = meter["values"] as? [[String: Any]] ?? [] }
+        }
+        return (meters, scale(details["unit"]))
+    }
+
+    /// True when a `powerDetails` body has a Production meter (its values may all be null at night).
+    static func hasProduction(_ data: Data) -> Bool {
+        meters(data)?.meters["Production"] != nil
+    }
+
+    /// Consumption and grid exchange from a `powerDetails` body. Nil without a Consumption meter that has values
+    /// (no meter at home: export-only plants show nothing about consumption).
+    /// Now: the latest 15-minute average, if at most 30 minutes old. Today: the curves summed (15-minute points).
+    static func home(fromDetails data: Data, fetchedAt: Date, calendar: Calendar) -> HomeEnergy? {
+        guard let details = meters(data), let consumption = details.meters["Consumption"] else { return nil }
+        let used = curve(consumption, scale: details.scale, fetchedAt: fetchedAt, calendar: calendar)
+        guard let latest = used.last(where: { $0.kW != nil }) else { return nil }
+        let bought = details.meters["Purchased"].map { curve($0, scale: details.scale, fetchedAt: fetchedAt, calendar: calendar) }
+        let sold = details.meters["FeedIn"].map { curve($0, scale: details.scale, fetchedAt: fetchedAt, calendar: calendar) }
+        func total(_ points: [CurvePoint]?) -> Double? {
+            points.map { $0.compactMap(\.kW).reduce(0, +) * 0.25 }
+        }
+        func value(_ points: [CurvePoint]?, at time: Date) -> Double? {
+            points?.first { $0.time == time }?.kW
+        }
+        let recent = fetchedAt.timeIntervalSince(latest.time) <= 30 * 60
+        var grid: Double?
+        if recent, let buy = value(bought, at: latest.time), let sell = value(sold, at: latest.time) { grid = buy - sell }
+        return HomeEnergy(
+            consumptionKW: recent ? latest.kW : nil,
+            gridKW: grid,
+            dailyConsumptionKWh: total(used),
+            dailyImportKWh: total(bought),
+            dailyExportKWh: total(sold),
+            curve: used)
     }
 }
 

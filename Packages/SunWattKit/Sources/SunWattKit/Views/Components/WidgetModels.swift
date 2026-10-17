@@ -38,6 +38,18 @@ struct SolarModel {
     /// "Data as of" time shown next to the figures.
     var dataTime: Date?
 
+    /// One line about the house for the large widget ("Home 1,2 kW · selling 0,8 kW"). Nil without a meter at
+    /// home (export-only plants show nothing).
+    var homeCaption: String? {
+        guard let home = snapshot?.home, let use = home.consumptionKW else { return nil }
+        let kW = Format.kW(use)
+        guard let grid = home.gridKW, abs(grid) >= 0.05 else { return L10n.string("Home \(kW) kW", table: "Widgets") }
+        let gridKW = Format.kW(abs(grid))
+        return grid > 0
+            ? L10n.string("Home \(kW) kW · buying \(gridKW) kW", table: "Widgets")
+            : L10n.string("Home \(kW) kW · selling \(gridKW) kW", table: "Widgets")
+    }
+
     init(entry: SunWattEntry) {
         let data = entry.data
         let solar = entry.solarForDisplay

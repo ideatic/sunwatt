@@ -168,6 +168,46 @@ private struct DashboardFooter: View {
 
 // MARK: Solar
 
+/// What the house uses now, the grid exchange and today's share from the panels. Shown only with a meter at home.
+private struct HomeEnergyRow: View {
+    let home: HomeEnergy
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            Rectangle().fill(AppPalette(scheme).hairline).frame(height: 0.5)
+            HStack(alignment: .top, spacing: Theme.Spacing.l) {
+                if let use = home.consumptionKW {
+                    MiniStat(value: Format.kW(use), unit: "kW", caption: "Home now")
+                }
+                if let grid = home.gridKW {
+                    MiniStat(
+                        value: Format.kW(abs(grid)), unit: "kW",
+                        caption: grid > Self.idleGrid ? "Buying from the grid" : grid < -Self.idleGrid ? "Selling to the grid" : "Grid")
+                }
+                Spacer(minLength: 0)
+            }
+            if let used = home.dailyConsumptionKWh {
+                summary(used: used)
+                    .font(.system(.footnote, design: .rounded).weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    /// Below this (kW) the grid exchange counts as none.
+    private static let idleGrid = 0.05
+
+    private func summary(used: Double) -> Text {
+        let kWh = Format.kWh(used)
+        guard let share = home.selfSufficiency else { return atext("Used \(kWh) kWh today") }
+        let percent = share.formatted(.percent.precision(.fractionLength(0)).locale(Format.locale))
+        return atext("Used \(kWh) kWh today · \(percent) from your panels")
+    }
+}
+
 private struct SolarCard: View {
     let solar: SolarSnapshot
     let now: Date
@@ -212,6 +252,10 @@ private struct SolarCard: View {
                 }
                 .multilineTextAlignment(.trailing)
                 .fixedSize()
+            }
+            // Only plants with a meter at home report consumption; export-only plants show nothing here.
+            if let home = solar.home {
+                HomeEnergyRow(home: home)
             }
             if !solar.curve.isEmpty {
                 Group {

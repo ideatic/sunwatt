@@ -36,7 +36,7 @@ struct LargeWidgetView: View {
 
     private var solarChart: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            ChartCaption(title: "Production")
+            ChartCaption(title: "Production", trailing: solar.homeCaption)
             if solar.isAvailable, let snapshot = solar.snapshot {
                 SolarCurveChart(snapshot: snapshot, now: now, style: .full)
             } else {

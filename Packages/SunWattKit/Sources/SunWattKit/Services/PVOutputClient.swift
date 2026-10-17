@@ -3,7 +3,9 @@ import Foundation
 /// Reads a system from pvoutput.org (API key + system ID, sent as headers). One request per fetch:
 /// `getstatus.jsp?h=1` returns today's status history (system time zone) as text:
 /// `date,time,energy,efficiency,power,average,normalised,consumption,power,temperature,voltage;...`
-/// with `yyyymmdd`, `HH:mm`, energy in Wh since midnight and power in W; missing values are `NaN`.
+/// with `yyyymmdd`, `HH:mm`, energy in Wh since midnight and power in W; missing values are `NaN`. The second
+/// "power" column is consumption, filled only when the uploader sends it (a meter at home): then `home` is set.
+/// Today's grid import and export are worked out from the power readings (PVOutput has no such totals here).
 /// PVOutput allows 60 requests an hour per key. Before the first upload of the day it answers
 /// `400 Bad request 400: No status found`, which is a day without production, not an error.
 public struct PVOutputClient: SolarDataSource {
@@ -70,13 +72,16 @@ public struct PVOutputClient: SolarDataSource {
     /// Parses a status history body. Records that do not parse are skipped; no valid record at all is an error.
     public static func parse(_ data: Data, fetchedAt: Date, calendar: Calendar) throws -> SolarSnapshot {
         let text = String(decoding: data, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
-        struct Record { var time: Date; var energyWh: Double?; var powerW: Double? }
+        struct Record { var time: Date; var energyWh: Double?; var powerW: Double?; var consumedWh: Double?; var consumptionW: Double? }
         let records = text.split(separator: ";").compactMap { line -> Record? in
             let fields = line.split(separator: ",", omittingEmptySubsequences: false).map { $0.trimmingCharacters(in: .whitespaces) }
             guard fields.count >= 5, let time = timestamp(day: fields[0], time: fields[1], calendar: calendar) else { return nil }
             // Instantaneous power; the interval average when it is missing.
             let power = SolarLocalTime.number(fields[4]) ?? (fields.count > 5 ? SolarLocalTime.number(fields[5]) : nil)
-            return Record(time: time, energyWh: SolarLocalTime.number(fields[2]), powerW: power)
+            return Record(
+                time: time, energyWh: SolarLocalTime.number(fields[2]), powerW: power,
+                consumedWh: fields.count > 7 ? SolarLocalTime.number(fields[7]) : nil,
+                consumptionW: fields.count > 8 ? SolarLocalTime.number(fields[8]) : nil)
         }
         .sorted { $0.time < $1.time }
         guard !records.isEmpty else { throw SunWattError.badResponse("status") }
@@ -88,13 +93,41 @@ public struct PVOutputClient: SolarDataSource {
             fetchedAt.timeIntervalSince(record.time) <= currentPowerMaxAge ? (record.powerW ?? 0) / 1000 : 0
         }
         let energy = records.last { $0.time <= limit && $0.energyWh != nil }?.energyWh.map { $0 / 1000 }
+
+        // Home consumption: only when the uploader sends it.
+        let past = records.filter { $0.time <= limit }
+        var home: HomeEnergy?
+        if past.contains(where: { $0.consumptionW != nil || $0.consumedWh != nil }) {
+            let latestUse = past.last { $0.consumptionW != nil }
+            let recent = latestUse.map { fetchedAt.timeIntervalSince($0.time) <= currentPowerMaxAge } ?? false
+            let useKW = recent ? latestUse?.consumptionW.map { $0 / 1000 } : nil
+            let gridKW = recent ? latestUse.flatMap { r in r.consumptionW.map { ($0 - (r.powerW ?? 0)) / 1000 } } : nil
+            // Import / export: what each interval used beyond (or below) what the panels made, interval average of
+            // the two readings at its ends. Gaps over 30 minutes are skipped.
+            var importKWh = 0.0, exportKWh = 0.0
+            for (a, b) in zip(past, past.dropFirst()) {
+                let hours = b.time.timeIntervalSince(a.time) / 3600
+                guard hours > 0, hours <= 0.5, let ua = a.consumptionW, let ub = b.consumptionW else { continue }
+                let net = ((ua + ub) - ((a.powerW ?? 0) + (b.powerW ?? 0))) / 2 / 1000
+                if net > 0 { importKWh += net * hours } else { exportKWh -= net * hours }
+            }
+            let hasPairs = zip(past, past.dropFirst()).contains { $0.consumptionW != nil && $1.consumptionW != nil }
+            home = HomeEnergy(
+                consumptionKW: useKW,
+                gridKW: gridKW,
+                dailyConsumptionKWh: past.last { $0.consumedWh != nil }?.consumedWh.map { $0 / 1000 },
+                dailyImportKWh: hasPairs ? importKWh : nil,
+                dailyExportKWh: hasPairs ? exportKWh : nil,
+                curve: records.map { CurvePoint(time: $0.time, kW: $0.time > limit ? nil : $0.consumptionW.map { $0 / 1000 }) })
+        }
         return SolarSnapshot(
             stationName: nil,
             currentPowerKW: current,
             dailyEnergyKWh: energy,
             curve: curve,
             fetchedAt: fetchedAt,
-            dataAsOf: curve.last { $0.kW != nil }?.time
+            dataAsOf: curve.last { $0.kW != nil }?.time,
+            home: home
         )
     }
 

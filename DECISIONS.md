@@ -80,3 +80,10 @@ Each entry: decision, why, how to change it.
 - Known edge: the 20-minute reuse and the stale checks use the Madrid day; outside that time zone (Portugal, Canary Islands) the hour around midnight can show the previous day's snapshot a little longer.
 - Test data: SolarEdge and PVOutput fixtures are synthetic, written from the documented formats (no real account was available). Run a live check with a real site before release.
 - Change: add a case to `SolarProvider` and `SolarAccount` (see AGENTS.md, "Adding things").
+
+## D16. Home consumption, only with a meter at home (user request, 2026-10-17)
+- `SolarSnapshot.home: HomeEnergy?`: consumption now, grid now (+ buying, − selling), today's consumption, import and export, consumption curve, and self-sufficiency (1 − import / consumption). Nil when the plant has no meter at home: export-only plants (like the developer's) and the FusionSolar kiosk show nothing new. User rule: no consumption numbers unless the plant reports them.
+- SolarEdge: the curve request is now `powerDetails` (meters Production, Consumption, FeedIn, Purchased, SelfConsumption) instead of `power`, so still 2 requests per fetch. Without a Production meter in the answer it falls back to `power` (one more request). "Now" is the latest 15-minute average if at most 30 min old; today's totals are the 15-minute values summed.
+- PVOutput: the history's consumption columns (energy Wh, power W) when the uploader sends them. Import and export are worked out from the power readings of consecutive statuses (gaps over 30 min skipped).
+- Shown in the app's solar card (home now, buying/selling, used today and share from the panels) and as one line next to "Production" in the large widget. Not in small/medium widgets, Lock Screen, watch or Siri yet.
+- Test data is synthetic (SolarEdge format from the open-source client `clambin/solaredge`, PVOutput columns from `openclimatefix/pvoutput`).

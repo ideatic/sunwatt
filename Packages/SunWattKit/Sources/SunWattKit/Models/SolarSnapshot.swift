@@ -11,6 +11,46 @@ public struct CurvePoint: Codable, Hashable, Sendable {
     }
 }
 
+/// What the house uses and trades with the grid, from a meter at the connection point. Only plants with such a
+/// meter report it (SolarEdge with a meter, PVOutput when the uploader sends consumption). Export-only plants and the
+/// FusionSolar kiosk have none: `SolarSnapshot.home` is nil and the views show nothing about it.
+public struct HomeEnergy: Codable, Hashable, Sendable {
+    /// What the house uses now (kW).
+    public var consumptionKW: Double?
+    /// Power from the grid now (kW): positive when buying, negative when selling.
+    public var gridKW: Double?
+    /// Energy the house used today (kWh).
+    public var dailyConsumptionKWh: Double?
+    /// Energy bought from the grid today (kWh).
+    public var dailyImportKWh: Double?
+    /// Energy sold to the grid today (kWh).
+    public var dailyExportKWh: Double?
+    /// Today's consumption curve, same time base as the production curve.
+    public var curve: [CurvePoint]
+
+    public init(
+        consumptionKW: Double?,
+        gridKW: Double?,
+        dailyConsumptionKWh: Double?,
+        dailyImportKWh: Double? = nil,
+        dailyExportKWh: Double? = nil,
+        curve: [CurvePoint] = []
+    ) {
+        self.consumptionKW = consumptionKW
+        self.gridKW = gridKW
+        self.dailyConsumptionKWh = dailyConsumptionKWh
+        self.dailyImportKWh = dailyImportKWh
+        self.dailyExportKWh = dailyExportKWh
+        self.curve = curve
+    }
+
+    /// Share of today's consumption covered by the panels (0...1): 1 − import / consumption. Nil when unknown.
+    public var selfSufficiency: Double? {
+        guard let used = dailyConsumptionKWh, used > 0.05, let bought = dailyImportKWh else { return nil }
+        return min(max(1 - bought / used, 0), 1)
+    }
+}
+
 /// Solar data parsed from a FusionSolar kiosk response.
 public struct SolarSnapshot: Codable, Hashable, Sendable {
     public var stationName: String?
@@ -29,6 +69,9 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
     /// One-way identifier of the kiosk link (host + token) this snapshot came from, set by `SunWattLoader`
     /// (see `KioskEndpoint.cacheID`). Nil in caches written before this field existed: those never match a link.
     public var endpointID: String?
+    /// Home consumption and grid exchange. Nil when the plant has no meter (export only, or the source has no such
+    /// data): then nothing about consumption is shown.
+    public var home: HomeEnergy?
 
     public init(
         stationName: String? = nil,
@@ -40,7 +83,8 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
         curve: [CurvePoint],
         fetchedAt: Date,
         dataAsOf: Date?,
-        endpointID: String? = nil
+        endpointID: String? = nil,
+        home: HomeEnergy? = nil
     ) {
         self.stationName = stationName
         self.currentPowerKW = currentPowerKW
@@ -52,6 +96,7 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
         self.fetchedAt = fetchedAt
         self.dataAsOf = dataAsOf
         self.endpointID = endpointID
+        self.home = home
     }
 
     /// True when the plant is not producing (night or no data).

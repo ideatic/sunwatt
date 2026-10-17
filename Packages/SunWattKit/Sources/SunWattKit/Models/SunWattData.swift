@@ -60,6 +60,7 @@ public struct SunWattEntry: Hashable, Sendable {
         solar.currentPowerKW = nil
         solar.dailyEnergyKWh = nil
         solar.dataAsOf = nil
+        solar.home = nil
         return solar
     }
 

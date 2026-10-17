@@ -169,14 +169,14 @@ private func sampleCredentials(_ id: String = "1234567", _ key: String = edgeKey
     @Test func fetchRequestsOverviewAndTodaysPower() async throws {
         let http = StubHTTPClient()
         http.on("/overview", .ok(try Fixture.data("solaredge-overview-synthetic.json")))
-        http.on("/power", .ok(try Fixture.data("solaredge-power-synthetic.json")))
+        http.on("/powerDetails", .ok(try Fixture.data("solaredge-powerdetails-nometer-synthetic.json")))
         let client = SolarEdgeClient(credentials: sampleCredentials(), http: http, now: { providerNow }, calendar: Constants.madridCalendar)
         let s = try await client.fetch()
         #expect(s.curve.count == 96)
         let urls = http.requestedURLs.map(\.absoluteString)
         #expect(urls.count == 2)
         #expect(urls.allSatisfy { $0.hasPrefix("https://monitoringapi.solaredge.com/site/1234567/") && $0.contains("api_key=\(edgeKey)") })
-        let power = try #require(http.requestedURLs.first { $0.path.hasSuffix("/power") })
+        let power = try #require(http.requestedURLs.first { $0.path.hasSuffix("/powerDetails") })
         let items = URLComponents(url: power, resolvingAgainstBaseURL: false)?.queryItems ?? []
         #expect(items.first { $0.name == "startTime" }?.value == "2026-06-01 00:00:00")
         #expect(items.first { $0.name == "endTime" }?.value == "2026-06-01 23:59:59")
@@ -374,5 +374,126 @@ private func sampleCredentials(_ id: String = "1234567", _ key: String = edgeKey
         if case .success(let solar) = await model.testSolarAPI(provider: .pvOutput, siteID: "42", apiKey: pvKey) {
             #expect(solar.currentPowerKW != nil)
         } else { Issue.record("expected success in demo") }
+    }
+}
+
+// MARK: Home consumption (only with a meter at home)
+
+@Suite struct HomeEnergyTests {
+    private let calendar = Constants.madridCalendar
+    private let now = madrid(2026, 6, 1, 12, 35)
+
+    private func edge(details: String) throws -> SolarSnapshot {
+        try SolarEdgeClient.parse(
+            overview: Fixture.data("solaredge-overview-synthetic.json"), power: Fixture.data(details),
+            fetchedAt: now, calendar: calendar)
+    }
+
+    @Test func solarEdgeMeterGivesConsumptionAndGrid() throws {
+        let s = try edge(details: "solaredge-powerdetails-meter-synthetic.json")
+        // Production still comes from the details.
+        #expect(s.curve.count == 96)
+        #expect(s.latestPoint?.time == madrid(2026, 6, 1, 12, 30))
+        let home = try #require(s.home)
+        #expect(home.consumptionKW == 0.6)
+        #expect(abs((home.gridKW ?? 0) - -4.230679) < 1e-9)
+        #expect(abs((home.dailyConsumptionKWh ?? 0) - 8.55) < 1e-9)
+        #expect(abs((home.dailyImportKWh ?? 0) - 5.278748) < 1e-6)
+        #expect(abs((home.dailyExportKWh ?? 0) - 12.445927) < 1e-6)
+        #expect(abs((home.selfSufficiency ?? 0) - (1 - 5.278748 / 8.55)) < 1e-6)
+        #expect(home.curve.count == 96)
+    }
+
+    @Test func solarEdgeWithoutMeterShowsNoConsumption() throws {
+        let s = try edge(details: "solaredge-powerdetails-nometer-synthetic.json")
+        #expect(s.home == nil)
+        #expect(s.curve.count == 96)
+        // The plain `power` body (older format) has no meters either.
+        #expect(try edge(details: "solaredge-power-synthetic.json").home == nil)
+    }
+
+    @Test func solarEdgeFetchUsesPowerDetails() async throws {
+        let http = StubHTTPClient()
+        http.on("/overview", .ok(try Fixture.data("solaredge-overview-synthetic.json")))
+        http.on("/powerDetails", .ok(try Fixture.data("solaredge-powerdetails-meter-synthetic.json")))
+        let client = SolarEdgeClient(credentials: SolarAPICredentials(siteID: "1", apiKey: "ABCDEFGH12345678")!, http: http, now: { madrid(2026, 6, 1, 12, 35) }, calendar: Constants.madridCalendar)
+        let s = try await client.fetch()
+        #expect(s.home != nil)
+        #expect(http.requestedURLs.count == 2)
+        #expect(http.requestedURLs.contains { $0.path.hasSuffix("/powerDetails") })
+    }
+
+    @Test func solarEdgeFallsBackToPowerWithoutProductionMeter() async throws {
+        let http = StubHTTPClient()
+        http.on("/overview", .ok(try Fixture.data("solaredge-overview-synthetic.json")))
+        http.on("/powerDetails", .ok(Data(#"{"powerDetails":{"timeUnit":"QUARTER_OF_AN_HOUR","unit":"W","meters":[]}}"#.utf8)))
+        http.on("/power", .ok(try Fixture.data("solaredge-power-synthetic.json")))
+        let client = SolarEdgeClient(credentials: SolarAPICredentials(siteID: "1", apiKey: "ABCDEFGH12345678")!, http: http, now: { madrid(2026, 6, 1, 12, 35) }, calendar: Constants.madridCalendar)
+        let s = try await client.fetch()
+        #expect(s.curve.count == 96)
+        #expect(s.home == nil)
+        #expect(http.requestedURLs.count == 3)
+    }
+
+    @Test func pvOutputConsumptionColumns() throws {
+        let s = try PVOutputClient.parse(Fixture.data("pvoutput-status-consumption-synthetic.txt"), fetchedAt: now, calendar: calendar)
+        let home = try #require(s.home)
+        #expect(home.consumptionKW == 0.7)
+        #expect(abs((home.gridKW ?? 0) - -4.131) < 1e-9)
+        #expect(abs((home.dailyConsumptionKWh ?? 0) - 3.908) < 1e-9)
+        #expect(abs((home.dailyImportKWh ?? 0) - 0.216875) < 1e-6)
+        #expect(abs((home.dailyExportKWh ?? 0) - 11.483167) < 1e-6)
+        #expect(home.curve.count == 67)
+    }
+
+    @Test func pvOutputWithoutConsumptionShowsNone() throws {
+        let s = try PVOutputClient.parse(Fixture.data("pvoutput-status-synthetic.txt"), fetchedAt: now, calendar: calendar)
+        #expect(s.home == nil)
+    }
+
+    @Test func oldConsumptionIsNotNow() throws {
+        let s = try PVOutputClient.parse(Fixture.data("pvoutput-status-consumption-synthetic.txt"), fetchedAt: madrid(2026, 6, 1, 14, 0), calendar: calendar)
+        #expect(s.home?.consumptionKW == nil)
+        #expect(s.home?.gridKW == nil)
+        #expect(s.home?.dailyConsumptionKWh != nil)
+    }
+
+    @Test func kioskHasNoConsumption() throws {
+        let s = try FusionSolarKioskClient.parse(Fixture.data("kiosk-night.json"), fetchedAt: now, day: now)
+        #expect(s.home == nil)
+    }
+
+    @Test func snapshotsWithoutHomeStillDecode() throws {
+        var snapshot = storeSampleSolar()
+        snapshot.home = nil
+        var json = try JSONSerialization.jsonObject(with: JSONEncoder().encode(snapshot)) as! [String: Any]
+        json.removeValue(forKey: "home")
+        let decoded = try JSONDecoder().decode(SolarSnapshot.self, from: JSONSerialization.data(withJSONObject: json))
+        #expect(decoded.home == nil)
+        #expect(decoded.curve == snapshot.curve)
+    }
+
+    @Test func homeIsClearedAfterMidnightLikeTheCurve() throws {
+        var snapshot = storeSampleSolar(fetchedAt: madrid(2026, 6, 1, 20, 0))
+        snapshot.home = HomeEnergy(consumptionKW: 0.5, gridKW: 0.5, dailyConsumptionKWh: 9)
+        let entry = SunWattEntry(date: madrid(2026, 6, 2, 0, 30), data: SunWattData(solar: snapshot, prices: nil, solarStatus: .fresh, priceStatus: .fresh))
+        #expect(entry.solarForDisplay?.home == nil)
+    }
+
+    @Test func selfSufficiencyNeedsImportAndUse() {
+        #expect(HomeEnergy(consumptionKW: nil, gridKW: nil, dailyConsumptionKWh: 10, dailyImportKWh: 4).selfSufficiency == 0.6)
+        #expect(HomeEnergy(consumptionKW: nil, gridKW: nil, dailyConsumptionKWh: 10).selfSufficiency == nil)
+        #expect(HomeEnergy(consumptionKW: nil, gridKW: nil, dailyConsumptionKWh: 0, dailyImportKWh: 0).selfSufficiency == nil)
+        #expect(HomeEnergy(consumptionKW: nil, gridKW: nil, dailyConsumptionKWh: 1, dailyImportKWh: 3).selfSufficiency == 0)
+    }
+
+    @Test func widgetCaptionOnlyWithAMeter() {
+        var snapshot = storeSampleSolar()
+        let entry = { SunWattEntry(date: madrid(2026, 6, 1, 12, 0), data: SunWattData(solar: snapshot, prices: nil, solarStatus: .fresh, priceStatus: .fresh)) }
+        #expect(SolarModel(entry: entry()).homeCaption == nil)
+        snapshot.home = HomeEnergy(consumptionKW: 1.2, gridKW: -0.8, dailyConsumptionKWh: 5)
+        let caption = SolarModel(entry: entry()).homeCaption
+        #expect(caption != nil)
+        #expect(caption?.contains("1") == true)
     }
 }

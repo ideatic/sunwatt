@@ -146,7 +146,8 @@ public final class AppModel {
         widgetCount: Int? = 0,
         solarConfigured: Bool = true,
         showsOnboarding: Bool = false,
-        isLoading: Bool = false
+        isLoading: Bool = false,
+        home: HomeEnergy? = nil
     ) {
         self.init(launch: AppLaunchOptions(demo: true, screen: showsOnboarding ? .onboarding : .dashboard, scenario: scenario.rawValue, widgets: widgetCount ?? 0))
         self.settings = settings
@@ -160,6 +161,7 @@ public final class AppModel {
             self.isLoading = true
         } else {
             applyDemo(scenarioName: scenario.rawValue)
+            if let home { data?.solar?.home = home }
         }
     }
 

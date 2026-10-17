@@ -29,6 +29,8 @@
 
 - [x] CI: GitHub workflow `Verify` runs `scripts/verify.sh` on an Xcode 27 Mac runner (unsigned).
 
+- [x] Home consumption for plants with a meter at home (SolarEdge, PVOutput), hidden for export-only plants (DECISIONS D16). Dashboard section + large widget line; new screenshot kind `dashboardHome`.
+
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
 - Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).

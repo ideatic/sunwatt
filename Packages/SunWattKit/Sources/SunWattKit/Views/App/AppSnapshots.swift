@@ -15,6 +15,7 @@ public struct AppSnapshotView: View {
         case dashboardSelection
         case dashboardTomorrow
         case dashboardWidgetAdded
+        case dashboardHome
         case settings
         case settingsTest
         case settingsInvalid
@@ -111,6 +112,10 @@ public struct AppSnapshotView: View {
             return AppModel(demo: .day, settings: settings, widgetCount: 0, solarConfigured: false)
         case .dashboardWidgetAdded:
             return AppModel(demo: .day, settings: settings, widgetCount: 2)
+        case .dashboardHome:
+            // A plant with a meter at home: consumption, selling the surplus, today's share from the panels.
+            let home = HomeEnergy(consumptionKW: 0.9, gridKW: -3.9, dailyConsumptionKWh: 6.4, dailyImportKWh: 2.1, dailyExportKWh: 9.8)
+            return AppModel(demo: .day, settings: settings, widgetCount: 0, home: home)
         case .settingsInvalid:
             settings.kioskURL = "eu5.fusionsolar.huawei.com/kiosk"
             return AppModel(demo: .day, settings: settings, widgetCount: 1)

@@ -130,7 +130,7 @@ struct ChartCaption: View {
             // Section labels are small caps; units are never uppercased ("€/kWh", not "€/KWH").
             wtext(title).textCase(.uppercase)
             Spacer(minLength: 4)
-            if let trailing { Text(verbatim: trailing).textCase(nil) }
+            if let trailing { Text(verbatim: trailing).textCase(nil).minimumScaleFactor(0.8) }
         }
         .font(.system(.caption2, design: .rounded).weight(.semibold))
         .foregroundStyle(.secondary)
