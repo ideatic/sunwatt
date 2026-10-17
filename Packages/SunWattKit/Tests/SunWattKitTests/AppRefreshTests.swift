@@ -324,3 +324,45 @@ private func waitUntil(_ condition: () -> Bool) async {
 }
 
 #endif
+
+@Suite struct SunWattLinkTests {
+    @Test func parsesTheRefreshLink() {
+        #expect(SunWattLink(url: SunWattLink.refreshURL) == .refresh)
+        #expect(SunWattLink(url: URL(string: "SUNWATT://Refresh")!) == .refresh)
+    }
+
+    @Test func ignoresOtherURLs() {
+        #expect(SunWattLink(url: URL(string: "sunwatt://settings")!) == nil)
+        #expect(SunWattLink(url: URL(string: "https://refresh")!) == nil)
+    }
+}
+
+/// A widget tap opens the app with `SunWattLink.refresh`: the app loads and reloads the widgets.
+@MainActor @Suite struct WidgetTapRefreshTests {
+    @Test func refreshLinkLoadsAndReloadsWidgets() async {
+        let (model, started, reloads) = makeModel(slow: [])
+        await model.open(SunWattLink.refreshURL)
+        #expect(started.all == [.spain])
+        #expect(model.hasLoaded)
+        #expect(reloads.count == 1)
+    }
+
+    @Test func unknownLinkDoesNothing() async {
+        let (model, started, reloads) = makeModel(slow: [])
+        await model.open(URL(string: "sunwatt://nothing")!)
+        #expect(started.all.isEmpty)
+        #expect(reloads.count == 0)
+    }
+
+    @Test func becomingActiveDoesNotReplaceTheTapRefresh() async {
+        let (model, started, _) = makeModel(slow: [.spain])
+        let tap = Task { await model.open(SunWattLink.refreshURL) }
+        await waitUntil { started.all.count == 1 }
+        await model.didBecomeActive()
+        // The tap's fetch keeps running; no second (cache-window) load replaces it.
+        #expect(started.all.count == 1)
+        #expect(model.isLoading)
+        tap.cancel()
+        await tap.value
+    }
+}

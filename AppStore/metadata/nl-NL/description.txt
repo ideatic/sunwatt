@@ -22,7 +22,7 @@ WIDGETS
 • Twee bedieningselementen in het Bedieningspaneel: prijs en zonne-opbrengst
 • Kies zon, prijs of allebei
 • Hele dag, of de afgelopen 6 en komende 12 uur
-• Tik op een widget om te verversen
+• Tik op een widget om de app te openen met verse gegevens
 • Licht, donker, getint en doorzichtig
 
 SIRI EN SNELKOPPELINGEN

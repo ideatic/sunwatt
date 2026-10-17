@@ -21,7 +21,7 @@ WIDGETS
 • Steuerelemente im Kontrollzentrum für Preis und Solar
 • Solar, Preis oder beides
 • Ganzer Tag, oder die letzten 6 und nächsten 12 Stunden
-• Widget antippen, um es zu aktualisieren
+• Widget antippen, um die App mit aktuellen Daten zu öffnen
 • Hell, dunkel, getönt und klar
 
 SIRI UND KURZBEFEHLE

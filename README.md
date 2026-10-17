@@ -39,7 +39,7 @@ Demo data. All renders come from `SunWattSnapshots` / `SunWattWatchSnapshots` (c
 
 ## What is in it
 
-- **Widgets** (iPhone, iPad, Mac): small, medium, large; Lock Screen rectangular and circular. Configurable: solar / price / both, whole day or previous 6 h + next 12 h. Tap a widget to refresh it.
+- **Widgets** (iPhone, iPad, Mac): small, medium, large; Lock Screen rectangular and circular. Configurable: solar / price / both, whole day or previous 6 h + next 12 h. Tap a widget to open the app with fresh data.
 - **Controls** (Control Center / Lock Screen): current price, current solar power.
 - **Siri and Shortcuts**: "What's the electricity price in SunWatt?", solar production, cheapest hours.
 - **App**: onboarding, dashboard with interactive charts, settings (country, kiosk link with "Test connection" and a how-to), guide to add widgets.

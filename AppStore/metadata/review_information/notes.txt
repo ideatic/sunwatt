@@ -12,7 +12,7 @@ We give you a read-only Huawei FusionSolar kiosk link of the developer's own hom
 3. On the "Solar production" page choose Huawei FusionSolar, paste the demo kiosk link in "Kiosk link" and tap "Test connection". It shows "Connected". Finish the onboarding.
 4. The dashboard shows today's solar curve and energy, plus the current price, today's price chart and the cheapest upcoming hours. Tomorrow's prices appear later in the day, when the data provider publishes them. At night the plant produces 0 kW; this is expected.
 5. Add a widget: touch and hold the Home Screen, tap "Edit" > "Add Widget", search "SunWatt". Choose small, medium or large; the widget shows solar and price. Lock Screen widgets and the Control Center controls can be added the same way.
-6. Tap a widget to refresh it.
+6. Tap a widget: the app opens and loads fresh data, and the widgets update.
 7. Siri / Shortcuts: say "What's the electricity price in SunWatt?".
 8. On the Mac, the gear button in the toolbar opens Settings ("Solar system").
 Huawei kiosk links can expire. If the link stops working, write to contacto@ideatic.net and we send a new one at once.

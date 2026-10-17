@@ -21,7 +21,7 @@ WIDGET
 • Due controlli nel Centro di Controllo: prezzo e produzione solare
 • Scegli solare, prezzo o entrambi
 • Giornata intera, oppure le 6 ore precedenti e le 12 successive
-• Tocca un widget per aggiornarlo
+• Tocca un widget per aprire l’app con dati aggiornati
 • Aspetto chiaro, scuro, tinto e trasparente
 
 SIRI E COMANDI RAPIDI

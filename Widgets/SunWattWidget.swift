@@ -58,19 +58,10 @@ struct SunWattWidgetEntryView: View {
 
     var body: some View {
         let family = SunWattFamily(widgetFamily) ?? .medium
-        // The whole surface is the tap target: refresh the data. Nothing looks like a button, and tapping no longer
-        // opens the app (so no widgetURL). The button is an invisible layer on top of the content: on iOS 27 a
-        // `Button(intent:)` that wraps the whole widget is ignored and the tap opens the app instead (checked in the
-        // simulator; an overlay button refreshes). Accessory widgets support Button(intent:) too.
+        // A tap opens the app, which loads fresh data and reloads the widgets (`SunWattLink.refreshURL`). An in-place
+        // refresh only dimmed the widget for a moment and did not show what was happening.
         SunWattWidgetView(entry: entry.entry, family: family, content: entry.content, window: entry.window)
-            .invalidatableContent()
-            .overlay {
-                Button(intent: RefreshWidgetIntent()) {
-                    Color.clear.contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Refresh", tableName: "Intents", bundle: L10n.bundle))
-            }
+            .widgetURL(SunWattLink.refreshURL)
             .containerBackground(for: .widget) {
                 if family == .accessoryCircular {
                     AccessoryWidgetBackground()
@@ -91,7 +82,7 @@ struct SunWattWidget: Widget {
             SunWattWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("SunWatt")
-        .description("Solar production and electricity price. Tap to refresh.")
+        .description("Solar production and electricity price. Tap to open the app with fresh data.")
         .supportedFamilies(Self.families)
     }
 

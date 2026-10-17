@@ -22,7 +22,7 @@ WIDGETS
 • Dois controlos no Centro de Controlo: preço e solar
 • Escolhe solar, preço ou ambos
 • Dia completo, ou as 6 horas anteriores e as 12 seguintes
-• Toca num widget para o atualizar
+• Toca num widget para abrir a app com dados atualizados
 • Aspeto claro, escuro, colorido e transparente
 
 SIRI E ATALHOS

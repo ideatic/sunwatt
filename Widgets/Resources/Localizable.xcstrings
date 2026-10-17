@@ -161,86 +161,6 @@
         }
       }
     },
-    "Solar plant": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solaranlage"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Instalación solar"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Installation solaire"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impianto solare"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonne-installatie"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Instalação solar"
-          }
-        }
-      }
-    },
-    "SunWatt": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SunWatt"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SunWatt"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SunWatt"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SunWatt"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SunWatt"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SunWatt"
-          }
-        }
-      }
-    },
     "Price only": {
       "localizations": {
         "es": {
@@ -481,6 +401,46 @@
         }
       }
     },
+    "Solar plant": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solaranlage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalación solar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installation solaire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impianto solare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonne-installatie"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalação solar"
+          }
+        }
+      }
+    },
     "Solar production": {
       "localizations": {
         "es": {
@@ -561,42 +521,82 @@
         }
       }
     },
-    "Solar production and electricity price. Tap to refresh.": {
+    "Solar production and electricity price. Tap to open the app with fresh data.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Producción solar y precio de la electricidad. Toca para actualizar."
+            "value": "Producción solar y precio de la luz. Toca para abrir la app con datos nuevos."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Produção solar e preço da eletricidade. Toca para atualizar."
+            "value": "Produção solar e preço da eletricidade. Toca para abrir a app com dados atualizados."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Production solaire et prix de l’électricité. Touchez pour actualiser."
+            "value": "Production solaire et prix de l’électricité. Touchez pour ouvrir l’app et actualiser les données."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solarerzeugung und Strompreis. Tippen zum Aktualisieren."
+            "value": "Solarerzeugung und Strompreis. Antippen, um die App mit aktuellen Daten zu öffnen."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Produzione solare e prezzo dell’elettricità. Tocca per aggiornare."
+            "value": "Produzione solare e prezzo dell’elettricità. Tocca per aprire l’app con dati aggiornati."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zonne-opbrengst en stroomprijs. Tik om te vernieuwen."
+            "value": "Zonne-opbrengst en stroomprijs. Tik om de app te openen met verse gegevens."
+          }
+        }
+      }
+    },
+    "SunWatt": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SunWatt"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SunWatt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SunWatt"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SunWatt"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SunWatt"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SunWatt"
           }
         }
       }

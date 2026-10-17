@@ -154,3 +154,10 @@ Each entry: decision, why, how to change it.
 - Localized names keep the "SunWatt:" prefix (en-US "SunWatt: Solar & Power", the App Store Connect record name).
 - Every description lists the same facts: both Control Center controls (price and solar), Watch app and complications with price and solar, several plants, optional live data at home. Siri is described, never quoted (phrases differ per language).
 - Italian app strings: "link Kiosk" (never "chiosco"), price label "Day-ahead" / "Prezzo day-ahead", Siri phrases "… su SunWatt", typographic apostrophe.
+
+## D25: A widget tap opens the app and refreshes
+
+- Decision: tapping a widget opens the app (`widgetURL(SunWattLink.refreshURL)`, scheme `sunwatt` in project.yml). The app treats it as an explicit refresh (`AppModel.open(_:)`, no cache window) and reloads the widgets. Control Center controls still refresh in place.
+- Why: the in-place refresh (`Button(intent: RefreshWidgetIntent())` over the widget) only dimmed the widget for a moment; widgets cannot show a spinner, so users could not tell what was happening. The app shows the loading state and the full data.
+- How to change: put the overlay button back in `SunWattWidgetEntryView` (git history has it) and the "Tap to refresh" texts.
+

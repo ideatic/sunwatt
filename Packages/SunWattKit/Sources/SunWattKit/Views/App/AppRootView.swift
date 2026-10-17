@@ -74,6 +74,7 @@ public struct AppRootView: View {
         .frame(minWidth: 760, minHeight: 560)
         #endif
         .task { await model.start() }
+        .onOpenURL { url in Task { await model.open(url) } }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await model.didBecomeActive() } }
         }

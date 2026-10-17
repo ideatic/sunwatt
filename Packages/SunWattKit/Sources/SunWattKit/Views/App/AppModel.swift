@@ -274,11 +274,23 @@ public final class AppModel {
     }
 
     /// Called when the app becomes active: re-checks the widgets, refreshes data older than 5 minutes.
+    /// A load already running (a widget tap, `open(_:)`) is left alone: it fetches newer data than this one would.
     public func didBecomeActive() async {
         await refreshWidgetCount()
-        guard !isDemo, !showsOnboarding else { return }
+        guard !isDemo, !showsOnboarding, !isLoading else { return }
         if let lastRefresh, Date().timeIntervalSince(lastRefresh) < 300 { return }
         await refresh(maxCacheAge: SunWattLoader.sharedCacheWindow)
+    }
+
+    /// Handles a URL the app was opened with. A widget tap (`SunWattLink.refresh`) is an explicit refresh: it
+    /// always fetches (no cache window). Rate limits still apply in the loader (`SolarProvider.minimumFetchInterval`).
+    public func open(_ url: URL) async {
+        guard let link = SunWattLink(url: url) else { return }
+        switch link {
+        case .refresh:
+            guard !showsOnboarding else { return }
+            await refresh()
+        }
     }
 
     /// Keeps the dashboard on the current time while the app is on screen: at each quarter hour (the shortest price

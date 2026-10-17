@@ -22,7 +22,7 @@ WIDGETS
 • Controles en el Centro de control para el precio y la producción solar
 • Elige solar, precio o ambos
 • Día completo, o las 6 horas anteriores y las 12 siguientes
-• Toca un widget para actualizarlo
+• Toca un widget para abrir la app con datos nuevos
 • Aspecto claro, oscuro, teñido y transparente
 
 SIRI Y ATAJOS

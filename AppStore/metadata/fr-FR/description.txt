@@ -21,7 +21,7 @@ WIDGETS
 • Contrôles du Centre de contrôle pour le prix et la production solaire
 • Solaire, prix ou les deux
 • Journée entière, ou les 6 heures précédentes et les 12 suivantes
-• Touchez un widget pour l’actualiser
+• Touchez un widget pour ouvrir l’app et actualiser les données
 • Apparence claire, sombre, teintée et transparente
 
 SIRI ET RACCOURCIS

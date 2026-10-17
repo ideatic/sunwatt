@@ -24,7 +24,7 @@ WIDGETS AND CONTROLS
 • Two Control Center controls: price and solar
 • Choose solar, price or both
 • Show the whole day, or the previous 6 hours plus the next 12
-• Tap a widget to refresh it
+• Tap a widget to open the app with fresh data
 • Light, dark, tinted and clear looks
 
 SIRI AND SHORTCUTS

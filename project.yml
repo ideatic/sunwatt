@@ -56,6 +56,10 @@ targets:
         INAlternativeAppNames:
           - INAlternativeAppName: Sun Watt
           - INAlternativeAppName: Sunwat
+        # sunwatt://refresh: a widget tap opens the app and refreshes the data (SunWattLink).
+        CFBundleURLTypes:
+          - CFBundleURLName: com.ideatic.sunwatt
+            CFBundleURLSchemes: [sunwatt]
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
