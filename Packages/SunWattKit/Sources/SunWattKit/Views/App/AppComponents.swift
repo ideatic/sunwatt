@@ -209,9 +209,11 @@ struct MiniStat: View {
     let value: String
     let unit: String
     let caption: LocalizedStringKey
+    /// `.trailing` for stats stacked at the right edge of a card.
+    var alignment: HorizontalAlignment = .leading
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: alignment, spacing: 1) {
             FigureText(value: value, unit: unit, size: 17)
             atext(caption)
                 .font(.system(.caption, design: .rounded).weight(.medium))
