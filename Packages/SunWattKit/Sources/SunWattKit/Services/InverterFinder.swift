@@ -11,7 +11,7 @@ public enum LocalInverterKind: Sendable {
     case sunSpec
 
     public init(provider: SolarProvider) {
-        self = provider == .fusionSolar ? .huawei : .sunSpec
+        self = provider.profile.localInverter
     }
 
     /// Ports tried when the address names none.

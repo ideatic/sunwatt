@@ -21,10 +21,36 @@ public extension URLSession {
     }()
 }
 
+/// A solar provider (cloud service, inverter on the home network, or both). Contract, checked for every provider by
+/// `ProviderContractTests`:
+///
+/// - **Snapshot.** `fetchedAt` is the device clock at the fetch (the client's `now`). `curve` holds today's points
+///   only (one local day, at most 25 hours apart, DST included), sorted by time, no two at the same time; a point's
+///   `kW` is nil for "no data", never negative. `currentPowerKW` and the energy figures are nil when unknown, never
+///   negative. `dataAsOf` is the time of the newest figure the provider reports. `endpointID` is left nil (the loader
+///   sets it). `isLive` is true only for figures read from the inverter just now; `cloudFetchedAt` is set only on such
+///   live snapshots.
+/// - **Errors.** Only `CancellationError` (the task was cancelled; never wrapped) or `SunWattError`:
+///   `.network` (no connection, timeout), `.http(status:)` (any other non-2xx), `.badResponse` (the body cannot be
+///   read), `.unavailable` (no data for today yet), and the account errors `.kioskLinkRejected`,
+///   `.solarCredentialsRejected`, `.inverterUnreachable`. The loader shows them to the user, so their text must
+///   never contain the kiosk token or an API key (`HTTPFetch.perform(redacting:)`).
+/// - **Budget.** One fetch must finish well within `SunWattLoader.load(deadline:)` (15 s) and stop when cancelled.
+///   Rate limits are the provider's `SolarProviderProfile.minimumFetchInterval`, applied by the loader, not here.
+/// - **No side effects.** No storage, no logging of secrets; the loader stores the result.
 public protocol SolarDataSource: Sendable {
     func fetch() async throws -> SolarSnapshot
 }
 
+/// An electricity price source. Contract, checked for every source by `ProviderContractTests`:
+///
+/// - **Series.** `region` is the source's region; points sorted by start, not overlapping, each with a positive
+///   duration (15 or 60 minutes, `granularity`); prices in €/MWh (negative allowed). `fetchedAt` is the device clock.
+///   A market day may have 23 or 25 hours (DST).
+/// - **Errors.** `CancellationError` or `SunWattError` (`.network`, `.http(status:)`, `.badResponse`, `.unavailable`
+///   when the day is not published), as for `SolarDataSource`.
+/// - **Budget.** Within the loader deadline, cancellable. Energy-Charts answers HTTP 429 to parallel requests: one
+///   request per call where the API allows it.
 public protocol PriceDataSource: Sendable {
     /// Fetches prices for the market day (in the source's time zone) that contains `day`.
     func fetch(day: Date) async throws -> PriceSeries
@@ -64,8 +90,8 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
         switch self {
         case .invalidKioskURL: L10n.string("The kiosk URL is not valid. It must contain the kk parameter.")
         case .kioskLinkRejected: L10n.string("Huawei no longer accepts this kiosk link. Kiosk links expire after a year: create a new one in FusionSolar and paste it in SunWatt.")
-        case .invalidInverterAddress: L10n.string("This is not a valid address. Use the dongle's IP address, for example 192.168.1.50.")
-        case .inverterUnreachable: L10n.string("The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is set to “Enable (unrestricted)” in the dongle.")
+        case .invalidInverterAddress: L10n.string("This is not a valid address. Use the IP address of the inverter or its dongle, for example 192.168.1.50.")
+        case .inverterUnreachable: L10n.string("The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is turned on (in a Huawei dongle: “Enable (unrestricted)”).")
         case .invalidSolarCredentials: L10n.string("The ID must be a number and the API key letters and digits only.")
         case .solarCredentialsRejected: L10n.string("The API key or the ID was rejected. Check both, and that API access is on.")
         case .notConfigured: L10n.string("Set up your solar system in Settings.")

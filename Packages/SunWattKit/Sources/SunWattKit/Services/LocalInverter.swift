@@ -70,7 +70,17 @@ public struct LiveInverterReading: Hashable, Sendable {
     }
 }
 
-/// An inverter that can be read on the home network.
+/// An inverter that can be read on the home network (Modbus TCP, read-only). Contract, checked for every reader by
+/// `ProviderContractTests`:
+///
+/// - **Reading.** `activePowerKW` is finite (may be slightly negative at night; callers clamp it). Energy figures are
+///   nil when the inverter does not count them, never negative. `identifyLive` returns the same reading as `readLive`
+///   plus the model name when the inverter reports one.
+/// - **Errors.** `CancellationError`; `SunWattError.inverterUnreachable` when there is no connection (away from home,
+///   port closed, Modbus TCP off); `ModbusFrame.Failure` when a device answered but not as this kind of inverter
+///   (wrong unit ID, another device, Modbus exception): callers try the next unit ID only then.
+/// - **Budget.** One connection per call, closed afterwards; callers put a deadline on it (5 s for live reads) and
+///   the reader stops when cancelled. Never writes a register.
 public protocol LocalInverterReader: Sendable {
     func readLive() async throws -> LiveInverterReading
     /// The model name (when the inverter gives it) and a reading, on one connection. Used by "Find inverter".

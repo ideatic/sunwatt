@@ -384,7 +384,7 @@ public final class AppModel {
             if let solar = SampleData.entry(.day).data.solar { return .success(solar) }
             return .failure(SunWattError.unavailable)
         }
-        let account: SolarAccount = provider == .solarEdge ? .solarEdge(credentials) : .pvOutput(credentials)
+        guard let account = SolarAccount.api(provider, credentials) else { return .failure(SunWattError.invalidSolarCredentials) }
         // The test is the fetch: the refresh scheduled by saving the fields would send the same requests again
         // (SolarEdge allows 300 a day). Its result is kept for the saved account, then the dashboard refreshes
         // without asking the provider again (see `SolarProvider.minimumFetchInterval`).
@@ -488,7 +488,7 @@ public final class AppModel {
         guard case .success(let reading) = await SunWattLoader.race(deadline: 5, { try await reader.readLive() }),
               SolarAccount(settings: settings) == account else { return }
         let date = Date()
-        var snapshot = LocalInverterSolarClient.merge(reading, into: data?.solar, at: date, keepsBaseHome: account.provider != .fusionSolar)
+        var snapshot = LocalInverterSolarClient.merge(reading, into: data?.solar, at: date, keepsBaseHome: account.provider.profile.keepsCloudHome)
         snapshot.endpointID = data?.solar?.endpointID
         if data == nil { data = SunWattData(solar: nil, prices: nil, solarStatus: .fresh, priceStatus: .stale(since: date)) }
         data?.solar = snapshot
@@ -501,7 +501,7 @@ public final class AppModel {
     /// When the kiosk link stops working at the latest (saved + 1 year). Set only while the "renew soon" notice
     /// should show: from 30 days before, unless the user closed it or the link already counts as expired.
     var kioskExpiryNoticeDate: Date? {
-        guard settings.solarProvider == .fusionSolar, !settings.kioskExpiryNoticeDismissed,
+        guard settings.solarProvider.profile.setup == .kioskLink, !settings.kioskExpiryNoticeDismissed,
               !(data?.solarLinkExpired ?? false), KioskEndpoint(parsing: settings.kioskURL) != nil,
               let saved = settings.kioskLinkSavedAt,
               let expiry = Calendar.current.date(byAdding: .year, value: 1, to: saved),

@@ -69,7 +69,7 @@ public struct FusionSolarKioskClient: SolarDataSource {
             curve: curve,
             fetchedAt: fetchedAt,
             dataAsOf: curve.last { $0.kW != nil }?.time
-        )
+        ).clampingProduction()
     }
 
     /// Lenient number: JSON number or numeric string. Anything else (`"-"`, `""`, null) is nil.

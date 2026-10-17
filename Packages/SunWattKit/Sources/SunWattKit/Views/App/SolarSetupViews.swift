@@ -2,26 +2,6 @@
 // App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
 
-extension SolarProvider {
-    /// Short name for the provider picker (three fit side by side on a phone).
-    var shortName: String {
-        switch self {
-        case .fusionSolar: "FusionSolar"
-        case .solarEdge: "SolarEdge"
-        case .pvOutput: "PVOutput"
-        }
-    }
-
-    /// Where the user finds the ID and API key.
-    var portalURL: URL? {
-        switch self {
-        case .fusionSolar: nil
-        case .solarEdge: URL(string: "https://monitoring.solaredge.com")
-        case .pvOutput: URL(string: "https://pvoutput.org/account.jsp")
-        }
-    }
-}
-
 /// Provider picker + the editor of the selected provider + its help. Used by settings and onboarding.
 struct SolarSetupEditor: View {
     let model: AppModel
@@ -37,8 +17,8 @@ struct SolarSetupEditor: View {
         let provider = model.settings.solarProvider
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             SolarProviderPicker(selection: providerBinding)
-            switch provider {
-            case .fusionSolar:
+            switch provider.profile.setup {
+            case .kioskLink:
                 KioskLinkEditor(model: model, initialTest: initialTest)
                 hairline
                 Button { present(.kioskHelp) } label: {
@@ -49,7 +29,7 @@ struct SolarSetupEditor: View {
                     hairline
                     InverterLinkEditor(model: model)
                 }
-            case .solarEdge, .pvOutput:
+            case .apiKey:
                 SolarAPIEditor(model: model, provider: provider, initialTest: initialTest)
                     .id(provider)
                 hairline
@@ -81,9 +61,7 @@ struct SolarSetupEditor: View {
 
     private func help(_ provider: SolarProvider) -> some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-            atext(provider == .solarEdge
-                  ? "In the SolarEdge monitoring portal open Admin, then Site Access and API Access. Accept the terms, then copy the API key and the site ID."
-                  : "On pvoutput.org open Settings. Turn on API Access, then copy the API Key and the System Id shown on that page.")
+            apiHelp(provider)
                 .font(.system(.footnote, design: .rounded))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -93,6 +71,15 @@ struct SolarSetupEditor: View {
                 }
                 .buttonStyle(SoftButtonStyle())
             }
+        }
+    }
+
+    /// Where the ID and key are found, per provider (exhaustive: a new provider needs its own text).
+    private func apiHelp(_ provider: SolarProvider) -> Text {
+        switch provider {
+        case .fusionSolar: Text(verbatim: "")
+        case .solarEdge: atext("In the SolarEdge monitoring portal open Admin, then Site Access and API Access. Accept the terms, then copy the API key and the site ID.")
+        case .pvOutput: atext("On pvoutput.org open Settings. Turn on API Access, then copy the API Key and the System Id shown on that page.")
         }
     }
 
@@ -177,10 +164,10 @@ struct SolarAPIEditor: View {
         let palette = AppPalette(scheme)
         let input = input
         VStack(alignment: .leading, spacing: Theme.Spacing.s) {
-            fieldLabel(provider == .solarEdge ? "Site ID" : "System ID")
+            fieldLabel(idLabel)
             AppTextField(prompt: "123456", text: $siteID, onCommit: commit)
             fieldLabel("API key")
-            AppTextField(prompt: provider == .solarEdge ? "ABCD1234…" : "a1b2c3d4…", text: $apiKey, onCommit: commit)
+            AppTextField(prompt: keyPrompt, text: $apiKey, onCommit: commit)
             validationRow(input, palette: palette)
             HStack(spacing: Theme.Spacing.s) {
                 Button { runTest() } label: {
@@ -206,6 +193,21 @@ struct SolarAPIEditor: View {
         .onDisappear { commit() }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { commit() }
+        }
+    }
+
+    /// Field label and key example per provider (exhaustive: a new provider needs its own).
+    private var idLabel: LocalizedStringKey {
+        switch provider {
+        case .fusionSolar, .pvOutput: "System ID"
+        case .solarEdge: "Site ID"
+        }
+    }
+
+    private var keyPrompt: String {
+        switch provider {
+        case .fusionSolar, .pvOutput: "a1b2c3d4…"
+        case .solarEdge: "ABCD1234…"
         }
     }
 

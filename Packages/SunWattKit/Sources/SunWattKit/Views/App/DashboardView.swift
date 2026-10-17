@@ -77,7 +77,7 @@ struct DashboardContent: View {
                 message: Text(verbatim: message),
                 actions: [
                     .init(label: "Try again", prominent: true) { Task { await model.refresh() } },
-                    .init(label: model.settings.solarProvider == .fusionSolar ? "Check kiosk link" : "Settings") { model.present(.settings) },
+                    .init(label: model.settings.solarProvider.profile.setup == .kioskLink ? "Check kiosk link" : "Settings") { model.present(.settings) },
                 ])
         default:
             if let solar = entry.solarForDisplay {
@@ -374,7 +374,7 @@ private struct SolarSetupCard: View {
             HStack(spacing: Theme.Spacing.s) {
                 SettingsOpener(model: model) { atext("Set up solar") }
                     .buttonStyle(PrimaryButtonStyle(compact: true))
-                if model.settings.solarProvider == .fusionSolar {
+                if model.settings.solarProvider.profile.setup == .kioskLink {
                     Button { model.present(.kioskHelp) } label: { atext("How do I get it?") }
                         .buttonStyle(SoftButtonStyle(compact: true))
                 }

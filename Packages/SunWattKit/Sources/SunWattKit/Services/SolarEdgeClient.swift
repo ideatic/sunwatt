@@ -116,7 +116,7 @@ public struct SolarEdgeClient: SolarDataSource {
             fetchedAt: fetchedAt,
             dataAsOf: lastUpdate.map { min($0, fetchedAt) } ?? curve.last { $0.kW != nil }?.time,
             home: home
-        )
+        ).clampingProduction()
     }
 
     /// kW per unit. The unit is "W" in practice; "kW" and "MW" are handled in case a site reports them.

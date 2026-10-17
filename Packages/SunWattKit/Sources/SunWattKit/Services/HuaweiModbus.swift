@@ -78,7 +78,9 @@ enum ModbusFrame {
     }
 }
 
-/// A Modbus TCP connection: open, exchange whole frames, close.
+/// A Modbus TCP connection: open, exchange whole frames, close. `open` and `exchange` throw
+/// `SunWattError.inverterUnreachable` (or `CancellationError`) when the connection fails; `close` may be called more
+/// than once.
 public protocol ModbusTransport: Sendable {
     func open() async throws
     /// Sends a request frame and returns the complete response frame.

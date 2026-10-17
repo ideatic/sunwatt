@@ -698,43 +698,43 @@
         }
       }
     },
-    "The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is set to “Enable (unrestricted)” in the dongle." : {
+    "The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is turned on (in a Huawei dongle: “Enable (unrestricted)”)." : {
       "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El inversor no ha respondido. Revisa la dirección, que estés en tu Wi-Fi de casa y que Modbus TCP esté en “Enable (unrestricted)” en el dongle."
+            "value" : "El inversor no ha respondido. Revisa la dirección, que estés en tu Wi-Fi de casa y que Modbus TCP esté activado (en un dongle de Huawei: “Enable (unrestricted)”)."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O inversor não respondeu. Verifique o endereço, a ligação à rede Wi-Fi de casa e se o Modbus TCP está definido como “Enable (unrestricted)” no dongle."
+            "value" : "O inversor não respondeu. Verifique o endereço, a ligação à rede Wi-Fi de casa e se o Modbus TCP está ativado (num dongle Huawei: “Enable (unrestricted)”)."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’onduleur n’a pas répondu. Vérifiez l’adresse, que vous êtes bien connecté au Wi-Fi de la maison et que Modbus TCP est réglé sur “Enable (unrestricted)” dans le dongle."
+            "value" : "L’onduleur n’a pas répondu. Vérifiez l’adresse, que vous êtes bien connecté au Wi-Fi de la maison et que Modbus TCP est activé (sur un dongle Huawei : “Enable (unrestricted)”)."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Wechselrichter hat nicht geantwortet. Prüfe die Adresse, ob du im Heim-WLAN bist und ob im Dongle Modbus TCP auf “Enable (unrestricted)” eingestellt ist."
+            "value" : "Der Wechselrichter hat nicht geantwortet. Prüfe die Adresse, ob du im Heim-WLAN bist und ob Modbus TCP eingeschaltet ist (bei einem Huawei-Dongle: “Enable (unrestricted)”)."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’inverter non ha risposto. Controlla l’indirizzo, che tu sia connesso alla Wi-Fi di casa e che nel dongle Modbus TCP sia impostato su “Enable (unrestricted)”."
+            "value" : "L’inverter non ha risposto. Controlla l’indirizzo, che tu sia connesso alla Wi-Fi di casa e che Modbus TCP sia attivato (nel dongle Huawei: “Enable (unrestricted)”)."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De omvormer reageert niet. Controleer het adres, of je op je thuis-wifi zit en of Modbus TCP in de dongle op “Enable (unrestricted)” staat."
+            "value" : "De omvormer reageert niet. Controleer het adres, of je op je thuis-wifi zit en of Modbus TCP is ingeschakeld (bij een Huawei-dongle: “Enable (unrestricted)”)."
           }
         }
       }
@@ -821,43 +821,43 @@
       },
       "extractionState" : "manual"
     },
-    "This is not a valid address. Use the dongle's IP address, for example 192.168.1.50." : {
+    "This is not a valid address. Use the IP address of the inverter or its dongle, for example 192.168.1.50." : {
       "extractionState" : "manual",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No es una dirección válida. Usa la dirección IP del dongle, por ejemplo 192.168.1.50."
+            "value" : "No es una dirección válida. Usa la dirección IP del inversor o de su dongle, por ejemplo 192.168.1.50."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este não é um endereço válido. Use o endereço IP do dongle, por exemplo 192.168.1.50."
+            "value" : "Este não é um endereço válido. Use o endereço IP do inversor ou do respetivo dongle, por exemplo 192.168.1.50."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cette adresse n’est pas valide. Utilisez l’adresse IP du dongle, par exemple 192.168.1.50."
+            "value" : "Cette adresse n’est pas valide. Utilisez l’adresse IP de l’onduleur ou de son dongle, par exemple 192.168.1.50."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das ist keine gültige Adresse. Verwende die IP-Adresse des Dongles, zum Beispiel 192.168.1.50."
+            "value" : "Das ist keine gültige Adresse. Verwende die IP-Adresse des Wechselrichters oder seines Dongles, zum Beispiel 192.168.1.50."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Non è un indirizzo valido. Usa l’indirizzo IP del dongle, per esempio 192.168.1.50."
+            "value" : "Non è un indirizzo valido. Usa l’indirizzo IP dell’inverter o del suo dongle, per esempio 192.168.1.50."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dit is geen geldig adres. Gebruik het IP-adres van de dongle, bijvoorbeeld 192.168.1.50."
+            "value" : "Dit is geen geldig adres. Gebruik het IP-adres van de omvormer of de dongle, bijvoorbeeld 192.168.1.50."
           }
         }
       }

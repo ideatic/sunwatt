@@ -12,23 +12,67 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
 
     public var id: String { rawValue }
 
-    /// Brand name, the same in every language.
-    public var displayName: String {
+    /// Everything SunWatt knows about the provider. The one place to describe a new one (with its client and its
+    /// `SolarAccount` case); the properties below only read it.
+    public var profile: SolarProviderProfile {
         switch self {
-        case .fusionSolar: "Huawei FusionSolar"
-        case .solarEdge: "SolarEdge"
-        case .pvOutput: "PVOutput"
+        case .fusionSolar:
+            SolarProviderProfile(
+                displayName: "Huawei FusionSolar", shortName: "FusionSolar", setup: .kioskLink, portalURL: nil,
+                minimumFetchInterval: 0, localInverter: .huawei, keepsCloudHome: false)
+        case .solarEdge:
+            // 300 requests a day per site, 2 per fetch: one fetch every 20 minutes is at most 144 a day per device, so
+            // an iPhone and a Watch together stay under the limit. Its curve has 15-minute points, so nothing is lost.
+            SolarProviderProfile(
+                displayName: "SolarEdge", shortName: "SolarEdge", setup: .apiKey,
+                portalURL: URL(string: "https://monitoring.solaredge.com"),
+                minimumFetchInterval: 20 * 60, localInverter: .sunSpec, keepsCloudHome: true)
+        case .pvOutput:
+            // 60 requests an hour: no limit needed at SunWatt's refresh rate.
+            SolarProviderProfile(
+                displayName: "PVOutput", shortName: "PVOutput", setup: .apiKey,
+                portalURL: URL(string: "https://pvoutput.org/account.jsp"),
+                minimumFetchInterval: 0, localInverter: .sunSpec, keepsCloudHome: true)
         }
     }
 
+    /// Brand name, the same in every language.
+    public var displayName: String { profile.displayName }
+    /// Short name for the provider picker (three fit side by side on a phone).
+    public var shortName: String { profile.shortName }
+    /// Where the user finds the ID and API key.
+    public var portalURL: URL? { profile.portalURL }
     /// True when the provider is set up with an ID + API key (not a link).
-    public var usesAPIKey: Bool { self != .fusionSolar }
-
+    public var usesAPIKey: Bool { profile.setup == .apiKey }
     /// Solar data younger than this is reused instead of fetched, even on an explicit refresh.
-    /// SolarEdge allows 300 requests a day per site and SunWatt sends 2 per fetch: one fetch every 20 minutes is at
-    /// most 144 a day per device, so an iPhone and a Watch together stay under the limit. Its curve has 15-minute
-    /// points, so nothing is lost. FusionSolar and PVOutput (60 an hour) need no limit.
-    public var minimumFetchInterval: TimeInterval { self == .solarEdge ? 20 * 60 : 0 }
+    public var minimumFetchInterval: TimeInterval { profile.minimumFetchInterval }
+}
+
+/// What distinguishes one solar provider from another (`SolarProvider.profile`).
+public struct SolarProviderProfile: Sendable {
+    /// How the user connects the account.
+    public enum Setup: Sendable {
+        /// A public read-only link (FusionSolar kiosk). Links expire; the app warns before and after.
+        case kioskLink
+        /// An ID + API key (`SolarAPICredentials`), kept in the keychain.
+        case apiKey
+    }
+
+    /// Brand name, the same in every language.
+    public let displayName: String
+    /// Short name for the provider picker.
+    public let shortName: String
+    public let setup: Setup
+    /// Where the user finds the ID and API key; nil when the app explains it itself.
+    public let portalURL: URL?
+    /// The provider's request limit as SunWatt applies it: solar data (or a failure) younger than this is reused
+    /// instead of fetched, even on an explicit refresh. 0: no limit. The inverter on the home network is still read.
+    public let minimumFetchInterval: TimeInterval
+    /// Which inverter protocol "Live data at home" speaks for this provider.
+    public let localInverter: LocalInverterKind
+    /// Keep the cloud's home consumption next to live inverter data that has no meter reading (the provider's own
+    /// meter measures it). False: the inverter's meter is the only source (Huawei).
+    public let keepsCloudHome: Bool
 }
 
 /// Site/system ID + API key of SolarEdge or PVOutput. Both values are trimmed; the ID must be digits only and the
@@ -76,7 +120,17 @@ public enum SolarAccount: Hashable, Sendable {
             guard let credentials = SolarAPICredentials(siteID: settings.solarSiteID, apiKey: settings.solarAPIKey) else { return nil }
             // An address that does not parse is ignored, like the Huawei one: the cloud keeps working.
             let local = ModbusEndpoint(parsing: settings.sunSpecHost, unitID: settings.sunSpecUnitID)
-            self = settings.solarProvider == .solarEdge ? .solarEdge(credentials, local: local) : .pvOutput(credentials, local: local)
+            guard let account = Self.api(settings.solarProvider, credentials, local: local) else { return nil }
+            self = account
+        }
+    }
+
+    /// The account of an ID + API key provider; nil for a provider set up otherwise.
+    public static func api(_ provider: SolarProvider, _ credentials: SolarAPICredentials, local: ModbusEndpoint? = nil) -> SolarAccount? {
+        switch provider {
+        case .fusionSolar: nil
+        case .solarEdge: .solarEdge(credentials, local: local)
+        case .pvOutput: .pvOutput(credentials, local: local)
         }
     }
 
@@ -148,13 +202,13 @@ public enum SolarAccount: Hashable, Sendable {
     /// The inverter alone, without the cloud source: used while the cloud may not be asked again yet
     /// (`SolarProvider.minimumFetchInterval`). Nil without an inverter on the home network.
     public func liveOnlyClient() -> SolarDataSource? {
-        localReader().map { LocalInverterSolarClient(local: $0, cloud: nil, keepsCloudHome: provider != .fusionSolar) }
+        localReader().map { LocalInverterSolarClient(local: $0, cloud: nil, keepsCloudHome: provider.profile.keepsCloudHome) }
     }
 
     private func withLocal(_ local: ModbusEndpoint?, cloud: SolarDataSource) -> SolarDataSource {
         guard let local else { return cloud }
-        // SolarEdge and PVOutput get home consumption from their own meters: kept next to the live power.
-        return LocalInverterSolarClient(local: SunSpecClient(endpoint: local), cloud: cloud, keepsCloudHome: true)
+        return LocalInverterSolarClient(local: provider.profile.localInverter.reader(local, makeTransport: nil), cloud: cloud,
+                                        keepsCloudHome: provider.profile.keepsCloudHome)
     }
 }
 

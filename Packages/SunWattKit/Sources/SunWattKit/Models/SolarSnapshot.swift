@@ -104,6 +104,16 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
         self.home = home
     }
 
+    /// The provider contract (`SolarDataSource`): production is never negative. Inverters report a small standby draw
+    /// at night as negative power; it reads as 0.
+    public func clampingProduction() -> SolarSnapshot {
+        var snapshot = self
+        snapshot.currentPowerKW = currentPowerKW.map { max($0, 0) }
+        snapshot.curve = curve.map { CurvePoint(time: $0.time, kW: $0.kW.map { max($0, 0) }) }
+        snapshot.dailyEnergyKWh = dailyEnergyKWh.map { max($0, 0) }
+        return snapshot
+    }
+
     /// True when the plant is not producing (night or no data).
     public var isIdle: Bool { (currentPowerKW ?? 0) <= 0.01 }
 

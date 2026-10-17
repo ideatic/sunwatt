@@ -128,7 +128,7 @@ public struct PVOutputClient: SolarDataSource {
             fetchedAt: fetchedAt,
             dataAsOf: curve.last { $0.kW != nil }?.time,
             home: home
-        )
+        ).clampingProduction()
     }
 
     /// `yyyymmdd` + `HH:mm` in `calendar`'s time zone.

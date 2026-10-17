@@ -97,7 +97,7 @@ After any visual change: render, look at the PNGs (light/dark, day/night/stale/e
 
 ### Adding things
 
-- **Solar provider**: add a case to `SolarProvider` (+ `displayName`, `shortName`, `portalURL`, `minimumFetchInterval`), a client conforming to `SolarDataSource`, a case in `SolarAccount` (`init(settings:)`, `cacheID`, `client`), help text in `SolarSetupEditor`, strings in all languages, fixture + parser tests, and mention it in the privacy page and store texts.
+- **Solar provider**: add a case to `SolarProvider` and its `SolarProviderProfile` (name, setup kind, portal, request limit, local inverter kind), a client that keeps the `SolarDataSource` contract (written on the protocol), a case in `SolarAccount` (`init(settings:)`, `cacheID`, `client`), the per-provider texts in `SolarSetupViews` (the compiler points at each exhaustive `switch`), strings in all languages, fixtures + parser tests, **one case in `ProviderContractTests`** (the shared contract checks then run on it), and mention it in the privacy page and store texts. Same for a price source (`PriceDataSource`, `PriceContractCase`) or an inverter kind (`LocalInverterReader`, `InverterContractCase`).
 - **Price region**: add a case to `PriceRegion` (zone code, time zone, flag, source), add strings to `Core.xcstrings` in all languages, save a real fixture, add parser tests, run the live test once.
 - **User-facing string**: add the key to the right catalog with all 7 languages.
 - **Target setting / plist key**: change `project.yml`, never the generated project.
