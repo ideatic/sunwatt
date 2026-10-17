@@ -17,6 +17,9 @@ public final class AppGroupStore: @unchecked Sendable {
     /// Keeps the kiosk link and the API key out of the settings plist. Nil: everything in `defaults` (tests).
     private let secrets: SecretStore?
     private let lock = NSLock()
+    /// False when the App Group container could not be opened and the store uses the private fallback: then the app
+    /// and its widgets do not see each other's settings (DECISIONS D4).
+    public let usesAppGroup: Bool
 
     /// `defaults`, `directory` and `secrets` are injectable for tests. With injected defaults and directory and no
     /// `secrets`, secrets stay in `defaults`; the shared store uses the keychain (App Group access group).
@@ -25,11 +28,13 @@ public final class AppGroupStore: @unchecked Sendable {
             self.defaults = defaults
             self.directory = directory
             self.secrets = secrets
+            self.usesAppGroup = false
         } else {
             let location = Self.defaultLocation()
             self.defaults = defaults ?? location.defaults
             self.directory = directory ?? location.directory
             self.secrets = secrets ?? KeychainSecretStore(accessGroup: Constants.appGroupID)
+            self.usesAppGroup = location.shared
         }
     }
 
@@ -40,14 +45,14 @@ public final class AppGroupStore: @unchecked Sendable {
     private static func plantAPIKeySecret(_ id: String) -> String { "plant.\(id).apiKey" }
 
     /// Group defaults + group directory when the container exists, standard defaults + Application Support otherwise.
-    private static func defaultLocation() -> (defaults: UserDefaults, directory: URL) {
+    private static func defaultLocation() -> (defaults: UserDefaults, directory: URL, shared: Bool) {
         let fm = FileManager.default
         if let container = fm.containerURL(forSecurityApplicationGroupIdentifier: Constants.appGroupID),
            let groupDefaults = UserDefaults(suiteName: Constants.appGroupID) {
-            return (groupDefaults, container.appendingPathComponent("Library/Application Support/SunWatt", isDirectory: true))
+            return (groupDefaults, container.appendingPathComponent("Library/Application Support/SunWatt", isDirectory: true), true)
         }
         let support = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first ?? fm.temporaryDirectory
-        return (.standard, support.appendingPathComponent("SunWatt", isDirectory: true))
+        return (.standard, support.appendingPathComponent("SunWatt", isDirectory: true), false)
     }
 
     /// Settings from `defaults`, with the kiosk link and the API key from the keychain. A secret the keychain does

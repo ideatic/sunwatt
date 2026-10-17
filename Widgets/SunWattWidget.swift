@@ -1,6 +1,7 @@
 import WidgetKit
 import SwiftUI
 import SunWattKit
+import os
 
 /// One timeline entry: the shared data plus the widget configuration.
 struct SunWattTimelineEntry: TimelineEntry {
@@ -33,6 +34,10 @@ struct SunWattProvider: AppIntentTimelineProvider {
     }
 
     func timeline(for configuration: SunWattIntent, in context: Context) async -> Timeline<SunWattTimelineEntry> {
+        let store = AppGroupStore.shared
+        // Where the settings come from and whether solar is set up; never the link or key itself.
+        Logger(subsystem: "com.ideatic.sunwatt", category: "widget").notice(
+            "Timeline: app group \(store.usesAppGroup, privacy: .public), solar set up \(SolarAccount(settings: store.settings) != nil, privacy: .public)")
         let data = await SunWattLoader().load(maxCacheAge: SunWattLoader.sharedCacheWindow)
         let now = Date()
         // Several plants: rotating (default) or the plant chosen in the widget's settings. One plant: as always.
