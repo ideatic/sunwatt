@@ -125,7 +125,9 @@ public extension PriceSeries {
     func cheapestUpcoming(from date: Date, count: Int = 3, until: Date? = nil) -> [PricePoint] {
         guard count > 0 else { return [] }
         let current = Self.hourStart(of: date)
-        let upcoming = hourly().filter { $0.start >= current && (until.map { end in $0.start < end } ?? true) }
+        let upcoming = hourly().filter { point in
+            point.start >= current && (until.map { point.start < $0 } ?? true)
+        }
         let cheapest = upcoming.sorted { ($0.eurPerMWh, $0.start) < ($1.eurPerMWh, $1.start) }.prefix(count)
         return cheapest.sorted { $0.start < $1.start }
     }
