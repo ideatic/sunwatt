@@ -20,10 +20,19 @@ struct DashboardContent: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.l) {
             DashboardHeader(model: model)
             Group {
-                if idiom == .desktop {
-                    HStack(alignment: .top, spacing: Theme.Spacing.l) {
-                        solarSection(entry).frame(maxHeight: .infinity, alignment: .top)
-                        priceSection(entry).frame(maxHeight: .infinity, alignment: .top)
+                if idiom != .phone {
+                    // Two columns when there is room (Mac window, iPad); stacked in a narrow iPad split view.
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: Theme.Spacing.l) {
+                            solarSection(entry).frame(maxHeight: .infinity, alignment: .top)
+                            priceSection(entry).frame(maxHeight: .infinity, alignment: .top)
+                        }
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(minWidth: 620)
+                        VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+                            solarSection(entry)
+                            priceSection(entry)
+                        }
                     }
                 } else {
                     solarSection(entry)
@@ -89,16 +98,16 @@ private struct DashboardHeader: View {
     var body: some View {
         let palette = AppPalette(scheme)
         HStack(spacing: Theme.Spacing.m) {
-            if idiom == .phone {
+            if idiom != .desktop {
                 AppIconView(size: 40, style: .badge)
                     .shadow(color: .black.opacity(0.18), radius: 4, y: 2)
             }
             VStack(alignment: .leading, spacing: 1) {
                 Text(verbatim: dateText)
-                    .font(.system(idiom == .desktop ? .title : .title3, design: .rounded).weight(.bold))
+                    .font(.system(idiom != .phone ? .title : .title3, design: .rounded).weight(.bold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
-                if idiom == .phone {
+                if idiom != .desktop {
                     Text(verbatim: "SunWatt")
                         .font(.system(.footnote, design: .rounded).weight(.semibold))
                         .foregroundStyle(.secondary)
@@ -112,7 +121,7 @@ private struct DashboardHeader: View {
             if model.isLoading, model.hasLoaded {
                 ProgressView().controlSize(.small)
             }
-            if idiom == .phone {
+            if idiom != .desktop {
                 Button { model.present(.settings) } label: {
                     Image(systemName: "gearshape.fill")
                         .font(.system(size: 17, weight: .semibold))
@@ -164,6 +173,7 @@ private struct SolarCard: View {
     let isStale: Bool
     var initialSelection: Date?
     @Environment(\.redactionReasons) private var redaction
+    @Environment(\.appIdiom) private var idiom
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
@@ -210,7 +220,7 @@ private struct SolarCard: View {
                         InteractiveSolarChart(snapshot: solar, now: now, initialSelection: initialSelection)
                     }
                 }
-                .frame(height: 190)
+                .frame(height: idiom == .pad ? 250 : 190)
             }
         }
         .appCard()
@@ -285,6 +295,7 @@ private struct PriceCard: View {
 
     @State private var day: DayChoice
     @Environment(\.redactionReasons) private var redaction
+    @Environment(\.appIdiom) private var idiom
 
     init(series: PriceSeries, now: Date, isStale: Bool, startsOnTomorrow: Bool, initialSelection: Date?) {
         self.series = series
@@ -339,7 +350,7 @@ private struct PriceCard: View {
                             .id(shownDay)
                     }
                 }
-                .frame(height: 170)
+                .frame(height: idiom == .pad ? 230 : 170)
             }
 
             if let stats = context?.stats { statsRow(stats) }
@@ -490,9 +501,9 @@ struct DashboardScreen: View {
     var body: some View {
         ScrollView {
             DashboardContent(model: model)
-                .padding(.horizontal, idiom == .desktop ? Theme.Spacing.xl : Theme.Spacing.l)
+                .padding(.horizontal, idiom != .phone ? Theme.Spacing.xl : Theme.Spacing.l)
                 .padding(.vertical, idiom == .desktop ? Theme.Spacing.xl : Theme.Spacing.m)
-                .frame(maxWidth: idiom == .desktop ? 1000 : 720)
+                .frame(maxWidth: idiom == .desktop ? 1000 : (idiom == .pad ? 1100 : 720))
                 .frame(maxWidth: .infinity)
         }
         .refreshable { await model.refresh() }

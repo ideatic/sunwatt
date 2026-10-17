@@ -103,6 +103,7 @@ private struct SheetHost: View {
         .frame(minWidth: 560, idealWidth: 600, minHeight: 600, idealHeight: 680)
         #else
         .presentationDragIndicator(.visible)
+        .presentationSizing(.page)
         #endif
     }
 }

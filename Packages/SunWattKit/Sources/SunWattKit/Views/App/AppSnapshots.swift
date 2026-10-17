@@ -28,7 +28,12 @@ public struct AppSnapshotView: View {
         case kioskHelp
     }
 
-    public enum Device: String, Sendable { case phone, mac }
+    public enum Device: String, Sendable {
+        case phone, mac
+        /// iPad 13-inch, portrait (1032 x 1376 pt) and landscape (1376 x 1032 pt).
+        case pad = "ipad"
+        case padLandscape = "ipad-landscape"
+    }
 
     public let kind: Kind
     public let device: Device
@@ -46,10 +51,21 @@ public struct AppSnapshotView: View {
     }
 
     public static func size(for device: Device) -> CGSize {
-        device == .phone ? CGSize(width: 393, height: 852) : CGSize(width: 900, height: 640)
+        switch device {
+        case .phone: CGSize(width: 393, height: 852)
+        case .mac: CGSize(width: 900, height: 640)
+        case .pad: CGSize(width: 1032, height: 1376)
+        case .padLandscape: CGSize(width: 1376, height: 1032)
+        }
     }
 
-    private var idiom: AppIdiom { device == .phone ? .phone : .desktop }
+    private var idiom: AppIdiom {
+        switch device {
+        case .phone: .phone
+        case .mac: .desktop
+        case .pad, .padLandscape: .pad
+        }
+    }
     private var isSheet: Bool {
         switch kind {
         case .settings, .settingsTest, .settingsInvalid, .widgetGuide, .widgetGuideLock, .kioskHelp: true
@@ -63,6 +79,7 @@ public struct AppSnapshotView: View {
             switch device {
             case .phone: phone(size: size)
             case .mac: mac(size: size)
+            case .pad, .padLandscape: pad(size: size)
             }
         }
         .environment(\.appIdiom, idiom)
@@ -219,6 +236,47 @@ public struct AppSnapshotView: View {
     }
 
     private var macTitle: String { "SunWatt" }
+
+    /// iPad: status bar, then the screen centered with a readable maximum width; sheets float over the dashboard.
+    private func pad(size: CGSize) -> some View {
+        let model = self.model
+        let isLandscape = device == .padLandscape
+        let body = size.height - 24
+        return VStack(spacing: 0) {
+            PadStatusBarMock()
+            Group {
+                if isOnboarding {
+                    OnboardingContent(model: model, page: .constant(onboardingPage))
+                } else if isSheet {
+                    ZStack {
+                        DashboardContent(model: AppModel(demo: .day, widgetCount: 0))
+                            .padding(Theme.Spacing.xl)
+                            .frame(maxWidth: 1100)
+                            .frame(width: size.width, height: body, alignment: .top)
+                            .blur(radius: 2)
+                        Color.black.opacity(scheme == .dark ? 0.45 : 0.25)
+                        SheetContainer(title: sheetTitle, onDone: {}) { screen(model: model) }
+                            .frame(width: 704, height: isLandscape ? body - 120 : body - 220, alignment: .top)
+                            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                            .shadow(color: .black.opacity(0.35), radius: 28, y: 10)
+                    }
+                } else {
+                    screen(model: model)
+                        .padding(.horizontal, Theme.Spacing.xl)
+                        .padding(.vertical, Theme.Spacing.m)
+                        .frame(maxWidth: 1100)
+                        .frame(width: size.width, height: body, alignment: .top)
+                }
+            }
+            .frame(width: size.width, height: body, alignment: .top)
+            .background(AppBackground())
+            .clipped()
+        }
+        .frame(width: size.width, height: size.height)
+        .background(AppBackground())
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous).strokeBorder(Color.primary.opacity(0.18), lineWidth: 0.5))
+    }
 }
 
 // MARK: Fake system chrome
@@ -238,6 +296,22 @@ private struct StatusBarMock: View {
         .padding(.horizontal, 32)
         .frame(height: 54, alignment: .bottom)
         .padding(.bottom, 4)
+    }
+}
+
+private struct PadStatusBarMock: View {
+    var body: some View {
+        HStack {
+            Text(verbatim: "9:41").font(.system(size: 14, weight: .semibold, design: .rounded))
+            Spacer()
+            HStack(spacing: 5) {
+                Image(systemName: "wifi")
+                Image(systemName: "battery.100percent")
+            }
+            .font(.system(size: 13, weight: .semibold))
+        }
+        .padding(.horizontal, 28)
+        .frame(height: 24)
     }
 }
 

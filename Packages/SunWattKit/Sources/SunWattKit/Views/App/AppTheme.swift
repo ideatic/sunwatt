@@ -1,6 +1,9 @@
 #if os(iOS) || os(macOS)
 // App screens are iPhone/iPad/Mac only; the watch has its own UI (Views/Watch).
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 // App-only design tokens and helpers. They sit on top of `Theme` (shared with the widgets) and add what a
 // full-screen app needs: adaptive page background, cards, buttons and environment switches.
@@ -8,13 +11,14 @@ import SwiftUI
 /// Which layout the app screens use. Derived from the platform; snapshots set it explicitly.
 enum AppIdiom: Sendable {
     case phone
+    case pad
     case desktop
 
     static var platformDefault: AppIdiom {
         #if os(macOS)
         .desktop
         #else
-        .phone
+        UIDevice.current.userInterfaceIdiom == .pad ? .pad : .phone
         #endif
     }
 }

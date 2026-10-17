@@ -91,7 +91,7 @@ struct SettingsContent: View {
             pricesCard
             solarCard
             widgetsCard
-            if idiom == .phone { languageCard }
+            if idiom != .desktop { languageCard }
             aboutCard
         }
     }

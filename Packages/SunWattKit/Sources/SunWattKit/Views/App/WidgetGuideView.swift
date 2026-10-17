@@ -70,7 +70,7 @@ struct WidgetGuideContent: View {
         let palette = AppPalette(scheme)
         VStack(alignment: .leading, spacing: Theme.Spacing.l) {
             VStack(alignment: .leading, spacing: 4) {
-                atext(idiom == .phone
+                atext(idiom != .desktop
                       ? "The system adds widgets, not apps. It takes about 30 seconds."
                       : "macOS adds widgets from the desktop. It takes about 30 seconds.")
                     .font(.system(.subheadline, design: .rounded))
@@ -89,9 +89,9 @@ struct WidgetGuideContent: View {
                 .appCard(padding: Theme.Spacing.m + 2)
             }
 
-            WidgetStage(tab: idiom == .phone ? tab : nil)
+            WidgetStage(tab: idiom != .desktop ? tab : nil)
 
-            if idiom == .phone {
+            if idiom != .desktop {
                 AppSegmented(
                     options: [(GuideTab.homeScreen, "Home Screen"), (GuideTab.lockScreen, "Lock Screen")],
                     selection: $tab)
