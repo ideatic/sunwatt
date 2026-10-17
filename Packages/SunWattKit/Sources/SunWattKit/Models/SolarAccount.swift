@@ -133,9 +133,9 @@ public struct SolarAPICredentials: Hashable, Sendable, CustomStringConvertible, 
 
 /// The solar source configured in settings, validated. Nil (via `init?(settings:)`) when not set up or invalid.
 public enum SolarAccount: Hashable, Sendable {
-    case fusionSolar(KioskEndpoint)
-    /// FusionSolar with the inverter on the home network (Modbus TCP), plus the kiosk link when there is one.
-    case huaweiLocal(HuaweiLocalEndpoint, kiosk: KioskEndpoint?)
+    /// FusionSolar kiosk link; `local`: the Huawei dongle on the home network (optional). At least one of the two is
+    /// set (`init(plant:)` makes sure): the dongle alone is enough at home.
+    case fusionSolar(KioskEndpoint?, local: ModbusEndpoint? = nil)
     /// `local`: a SunSpec inverter on the home network (optional), read for live data while it answers.
     case solarEdge(SolarAPICredentials, local: ModbusEndpoint? = nil)
     case pvOutput(SolarAPICredentials, local: ModbusEndpoint? = nil)
@@ -151,13 +151,9 @@ public enum SolarAccount: Hashable, Sendable {
         switch plant.provider {
         case .fusionSolar:
             let kiosk = KioskEndpoint(parsing: plant.kioskURL)
-            if let local = HuaweiLocalEndpoint(parsing: plant.huaweiLocalHost, unitID: plant.huaweiLocalUnitID) {
-                self = .huaweiLocal(local, kiosk: kiosk)
-            } else if let kiosk {
-                self = .fusionSolar(kiosk)
-            } else {
-                return nil
-            }
+            let local = HuaweiLocalEndpoint(parsing: plant.huaweiLocalHost, unitID: plant.huaweiLocalUnitID)
+            guard kiosk != nil || local != nil else { return nil }
+            self = .fusionSolar(kiosk, local: local)
         case .solarEdge, .pvOutput:
             guard let credentials = SolarAPICredentials(siteID: plant.siteID, apiKey: plant.apiKey) else { return nil }
             // An address that does not parse is ignored, like the Huawei one: the cloud keeps working.
@@ -182,8 +178,7 @@ public enum SolarAccount: Hashable, Sendable {
     /// The kiosk link of a FusionSolar account, if any.
     public var kioskEndpoint: KioskEndpoint? {
         switch self {
-        case .fusionSolar(let endpoint): endpoint
-        case .huaweiLocal(_, let kiosk): kiosk
+        case .fusionSolar(let kiosk, _): kiosk
         case .solarEdge, .pvOutput, .fusionSolarAPI: nil
         }
     }
@@ -191,25 +186,18 @@ public enum SolarAccount: Hashable, Sendable {
     /// The inverter read on the home network, if set up: the Huawei dongle or a SunSpec inverter.
     public var localInverter: ModbusEndpoint? {
         switch self {
-        case .fusionSolar: nil
-        case .huaweiLocal(let local, _): local
-        case .solarEdge(_, let local), .pvOutput(_, let local), .fusionSolarAPI(_, let local): local
+        case .fusionSolar(_, let local), .solarEdge(_, let local), .pvOutput(_, let local), .fusionSolarAPI(_, let local): local
         }
     }
 
     /// Reader for the inverter on the home network, if set up.
     public func localReader(makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)? = nil) -> (any LocalInverterReader)? {
-        switch self {
-        case .fusionSolar: nil
-        case .huaweiLocal(let local, _): HuaweiModbusClient(endpoint: local, makeTransport: makeTransport)
-        case .solarEdge(_, let local), .pvOutput(_, let local), .fusionSolarAPI(_, let local):
-            local.map { provider.profile.localInverter.reader($0, makeTransport: makeTransport) }
-        }
+        localInverter.map { provider.profile.localInverter.reader($0, makeTransport: makeTransport) }
     }
 
     public var provider: SolarProvider {
         switch self {
-        case .fusionSolar, .huaweiLocal: .fusionSolar
+        case .fusionSolar: .fusionSolar
         case .solarEdge: .solarEdge
         case .pvOutput: .pvOutput
         case .fusionSolarAPI: .fusionSolarAPI
@@ -220,12 +208,10 @@ public enum SolarAccount: Hashable, Sendable {
     /// `KioskEndpoint.cacheID`, so caches written before other providers existed stay valid.
     public var cacheID: String {
         switch self {
-        case .fusionSolar(let endpoint):
-            return endpoint.cacheID
-        case .huaweiLocal(let local, let kiosk):
+        case .fusionSolar(let kiosk, let local):
             // Same plant as the kiosk link: keep its cache when the inverter address is added.
             if let kiosk { return kiosk.cacheID }
-            return SHA256.hash(data: Data("huaweiLocal\n\(local.host)".utf8)).map { String(format: "%02x", $0) }.joined()
+            return SHA256.hash(data: Data("huaweiLocal\n\(local?.host ?? "")".utf8)).map { String(format: "%02x", $0) }.joined()
         case .solarEdge(let credentials, _), .pvOutput(let credentials, _):
             // The inverter address is not part of it: adding one keeps the cloud cache.
             let text = "\(provider.rawValue)\n\(credentials.siteID)\n\(credentials.apiKey)"
@@ -239,9 +225,8 @@ public enum SolarAccount: Hashable, Sendable {
     /// Client for this account.
     public func client(http: HTTPClient = URLSession.sunWatt) -> SolarDataSource {
         switch self {
-        case .fusionSolar(let endpoint): FusionSolarKioskClient(endpoint: endpoint, http: http)
-        case .huaweiLocal(let local, let kiosk):
-            LocalInverterSolarClient(local: HuaweiModbusClient(endpoint: local), kiosk: kiosk.map { FusionSolarKioskClient(endpoint: $0, http: http) })
+        case .fusionSolar(let kiosk, let local):
+            withLocal(local, cloud: kiosk.map { FusionSolarKioskClient(endpoint: $0, http: http) })
         case .solarEdge(let credentials, let local):
             withLocal(local, cloud: SolarEdgeClient(credentials: credentials, http: http))
         case .pvOutput(let credentials, let local):
@@ -257,11 +242,21 @@ public enum SolarAccount: Hashable, Sendable {
         localReader().map { LocalInverterSolarClient(local: $0, cloud: nil, keepsCloudHome: provider.profile.keepsCloudHome) }
     }
 
-    private func withLocal(_ local: ModbusEndpoint?, cloud: SolarDataSource) -> SolarDataSource {
-        guard let local else { return cloud }
-        return LocalInverterSolarClient(local: provider.profile.localInverter.reader(local, makeTransport: nil), cloud: cloud,
-                                        keepsCloudHome: provider.profile.keepsCloudHome)
+    /// The cloud source, with the inverter on the home network in front of it when one is set up. `cloud` is nil only
+    /// for a FusionSolar plant set up with the dongle alone.
+    private func withLocal(_ local: ModbusEndpoint?, cloud: SolarDataSource?) -> SolarDataSource {
+        if let local {
+            return LocalInverterSolarClient(local: provider.profile.localInverter.reader(local, makeTransport: nil), cloud: cloud,
+                                            keepsCloudHome: provider.profile.keepsCloudHome)
+        }
+        return cloud ?? NotConfiguredSolarSource()
     }
+}
+
+/// Stands in for an account with neither a cloud source nor an inverter, which `SolarAccount.init(plant:)` never
+/// builds; the loader shows "not configured".
+private struct NotConfiguredSolarSource: SolarDataSource {
+    func fetch() async throws -> SolarSnapshot { throw SunWattError.notConfigured }
 }
 
 public extension SunWattSettings {

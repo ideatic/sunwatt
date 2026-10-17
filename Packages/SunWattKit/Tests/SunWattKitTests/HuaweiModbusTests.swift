@@ -192,7 +192,7 @@ final class FakeModbusTransport: ModbusTransport, @unchecked Sendable {
         var settings = SunWattSettings(kioskURL: testKioskURL)
         settings.huaweiLocalHost = "192.168.1.50"
         let account = SolarAccount(settings: settings)
-        guard case .huaweiLocal(let local, let kiosk)? = account else { Issue.record("expected huaweiLocal"); return }
+        guard case .fusionSolar(let kiosk, let local?)? = account else { Issue.record("expected the kiosk with the dongle"); return }
         #expect(local.host == "192.168.1.50" && kiosk != nil)
         #expect(account?.provider == .fusionSolar)
         #expect(account?.cacheID == testKioskID)
@@ -202,6 +202,13 @@ final class FakeModbusTransport: ModbusTransport, @unchecked Sendable {
         settings.kioskURL = ""
         #expect(SolarAccount(settings: settings)?.kioskEndpoint == nil)
         #expect(SolarAccount(settings: settings)?.cacheID.count == 64)
+        // Dongle alone: the cache ID is the one written before the kiosk and the dongle shared one account case.
+        #expect(SolarAccount(settings: settings)?.cacheID == "9e6a8fcc68d3314f657e5f61637273197b76037150f0aa9004ff90b99f12de59")
+        #expect(SolarAccount(settings: settings)?.client() is LocalInverterSolarClient)
+        #expect(SolarAccount(settings: settings)?.localReader() is HuaweiModbusClient)
+
+        settings.huaweiLocalHost = ""
+        #expect(SolarAccount(settings: settings) == nil)
 
         settings.huaweiLocalHost = "not an address!"
         #expect(SolarAccount(settings: settings) == nil)
