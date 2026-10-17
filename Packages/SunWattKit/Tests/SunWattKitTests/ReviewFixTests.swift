@@ -5,7 +5,7 @@ import Testing
 /// Fixes from the full code review (findings #2, #5, #7, #8, #10, #11, #12, #14).
 
 /// Solar source that counts its fetches.
-final class CountingSolar: SolarDataSource, @unchecked Sendable {
+final class CallCountingSolar: SolarDataSource, @unchecked Sendable {
     private let lock = NSLock()
     private var calls = 0
     let result: Result<SolarSnapshot, SunWattError>
@@ -48,7 +48,7 @@ private let edgeSettings = SunWattSettings(showTomorrowPrices: false, solarProvi
         let id = SolarAccount(settings: edgeSettings)!.cacheID
         store.saveSolar(storeSampleSolar(fetchedAt: now.addingTimeInterval(-8 * 60), endpointID: id))
         store.savePrices(prices(age: 30))
-        let solar = CountingSolar(.failure(.unavailable))
+        let solar = CallCountingSolar(.failure(.unavailable))
         let fakePrices = FakePlain(result: .success(prices(age: 0)))
         let data = await SunWattLoader(store: store, makeSolar: { _ in solar }, prices: fakePrices, now: { now })
             .load(maxCacheAge: SunWattLoader.sharedCacheWindow)
@@ -61,7 +61,7 @@ private let edgeSettings = SunWattSettings(showTomorrowPrices: false, solarProvi
     @Test func solarEdgeFailureIsNotRetriedAtOnce() async {
         let (store, _) = storeTempStore()
         store.settings = edgeSettings
-        let solar = CountingSolar(.failure(.http(status: 429)))
+        let solar = CallCountingSolar(.failure(.http(status: 429)))
         let loader = { (date: Date) in
             SunWattLoader(store: store, makeSolar: { _ in solar }, prices: FakePlain(result: .success(storeSamplePrices())), now: { date })
         }
@@ -78,7 +78,7 @@ private let edgeSettings = SunWattSettings(showTomorrowPrices: false, solarProvi
     @Test func otherProvidersRetryEveryTime() async {
         let (store, _) = storeTempStore()
         store.settings = SunWattSettings(kioskURL: testKioskURL, showTomorrowPrices: false)
-        let solar = CountingSolar(.failure(.http(status: 500)))
+        let solar = CallCountingSolar(.failure(.http(status: 500)))
         for minutes in [0.0, 1, 2] {
             _ = await SunWattLoader(store: store, makeSolar: { _ in solar }, prices: FakePlain(result: .success(storeSamplePrices())), now: { now.addingTimeInterval(minutes * 60) }).load()
         }
