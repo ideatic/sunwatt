@@ -80,6 +80,9 @@ struct SettingsContent: View {
     @Environment(\.appIdiom) private var idiom
     @Environment(\.colorScheme) private var scheme
     @Environment(\.appSheetPresenter) private var presenter
+    /// The plant whose settings are shown (several plants).
+    @State private var editingPlant = SolarPlant.primaryID
+    @State private var confirmsRemoval = false
 
     init(model: AppModel, initialTest: KioskTestState = .idle) {
         self.model = model
@@ -128,14 +131,52 @@ struct SettingsContent: View {
 
     // MARK: Solar
 
+    /// One plant: its settings, plus "Add another plant". Several: a tab per plant, its name, its settings, and
+    /// "Remove this plant" for all but the first.
     private var solarCard: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
+        let plants = model.settings.plants
+        let plantID = plants.contains { $0.id == editingPlant } ? editingPlant : SolarPlant.primaryID
+        let focused = model.settings(focusedOn: plantID)
+        return VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             CardHeader(
                 symbol: Theme.Solar.symbol, tint: AnyShapeStyle(Theme.Solar.gradient),
-                title: atext("Solar production"), subtitle: Text(verbatim: model.settings.solarProvider.displayName))
-            SolarSetupEditor(model: model, initialTest: initialTest)
+                title: atext("Solar production"), subtitle: Text(verbatim: focused.solarProvider.displayName))
+            if plants.count > 1 {
+                PlantTabs(plants: plants.map { PlantTabs.Tab(id: $0.id, name: plantName($0)) }, selection: $editingPlant)
+                PlantNameEditor(model: model, plantID: plantID)
+                    .id(plantID)
+            }
+            SolarSetupEditor(model: model, plantID: plantID, initialTest: initialTest)
+                .id(plantID)
+            hairline
+            HStack(spacing: Theme.Spacing.s) {
+                Button { editingPlant = model.addPlant() } label: {
+                    Label { atext("Add another plant") } icon: { Image(systemName: "plus.circle") }
+                }
+                .buttonStyle(SoftButtonStyle(compact: true))
+                if plantID != SolarPlant.primaryID {
+                    Button(role: .destructive) { confirmsRemoval = true } label: {
+                        Label { atext("Remove this plant") } icon: { Image(systemName: "trash") }
+                    }
+                    .buttonStyle(SoftButtonStyle(compact: true))
+                }
+            }
+            .confirmationDialog(Text("Remove this plant?", tableName: "App", bundle: .module), isPresented: $confirmsRemoval, titleVisibility: .visible) {
+                Button(role: .destructive) {
+                    model.removePlant(plantID)
+                    editingPlant = SolarPlant.primaryID
+                } label: { atext("Remove this plant") }
+            } message: {
+                atext("Its settings and saved data are removed from this device.")
+            }
         }
         .appCard()
+    }
+
+    /// The plant's name as everywhere else: the user's, the provider's station name, or the provider.
+    private func plantName(_ plant: SolarPlant) -> String {
+        let station = model.data?.allPlants.first { $0.id == plant.id }?.solar?.stationName
+        return plant.displayName(stationName: station)
     }
 
     // MARK: Widgets
@@ -236,6 +277,7 @@ struct SettingsContent: View {
 /// Kiosk link field with validation, paste button and "Test connection". Used by settings and onboarding.
 struct KioskLinkEditor: View {
     let model: AppModel
+    let plantID: String
     @State private var test: KioskTestState
     /// The field text lives here and is saved to the settings only at the right moments (see `KioskURLDraft`).
     @State private var draft: KioskURLDraft
@@ -243,11 +285,12 @@ struct KioskLinkEditor: View {
     @Environment(\.colorScheme) private var scheme
     @Environment(\.scenePhase) private var scenePhase
 
-    init(model: AppModel, initialTest: KioskTestState = .idle) {
+    init(model: AppModel, plantID: String = SolarPlant.primaryID, initialTest: KioskTestState = .idle) {
         self.model = model
+        self.plantID = plantID
         _test = State(initialValue: initialTest)
-        _draft = State(initialValue: KioskURLDraft(saved: model.settings.kioskURL) { [weak model] value in
-            model?.updateSettings { $0.kioskURL = value }
+        _draft = State(initialValue: KioskURLDraft(saved: model.settings(focusedOn: plantID).kioskURL) { [weak model] value in
+            model?.updatePlant(plantID) { $0.kioskURL = value }
         })
     }
 

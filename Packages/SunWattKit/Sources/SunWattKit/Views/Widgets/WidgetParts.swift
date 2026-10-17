@@ -153,6 +153,20 @@ struct PriceMiniChart: View {
 }
 
 /// Solar half of a medium widget or large header: header row, figure, daily energy, optional mini curve.
+/// Name of the plant a widget shows, when there are several (rotating or chosen in the widget's settings).
+struct PlantNameLabel: View {
+    let name: String
+
+    var body: some View {
+        Text(verbatim: name)
+            .font(.system(.caption2, design: .rounded).weight(.semibold))
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .truncationMode(.tail)
+    }
+}
+
 struct SolarColumn: View {
     let solar: SolarModel
     let now: Date
@@ -164,6 +178,7 @@ struct SolarColumn: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 4) {
                     SolarIcon(idle: solar.isIdle)
+                    if let name = solar.plantName { PlantNameLabel(name: name) }
                     Spacer(minLength: 2)
                     DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
                 }
@@ -181,7 +196,10 @@ struct SolarColumn: View {
                 }
             }
         } else {
-            SourceStateView(kind: solar.stateKind, compact: true, lastUpdate: solar.snapshot?.fetchedAt)
+            VStack(alignment: .leading, spacing: 2) {
+                if let name = solar.plantName { PlantNameLabel(name: name) }
+                SourceStateView(kind: solar.stateKind, compact: true, lastUpdate: solar.snapshot?.fetchedAt)
+            }
         }
     }
 }

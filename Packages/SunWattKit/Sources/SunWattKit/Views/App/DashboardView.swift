@@ -45,12 +45,22 @@ struct DashboardContent: View {
             .redacted(reason: isPlaceholder ? .placeholder : [])
             .allowsHitTesting(!isPlaceholder)
             WidgetStatusCard(model: model)
-            DashboardFooter(entry: entry, region: model.settings.priceRegion, solarProvider: model.settings.solarProvider, showsUpdated: !isPlaceholder)
+            DashboardFooter(entry: entry, region: model.settings.priceRegion, solarProviders: model.settings.plants.map(\.provider), showsUpdated: !isPlaceholder)
+        }
+    }
+
+    /// One plant: its card. Several: a card per plant, swiped sideways (the first plant first).
+    @ViewBuilder
+    private func solarSection(_ entry: SunWattEntry) -> some View {
+        if entry.data.hasSeveralPlants {
+            PlantPager(entry: entry) { page in plantSection(page) }
+        } else {
+            plantSection(entry)
         }
     }
 
     @ViewBuilder
-    private func solarSection(_ entry: SunWattEntry) -> some View {
+    private func plantSection(_ entry: SunWattEntry) -> some View {
         if entry.data.solarLinkExpired {
             StateCard(
                 symbol: "link",
@@ -71,17 +81,20 @@ struct DashboardContent: View {
         case .notConfigured:
             SolarSetupCard(model: model)
         case .error(let message) where entry.data.solar == nil:
+            let plant = model.settings.plant(id: entry.data.plantID) ?? model.settings.primaryPlant
             StateCard(
                 symbol: "exclamationmark.triangle.fill",
                 title: atext("Solar data unavailable"),
-                message: Text(verbatim: message),
+                // Several plants: which one.
+                message: Text(verbatim: entry.data.plantName.map { "\($0): \(message)" } ?? message),
                 actions: [
                     .init(label: "Try again", prominent: true) { Task { await model.refresh() } },
-                    .init(label: model.settings.solarProvider.profile.setup == .kioskLink ? "Check kiosk link" : "Settings") { model.present(.settings) },
+                    .init(label: plant.provider.profile.setup == .kioskLink ? "Check kiosk link" : "Settings") { model.present(.settings) },
                 ])
         default:
             if let solar = entry.solarForDisplay {
-                SolarCard(solar: solar, now: entry.date, isStale: entry.isSolarStale, initialSelection: solarSelection)
+                SolarCard(solar: solar, now: entry.date, isStale: entry.isSolarStale, plantName: entry.data.plantName,
+                          initialSelection: solarSelection)
             } else {
                 SolarSetupCard(model: model)
             }
@@ -165,7 +178,7 @@ private struct DashboardHeader: View {
 private struct DashboardFooter: View {
     let entry: SunWattEntry
     let region: PriceRegion
-    let solarProvider: SolarProvider
+    let solarProviders: [SolarProvider]
     let showsUpdated: Bool
 
     var body: some View {
@@ -175,7 +188,7 @@ private struct DashboardFooter: View {
                     .font(.system(.caption, design: .rounded).weight(.semibold))
             }
             sourceAttribution(region)
-            atext("Solar: \(solarProvider.displayName)")
+            atext("Solar: \(providerNames)")
         }
         .font(.system(.caption2, design: .rounded))
         .foregroundStyle(.secondary)
@@ -183,9 +196,57 @@ private struct DashboardFooter: View {
         .frame(maxWidth: .infinity)
         .padding(.top, Theme.Spacing.xs)
     }
+
+    /// "Huawei FusionSolar", or each provider once with several plants ("Huawei FusionSolar, SolarEdge").
+    private var providerNames: String {
+        var seen = Set<SolarProvider>()
+        return solarProviders.filter { seen.insert($0).inserted }.map(\.displayName)
+            .formatted(.list(type: .and, width: .narrow).locale(Format.locale))
+    }
 }
 
 // MARK: Solar
+
+/// Several plants: one page per plant, swiped sideways, with page dots below. The scale and layout of each card is the
+/// single-plant one.
+private struct PlantPager<Page: View>: View {
+    let entry: SunWattEntry
+    @ViewBuilder let page: (SunWattEntry) -> Page
+    @State private var shown: String?
+
+    var body: some View {
+        let plants = entry.data.allPlants
+        let current = shown ?? plants.first?.id
+        VStack(spacing: Theme.Spacing.s) {
+            ScrollView(.horizontal) {
+                HStack(alignment: .top, spacing: 0) {
+                    ForEach(plants, id: \.id) { plant in
+                        page(SunWattEntry(date: entry.date, data: entry.data.showingPlant(id: plant.id)))
+                            // Room for the card shadow inside the clipped scroll view.
+                            .padding(.vertical, 8)
+                            .containerRelativeFrame(.horizontal)
+                            .id(plant.id)
+                    }
+                }
+                .scrollTargetLayout()
+            }
+            .scrollTargetBehavior(.paging)
+            .scrollIndicators(.hidden)
+            .scrollPosition(id: $shown)
+            .padding(.vertical, -8)
+            HStack(spacing: 6) {
+                ForEach(plants, id: \.id) { plant in
+                    Circle()
+                        .fill(plant.id == current ? Color.primary.opacity(0.75) : Color.primary.opacity(0.2))
+                        .frame(width: 6, height: 6)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: plants.first { $0.id == current }?.name ?? ""))
+        }
+    }
+}
 
 /// "Your kiosk link may stop working around …": shown from 30 days before the link's first anniversary in SunWatt
 /// (kiosk links last one year), until the user replaces the link or closes the notice.
@@ -271,6 +332,8 @@ private struct SolarCard: View {
     let solar: SolarSnapshot
     let now: Date
     let isStale: Bool
+    /// Several plants: the plant's name, shown instead of the station name.
+    var plantName: String?
     var initialSelection: Date?
     @Environment(\.redactionReasons) private var redaction
     @Environment(\.appIdiom) private var idiom
@@ -281,7 +344,7 @@ private struct SolarCard: View {
                 symbol: solar.isIdle ? Theme.Solar.nightSymbol : Theme.Solar.symbol,
                 tint: solar.isIdle ? AnyShapeStyle(HierarchicalShapeStyle.secondary) : AnyShapeStyle(Theme.Solar.gradient),
                 title: atext("Solar production"),
-                subtitle: solar.stationName.map { Text(verbatim: $0) }
+                subtitle: (plantName ?? solar.stationName).map { Text(verbatim: $0) }
             ) {
                 timeMarker
             }

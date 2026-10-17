@@ -42,6 +42,8 @@ struct SolarModel {
     var dataTime: Date?
     /// The kiosk link keeps being rejected (most likely expired).
     var linkExpired = false
+    /// Name of the plant shown; nil with one plant (then nothing about plants is shown).
+    var plantName: String?
 
     /// The message to show when there is no solar data.
     var stateKind: SourceStateView.Kind {
@@ -67,6 +69,7 @@ struct SolarModel {
         snapshot = solar
         dataTime = solar.map { $0.dataAsOf ?? $0.fetchedAt }
         linkExpired = data.solarLinkExpired
+        plantName = data.plantName
         switch data.solarStatus {
         case .notConfigured:
             phase = .notConfigured

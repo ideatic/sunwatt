@@ -42,6 +42,43 @@ enum PriceWindowOption: String, AppEnum {
     }
 }
 
+/// A plant to show, or "all plants in turn". Only matters with several plants; with one, every choice shows it.
+struct PlantEntity: AppEntity {
+    static let rotateID = "rotate"
+    static let rotate = PlantEntity(id: rotateID, name: "")
+
+    let id: String
+    let name: String
+
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Solar plant")
+    static let defaultQuery = PlantQuery()
+
+    var displayRepresentation: DisplayRepresentation {
+        id == Self.rotateID ? DisplayRepresentation(title: "All plants, in turn") : DisplayRepresentation(title: "\(name)")
+    }
+
+    var choice: WidgetPlantChoice { id == Self.rotateID ? .rotate : .plant(id) }
+}
+
+struct PlantQuery: EntityQuery {
+    func entities(for identifiers: [PlantEntity.ID]) async throws -> [PlantEntity] {
+        all().filter { identifiers.contains($0.id) }
+    }
+
+    func suggestedEntities() async throws -> [PlantEntity] { all() }
+
+    func defaultResult() async -> PlantEntity? { .rotate }
+
+    /// "All plants, in turn" and every configured plant, named as in the app.
+    private func all() -> [PlantEntity] {
+        let store = AppGroupStore.shared
+        let plants = store.settings.plants.map { plant in
+            PlantEntity(id: plant.id, name: plant.displayName(stationName: store.loadSolar(plantID: plant.id)?.stationName))
+        }
+        return [.rotate] + plants
+    }
+}
+
 struct SunWattIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = "SunWatt"
     static let description = IntentDescription("Solar production and electricity price.")
@@ -51,4 +88,8 @@ struct SunWattIntent: WidgetConfigurationIntent {
 
     @Parameter(title: "Price window", default: .wholeDay)
     var priceWindow: PriceWindowOption
+
+    /// With several plants: one of them, or all in turn (default).
+    @Parameter(title: "Solar plant")
+    var plant: PlantEntity?
 }

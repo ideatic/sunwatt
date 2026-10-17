@@ -26,18 +26,24 @@ struct SunWattProvider: AppIntentTimelineProvider {
             return SunWattTimelineEntry(
                 entry: SampleData.entry(.day), content: configuration.content.content, window: configuration.priceWindow.window)
         }
-        return SunWattTimelineEntry(
-            entry: SunWattEntry(date: Date(), data: data),
-            content: configuration.content.content, window: configuration.priceWindow.window)
+        let now = Date()
+        let entry = TimelineBuilder.entries(for: data, now: now, plant: plantChoice(configuration), hours: 0).first
+            ?? SunWattEntry(date: now, data: data)
+        return SunWattTimelineEntry(entry: entry, content: configuration.content.content, window: configuration.priceWindow.window)
     }
 
     func timeline(for configuration: SunWattIntent, in context: Context) async -> Timeline<SunWattTimelineEntry> {
         let data = await SunWattLoader().load(maxCacheAge: SunWattLoader.sharedCacheWindow)
         let now = Date()
-        let entries = TimelineBuilder.entries(for: data, now: now).map {
+        // Several plants: rotating (default) or the plant chosen in the widget's settings. One plant: as always.
+        let entries = TimelineBuilder.entries(for: data, now: now, plant: plantChoice(configuration)).map {
             SunWattTimelineEntry(entry: $0, content: configuration.content.content, window: configuration.priceWindow.window)
         }
         return Timeline(entries: entries, policy: .after(TimelineBuilder.nextReload(after: now)))
+    }
+
+    private func plantChoice(_ configuration: SunWattIntent) -> WidgetPlantChoice {
+        configuration.plant?.choice ?? .rotate
     }
 }
 

@@ -22,7 +22,12 @@ public struct WatchRootView: View {
         TabView(selection: $page) {
             // Trailing space keeps content clear of the vertical page indicator.
             WatchPricePage(entry: entry).padding(.trailing, 10).tag(0)
-            WatchSolarPage(entry: entry).padding(.trailing, 10).tag(1)
+            // One solar page per plant (one plant: one page, as always).
+            ForEach(Array(entry.data.allPlants.indices), id: \.self) { index in
+                WatchSolarPage(entry: SunWattEntry(date: entry.date, data: entry.data.showingPlant(at: index)))
+                    .padding(.trailing, 10)
+                    .tag(1 + index)
+            }
         }
         .tabViewStyle(.verticalPage)
         #else
@@ -127,9 +132,12 @@ public struct WatchSolarPage: View {
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 4) {
                         SolarIcon(idle: solar.isIdle, size: 13)
-                        wtext("Production")
-                            .font(Theme.Font.caption)
-                            .foregroundStyle(.secondary)
+                        // Several plants: the plant's name.
+                        Group {
+                            if let name = solar.plantName { Text(verbatim: name).lineLimit(1) } else { wtext("Production") }
+                        }
+                        .font(Theme.Font.caption)
+                        .foregroundStyle(.secondary)
                         Spacer(minLength: 2)
                         DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
                     }

@@ -68,7 +68,8 @@ import Testing
         #expect(data.solar?.currentPowerKW == 3 && data.solarStatus == .fresh)
         #expect(data.otherPlants.map(\.name) == ["Roof"])
         #expect(data.otherPlants.first?.solar?.currentPowerKW == 1.5)
-        #expect(data.totalPowerKW == 4.5 && data.totalDailyEnergyKWh == 14)
+        let total = SunWattEntry(date: now, data: data).combinedSolarForDisplay
+        #expect(total?.currentPowerKW == 4.5 && total?.dailyEnergyKWh == 14)
         // Separate caches: the first plant keeps its old file.
         #expect(store.loadSolar()?.currentPowerKW == 3)
         #expect(store.loadSolar(plantID: Self.roof.id)?.currentPowerKW == 1.5)
@@ -110,7 +111,8 @@ import Testing
         #expect(data.showingPlant(at: 2) == data.showingPlant(at: 0))
         #expect(data.showingPlant(id: Self.roof.id) == second)
         // Prices and totals do not change with the plant shown.
-        #expect(second.prices == data.prices && second.totalPowerKW == data.totalPowerKW)
+        #expect(second.prices == data.prices)
+        #expect(SunWattEntry(date: now, data: second).combinedSolarForDisplay == SunWattEntry(date: now, data: data).combinedSolarForDisplay)
     }
 
     @Test func sharedWindowNeedsEveryPlant() async {
@@ -151,5 +153,72 @@ import Testing
         store.noteKioskRejected(linkID: "y", at: now.addingTimeInterval(60))
         store.clearKioskRejection(linkID: "x")
         #expect(store.kioskRejectedSince(linkID: "x") == nil && store.kioskRejectedSince(linkID: "y") == now.addingTimeInterval(60))
+    }
+
+    // MARK: Widgets, controls and Siri
+
+    private func loaded() async -> SunWattData {
+        let (store, _) = storeTempStore()
+        store.settings = twoPlants()
+        return await loader(store, home: .success(snapshot("Calle", kW: 3, kWh: 10)), roof: .success(snapshot("Roof site", kW: 1.5, kWh: 4))).load()
+    }
+
+    @Test func rotatingWidgetsTakeTurns() async {
+        let data = await loaded()
+        let entries = TimelineBuilder.entries(for: data, now: now, plant: .rotate)
+        // An entry every quarter hour for a day, plants alternating.
+        #expect(entries.count == 97)
+        #expect(entries.first?.date == now)
+        let ids = entries.dropFirst().map(\.data.plantID)
+        #expect(Set(ids) == [SolarPlant.primaryID, Self.roof.id])
+        #expect(zip(ids, ids.dropFirst()).allSatisfy { $0 != $1 })
+        // The turn depends on the time only: every widget agrees.
+        for entry in entries {
+            #expect(entry.data.plantID == data.allPlants[TimelineBuilder.turn(at: entry.date, plants: 2)].id)
+        }
+        // A fixed plant: hourly entries, always that plant.
+        let fixed = TimelineBuilder.entries(for: data, now: now, plant: .plant(Self.roof.id))
+        #expect(fixed.count == 25 && fixed.allSatisfy { $0.data.plantID == Self.roof.id })
+        // A removed plant: the first one.
+        #expect(TimelineBuilder.entries(for: data, now: now, plant: .plant("gone")).allSatisfy { $0.data.plantID == SolarPlant.primaryID })
+    }
+
+    @Test func onePlantTimelineIsUnchanged() async {
+        let (store, _) = storeTempStore()
+        store.settings = SunWattSettings(kioskURL: testKioskURL, showTomorrowPrices: false)
+        let data = await loader(store, home: .success(snapshot("Calle", kW: 3, kWh: 10)), roof: .failure(.unavailable)).load()
+        #expect(TimelineBuilder.entries(for: data, now: now, plant: .rotate) == TimelineBuilder.entries(for: data, now: now))
+    }
+
+    @Test func controlAndSiriGiveTheTotalThenEachPlant() async throws {
+        let data = await loaded()
+        #expect(ControlContent.solar(from: data, now: now, strings: try #require(IntentStrings.language("en"))).title == "4.5 kW")
+        let answer = SolarAnswer.make(from: data, now: now, strings: try #require(IntentStrings.language("en")))
+        #expect(answer.currentKW == 4.5 && answer.todayKWh == 14)
+        #expect(answer.dialog == "Your plants are producing 4.5 kW in total. Today: 14.0 kWh. By plant: Home: 3.0 kW and Roof: 1.5 kW.")
+        let es = SolarAnswer.make(from: data, now: now, strings: try #require(IntentStrings.language("es")))
+        #expect(!es.dialog.contains("Your plants"))
+    }
+
+    @Test func complicationsShowTheTotal() async {
+        let data = await loaded()
+        let combined = SunWattEntry(date: now, data: data).combinedPlants
+        #expect(!combined.data.hasSeveralPlants && combined.data.plantName == nil)
+        #expect(combined.data.solar?.currentPowerKW == 4.5 && combined.data.solarStatus == .fresh)
+        #expect(SolarModel(entry: combined).powerKW == 4.5)
+        // One plant: unchanged.
+        let single = SunWattEntry(date: now, data: data.showingPlant(at: 0))
+        var one = single.data
+        one.otherPlants = []
+        #expect(SunWattEntry(date: now, data: one).combinedPlants == SunWattEntry(date: now, data: one))
+    }
+
+    @Test func widgetModelNamesThePlantOnlyWithSeveral() async {
+        let data = await loaded()
+        #expect(SolarModel(entry: SunWattEntry(date: now, data: data.showingPlant(at: 1))).plantName == "Roof")
+        var one = data
+        one.otherPlants = []
+        one.plantName = nil
+        #expect(SolarModel(entry: SunWattEntry(date: now, data: one)).plantName == nil)
     }
 }

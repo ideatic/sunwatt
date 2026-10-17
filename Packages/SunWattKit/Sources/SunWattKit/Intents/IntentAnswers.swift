@@ -98,6 +98,7 @@ public struct SolarAnswer: Sendable, Equatable {
     public var dialog: String
 
     public static func make(from data: SunWattData, now: Date, strings: IntentStrings = .current) -> SolarAnswer {
+        if data.hasSeveralPlants { return several(from: data, now: now, strings: strings) }
         if case .notConfigured = data.solarStatus {
             return SolarAnswer(outcome: .notConfigured, currentKW: nil, todayKWh: nil, dialog: strings.text(
                 "Solar production is not set up. Connect your solar system in the SunWatt settings."))
@@ -126,6 +127,40 @@ public struct SolarAnswer: Sendable, Equatable {
             dialog += " " + strings.text("The last reading is from %@.", strings.time(readingTime))
         }
         return SolarAnswer(outcome: outcome, currentKW: power, todayKWh: solar.dailyEnergyKWh, dialog: dialog)
+    }
+
+    /// Several plants: the total, then each plant ("… 5,2 kW in total. Today: 18,4 kWh. By plant: Home 3,1 kW,
+    /// Roof 2,1 kW.").
+    static func several(from data: SunWattData, now: Date, strings: IntentStrings) -> SolarAnswer {
+        let entry = SunWattEntry(date: now, data: data)
+        let plants = entry.plantsForDisplay
+        if plants.allSatisfy({ $0.status == .notConfigured }) {
+            return SolarAnswer(outcome: .notConfigured, currentKW: nil, todayKWh: nil, dialog: strings.text(
+                "Solar production is not set up. Connect your solar system in the SunWatt settings."))
+        }
+        guard let total = entry.combinedSolarForDisplay, let power = total.currentPowerKW else {
+            return SolarAnswer(outcome: .unavailable, currentKW: nil, todayKWh: nil, dialog: strings.text(
+                "I cannot get the solar production right now. Check your connection and try again."))
+        }
+        let outcome: Outcome = total.isIdle ? .idle : .producing
+        var dialog: String
+        if total.isIdle {
+            dialog = total.dailyEnergyKWh.map { strings.text("Your plants are not producing now. Today: %@ kWh.", strings.energy($0)) }
+                ?? strings.text("Your plants are not producing now.")
+        } else {
+            dialog = total.dailyEnergyKWh.map {
+                strings.text("Your plants are producing %@ kW in total. Today: %@ kWh.", strings.number(power), strings.energy($0))
+            } ?? strings.text("Your plants are producing %@ kW in total.", strings.number(power))
+        }
+        let items = plants.map { plant -> String in
+            guard let solar = plant.solar, let kW = solar.currentPowerKW else { return strings.text("%@: no data", plant.name) }
+            return solar.isIdle ? strings.text("%@: not producing", plant.name) : strings.text("%@: %@ kW", plant.name, strings.number(kW))
+        }
+        dialog += " " + strings.text("By plant: %@.", strings.list(items))
+        if now.timeIntervalSince(total.fetchedAt) > Constants.staleAfter {
+            dialog += " " + strings.text("The last reading is from %@.", strings.time(total.dataAsOf ?? total.fetchedAt))
+        }
+        return SolarAnswer(outcome: outcome, currentKW: power, todayKWh: total.dailyEnergyKWh, dialog: dialog)
     }
 }
 
@@ -177,7 +212,8 @@ public struct ControlContent: Sendable, Equatable {
             return ControlContent(title: strings.text("Not set up"), subtitle: "SunWatt")
         }
         // A snapshot from yesterday has no power or daily energy for today (see `SunWattEntry.solarForDisplay`).
-        guard let solar = SunWattEntry(date: now, data: data).solarForDisplay, let power = solar.currentPowerKW else {
+        // Several plants: their total.
+        guard let solar = SunWattEntry(date: now, data: data).combinedSolarForDisplay, let power = solar.currentPowerKW else {
             return ControlContent(title: strings.text("No data"), subtitle: strings.text("Tap to refresh"))
         }
         let today = solar.dailyEnergyKWh.map { strings.text("Today %@ kWh", strings.energy($0)) }

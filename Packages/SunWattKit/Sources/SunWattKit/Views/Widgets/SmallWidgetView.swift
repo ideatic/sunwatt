@@ -28,6 +28,7 @@ struct SmallWidgetView: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 4) {
                     SolarIcon(idle: solar.isIdle, size: 18)
+                    if let name = solar.plantName { PlantNameLabel(name: name) }
                     Spacer(minLength: 2)
                     DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil, showFresh: false)
                 }
@@ -49,7 +50,10 @@ struct SmallWidgetView: View {
                 }
             }
         } else {
-            SourceStateView(kind: solar.stateKind, lastUpdate: solar.snapshot?.fetchedAt)
+            VStack(alignment: .leading, spacing: 2) {
+                if let name = solar.plantName { PlantNameLabel(name: name) }
+                SourceStateView(kind: solar.stateKind, lastUpdate: solar.snapshot?.fetchedAt)
+            }
         }
     }
 

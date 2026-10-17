@@ -18,7 +18,7 @@ struct WatchProvider: TimelineProvider {
         if context.isPreview || (data.solar == nil && data.prices == nil) {
             completion(WatchTimelineEntry(entry: SampleData.entry(.day)))
         } else {
-            completion(WatchTimelineEntry(entry: SunWattEntry(date: Date(), data: data)))
+            completion(WatchTimelineEntry(entry: SunWattEntry(date: Date(), data: data).combinedPlants))
         }
     }
 
@@ -26,7 +26,8 @@ struct WatchProvider: TimelineProvider {
         Task {
             let data = await SunWattLoader().load(maxCacheAge: SunWattLoader.sharedCacheWindow)
             let now = Date()
-            let entries = TimelineBuilder.entries(for: data, now: now).map(WatchTimelineEntry.init)
+            // Several plants: complications show their total (no room for names).
+            let entries = TimelineBuilder.entries(for: data, now: now).map { WatchTimelineEntry(entry: $0.combinedPlants) }
             completion(Timeline(entries: entries, policy: .after(TimelineBuilder.nextReload(after: now))))
         }
     }

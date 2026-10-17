@@ -307,10 +307,13 @@ public final class AppModel {
         let old = settings
         var new = old
         change(&new)
-        if new.kioskURL != old.kioskURL {
-            // A new link: its year starts now, and a closed expiry notice applies to the old link only.
-            new.kioskLinkSavedAt = KioskEndpoint(parsing: new.kioskURL) != nil ? Date() : nil
-            new.kioskExpiryNoticeDismissed = false
+        // A new kiosk link (any plant): its year starts now, and a closed expiry notice applies to the old link only.
+        for var plant in new.plants {
+            let before = old.plant(id: plant.id)
+            guard plant.kioskURL != (before?.kioskURL ?? "") else { continue }
+            plant.kioskLinkSavedAt = KioskEndpoint(parsing: plant.kioskURL) != nil ? Date() : nil
+            plant.kioskExpiryNoticeDismissed = false
+            new.updatePlant(plant)
         }
         guard new != old else { return }
         settings = new
@@ -323,9 +326,7 @@ public final class AppModel {
         let regionChanged = new.priceRegion != old.priceRegion
         // Another provider, another valid account, or input appearing/disappearing (the solar status changes
         // between "not set up" and "not valid"). Edits that stay invalid fetch nothing.
-        let solarChanged = new.solarProvider != old.solarProvider
-            || SolarAccount(settings: new) != SolarAccount(settings: old)
-            || new.hasSolarInput != old.hasSolarInput
+        let solarChanged = Self.solarFetchKeys(new) != Self.solarFetchKeys(old)
         let tomorrowChanged = new.showTomorrowPrices != old.showTomorrowPrices
         let needsFetch = regionChanged || solarChanged || tomorrowChanged
         // When data must be fetched, the widgets reload once the new data is stored (end of `refresh`): reloading
@@ -339,6 +340,47 @@ public final class AppModel {
             hasLoaded = false
         }
         if needsFetch { scheduleRefresh() }
+    }
+
+    /// What decides whether a settings change needs a solar fetch, per plant: its id, provider, valid account and
+    /// whether anything was typed. Names and edits that stay invalid change nothing.
+    private static func solarFetchKeys(_ settings: SunWattSettings) -> [String] {
+        settings.plants.map { plant in
+            let focused = settings.focused(on: plant)
+            let account = SolarAccount(plant: plant).map { "\($0.cacheID)|\(String(describing: $0.localInverter))" } ?? "-"
+            return "\(plant.id)|\(plant.provider.rawValue)|\(account)|\(focused.hasSolarInput)"
+        }
+    }
+
+    // MARK: Plants
+
+    /// The settings with plant `id` in the place of the first one (`SunWattSettings.focused(on:)`): the solar editors
+    /// read these, so one editor serves every plant. The whole settings when there is no such plant.
+    public func settings(focusedOn id: String) -> SunWattSettings {
+        settings.plant(id: id).map { settings.focused(on: $0) } ?? settings
+    }
+
+    /// Changes plant `id` through its focused settings and saves it in its place.
+    public func updatePlant(_ id: String, _ change: (inout SunWattSettings) -> Void) {
+        guard let plant = settings.plant(id: id) else { return }
+        var focused = settings.focused(on: plant)
+        change(&focused)
+        var edited = focused.primaryPlant
+        edited.id = id
+        updateSettings { $0.updatePlant(edited) }
+    }
+
+    /// Adds an empty plant (FusionSolar until the user picks another provider) and returns its id.
+    @discardableResult
+    public func addPlant() -> String {
+        let plant = SolarPlant()
+        updateSettings { $0.additionalPlants.append(plant) }
+        return plant.id
+    }
+
+    /// Removes a further plant (the first one cannot be removed, only changed).
+    public func removePlant(_ id: String) {
+        updateSettings { $0.additionalPlants.removeAll { $0.id == id } }
     }
 
     /// Waits for the user to stop changing settings (Energy-Charts rate-limits quick repeated requests).
@@ -416,35 +458,48 @@ public final class AppModel {
 
     /// What the selected provider reads on the home network: the Huawei dongle for FusionSolar, a SunSpec inverter
     /// for SolarEdge and PVOutput.
-    public var localInverterKind: LocalInverterKind { LocalInverterKind(provider: settings.solarProvider) }
+    public var localInverterKind: LocalInverterKind { localInverterKind(plant: SolarPlant.primaryID) }
 
-    /// The settings that hold its address and unit ID.
-    var localInverterHostKey: WritableKeyPath<SunWattSettings, String> {
-        localInverterKind == .huawei ? \.huaweiLocalHost : \.sunSpecHost
+    public func localInverterKind(plant id: String) -> LocalInverterKind {
+        LocalInverterKind(provider: settings(focusedOn: id).solarProvider)
     }
 
-    var localInverterUnitKey: WritableKeyPath<SunWattSettings, Int> {
-        localInverterKind == .huawei ? \.huaweiLocalUnitID : \.sunSpecUnitID
+    /// The settings that hold its address and unit ID.
+    var localInverterHostKey: WritableKeyPath<SunWattSettings, String> { Self.hostKey(localInverterKind) }
+    var localInverterUnitKey: WritableKeyPath<SunWattSettings, Int> { Self.unitKey(localInverterKind) }
+
+    static func hostKey(_ kind: LocalInverterKind) -> WritableKeyPath<SunWattSettings, String> {
+        switch kind {
+        case .huawei: \.huaweiLocalHost
+        case .sunSpec: \.sunSpecHost
+        }
+    }
+
+    static func unitKey(_ kind: LocalInverterKind) -> WritableKeyPath<SunWattSettings, Int> {
+        switch kind {
+        case .huawei: \.huaweiLocalUnitID
+        case .sunSpec: \.sunSpecUnitID
+        }
     }
 
     /// Reads the inverter at `address` once: the saved unit ID first, then the kind's usual ones; for SunSpec without a
     /// port, 502 and then 1502 (SolarEdge). On success the address to save (with the port that answered) and the unit ID.
-    public func testInverter(_ address: String) async -> Result<InverterFinder.Match, Error> {
+    public func testInverter(_ address: String, plant id: String = SolarPlant.primaryID) async -> Result<InverterFinder.Match, Error> {
         guard let endpoint = ModbusEndpoint(parsing: address) else { return .failure(SunWattError.invalidInverterAddress) }
-        let kind = localInverterKind
+        let kind = localInverterKind(plant: id)
         if isDemo {
             try? await Task.sleep(for: .milliseconds(400))
             return .success(Self.demoInverter(kind))
         }
         let ports = ModbusEndpoint.hasPort(address) ? [endpoint.port] : kind.ports
-        var units = [settings[keyPath: localInverterUnitKey]]
+        var units = [settings(focusedOn: id)[keyPath: Self.unitKey(kind)]]
         units += kind.unitIDs.filter { !units.contains($0) }
         return await InverterFinder.identify(kind: kind, host: endpoint.host, ports: ports, unitIDs: units, makeTransport: makeModbusTransport)
     }
 
     /// "Find inverter": inverters of the selected provider's kind that answer on the home network.
-    public func findInverters() async -> [InverterFinder.Match] {
-        let kind = localInverterKind
+    public func findInverters(plant id: String = SolarPlant.primaryID) async -> [InverterFinder.Match] {
+        let kind = localInverterKind(plant: id)
         if isDemo {
             try? await Task.sleep(for: .milliseconds(800))
             return [Self.demoInverter(kind)]

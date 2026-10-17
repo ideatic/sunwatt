@@ -5,6 +5,8 @@ import SwiftUI
 /// Provider picker + the editor of the selected provider + its help. Used by settings and onboarding.
 struct SolarSetupEditor: View {
     let model: AppModel
+    /// The plant edited (`SolarPlant.id`); the first one by default.
+    var plantID = SolarPlant.primaryID
     var initialTest: KioskTestState = .idle
     /// Settings shows the optional "Live data at home" section; onboarding keeps the first setup short.
     var showsInverter = true
@@ -14,12 +16,12 @@ struct SolarSetupEditor: View {
     @Environment(\.appSheetPresenter) private var presenter
 
     var body: some View {
-        let provider = model.settings.solarProvider
+        let provider = model.settings(focusedOn: plantID).solarProvider
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             SolarProviderPicker(selection: providerBinding)
             switch provider.profile.setup {
             case .kioskLink:
-                KioskLinkEditor(model: model, initialTest: initialTest)
+                KioskLinkEditor(model: model, plantID: plantID, initialTest: initialTest)
                 hairline
                 Button { present(.kioskHelp) } label: {
                     Label { atext("How do I get the kiosk link?") } icon: { Image(systemName: "questionmark.circle") }
@@ -27,16 +29,16 @@ struct SolarSetupEditor: View {
                 .buttonStyle(SoftButtonStyle())
                 if showsInverter {
                     hairline
-                    InverterLinkEditor(model: model)
+                    InverterLinkEditor(model: model, plantID: plantID)
                 }
             case .apiKey:
-                SolarAPIEditor(model: model, provider: provider, initialTest: initialTest)
+                SolarAPIEditor(model: model, provider: provider, plantID: plantID, initialTest: initialTest)
                     .id(provider)
                 hairline
                 help(provider)
                 if showsInverter {
                     hairline
-                    InverterLinkEditor(model: model)
+                    InverterLinkEditor(model: model, plantID: plantID)
                         .id(provider)
                 }
             }
@@ -47,9 +49,9 @@ struct SolarSetupEditor: View {
     /// service, and the fields do not record which one they belong to (also when switching through FusionSolar).
     private var providerBinding: Binding<SolarProvider> {
         Binding(
-            get: { model.settings.solarProvider },
+            get: { model.settings(focusedOn: plantID).solarProvider },
             set: { new in
-                model.updateSettings { settings in
+                model.updatePlant(plantID) { settings in
                     if settings.solarProvider != new, new.usesAPIKey {
                         settings.solarSiteID = ""
                         settings.solarAPIKey = ""
@@ -137,17 +139,20 @@ struct SolarProviderPicker: View {
 struct SolarAPIEditor: View {
     let model: AppModel
     let provider: SolarProvider
+    let plantID: String
     @State private var siteID: String
     @State private var apiKey: String
     @State private var test: KioskTestState
     @Environment(\.colorScheme) private var scheme
     @Environment(\.scenePhase) private var scenePhase
 
-    init(model: AppModel, provider: SolarProvider, initialTest: KioskTestState = .idle) {
+    init(model: AppModel, provider: SolarProvider, plantID: String = SolarPlant.primaryID, initialTest: KioskTestState = .idle) {
         self.model = model
         self.provider = provider
-        _siteID = State(initialValue: model.settings.solarSiteID)
-        _apiKey = State(initialValue: model.settings.solarAPIKey)
+        self.plantID = plantID
+        let settings = model.settings(focusedOn: plantID)
+        _siteID = State(initialValue: settings.solarSiteID)
+        _apiKey = State(initialValue: settings.solarAPIKey)
         _test = State(initialValue: initialTest)
     }
 
@@ -239,11 +244,12 @@ struct SolarAPIEditor: View {
     /// Saves both fields at once, only while this provider is still the selected one (switching providers
     /// clears the fields; the editor that goes away must not write its old text back).
     private func commit() {
-        guard model.settings.solarProvider == provider else { return }
+        let saved = model.settings(focusedOn: plantID)
+        guard saved.solarProvider == provider else { return }
         let id = siteID.trimmingCharacters(in: .whitespacesAndNewlines)
         let key = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard id != model.settings.solarSiteID || key != model.settings.solarAPIKey else { return }
-        model.updateSettings {
+        guard id != saved.solarSiteID || key != saved.solarAPIKey else { return }
+        model.updatePlant(plantID) {
             $0.solarSiteID = id
             $0.solarAPIKey = key
         }
@@ -267,6 +273,7 @@ struct SolarAPIEditor: View {
 /// Saved when the user submits, leaves the field or the view goes away.
 struct InverterLinkEditor: View {
     let model: AppModel
+    let plantID: String
     @State private var host: String
     @State private var test: InverterTestState = .idle
     @State private var search: SearchState = .idle
@@ -286,12 +293,14 @@ struct InverterLinkEditor: View {
         case several([InverterFinder.Match])
     }
 
-    init(model: AppModel) {
+    init(model: AppModel, plantID: String = SolarPlant.primaryID) {
         self.model = model
-        _host = State(initialValue: model.settings[keyPath: model.localInverterHostKey])
+        self.plantID = plantID
+        _host = State(initialValue: model.settings(focusedOn: plantID)[keyPath: AppModel.hostKey(model.localInverterKind(plant: plantID))])
     }
 
-    private var isHuawei: Bool { model.localInverterKind == .huawei }
+    private var kind: LocalInverterKind { model.localInverterKind(plant: plantID) }
+    private var isHuawei: Bool { kind == .huawei }
 
     var body: some View {
         let palette = AppPalette(scheme)
@@ -304,7 +313,7 @@ struct InverterLinkEditor: View {
                 if isHuawei {
                     atext("Optional. If Modbus TCP is set to “Enable (unrestricted)” in the Huawei dongle, SunWatt reads the inverter directly while you are at home, every few seconds. Elsewhere it uses the kiosk link.")
                 } else {
-                    atext("Optional. If your inverter offers SunSpec over Modbus TCP (SolarEdge, SMA, Fronius and other brands; it may have to be turned on, for example by your installer), SunWatt reads it directly while you are at home, every few seconds. Elsewhere it uses \(model.settings.solarProvider.displayName).")
+                    atext("Optional. If your inverter offers SunSpec over Modbus TCP (SolarEdge, SMA, Fronius and other brands; it may have to be turned on, for example by your installer), SunWatt reads it directly while you are at home, every few seconds. Elsewhere it uses \(model.settings(focusedOn: plantID).solarProvider.displayName).")
                 }
             }
             .font(.system(.footnote, design: .rounded))
@@ -471,16 +480,16 @@ struct InverterLinkEditor: View {
 
     private func commit() {
         let value = host.trimmingCharacters(in: .whitespacesAndNewlines)
-        let key = model.localInverterHostKey
-        guard value != model.settings[keyPath: key] else { return }
-        model.updateSettings { $0[keyPath: key] = value }
+        let key = AppModel.hostKey(kind)
+        guard value != model.settings(focusedOn: plantID)[keyPath: key] else { return }
+        model.updatePlant(plantID) { $0[keyPath: key] = value }
     }
 
     private func runSearch() {
         search = .searching
         test = .idle
         Task {
-            let matches = await model.findInverters()
+            let matches = await model.findInverters(plant: plantID)
             switch matches.count {
             case 0: search = .none
             case 1: choose(matches[0])
@@ -495,8 +504,8 @@ struct InverterLinkEditor: View {
         resultHost = match.address
         host = match.address
         commit()
-        let key = model.localInverterUnitKey
-        if match.unitID != model.settings[keyPath: key] { model.updateSettings { $0[keyPath: key] = match.unitID } }
+        let key = AppModel.unitKey(kind)
+        if match.unitID != model.settings(focusedOn: plantID)[keyPath: key] { model.updatePlant(plantID) { $0[keyPath: key] = match.unitID } }
         test = .success(match)
     }
 
@@ -507,7 +516,7 @@ struct InverterLinkEditor: View {
         let value = host
         resultHost = value.trimmingCharacters(in: .whitespacesAndNewlines)
         Task {
-            switch await model.testInverter(value) {
+            switch await model.testInverter(value, plant: plantID) {
             case .success(let match):
                 // Saves the port that answered too (SunSpec without a port: 502 or 1502).
                 choose(match)
@@ -575,4 +584,74 @@ struct SolarTestResult: View {
         .font(.system(.footnote, design: .rounded))
     }
 }
+/// Several plants: one button per plant, the selected one filled. Scrolls sideways when the names do not fit.
+struct PlantTabs: View {
+    struct Tab: Identifiable {
+        let id: String
+        let name: String
+    }
+
+    let plants: [Tab]
+    @Binding var selection: String
+    @Environment(\.colorScheme) private var scheme
+
+    var body: some View {
+        let palette = AppPalette(scheme)
+        ScrollView(.horizontal) {
+            HStack(spacing: Theme.Spacing.s) {
+                ForEach(plants) { plant in
+                    let isSelected = plant.id == selection
+                    Button { selection = plant.id } label: {
+                        Text(verbatim: plant.name)
+                            .font(.system(.subheadline, design: .rounded).weight(isSelected ? .bold : .medium))
+                            .lineLimit(1)
+                            .padding(.horizontal, Theme.Spacing.m)
+                            .padding(.vertical, 7)
+                            .foregroundStyle(isSelected ? AnyShapeStyle(palette.accentText) : AnyShapeStyle(.secondary))
+                            .background(Capsule().fill(isSelected ? palette.accentText.opacity(0.14) : palette.hairline.opacity(0.5)))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
+                }
+            }
+        }
+        .scrollIndicators(.hidden)
+    }
+}
+
+/// The name of a plant (several plants). Saved when the user submits, leaves the field or the view goes away.
+struct PlantNameEditor: View {
+    let model: AppModel
+    let plantID: String
+    @State private var name: String
+    @Environment(\.scenePhase) private var scenePhase
+
+    init(model: AppModel, plantID: String) {
+        self.model = model
+        self.plantID = plantID
+        _name = State(initialValue: model.settings.plant(id: plantID)?.name ?? "")
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            atext("Plant name")
+                .font(.system(.footnote, design: .rounded).weight(.semibold))
+                .padding(.horizontal, Theme.Spacing.xs)
+            AppTextField(prompt: astring("For example, Home"), text: $name, onCommit: commit)
+        }
+        .onDisappear { commit() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { commit() }
+        }
+    }
+
+    private func commit() {
+        guard var plant = model.settings.plant(id: plantID) else { return }
+        let value = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard value != plant.name else { return }
+        plant.name = value
+        model.updateSettings { $0.updatePlant(plant) }
+    }
+}
+
 #endif

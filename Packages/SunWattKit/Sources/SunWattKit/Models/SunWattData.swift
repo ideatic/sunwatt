@@ -123,14 +123,6 @@ public struct SunWattData: Hashable, Sendable, Codable {
         otherPlants = Array(plants.dropFirst())
     }
 
-    /// Sum over the plants with data: current power and today's energy (nil when no plant has the figure).
-    public var totalPowerKW: Double? { Self.sum(allPlants.map { $0.solar?.currentPowerKW }) }
-    public var totalDailyEnergyKWh: Double? { Self.sum(allPlants.map { $0.solar?.dailyEnergyKWh }) }
-
-    private static func sum(_ values: [Double?]) -> Double? {
-        let present = values.compactMap { $0 }
-        return present.isEmpty ? nil : present.reduce(0, +)
-    }
 }
 
 /// One widget timeline entry. Views derive the current hour from `date`.
@@ -168,6 +160,59 @@ public struct SunWattEntry: Hashable, Sendable {
         solar.dataAsOf = nil
         solar.home = nil
         return solar
+    }
+
+    /// Every plant as views show it at `date` (`solarForDisplay` of each), the one shown first.
+    public var plantsForDisplay: [PlantSolarData] {
+        data.allPlants.map { plant in
+            var shown = plant
+            shown.solar = SunWattEntry(date: date, data: data.showingPlant(id: plant.id)).solarForDisplay
+            return shown
+        }
+    }
+
+    /// One plant: `solarForDisplay`. Several: their figures added up (power, today's, month's and year's energy; a
+    /// figure is nil when no plant has it), without a curve. `fetchedAt` is the newest fetch, `dataAsOf` the oldest
+    /// reading. Nil when no plant has data.
+    public var combinedSolarForDisplay: SolarSnapshot? {
+        guard data.hasSeveralPlants else { return solarForDisplay }
+        let shown = plantsForDisplay.compactMap(\.solar)
+        guard let newest = shown.map(\.fetchedAt).max() else { return nil }
+        func sum(_ values: [Double?]) -> Double? {
+            let present = values.compactMap { $0 }
+            return present.isEmpty ? nil : present.reduce(0, +)
+        }
+        return SolarSnapshot(
+            currentPowerKW: sum(shown.map(\.currentPowerKW)), dailyEnergyKWh: sum(shown.map(\.dailyEnergyKWh)),
+            monthEnergyKWh: sum(shown.map(\.monthEnergyKWh)), yearEnergyKWh: sum(shown.map(\.yearEnergyKWh)),
+            curve: [], fetchedAt: newest, dataAsOf: shown.compactMap(\.dataAsOf).min())
+    }
+
+    /// The entry with every plant added up as one plant (complications, which have no room for names). Stale when any
+    /// plant is; not set up only when no plant is. One plant: unchanged.
+    public var combinedPlants: SunWattEntry {
+        guard data.hasSeveralPlants else { return self }
+        let plants = plantsForDisplay
+        var combined = data
+        combined.plantID = SolarPlant.primaryID
+        combined.plantName = nil
+        combined.otherPlants = []
+        combined.solarLinkExpired = false
+        combined.solar = combinedSolarForDisplay
+        let staleSince = plants.compactMap { plant -> Date? in
+            if case .stale(let since) = plant.status { return since }
+            return nil
+        }.min()
+        if combined.solar == nil {
+            combined.solarStatus = plants.allSatisfy { $0.status == .notConfigured }
+                ? .notConfigured
+                : .error(message: SunWattError.unavailable.localizedDescription)
+        } else if let staleSince {
+            combined.solarStatus = .stale(since: staleSince)
+        } else {
+            combined.solarStatus = .fresh
+        }
+        return SunWattEntry(date: date, data: combined)
     }
 
     /// Solar data is shown as stale when older than `Constants.staleAfter` at `date`, when its status is stale,

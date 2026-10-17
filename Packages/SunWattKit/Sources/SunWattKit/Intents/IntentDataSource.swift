@@ -24,7 +24,8 @@ public struct IntentDataSource: Sendable {
     public func data(for need: Need) async -> SunWattData {
         let cached = loader.cached()
         let now = loader.now()
-        let solarMaxAge = max(Self.solarMaxAge, SolarAccount(settings: loader.store.settings)?.provider.minimumFetchInterval ?? 0)
+        let longestInterval = loader.store.settings.plants.compactMap { SolarAccount(plant: $0)?.provider.minimumFetchInterval }.max() ?? 0
+        let solarMaxAge = max(Self.solarMaxAge, longestInterval)
         if Self.cacheAnswers(cached, need: need, now: now, solarMaxAge: solarMaxAge) { return cached }
         return await loader.load(deadline: deadline, maxCacheAge: maxCacheAge)
     }
@@ -35,9 +36,12 @@ public struct IntentDataSource: Sendable {
         case .price:
             return data.prices?.currentHour(at: now) != nil
         case .solar:
-            if case .notConfigured = data.solarStatus { return true }
-            guard let solar = data.solar else { return false }
-            return now.timeIntervalSince(solar.fetchedAt) <= solarMaxAge
+            // Every plant must be answerable (several plants: Siri gives each one).
+            return data.allPlants.allSatisfy { plant in
+                if case .notConfigured = plant.status { return true }
+                guard let solar = plant.solar else { return false }
+                return now.timeIntervalSince(solar.fetchedAt) <= solarMaxAge
+            }
         }
     }
 }

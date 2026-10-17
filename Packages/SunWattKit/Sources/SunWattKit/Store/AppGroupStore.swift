@@ -36,8 +36,8 @@ public final class AppGroupStore: @unchecked Sendable {
     private static let kioskSecret = "kioskURL"
     private static let apiKeySecret = "solarAPIKey"
     /// Secrets of the further plants, one pair per plant id.
-    private static func kioskSecret(plant id: String) -> String { "plant.\(id).kioskURL" }
-    private static func apiKeySecret(plant id: String) -> String { "plant.\(id).apiKey" }
+    private static func plantKioskSecret(_ id: String) -> String { "plant.\(id).kioskURL" }
+    private static func plantAPIKeySecret(_ id: String) -> String { "plant.\(id).apiKey" }
 
     /// Group defaults + group directory when the container exists, standard defaults + Application Support otherwise.
     private static func defaultLocation() -> (defaults: UserDefaults, directory: URL) {
@@ -62,8 +62,8 @@ public final class AppGroupStore: @unchecked Sendable {
                 if let key = secrets.secret(Self.apiKeySecret) { value.solarAPIKey = key }
                 for index in value.additionalPlants.indices {
                     let id = value.additionalPlants[index].id
-                    if let kiosk = secrets.secret(Self.kioskSecret(plant: id)) { value.additionalPlants[index].kioskURL = kiosk }
-                    if let key = secrets.secret(Self.apiKeySecret(plant: id)) { value.additionalPlants[index].apiKey = key }
+                    if let kiosk = secrets.secret(Self.plantKioskSecret(id)) { value.additionalPlants[index].kioskURL = kiosk }
+                    if let key = secrets.secret(Self.plantAPIKeySecret(id)) { value.additionalPlants[index].apiKey = key }
                 }
             }
             return value
@@ -77,16 +77,16 @@ public final class AppGroupStore: @unchecked Sendable {
                 if secrets.setSecret(newValue.solarAPIKey, for: Self.apiKeySecret) { stored.solarAPIKey = "" }
                 for index in stored.additionalPlants.indices {
                     let plant = stored.additionalPlants[index]
-                    if secrets.setSecret(plant.kioskURL, for: Self.kioskSecret(plant: plant.id)) { stored.additionalPlants[index].kioskURL = "" }
-                    if secrets.setSecret(plant.apiKey, for: Self.apiKeySecret(plant: plant.id)) { stored.additionalPlants[index].apiKey = "" }
+                    if secrets.setSecret(plant.kioskURL, for: Self.plantKioskSecret(plant.id)) { stored.additionalPlants[index].kioskURL = "" }
+                    if secrets.setSecret(plant.apiKey, for: Self.plantAPIKeySecret(plant.id)) { stored.additionalPlants[index].apiKey = "" }
                 }
                 // A removed plant's secrets go too.
                 let kept = Set(newValue.additionalPlants.map(\.id))
                 let previous = defaults.data(forKey: Self.settingsKey)
                     .flatMap { try? JSONDecoder().decode(SunWattSettings.self, from: $0) }?.additionalPlants ?? []
                 for plant in previous where !kept.contains(plant.id) {
-                    secrets.setSecret("", for: Self.kioskSecret(plant: plant.id))
-                    secrets.setSecret("", for: Self.apiKeySecret(plant: plant.id))
+                    secrets.setSecret("", for: Self.plantKioskSecret(plant.id))
+                    secrets.setSecret("", for: Self.plantAPIKeySecret(plant.id))
                 }
             }
             guard let data = try? JSONEncoder().encode(stored) else { return }

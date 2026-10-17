@@ -44,6 +44,7 @@ struct AccessoryRectangularView: View {
                     .widgetAccentable()
             }
             Spacer(minLength: 0)
+            if let name = solar.plantName { PlantNameLabel(name: name).layoutPriority(-1) }
             if solar.staleSince != nil, let time = solar.dataTime {
                 Image(systemName: "clock.arrow.circlepath").imageScale(.small).foregroundStyle(.secondary)
                     .accessibilityLabel(Text(verbatim: Format.time(time)))

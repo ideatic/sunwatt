@@ -37,9 +37,9 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 
 ### Inside `SunWattKit/Sources/SunWattKit`
 
-- `Models/`: `PriceRegion` (8 regions, time zone, source), `PriceSeries` (+ analysis: min/max/cheapest hours, + building/aggregation 15 min → hourly), `SolarSnapshot`, `Settings`, `SunWattData`.
+- `Models/`: `SolarPlant` (one plant; the first lives in the original settings fields, further ones in `additionalPlants`), `PriceRegion` (8 regions, time zone, source), `PriceSeries` (+ analysis: min/max/cheapest hours, + building/aggregation 15 min → hourly), `SolarSnapshot`, `Settings`, `SunWattData`.
 - `Services/`: `HTTPClient` protocol (stubbed in tests), `FusionSolarKioskClient`, `KioskEndpoint` (parse/validate link, `cacheID` = SHA-256 of host+token), `SolarEdgeClient`, `PVOutputClient` (+ `SolarLocalTime` helpers), `LocalInverter` (`ModbusEndpoint`, `LocalInverterSolarClient`: cloud + inverter), `HuaweiModbus`, `SunSpec`, `InverterFinder` ("Find inverter" scan), `HTMLEntities`, `PVPCClient`, `EnergyChartsClient`.
-- `Models/SolarAccount`: `SolarProvider`, `SolarAPICredentials` (validated ID + key), `SolarAccount` (validated settings → client + `cacheID`). Every solar consumer goes through `SolarAccount(settings:)`; do not read `kioskURL` directly.
+- `Models/SolarAccount`: `SolarProvider`, `SolarAPICredentials` (validated ID + key), `SolarAccount` (validated settings → client + `cacheID`). Every solar consumer goes through `SolarAccount(settings:)` / `SolarAccount(plant:)`; do not read `kioskURL` directly. Code written for one plant serves any plant through `SunWattSettings.focused(on:)`; with one plant nothing in the UI may change (`SunWattData.plantName` is nil, `otherPlants` empty).
 - `Store/AppGroupStore`: settings + last good data in the App Group, local fallback when the group container is missing.
 - `Timeline/`: `SunWattLoader` (fetch with deadline + cache window), `TimelineBuilder` (widget entries, stale flags), `PriceRangeDataSource`.
 - `Views/`: widgets, shared chart components, app screens (`AppModel` drives the app), `Watch/`, `Intents/`.
