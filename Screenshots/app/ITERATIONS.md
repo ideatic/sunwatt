@@ -37,3 +37,8 @@ Snapshots now include `ipad-<screen>-<scheme>.png` (1032x1376 pt portrait) and `
 - The onboarding widget page and the widget guide now list Apple Watch complications (iPhone only), Siri and Shortcuts, and Lock Screen and Control Center (not on Mac) in one card (`MoreWaysCard`).
 - Render 1: the snapshot tool runs on macOS, so `#if os(iOS)` hid the iPhone rows in every PNG. Rows are now hidden with `appIdiom` at run time (watch: `.phone` only; Lock Screen and Control Center: not `.desktop`), so snapshots show them.
 - Render 2: on iPhone the page needed room for the card, so the widget preview is shorter (132 pt) and smaller. Checked phone light, dark, German and English, iPad and Mac: no truncation, no overflow, the page fits without scrolling on the iPhone 17 size. Added `onboardingWidget` to the iPad and en/de snapshot lists.
+
+## Iteration 5: price chart keeps its scale while a bar is touched
+- User report (iPhone): touching the dashboard price chart made every bar shorter. The Y domain grew from 14 % to 38 % headroom while a bar was selected, to make room for the callout.
+- Change: the headroom no longer depends on the selection (14 % when the current hour is shown, for the "now" marker). The callout floats over the bars and stays inside the chart (`overflowResolution` fit to chart), as in the solar chart, whose scale never changed.
+- Not re-rendered (Linux session): the snapshot tool needs macOS. To check on device or with `swift run SunWattSnapshots --app`: the `dashboardSelection` kind, and a selected tallest bar (callout over it).

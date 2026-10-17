@@ -194,8 +194,9 @@ struct InteractivePriceChart: View {
         let span = baseDomain.upperBound - baseDomain.lowerBound
         let current = points.first { $0.contains(now) }
         let selected = selection.flatMap { date in points.first { $0.contains(date) } }
-        // Headroom above the tallest bar for the "now" marker and the selection callout.
-        let headroom = selected == nil ? (current == nil ? 0 : 0.14) : 0.38
+        // Headroom above the tallest bar for the "now" marker. It does not change with the selection, so the bars keep
+        // their height while one is touched; the callout floats over them (kept inside the chart).
+        let headroom = current == nil ? 0 : 0.14
         let yDomain = baseDomain.lowerBound...(baseDomain.upperBound + span * headroom)
         let minHeight = span * Theme.Price.minBarFractionFull
         let xDomain: ClosedRange<Date> = ChartLayout.priceDomain(points: points) ?? (now...now.addingTimeInterval(1))
