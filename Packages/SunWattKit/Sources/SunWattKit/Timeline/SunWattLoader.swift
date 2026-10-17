@@ -78,22 +78,25 @@ public struct SunWattLoader: Sendable {
         // Every plant at once, each with its own cache, limits and failures.
         let plants = settings.plants
         let loader = self
-        let solarResults = await withTaskGroup(of: (Int, PlantSolarData?).self) { group in
+        let solarResults = await withTaskGroup(of: (Int, PlantLoad?).self) { group in
             for (index, plant) in plants.enumerated() {
                 group.addTask { (index, await loader.loadPlant(plant, settings: settings, deadline: deadline, now: nowDate)) }
             }
-            var results = [PlantSolarData?](repeating: nil, count: plants.count)
+            var results = [PlantLoad?](repeating: nil, count: plants.count)
             for await (index, result) in group { results[index] = result }
             return results
         }
         let priceOutcome = await priceResult
-        // A nil plant result: that plant's fetch was cancelled.
+        // A nil plant result: that plant's fetch was cancelled. A cancelled load writes nothing, so the plants' writes
+        // wait until here.
         if Task.isCancelled || solarResults.contains(where: { $0 == nil }) || Self.isCancellation(priceOutcome) {
             return cached()
         }
+        let loads = solarResults.compactMap { $0 }
+        for load in loads { load.save() }
 
         var data = SunWattData(solar: nil, prices: nil, solarStatus: .notConfigured, priceStatus: .fresh)
-        data.setPlants(solarResults.compactMap { $0 })
+        data.setPlants(loads.map(\.data))
 
         let cachedPrices = store.loadPrices().flatMap { $0.region == settings.priceRegion ? $0 : nil }
         switch priceOutcome {
@@ -119,12 +122,13 @@ public struct SunWattLoader: Sendable {
 
     /// One plant's part of a load: fetch (or reuse, under the provider's limit), store, fall back to its cache.
     /// `settings` are the whole settings; the plant is put in the place of the first one, so every helper written for
-    /// "the" plant works on it. Nil when cancelled.
-    private func loadPlant(_ plant: SolarPlant, settings: SunWattSettings, deadline: TimeInterval, now nowDate: Date) async -> PlantSolarData? {
+    /// "the" plant works on it. Nil when cancelled. Store writes are returned in `PlantLoad`, not done: the caller
+    /// runs them only when the whole load was not cancelled.
+    private func loadPlant(_ plant: SolarPlant, settings: SunWattSettings, deadline: TimeInterval, now nowDate: Date) async -> PlantLoad? {
         let settings = settings.focused(on: plant)
         let plantID = plant.id
         guard let solarSource = makeSolar(settings) else {
-            return PlantSolarData(id: plantID, name: plant.displayName(stationName: nil), solar: nil, status: unconfiguredStatus(settings))
+            return PlantLoad(data: PlantSolarData(id: plantID, name: plant.displayName(stationName: nil), solar: nil, status: unconfiguredStatus(settings)))
         }
         let reusedSolar = recentSolar(settings: settings, plantID: plantID, now: nowDate)
         // A rate-limited provider that failed moments ago is not asked again yet: its failure is reused.
@@ -136,31 +140,34 @@ public struct SunWattLoader: Sendable {
         if Task.isCancelled || Self.isCancellation(outcome) { return nil }
 
         let account = SolarAccount(settings: settings)
+        let store = self.store
+        var writes: [@Sendable () -> Void] = []
         var result = PlantSolarData(id: plantID, name: "", solar: nil, status: .fresh)
         switch outcome {
         case .success(var snapshot):
-            if let link = account?.kioskEndpoint?.cacheID { store.clearKioskRejection(linkID: link) }
+            if let link = account?.kioskEndpoint?.cacheID { writes.append { store.clearKioskRejection(linkID: link) } }
             if cloudFetched, let account {
                 if snapshot.isLive == true, snapshot.cloudFetchedAt == nil, account.provider.minimumFetchInterval > 0 {
                     // Only the inverter answered: the cloud failed and is not asked again for its interval.
-                    store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: SunWattError.unavailable.localizedDescription)
+                    writes.append { store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: SunWattError.unavailable.localizedDescription) }
                 } else {
-                    store.clearSolarFailure(accountID: account.cacheID)
+                    writes.append { store.clearSolarFailure(accountID: account.cacheID) }
                 }
             }
             if snapshot.isLive == true, let cached = cachedSolar(for: settings, plantID: plantID) {
                 snapshot = Self.fillingIn(snapshot, from: cached)
             }
             snapshot.endpointID = Self.endpointID(for: settings)
-            store.saveSolar(snapshot, plantID: plantID)
+            let saved = snapshot
+            writes.append { store.saveSolar(saved, plantID: plantID) }
             result.solar = snapshot
             result.status = .fresh
         case .failure(let error):
             if recentFailure == nil, let account, account.provider.minimumFetchInterval > 0 {
-                store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: error.localizedDescription)
+                writes.append { store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: error.localizedDescription) }
             }
             if (error as? SunWattError) == .kioskLinkRejected, let link = account?.kioskEndpoint?.cacheID {
-                store.noteKioskRejected(linkID: link, at: nowDate)
+                writes.append { _ = store.noteKioskRejected(linkID: link, at: nowDate) }
             }
             if isKioskLinkExpired(settings: settings, now: nowDate) {
                 // Rejected for a while: the link most likely expired. Ask for a new one instead of showing old data.
@@ -175,7 +182,15 @@ public struct SunWattLoader: Sendable {
             }
         }
         result.name = plant.displayName(stationName: result.solar?.stationName)
-        return result
+        return PlantLoad(data: result, writes: writes)
+    }
+
+    /// One plant's result and the store writes that go with it, run by `save()` once the load is known to be kept.
+    private struct PlantLoad: Sendable {
+        var data: PlantSolarData
+        var writes: [@Sendable () -> Void] = []
+
+        func save() { for write in writes { write() } }
     }
 
     /// Cached data only (no network), for placeholders and snapshots.
