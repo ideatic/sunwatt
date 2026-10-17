@@ -7,7 +7,14 @@ SIM="${HOMEDASH_SIM:-platform=iOS Simulator,name=iPhone 18 Pro,OS=27.0}"
 DD="${HOMEDASH_DD:-build/dd}"
 
 echo "== swift test"
-(cd Packages/HomeDashKit && swift test 2>&1 | tail -n 3)
+LOG="$(mktemp -t homedash-test)"
+if ! (cd Packages/HomeDashKit && swift test >"$LOG" 2>&1); then
+  grep -E "recorded an issue|error:" "$LOG" | head -n 40
+  tail -n 3 "$LOG"
+  echo "swift test FAILED (full log: $LOG)"
+  exit 1
+fi
+tail -n 1 "$LOG"
 [[ "${1:-}" == "quick" ]] && exit 0
 
 echo "== xcodegen"
