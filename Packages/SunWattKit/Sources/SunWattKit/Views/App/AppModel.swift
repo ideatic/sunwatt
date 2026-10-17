@@ -440,6 +440,19 @@ public final class AppModel {
         return .failure(lastError is ModbusFrame.Failure ? SunWattError.inverterUnreachable : lastError)
     }
 
+    /// "Find inverter": Huawei dongles that answer on the home network.
+    public func findInverters() async -> [HuaweiInverterFinder.Match] {
+        if isDemo {
+            try? await Task.sleep(for: .milliseconds(800))
+            return [HuaweiInverterFinder.Match(host: "192.168.1.50", unitID: 1, model: "SUN2000-6KTL-M1",
+                                               reading: HuaweiInverterReading(activePowerKW: 2.9, dailyEnergyKWh: 5.1, totalEnergyKWh: 44150))]
+        }
+        return await makeInverterFinder().find()
+    }
+
+    /// Network scan for "Find inverter" (seam for tests).
+    @ObservationIgnored var makeInverterFinder: @Sendable () -> HuaweiInverterFinder = { HuaweiInverterFinder() }
+
     /// Transport for inverter reads (seam for tests).
     @ObservationIgnored var makeModbusTransport: @Sendable (HuaweiLocalEndpoint) -> ModbusTransport? = HuaweiModbusClient.defaultTransport
 

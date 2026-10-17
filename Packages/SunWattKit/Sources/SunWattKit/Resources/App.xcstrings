@@ -616,6 +616,47 @@
         }
       }
     },
+    "Check that this device is on the home Wi-Fi, that Modbus TCP is enabled in the dongle and that SunWatt may use the local network (Settings → Privacy & Security → Local Network)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen Sie, ob dieses Gerät mit dem WLAN zu Hause verbunden ist, ob Modbus TCP im Dongle aktiviert ist und ob SunWatt das lokale Netzwerk verwenden darf (Einstellungen → Datenschutz & Sicherheit → Lokales Netzwerk)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba que este dispositivo está conectado al Wi-Fi de casa, que Modbus TCP está activado en el dongle y que SunWatt puede usar la red local (Ajustes → Privacidad y seguridad → Red local)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez que cet appareil est connecté au Wi-Fi de la maison, que Modbus TCP est activé dans le dongle et que SunWatt est autorisé à utiliser le réseau local (Réglages → Confidentialité et sécurité → Réseau local)."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica che questo dispositivo sia connesso al Wi-Fi di casa, che Modbus TCP sia attivo nel dongle e che SunWatt possa usare la rete locale (Impostazioni → Privacy e sicurezza → Rete locale)."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controleer of dit apparaat op het wifi-netwerk van thuis zit, of Modbus TCP is ingeschakeld in de dongle en of SunWatt het lokale netwerk mag gebruiken (Instellingen → Privacy en beveiliging → Lokaal netwerk)."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifique se este dispositivo está na rede Wi-Fi de casa, se o Modbus TCP está ativado no dongle e se o SunWatt pode usar a rede local (Definições → Privacidade e segurança → Rede local)."
+          }
+        }
+      }
+    },
     "Choose Edit Widgets… from the menu." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1559,6 +1600,47 @@
         }
       }
     },
+    "Find inverter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wechselrichter suchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar inversor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouver l'onduleur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trova inverter"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omvormer zoeken"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procurar inversor"
+          }
+        }
+      }
+    },
     "For the Home Screen, the Lock Screen and the desktop." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2129,6 +2211,129 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ecrã bloqueado"
+          }
+        }
+      }
+    },
+    "No inverter found" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Wechselrichter gefunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró ningún inversor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun onduleur trouvé"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun inverter trovato"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geen omvormer gevonden"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum inversor encontrado"
+          }
+        }
+      }
+    },
+    "Searching the home network…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heimnetzwerk wird durchsucht …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando en la red doméstica…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche sur le réseau domestique…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ricerca nella rete di casa…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thuisnetwerk doorzoeken…"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A procurar na rede de casa…"
+          }
+        }
+      }
+    },
+    "Several inverters answered. Choose yours:" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrere Wechselrichter haben geantwortet. Wählen Sie Ihren aus:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varios inversores han respondido. Elige el tuyo:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plusieurs onduleurs ont répondu. Choisissez le vôtre :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanno risposto più inverter. Scegli il tuo:"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meerdere omvormers hebben gereageerd. Kies je omvormer:"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vários inversores responderam. Escolha o seu:"
           }
         }
       }

@@ -255,19 +255,27 @@ struct SolarAPIEditor: View {
     }
 }
 
-/// "Live data at home": the Huawei dongle's address on the home network (Modbus TCP), optional, with a test.
-/// Saved when the user submits, leaves the field or the view goes away.
+/// "Live data at home": the Huawei dongle's address on the home network (Modbus TCP), optional, with a network
+/// search ("Find inverter") and a test. Saved when the user submits, leaves the field or the view goes away.
 struct InverterLinkEditor: View {
     let model: AppModel
     @State private var host: String
     @State private var test: InverterTestState = .idle
+    @State private var search: SearchState = .idle
+    /// Address the shown result belongs to; editing the field to anything else clears the result.
+    @State private var resultHost: String?
     @Environment(\.colorScheme) private var scheme
     @Environment(\.scenePhase) private var scenePhase
 
     enum InverterTestState {
         case idle, testing
-        case success(HuaweiInverterReading)
+        case success(HuaweiInverterReading, model: String?)
         case failure(String)
+    }
+
+    enum SearchState {
+        case idle, searching, none
+        case several([HuaweiInverterFinder.Match])
     }
 
     init(model: AppModel) {
@@ -300,18 +308,87 @@ struct InverterLinkEditor: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, Theme.Spacing.xs)
             }
-            Button { runTest() } label: {
-                Label { atext("Test inverter") } icon: { Image(systemName: "bolt.horizontal.circle") }
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Theme.Spacing.s) { buttons(valid: valid) }
+                VStack(alignment: .leading, spacing: Theme.Spacing.s) { buttons(valid: valid) }
             }
-            .buttonStyle(SoftButtonStyle(compact: true))
-            .disabled(!valid)
-            .opacity(valid ? 1 : 0.5)
+            searchResult(palette: palette)
             result(palette: palette)
         }
-        .onChange(of: host) { _, _ in test = .idle }
+        .onChange(of: host) { _, value in
+            if value.trimmingCharacters(in: .whitespacesAndNewlines) != resultHost { test = .idle }
+        }
         .onDisappear { commit() }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { commit() }
+        }
+    }
+
+    @ViewBuilder
+    private func buttons(valid: Bool) -> some View {
+        let busy: Bool = {
+            if case .searching = search { return true }
+            if case .testing = test { return true }
+            return false
+        }()
+        Button { runSearch() } label: {
+            Label { atext("Find inverter") } icon: { Image(systemName: "magnifyingglass") }
+        }
+        .buttonStyle(SoftButtonStyle(compact: true))
+        .disabled(busy)
+        .opacity(busy ? 0.5 : 1)
+        Button { runTest() } label: {
+            Label { atext("Test inverter") } icon: { Image(systemName: "bolt.horizontal.circle") }
+        }
+        .buttonStyle(SoftButtonStyle(compact: true))
+        .disabled(!valid || busy)
+        .opacity(valid && !busy ? 1 : 0.5)
+    }
+
+    @ViewBuilder
+    private func searchResult(palette: AppPalette) -> some View {
+        switch search {
+        case .idle:
+            EmptyView()
+        case .searching:
+            HStack(spacing: Theme.Spacing.s) {
+                ProgressView().controlSize(.small)
+                atext("Searching the home network…").font(.system(.footnote, design: .rounded)).foregroundStyle(.secondary)
+            }
+        case .none:
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "magnifyingglass").foregroundStyle(palette.warning)
+                VStack(alignment: .leading, spacing: 2) {
+                    atext("No inverter found").font(.system(.subheadline, design: .rounded).weight(.bold))
+                    atext("Check that this device is on the home Wi-Fi, that Modbus TCP is enabled in the dongle and that SunWatt may use the local network (Settings → Privacy & Security → Local Network).")
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(Theme.Spacing.m)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.warning.opacity(0.12)))
+        case .several(let matches):
+            VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                atext("Several inverters answered. Choose yours:")
+                    .font(.system(.footnote, design: .rounded).weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                ForEach(matches, id: \.host) { match in
+                    Button { choose(match) } label: {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(verbatim: match.model.map { "\($0) · \(match.host)" } ?? match.host)
+                                .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                            atext("\(Format.kW(max(match.reading.activePowerKW, 0))) kW now · \(Format.kWh(match.reading.dailyEnergyKWh)) kWh today")
+                                .font(.system(.footnote, design: .rounded))
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .buttonStyle(SoftButtonStyle(compact: true))
+                }
+            }
         }
     }
 
@@ -325,11 +402,14 @@ struct InverterLinkEditor: View {
                 ProgressView().controlSize(.small)
                 atext("Connecting…").font(.system(.footnote, design: .rounded)).foregroundStyle(.secondary)
             }
-        case .success(let reading):
+        case .success(let reading, let model):
             HStack(alignment: .top, spacing: 8) {
                 Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.success)
                 VStack(alignment: .leading, spacing: 2) {
                     atext("Inverter found").font(.system(.subheadline, design: .rounded).weight(.bold))
+                    if let model {
+                        Text(verbatim: model).font(.system(.footnote, design: .rounded).weight(.semibold))
+                    }
                     atext("\(Format.kW(max(reading.activePowerKW, 0))) kW now · \(Format.kWh(reading.dailyEnergyKWh)) kWh today")
                         .font(.system(.footnote, design: .rounded))
                         .foregroundStyle(.secondary)
@@ -362,14 +442,39 @@ struct InverterLinkEditor: View {
         model.updateSettings { $0.huaweiLocalHost = value }
     }
 
+    private func runSearch() {
+        search = .searching
+        test = .idle
+        Task {
+            let matches = await model.findInverters()
+            switch matches.count {
+            case 0: search = .none
+            case 1: choose(matches[0])
+            default: search = .several(matches)
+            }
+        }
+    }
+
+    /// Fills in and saves the found address and unit ID, and shows its reading as the test result.
+    private func choose(_ match: HuaweiInverterFinder.Match) {
+        search = .idle
+        resultHost = match.host
+        host = match.host
+        commit()
+        if match.unitID != model.settings.huaweiLocalUnitID { model.updateSettings { $0.huaweiLocalUnitID = match.unitID } }
+        test = .success(match.reading, model: match.model)
+    }
+
     private func runTest() {
         commit()
+        search = .idle
         test = .testing
         let value = host
+        resultHost = value.trimmingCharacters(in: .whitespacesAndNewlines)
         Task {
             switch await model.testInverter(value) {
             case .success(let (reading, unit)):
-                test = .success(reading)
+                test = .success(reading, model: nil)
                 if unit != model.settings.huaweiLocalUnitID { model.updateSettings { $0.huaweiLocalUnitID = unit } }
             case .failure(let error):
                 test = .failure(error.localizedDescription)

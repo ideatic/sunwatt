@@ -133,6 +133,46 @@ public struct HuaweiModbusClient: Sendable {
     }
 
     public func read() async throws -> HuaweiInverterReading {
+        try await session { try await Self.reading($0) }
+    }
+
+    /// The model name (registers 30000...30014, ASCII, e.g. "SUN2000-15KTL-M5"; nil if the dongle does not give it)
+    /// and a reading, on one connection. Used by "Find inverter".
+    public func identify() async throws -> (model: String?, reading: HuaweiInverterReading) {
+        try await session { registers in
+            let model = (try? await registers(30000, 15)).flatMap(Self.text)
+            return (model, try await Self.reading(registers))
+        }
+    }
+
+    typealias ReadRegisters = (UInt16, UInt16) async throws -> [UInt16]
+
+    private static func reading(_ registers: ReadRegisters) async throws -> HuaweiInverterReading {
+        let inverter = try await registers(32080, 10)
+        let energy = try await registers(32106, 10)
+        // Meter: status 37100 (1 = normal), active power 37113 (I32, W, > 0 feeding the grid).
+        var meterKW: Double?
+        if let meter = try? await registers(37100, 15), meter[0] == 1 {
+            meterKW = Double(ModbusFrame.int32(meter, at: 13)) / 1000
+        }
+        return HuaweiInverterReading(
+            activePowerKW: Double(ModbusFrame.int32(inverter, at: 0)) / 1000,
+            dailyEnergyKWh: Double(ModbusFrame.uint32(energy, at: 8)) / 100,
+            totalEnergyKWh: Double(ModbusFrame.uint32(energy, at: 0)) / 100,
+            deviceStatus: inverter[9],
+            meterActivePowerKW: meterKW)
+    }
+
+    /// Two ASCII characters per register, padded with zeros.
+    static func text(_ registers: [UInt16]) -> String? {
+        let bytes = registers.flatMap { [UInt8($0 >> 8), UInt8($0 & 0xFF)] }.prefix { $0 != 0 }
+        guard bytes.allSatisfy({ (0x20...0x7E).contains($0) }) else { return nil }
+        let value = String(decoding: bytes, as: UTF8.self).trimmingCharacters(in: .whitespaces)
+        return value.isEmpty ? nil : value
+    }
+
+    /// Opens the connection, runs `body` with a register reader and closes it; errors mapped as for `read()`.
+    private func session<T>(_ body: (ReadRegisters) async throws -> T) async throws -> T {
         guard let transport = makeTransport(endpoint) else { throw SunWattError.inverterUnreachable }
         defer { transport.close() }
         do {
@@ -144,19 +184,7 @@ public struct HuaweiModbusClient: Sendable {
                 let request = ModbusFrame.readHoldingRegisters(transaction: transaction, unit: unit, address: address, count: count)
                 return try ModbusFrame.registers(from: try await transport.exchange(request), transaction: transaction, count: count)
             }
-            let inverter = try await registers(32080, 10)
-            let energy = try await registers(32106, 10)
-            // Meter: status 37100 (1 = normal), active power 37113 (I32, W, > 0 feeding the grid).
-            var meterKW: Double?
-            if let meter = try? await registers(37100, 15), meter[0] == 1 {
-                meterKW = Double(ModbusFrame.int32(meter, at: 13)) / 1000
-            }
-            return HuaweiInverterReading(
-                activePowerKW: Double(ModbusFrame.int32(inverter, at: 0)) / 1000,
-                dailyEnergyKWh: Double(ModbusFrame.uint32(energy, at: 8)) / 100,
-                totalEnergyKWh: Double(ModbusFrame.uint32(energy, at: 0)) / 100,
-                deviceStatus: inverter[9],
-                meterActivePowerKW: meterKW)
+            return try await body(registers)
         } catch is CancellationError {
             throw CancellationError()
         } catch let error as SunWattError {
