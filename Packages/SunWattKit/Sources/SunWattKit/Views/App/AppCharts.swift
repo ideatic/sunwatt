@@ -270,7 +270,8 @@ struct InteractivePriceChart: View {
             AxisMarks(position: .trailing, values: ticks) { value in
                 AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.primary.opacity(0.07))
                 AxisValueLabel(anchor: .leading) {
-                    if let v = value.as(Double.self) {
+                    // No "0" label: the baseline grid line already shows it.
+                    if let v = value.as(Double.self), v != 0 {
                         Text(verbatim: ChartLayout.axisNumber(v, decimals: 2) + (v == ticks.last && v > 0 ? " €" : ""))
                             .font(.system(.caption2, design: .rounded))
                             .monospacedDigit()
