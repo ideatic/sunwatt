@@ -24,11 +24,13 @@ public struct IntentDataSource: Sendable {
     public func data(for need: Need) async -> SunWattData {
         let cached = loader.cached()
         let now = loader.now()
-        if Self.cacheAnswers(cached, need: need, now: now) { return cached }
+        let solarMaxAge = max(Self.solarMaxAge, SolarAccount(settings: loader.store.settings)?.provider.minimumFetchInterval ?? 0)
+        if Self.cacheAnswers(cached, need: need, now: now, solarMaxAge: solarMaxAge) { return cached }
         return await loader.load(deadline: deadline, maxCacheAge: maxCacheAge)
     }
 
-    static func cacheAnswers(_ data: SunWattData, need: Need, now: Date) -> Bool {
+    /// `solarMaxAge`: the provider's own fetch interval when longer (SolarEdge would not fetch again anyway).
+    static func cacheAnswers(_ data: SunWattData, need: Need, now: Date, solarMaxAge: TimeInterval = IntentDataSource.solarMaxAge) -> Bool {
         switch need {
         case .price:
             return data.prices?.currentHour(at: now) != nil

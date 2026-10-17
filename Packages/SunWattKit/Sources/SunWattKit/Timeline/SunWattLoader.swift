@@ -67,7 +67,9 @@ public struct SunWattLoader: Sendable {
         }
         let priceSource = makePrices(settings.priceRegion)
         let reusedSolar = solarSource == nil ? nil : recentSolar(settings: settings, now: nowDate)
-        async let solarResult = Self.fetchSolar(solarSource, reusing: reusedSolar, deadline: deadline)
+        // A rate-limited provider that failed moments ago is not asked again yet: its failure is reused.
+        let recentFailure = solarSource == nil || reusedSolar != nil ? nil : recentSolarFailure(settings: settings, now: nowDate)
+        async let solarResult = Self.fetchSolar(solarSource, reusing: reusedSolar, failure: recentFailure, deadline: deadline)
         async let priceResult = Self.fetchPrices(priceSource, includeTomorrow: settings.showTomorrowPrices, deadline: deadline)
         let solarOutcome = await solarResult
         let priceOutcome = await priceResult
@@ -83,6 +85,7 @@ public struct SunWattLoader: Sendable {
             switch solarOutcome {
             case .success(var snapshot):
                 store.clearKioskRejection()
+                if reusedSolar == nil { store.clearSolarFailure() }
                 if snapshot.isLive == true, let cached = cachedSolar(for: settings) {
                     snapshot = Self.fillingIn(snapshot, from: cached)
                 }
@@ -91,6 +94,9 @@ public struct SunWattLoader: Sendable {
                 data.solar = snapshot
                 data.solarStatus = .fresh
             case .failure(let error):
+                if recentFailure == nil, let account = SolarAccount(settings: settings), account.provider.minimumFetchInterval > 0 {
+                    store.noteSolarFailure(accountID: account.cacheID, at: nowDate, message: error.localizedDescription)
+                }
                 if (error as? SunWattError) == .kioskLinkRejected, let id = Self.endpointID(for: settings) {
                     store.noteKioskRejected(linkID: id, at: nowDate)
                 }
@@ -208,6 +214,16 @@ public struct SunWattLoader: Sendable {
         return solar
     }
 
+    /// The last failure of a rate-limited provider (SolarEdge) when it is younger than its fetch interval: refreshes
+    /// in between show it (with cached data as stale) instead of spending more of the daily requests.
+    private func recentSolarFailure(settings: SunWattSettings, now: Date) -> Error? {
+        guard let account = SolarAccount(settings: settings), account.provider.minimumFetchInterval > 0,
+              let failure = store.solarFailure(accountID: account.cacheID) else { return nil }
+        let age = now.timeIntervalSince(failure.at)
+        guard age >= 0, age < account.provider.minimumFetchInterval else { return nil }
+        return StoredFailure(message: failure.message)
+    }
+
     /// Stored data of every source in use, fetched less than `maxAge` seconds ago; nil when any part is missing or older.
     private func recentCache(settings: SunWattSettings, solarConfigured: Bool, maxAge: TimeInterval, now: Date) -> SunWattData? {
         func isRecent(_ fetchedAt: Date) -> Bool {
@@ -216,7 +232,11 @@ public struct SunWattLoader: Sendable {
         }
         var data = SunWattData(solar: nil, prices: nil, solarStatus: .notConfigured, priceStatus: .fresh)
         if solarConfigured {
-            guard let solar = cachedSolar(for: settings), isRecent(solar.fetchedAt),
+            // Solar the provider would not fetch again yet (SolarEdge: 20 min) counts as recent too; otherwise every
+            // widget of a SolarEdge user would miss the shared window and fetch prices at the same time (HTTP 429).
+            let solarMaxAge = max(maxAge, SolarAccount(settings: settings)?.provider.minimumFetchInterval ?? 0)
+            guard let solar = cachedSolar(for: settings),
+                  now.timeIntervalSince(solar.fetchedAt) >= 0, now.timeIntervalSince(solar.fetchedAt) < solarMaxAge,
                   Constants.madridCalendar.isDate(solar.fetchedAt, inSameDayAs: now) else { return nil }
             data.solar = solar
             data.solarStatus = .fresh
@@ -254,9 +274,11 @@ public struct SunWattLoader: Sendable {
         return false
     }
 
-    /// `reusing`: a recent snapshot returned instead of fetching (see `recentSolar`).
-    private static func fetchSolar(_ source: SolarDataSource?, reusing recent: SolarSnapshot?, deadline: TimeInterval) async -> Result<SolarSnapshot, Error> {
+    /// `reusing`: a recent snapshot returned instead of fetching (see `recentSolar`); `failure`: a recent failure
+    /// returned instead of fetching (see `recentSolarFailure`).
+    private static func fetchSolar(_ source: SolarDataSource?, reusing recent: SolarSnapshot?, failure: Error?, deadline: TimeInterval) async -> Result<SolarSnapshot, Error> {
         if let recent { return .success(recent) }
+        if let failure { return .failure(failure) }
         guard let source else { return .failure(SunWattError.notConfigured) }
         return await race(deadline: deadline) { try await source.fetch() }
     }
@@ -289,6 +311,12 @@ public struct SunWattLoader: Sendable {
             timer.cancel()
         }
     }
+}
+
+/// A failure recorded earlier, shown again with its original message.
+struct StoredFailure: LocalizedError, Sendable {
+    let message: String
+    var errorDescription: String? { message }
 }
 
 /// One-shot result holder: the first `finish` wins, `result()` suspends until it arrives.

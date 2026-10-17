@@ -61,6 +61,11 @@ public struct SunWattEntry: Hashable, Sendable {
     /// stale marker instead of yesterday's numbers as today's. Month, year and total energy are kept.
     public var solarForDisplay: SolarSnapshot? {
         guard var solar = data.solar, isSolarFromEarlierDay else { return data.solar }
+        // Month and year totals of an earlier month / year do not belong to the current one (1 November, 1 January).
+        let calendar = Constants.madridCalendar
+        let reference = min(solar.fetchedAt, solar.dataAsOf ?? solar.fetchedAt)
+        if !calendar.isDate(reference, equalTo: date, toGranularity: .month) { solar.monthEnergyKWh = nil }
+        if !calendar.isDate(reference, equalTo: date, toGranularity: .year) { solar.yearEnergyKWh = nil }
         solar.curve = []
         solar.currentPowerKW = nil
         solar.dailyEnergyKWh = nil

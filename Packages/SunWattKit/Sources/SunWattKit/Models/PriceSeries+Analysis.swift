@@ -120,10 +120,12 @@ public extension PriceSeries {
     }
 
     /// The `count` cheapest hourly points that start at or after the current hour, sorted by start time.
-    func cheapestUpcoming(from date: Date, count: Int = 3) -> [PricePoint] {
+    /// `until`: only hours starting before it (e.g. the end of the shown day), so a cheaper next day does not push
+    /// the rest of this day out of the ranking.
+    func cheapestUpcoming(from date: Date, count: Int = 3, until: Date? = nil) -> [PricePoint] {
         guard count > 0 else { return [] }
         let current = Self.hourStart(of: date)
-        let upcoming = hourly().filter { $0.start >= current }
+        let upcoming = hourly().filter { $0.start >= current && (until.map { end in $0.start < end } ?? true) }
         let cheapest = upcoming.sorted { ($0.eurPerMWh, $0.start) < ($1.eurPerMWh, $1.start) }.prefix(count)
         return cheapest.sorted { $0.start < $1.start }
     }

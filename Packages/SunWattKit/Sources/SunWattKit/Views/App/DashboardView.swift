@@ -522,7 +522,8 @@ private struct PriceCard: View {
     @ViewBuilder
     private var cheapest: some View {
         let from = shownDay == .today ? now : (tomorrowStart ?? now)
-        let upcoming = series.cheapestUpcoming(from: from, count: 3)
+        let dayEnd = region.calendar.dateInterval(of: .day, for: reference)?.end
+        let upcoming = series.cheapestUpcoming(from: from, count: 3, until: dayEnd)
             .filter { region.calendar.isDate($0.start, inSameDayAs: reference) }
         if !upcoming.isEmpty {
             let contexts = PriceDayContexts(series: series, points: upcoming)

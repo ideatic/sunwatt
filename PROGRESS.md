@@ -35,6 +35,8 @@
 
 - [x] Huawei inverter on the home network (Modbus TCP, DECISIONS D18): live data at home, kiosk elsewhere. Tested in CI against a fake dongle (also over real TCP on loopback). **Not tested on the real SDongleA-05 yet**: needs Modbus TCP "Enable (unrestricted)" on the dongle.
 
+- [x] Full code review (15 findings): all fixed (DECISIONS D19).
+
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
 - Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).

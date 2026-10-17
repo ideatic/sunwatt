@@ -385,11 +385,30 @@ public final class AppModel {
             return .failure(SunWattError.unavailable)
         }
         let account: SolarAccount = provider == .solarEdge ? .solarEdge(credentials) : .pvOutput(credentials)
+        // The test is the fetch: the refresh scheduled by saving the fields would send the same requests again
+        // (SolarEdge allows 300 a day). Its result is kept for the saved account, then the dashboard refreshes
+        // without asking the provider again (see `SolarProvider.minimumFetchInterval`).
+        pendingRefresh?.cancel()
+        let result: Result<SolarSnapshot, Error>
         do {
-            return .success(try await account.client().fetch())
+            result = .success(try await account.client().fetch())
         } catch {
-            return .failure(error)
+            result = .failure(error)
         }
+        if SolarAccount(settings: settings) == account {
+            switch result {
+            case .success(var snapshot):
+                snapshot.endpointID = account.cacheID
+                store.saveSolar(snapshot)
+                store.clearSolarFailure()
+            case .failure(let error):
+                if account.provider.minimumFetchInterval > 0, !(error is CancellationError) {
+                    store.noteSolarFailure(accountID: account.cacheID, at: Date(), message: error.localizedDescription)
+                }
+            }
+            await refresh(maxCacheAge: SunWattLoader.sharedCacheWindow)
+        }
+        return result
     }
 
     // MARK: Huawei inverter on the home network

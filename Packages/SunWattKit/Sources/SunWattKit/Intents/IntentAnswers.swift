@@ -139,7 +139,12 @@ public struct CheapestHoursAnswer: Sendable, Equatable {
         guard let series = data.prices else { return unavailable(strings) }
         let cheapest = series.cheapestUpcoming(from: now, count: count)
         guard let lowest = cheapest.map(\.eurPerKWh).min() else { return unavailable(strings) }
-        let labels = cheapest.map { Format.hour($0.start, timeZone: series.region.timeZone) }
+        // The ranking spans today and tomorrow: hours of tomorrow say so ("3 h tomorrow").
+        let calendar = series.region.calendar
+        let labels = cheapest.map { point in
+            let hour = Format.hour(point.start, timeZone: series.region.timeZone)
+            return calendar.isDate(point.start, inSameDayAs: now) ? hour : strings.text("%@ tomorrow", hour)
+        }
         let price = strings.eurPerKWh(lowest)
         let dialog = cheapest.count == 1
             ? strings.text("The cheapest hour coming up is %@, at %@ €/kWh.", labels[0], price)

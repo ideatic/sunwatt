@@ -19,7 +19,7 @@ Team: ideatic Development, S.L.U. (`EX68NKELW9`). Bundle ID: `com.ideatic.sunwat
    - `AppStore/metadata/*/privacy_url.txt`, `support_url.txt`, `marketing_url.txt`
    - `AppStore/app_privacy.md`, `AppStore/review_notes.txt` (contact e-mail)
    - `docs/privacy.html`, `docs/support.html` (contact e-mail)
-3. Check: `python3 AppStore/check_metadata.py`.
+3. Check: `python3 AppStore/check_metadata.py AppStore/metadata`.
 
 ## c) First build: `scripts/release.sh --upload`
 

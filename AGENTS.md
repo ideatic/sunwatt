@@ -47,10 +47,10 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 
 ## Rules that must not break
 
-1. **Kiosk token and API keys are secrets.** Never commit a kiosk URL or a SolarEdge/PVOutput key, never log them, never put them in error text or descriptions (`HTTPFetch.perform(redacting:)`, custom `description`/`customMirror`), never write them to a disk cache (the dedicated ephemeral `URLSession` has no URL cache). Release builds must not contain `kiosk.local`.
+1. **Kiosk token and API keys are secrets.** Never commit a kiosk URL or a SolarEdge/PVOutput key, never log them, never put them in error text or descriptions (`HTTPFetch.perform(redacting:)`, custom `description`/`customMirror`), never write them to a disk cache (the dedicated ephemeral `URLSession` has no URL cache). They are stored in the keychain (`KeychainSecretStore`, DECISIONS D19), not in the settings plist. Release builds must not contain `kiosk.local`.
 2. **No personal data in fixtures.** Real captures are fine, but replace station name, address and station id (`stationDn`) with demo values *before* the first commit. History was rewritten once to remove such data (DECISIONS D5); do not reintroduce it.
 3. **Widget budget.** Widget extensions get ~30 s. `SunWattLoader.load(deadline:)` defaults to 15 s per source; keep every network path under that deadline and cancellable.
-4. **Rate limits.** SolarEdge: 300 requests/day per site; `SolarProvider.minimumFetchInterval` (20 min) makes the loader reuse younger solar data even on explicit refreshes. PVOutput: 60/hour. **Energy-Charts rate-limits (HTTP 429).** One request per refresh (today+tomorrow as one range). Widgets, controls and intents pass `maxCacheAge: SunWattLoader.sharedCacheWindow` (120 s); only explicit refreshes use 0. A 429 falls back to cached data.
+4. **Rate limits.** SolarEdge: 300 requests/day per site; `SolarProvider.minimumFetchInterval` (20 min) makes the loader reuse younger solar data, and a failure younger than that, even on explicit refreshes. PVOutput: 60/hour. **Energy-Charts rate-limits (HTTP 429).** One request per refresh (today+tomorrow as one range). Widgets, controls and intents pass `maxCacheAge: SunWattLoader.sharedCacheWindow` (120 s); only explicit refreshes use 0. A 429 falls back to cached data.
 5. **Time zones.** Price day math uses `PriceRegion.calendar` (Lisbon for Portugal, CET elsewhere). Solar labels use Europe/Madrid. SolarEdge/PVOutput send local site times; they are read in the device time zone (`SolarLocalTime.deviceCalendar`). DST days have 23/25 hours, covered by real fixtures.
 6. **Localization.** Every user-facing string goes in a catalog with all 6 translations (tests enforce this). Catalog keys are `extractionState: manual`; do not let Xcode re-extract into them. Numbers use `Format.locale` (user locale), not a fixed Spanish format.
 7. **Attribution.** Energy-Charts "Fraunhofer ISE, CC BY 4.0" must stay visible in the app (dashboard, settings, onboarding).
@@ -67,7 +67,7 @@ xcodebuild -downloadPlatform iOS && xcodebuild -downloadPlatform watchOS
 xcodegen generate && open SunWatt.xcodeproj
 ```
 
-The code needs Apple SDKs (SwiftUI, WidgetKit, AppIntents, Charts, CryptoKit). It does **not** build on Linux; a Linux container can only edit code, docs and metadata (and run `python3 AppStore/check_metadata.py`).
+The code needs Apple SDKs (SwiftUI, WidgetKit, AppIntents, Charts, CryptoKit). It does **not** build on Linux; a Linux container can only edit code, docs and metadata (and run `python3 AppStore/check_metadata.py AppStore/metadata`).
 
 ### Test
 
@@ -113,11 +113,11 @@ Every new or changed user-facing string (string catalogs, App Store metadata, `d
    - Each subagent works as an LQA (linguistic quality assurance) reviewer, not only a translator: it reports anything ambiguous in the source, and checks length, terminology consistency and natural phrasing.
 3. **The main agent audits every result** before writing it to the files: placeholders kept, nothing left in English, no words from another language, consistent terms across the app, same formality, sensible length. Note: "solar system" is not "sistema solar" (that means the planets); use the local term for a solar installation or monitoring system.
 4. When something looks wrong, send it back **to the subagent of that locale** (SendMessage) with the exact string and the problem, and apply only the corrected answer. Do not fix one language by copying from another.
-5. Then run the catalog tests (`swift test --filter L10n`, `--filter ViewStrings`) and `python3 AppStore/check_metadata.py`.
+5. Then run the catalog tests (`swift test --filter L10n`, `--filter ViewStrings`) and `python3 AppStore/check_metadata.py AppStore/metadata`.
 
 ### Release
 
-Step by step in `docs/RELEASE.md`. `scripts/release.sh` is a dry run by default; `--upload` changes the Apple Developer account and uploads to App Store Connect, so run it only when the owner says so. Check metadata with `python3 AppStore/check_metadata.py`. Open owner items are listed in `PROGRESS.md` (host `docs/`, replace `REPLACE-ME`, App Store Connect record).
+Step by step in `docs/RELEASE.md`. `scripts/release.sh` is a dry run by default; `--upload` changes the Apple Developer account and uploads to App Store Connect, so run it only when the owner says so. Check metadata with `python3 AppStore/check_metadata.py AppStore/metadata`. Open owner items are listed in `PROGRESS.md` (host `docs/`, replace `REPLACE-ME`, App Store Connect record).
 
 ## Working conventions
 

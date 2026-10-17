@@ -76,8 +76,9 @@ public enum ChartLayout {
     /// Y domain of the price chart in €/kWh: always includes 0 (negative wholesale prices extend below).
     public static func priceYDomain(points: [PricePoint]) -> ClosedRange<Double> {
         let values = points.map(\.eurPerKWh)
+        // Always include 0: bars start at 0, also when every price is negative.
         let lo = min(0, values.min() ?? 0)
-        let hi = max(values.max() ?? 0, lo + 0.001)
+        let hi = max(values.max() ?? 0, 0, lo + 0.001)
         return lo...(hi + (hi - lo) * 0.08)
     }
 

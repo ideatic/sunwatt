@@ -14,19 +14,27 @@ public final class AppGroupStore: @unchecked Sendable {
 
     private let defaults: UserDefaults
     private let directory: URL
+    /// Keeps the kiosk link and the API key out of the settings plist. Nil: everything in `defaults` (tests).
+    private let secrets: SecretStore?
     private let lock = NSLock()
 
-    /// `defaults` and `directory` are injectable for tests.
-    public init(defaults: UserDefaults? = nil, directory: URL? = nil) {
+    /// `defaults`, `directory` and `secrets` are injectable for tests. With injected defaults and directory and no
+    /// `secrets`, secrets stay in `defaults`; the shared store uses the keychain (App Group access group).
+    public init(defaults: UserDefaults? = nil, directory: URL? = nil, secrets: SecretStore? = nil) {
         if let defaults, let directory {
             self.defaults = defaults
             self.directory = directory
+            self.secrets = secrets
         } else {
             let location = Self.defaultLocation()
             self.defaults = defaults ?? location.defaults
             self.directory = directory ?? location.directory
+            self.secrets = secrets ?? KeychainSecretStore(accessGroup: Constants.appGroupID)
         }
     }
+
+    private static let kioskSecret = "kioskURL"
+    private static let apiKeySecret = "solarAPIKey"
 
     /// Group defaults + group directory when the container exists, standard defaults + Application Support otherwise.
     private static func defaultLocation() -> (defaults: UserDefaults, directory: URL) {
@@ -39,19 +47,55 @@ public final class AppGroupStore: @unchecked Sendable {
         return (.standard, support.appendingPathComponent("SunWatt", isDirectory: true))
     }
 
+    /// Settings from `defaults`, with the kiosk link and the API key from the keychain. A secret the keychain does
+    /// not have (older installs, or a build that cannot use it) is read from `defaults`.
     public var settings: SunWattSettings {
         get {
             lock.lock(); defer { lock.unlock() }
-            guard let data = defaults.data(forKey: Self.settingsKey),
-                  let value = try? JSONDecoder().decode(SunWattSettings.self, from: data)
-            else { return SunWattSettings() }
+            var value = defaults.data(forKey: Self.settingsKey)
+                .flatMap { try? JSONDecoder().decode(SunWattSettings.self, from: $0) } ?? SunWattSettings()
+            if let secrets {
+                if let kiosk = secrets.secret(Self.kioskSecret) { value.kioskURL = kiosk }
+                if let key = secrets.secret(Self.apiKeySecret) { value.solarAPIKey = key }
+            }
             return value
         }
         set {
             lock.lock(); defer { lock.unlock() }
-            guard let data = try? JSONEncoder().encode(newValue) else { return }
+            var stored = newValue
+            // Saved in the keychain: blank in the plist. Otherwise (no keychain access) the plist keeps it.
+            if let secrets {
+                if secrets.setSecret(newValue.kioskURL, for: Self.kioskSecret) { stored.kioskURL = "" }
+                if secrets.setSecret(newValue.solarAPIKey, for: Self.apiKeySecret) { stored.solarAPIKey = "" }
+            }
+            guard let data = try? JSONEncoder().encode(stored) else { return }
             defaults.set(data, forKey: Self.settingsKey)
         }
+    }
+
+    // MARK: Failed fetches of rate-limited providers
+
+    private static let solarFailureKey = "sunwatt.solarFailure"
+    private struct SolarFailure: Codable { var accountID: String; var at: Date; var message: String }
+
+    /// The last failed fetch of the solar account with this cache ID: when, and the message to show.
+    public func solarFailure(accountID: String) -> (at: Date, message: String)? {
+        lock.lock(); defer { lock.unlock() }
+        guard let data = defaults.data(forKey: Self.solarFailureKey),
+              let value = try? JSONDecoder().decode(SolarFailure.self, from: data), value.accountID == accountID else { return nil }
+        return (value.at, value.message)
+    }
+
+    public func noteSolarFailure(accountID: String, at date: Date, message: String) {
+        lock.lock(); defer { lock.unlock() }
+        if let data = try? JSONEncoder().encode(SolarFailure(accountID: accountID, at: date, message: message)) {
+            defaults.set(data, forKey: Self.solarFailureKey)
+        }
+    }
+
+    public func clearSolarFailure() {
+        lock.lock(); defer { lock.unlock() }
+        defaults.removeObject(forKey: Self.solarFailureKey)
     }
 
     private static let kioskRejectionKey = "sunwatt.kioskRejection"
@@ -115,17 +159,39 @@ public final class AppGroupStore: @unchecked Sendable {
 
     private struct FetchedAtProbe: Decodable { var fetchedAt: Date }
 
+    /// A stored `fetchedAt` this far in the future means the device clock went back: it no longer blocks writes.
+    static let clockTolerance: TimeInterval = 10 * 60
+
+    /// Writes unless the stored data is newer. The check and the write run under a file coordinator, so the app and
+    /// the widget extension (separate processes) cannot interleave them.
     private func write<T: Encodable>(_ value: T, file: String, fetchedAt: Date) {
         lock.lock(); defer { lock.unlock() }
-        if let existing = readLocked(FetchedAtProbe.self, file: file)?.fetchedAt, existing > fetchedAt { return }
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
+        let data: Data
         do {
-            let data = try encoder.encode(value)
+            data = try encoder.encode(value)
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-            try data.write(to: directory.appendingPathComponent(file), options: .atomic)
         } catch {
             Self.log.error("Cannot write \(file, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            return
+        }
+        let url = directory.appendingPathComponent(file)
+        var coordinationError: NSError?
+        NSFileCoordinator(filePresenter: nil).coordinate(writingItemAt: url, options: .forReplacing, error: &coordinationError) { target in
+            if let stored = try? Data(contentsOf: target),
+               let existing = try? Self.decoder().decode(FetchedAtProbe.self, from: stored).fetchedAt,
+               existing > fetchedAt, existing <= Date().addingTimeInterval(Self.clockTolerance) {
+                return
+            }
+            do {
+                try data.write(to: target, options: .atomic)
+            } catch {
+                Self.log.error("Cannot write \(file, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        if let coordinationError {
+            Self.log.error("Cannot coordinate \(file, privacy: .public): \(coordinationError.localizedDescription, privacy: .public)")
         }
     }
 }

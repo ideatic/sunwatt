@@ -28,9 +28,11 @@ final class WatchModel {
         SunWattEntry(date: fixedDate ?? date, data: data)
     }
 
-    func refresh() async {
+    /// `maxCacheAge`: activations and the periodic refresh reuse data stored moments ago (every wrist raise restarts
+    /// the task); a settings change passes 0 to fetch at once.
+    func refresh(maxCacheAge: TimeInterval = SunWattLoader.sharedCacheWindow) async {
         guard !isDemo else { return }
-        let fresh = await loader.load()
+        let fresh = await loader.load(maxCacheAge: maxCacheAge)
         if !Task.isCancelled { data = fresh }
         WidgetCenter.shared.reloadAllTimelines()
     }
@@ -60,7 +62,7 @@ struct SunWattWatchApp: App {
             }
             .task {
                 WatchSettingsReceiver.shared.onSettingsChange {
-                    Task { @MainActor in await model.refresh() }
+                    Task { @MainActor in await model.refresh(maxCacheAge: 0) }
                 }
             }
         }
