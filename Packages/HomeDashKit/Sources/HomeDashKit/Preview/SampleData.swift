@@ -112,7 +112,7 @@ public enum SampleData {
         return ((5.3 * bell * (1 - dip)) * 100).rounded() / 100
     }
 
-    private static func date(_ hour: Int, _ minute: Int) -> Date {
+    static func date(_ hour: Int, _ minute: Int) -> Date {
         Constants.madridCalendar.date(from: DateComponents(year: 2026, month: 10, day: 17, hour: hour, minute: minute))!
     }
 }

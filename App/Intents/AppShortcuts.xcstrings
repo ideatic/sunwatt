@@ -1,0 +1,246 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Cheapest hours in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horas más baratas en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horas mais baratas no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heures les moins chères dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Günstigste Stunden in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ore più convenienti in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goedkoopste uren in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Electricity price in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio de la electricidad en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preço da eletricidade no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prix de l'électricité dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strompreis in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prezzo dell'elettricità in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stroomprijs in ${applicationName}"
+          }
+        }
+      }
+    },
+    "How much solar am I producing in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuánta energía solar estoy produciendo en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanta energia solar estou a produzir no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combien de solaire je produis dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie viel Solarstrom erzeuge ich in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quanta energia solare sto producendo in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoeveel zonnestroom wek ik op in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Solar production in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Producción solar en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produção solar no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Production solaire dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solarerzeugung in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produzione solare in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonne-opbrengst in ${applicationName}"
+          }
+        }
+      }
+    },
+    "What's the electricity price in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuál es el precio de la electricidad en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qual é o preço da eletricidade no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quel est le prix de l'électricité dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie hoch ist der Strompreis in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qual è il prezzo dell'elettricità in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wat is de stroomprijs in ${applicationName}"
+          }
+        }
+      }
+    },
+    "When is electricity cheapest in ${applicationName}": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuándo es más barata la electricidad en ${applicationName}"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando é que a eletricidade é mais barata no ${applicationName}"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quand l'électricité est-elle la moins chère dans ${applicationName}"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wann ist der Strom am günstigsten in ${applicationName}"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando costa meno l'elettricità in ${applicationName}"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wanneer is stroom het goedkoopst in ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

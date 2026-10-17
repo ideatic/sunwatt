@@ -1,82 +1,42 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "HomeDash": {
+    "6 h before, 12 h after": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "6 h antes, 12 h después"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "6 h antes, 12 h depois"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "6 h avant, 12 h après"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "6 h davor, 12 h danach"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "6 h prima, 12 h dopo"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
-          }
-        }
-      }
-    },
-    "Solar production and electricity price.": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Producción solar y precio de la electricidad."
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produção solar e preço da eletricidade."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Production solaire et prix de l’électricité."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Solarerzeugung und Strompreis."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Produzione solare e prezzo dell’elettricità."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zonne-opbrengst en elektriciteitsprijs."
+            "value": "6 u ervoor, 12 u erna"
           }
         }
       }
@@ -121,82 +81,82 @@
         }
       }
     },
-    "Solar and price": {
+    "Electricity price": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solar y precio"
+            "value": "Precio de la electricidad"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solar e preço"
+            "value": "Preço da eletricidade"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solaire et prix"
+            "value": "Prix de l’électricité"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solar und Preis"
+            "value": "Strompreis"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solare e prezzo"
+            "value": "Prezzo dell’elettricità"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zon en prijs"
+            "value": "Stroomprijs"
           }
         }
       }
     },
-    "Solar only": {
+    "HomeDash": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo solar"
+            "value": "HomeDash"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Só solar"
+            "value": "HomeDash"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solaire seulement"
+            "value": "HomeDash"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nur Solar"
+            "value": "HomeDash"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo solare"
+            "value": "HomeDash"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alleen zon"
+            "value": "HomeDash"
           }
         }
       }
@@ -281,6 +241,286 @@
         }
       }
     },
+    "Shows the current electricity price. Tap to refresh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra el precio actual de la electricidad. Toca para actualizar."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra o preço atual da eletricidade. Toca para atualizar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affiche le prix actuel de l’électricité. Touchez pour actualiser."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeigt den aktuellen Strompreis. Tippen zum Aktualisieren."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra il prezzo attuale dell’elettricità. Tocca per aggiornare."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toont de huidige stroomprijs. Tik om te vernieuwen."
+          }
+        }
+      }
+    },
+    "Shows the current solar production. Tap to refresh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra la producción solar actual. Toca para actualizar."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra a produção solar atual. Toca para atualizar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Affiche la production solaire actuelle. Touchez pour actualiser."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeigt die aktuelle Solarerzeugung. Tippen zum Aktualisieren."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra la produzione solare attuale. Tocca per aggiornare."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toont de huidige zonne-opbrengst. Tik om te vernieuwen."
+          }
+        }
+      }
+    },
+    "Solar and price": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solar y precio"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solar e preço"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solaire et prix"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solar und Preis"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solare e prezzo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zon en prijs"
+          }
+        }
+      }
+    },
+    "Solar only": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo solar"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Só solar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solaire seulement"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur Solar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo solare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alleen zon"
+          }
+        }
+      }
+    },
+    "Solar production": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Producción solar"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produção solar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Production solaire"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solarerzeugung"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produzione solare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonne-opbrengst"
+          }
+        }
+      }
+    },
+    "Solar production and electricity price.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Producción solar y precio de la electricidad."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produção solar e preço da eletricidade."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Production solaire et prix de l’électricité."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solarerzeugung und Strompreis."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produzione solare e prezzo dell’elettricità."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonne-opbrengst en elektriciteitsprijs."
+          }
+        }
+      }
+    },
+    "Solar production and electricity price. Tap to refresh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Producción solar y precio de la electricidad. Toca para actualizar."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produção solar e preço da eletricidade. Toca para atualizar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Production solaire et prix de l’électricité. Touchez pour actualiser."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solarerzeugung und Strompreis. Tippen zum Aktualisieren."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Produzione solare e prezzo dell’elettricità. Tocca per aggiornare."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonne-opbrengst en stroomprijs. Tik om te vernieuwen."
+          }
+        }
+      }
+    },
     "Whole day": {
       "localizations": {
         "es": {
@@ -317,46 +557,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hele dag"
-          }
-        }
-      }
-    },
-    "6 h before, 12 h after": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "6 h antes, 12 h después"
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "6 h antes, 12 h depois"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "6 h avant, 12 h après"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "6 h davor, 12 h danach"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "6 h prima, 12 h dopo"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "6 u ervoor, 12 u erna"
           }
         }
       }
