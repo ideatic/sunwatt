@@ -5617,6 +5617,293 @@
           }
         }
       }
+    },
+    "Apple Watch complications" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watch-Komplikationen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complicaciones del Apple Watch"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complications Apple Watch"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complicazioni di Apple Watch"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Watch-complicaties"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complicações do Apple Watch"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Current price and solar power. In Control Center tap +, then Add a Control and SunWatt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktueller Preis und Solarleistung. Im Kontrollzentrum auf + tippen, dann Steuerelement hinzufügen und SunWatt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precio actual y potencia solar. En el Centro de control toca +, después Añadir un control y SunWatt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prix actuel et puissance solaire. Dans le Centre de contrôle, touchez +, puis Ajouter un contrôle et SunWatt."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prezzo attuale e potenza solare. In Centro di Controllo tocca +, poi Aggiungi un controllo e SunWatt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huidige prijs en zonnevermogen. Tik in het Bedieningspaneel op +, dan op Voeg een knop toe en SunWatt."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preço atual e potência solar. Na Central de Controle, toque em +, depois em Adicionar um Controle e SunWatt."
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Lock Screen and Control Center" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sperrbildschirm und Kontrollzentrum"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pantalla bloqueada y Centro de control"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran verrouillé et Centre de contrôle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schermata di blocco e Centro di Controllo"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toegangsscherm en Bedieningspaneel"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tela Bloqueada e Central de Controle"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "More ways to use SunWatt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Möglichkeiten mit SunWatt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más formas de usar SunWatt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autres façons d'utiliser SunWatt"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altri modi per usare SunWatt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer manieren om SunWatt te gebruiken"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais formas de usar o SunWatt"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Price and Solar today. Touch and hold the watch face, tap Edit, then Complications and SunWatt. Settings come from your iPhone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preis und Solar heute. Zifferblatt gedrückt halten, auf Bearbeiten tippen, dann Komplikationen und SunWatt. Die Einstellungen kommen vom iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precio y Solar hoy. Mantén pulsada la esfera, toca Editar, después Complicaciones y SunWatt. Los ajustes vienen del iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prix et Solaire aujourd'hui. Maintenez le cadran, touchez Modifier, puis Complications et SunWatt. Les réglages viennent de l'iPhone."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prezzo e Solare oggi. Tieni premuto il quadrante, tocca Modifica, poi Complicazioni e SunWatt. Le impostazioni arrivano dall'iPhone."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prijs en Zon vandaag. Houd de wijzerplaat ingedrukt, tik op Wijzig, dan op Complicaties en SunWatt. De instellingen komen van de iPhone."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preço e Solar hoje. Toque e segure o mostrador, toque em Editar, depois em Complicações e SunWatt. Os ajustes vêm do iPhone."
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Say “What's the electricity price in SunWatt?”" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sag „Wie hoch ist der Strompreis in SunWatt?“"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di “¿Cuál es el precio de la electricidad en SunWatt?”"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dites « Quel est le prix de l'électricité dans SunWatt ? »"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di’ “Qual è il prezzo dell'elettricità in SunWatt?”"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeg “Wat is de stroomprijs in SunWatt?”"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diga “Qual é o preço da eletricidade no SunWatt?”"
+          }
+        }
+      },
+      "extractionState" : "manual"
+    },
+    "Siri and Shortcuts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri und Kurzbefehle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri y Atajos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri et Raccourcis"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri e Comandi rapidi"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri en Opdrachten"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri e Atalhos"
+          }
+        }
+      },
+      "extractionState" : "manual"
     }
   },
   "version" : "1.0"

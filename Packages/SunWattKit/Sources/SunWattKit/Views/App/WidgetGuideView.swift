@@ -118,6 +118,10 @@ struct WidgetGuideContent: View {
                 }
                 .padding(.horizontal, Theme.Spacing.xs)
             }
+            atext("More ways to use SunWatt")
+                .font(.system(.subheadline, design: .rounded).weight(.bold))
+                .padding(.horizontal, Theme.Spacing.xs)
+            MoreWaysCard()
             atext("Widgets refresh about every 15 minutes. The system decides the exact moment.")
                 .font(.system(.caption, design: .rounded))
                 .foregroundStyle(.secondary)

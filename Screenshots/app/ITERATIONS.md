@@ -32,3 +32,8 @@ Snapshots now include `ipad-<screen>-<scheme>.png` (1032x1376 pt portrait) and `
 - iPad render 2: onboarding content hugged the top of a 1376 pt screen; added top padding on iPad. The two-column country list in the settings sheet truncated "Germany & Luxemb..." in the simulator, so iPad uses one column. Sheets use `.presentationSizing(.page)`.
 - iPhone simulator: the top Y label "0,20 EUR" wrapped onto two lines at the larger system text size. The label now has `lineLimit(1)` and a 46 pt width.
 - Simulator captures show the current smooth sample curve (5,3 kW, 16,2 kWh) and match the snapshots.
+
+## Iteration 4: other integrations in onboarding and widget guide
+- The onboarding widget page and the widget guide now list Apple Watch complications (iPhone only), Siri and Shortcuts, and Lock Screen and Control Center (not on Mac) in one card (`MoreWaysCard`).
+- Render 1: the snapshot tool runs on macOS, so `#if os(iOS)` hid the iPhone rows in every PNG. Rows are now hidden with `appIdiom` at run time (watch: `.phone` only; Lock Screen and Control Center: not `.desktop`), so snapshots show them.
+- Render 2: on iPhone the page needed room for the card, so the widget preview is shorter (132 pt) and smaller. Checked phone light, dark, German and English, iPad and Mac: no truncation, no overflow, the page fits without scrolling on the iPhone 17 size. Added `onboardingWidget` to the iPad and en/de snapshot lists.
