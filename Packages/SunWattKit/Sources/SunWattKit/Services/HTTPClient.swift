@@ -43,6 +43,10 @@ public extension PriceDataSource {
 /// Errors shown to the user. `errorDescription` is localized (see L10n).
 public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
     case invalidKioskURL
+    /// SolarEdge / PVOutput: the ID is not a number or the key has the wrong format.
+    case invalidSolarCredentials
+    /// SolarEdge / PVOutput answered 401 or 403: wrong key or ID, or the API access is off.
+    case solarCredentialsRejected
     case notConfigured
     case http(status: Int)
     case badResponse(String)
@@ -52,7 +56,9 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .invalidKioskURL: L10n.string("The kiosk URL is not valid. It must contain the kk parameter.")
-        case .notConfigured: L10n.string("Set up the kiosk URL in Settings.")
+        case .invalidSolarCredentials: L10n.string("The ID must be a number and the API key letters and digits only.")
+        case .solarCredentialsRejected: L10n.string("The API key or the ID was rejected. Check both, and that API access is on.")
+        case .notConfigured: L10n.string("Set up your solar system in Settings.")
         case .http(let status): L10n.string("The server responded with code \(status).")
         case .badResponse(let detail): L10n.string("Invalid response: \(detail)")
         case .unavailable: L10n.string("Data not available yet.")

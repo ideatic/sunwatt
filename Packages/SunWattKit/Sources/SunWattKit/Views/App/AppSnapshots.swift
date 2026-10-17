@@ -18,6 +18,7 @@ public struct AppSnapshotView: View {
         case settings
         case settingsTest
         case settingsInvalid
+        case settingsSolarEdge
         case onboardingWelcome
         case onboardingCountry
         case onboardingSolar
@@ -68,7 +69,7 @@ public struct AppSnapshotView: View {
     }
     private var isSheet: Bool {
         switch kind {
-        case .settings, .settingsTest, .settingsInvalid, .widgetGuide, .widgetGuideLock, .kioskHelp: true
+        case .settings, .settingsTest, .settingsInvalid, .settingsSolarEdge, .widgetGuide, .widgetGuideLock, .kioskHelp: true
         default: false
         }
     }
@@ -115,6 +116,11 @@ public struct AppSnapshotView: View {
             return AppModel(demo: .day, settings: settings, widgetCount: 1)
         case .settings, .settingsTest:
             return AppModel(demo: .day, settings: settings, widgetCount: 1)
+        case .settingsSolarEdge:
+            settings.solarProvider = .solarEdge
+            settings.solarSiteID = "1234567"
+            settings.solarAPIKey = "DEMO0KEY0DEMO0KEY0DEMO0KEY000000"
+            return AppModel(demo: .day, settings: settings, widgetCount: 1)
         case .onboardingSolar:
             settings.kioskURL = ""
             return AppModel(demo: .day, settings: settings, widgetCount: 0, showsOnboarding: true)
@@ -149,7 +155,7 @@ public struct AppSnapshotView: View {
                 priceSelection: SampleData.now.addingTimeInterval(6 * 3600))
         case .dashboardTomorrow:
             DashboardContent(model: model, startsOnTomorrow: true)
-        case .settings, .settingsInvalid:
+        case .settings, .settingsInvalid, .settingsSolarEdge:
             SettingsContent(model: model)
         case .settingsTest:
             SettingsContent(model: model, initialTest: .success(SampleData.entry(.day).data.solar!))

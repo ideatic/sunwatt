@@ -8,7 +8,11 @@ PRIX DE L'ÉLECTRICITÉ
 • Prix de demain dès leur publication
 
 PRODUCTION SOLAIRE
-Collez le lien Kiosk de votre installation Huawei FusionSolar pour voir la puissance actuelle en kW, l'énergie du jour en kWh et la courbe de production. Le premier lancement vous explique comment obtenir ce lien en moins d'une minute.
+Connectez votre système de suivi pour voir la puissance actuelle en kW, l'énergie du jour en kWh et la courbe de production. Compatible avec :
+• Huawei FusionSolar : collez le lien Kiosk de votre installation
+• SolarEdge : saisissez l'ID du site et la clé API
+• PVOutput : saisissez l'ID du système et la clé API. PVOutput fonctionne avec de nombreuses marques d'onduleurs, comme Fronius, SMA, Enphase, GoodWe et Growatt
+Le premier lancement vous explique où trouver chaque information en quelques minutes.
 
 WIDGETS
 • Widgets petit, moyen et grand pour l'écran d'accueil
@@ -31,6 +35,6 @@ DANS L'APP
 • Guide pour ajouter les widgets
 
 CONFIDENTIEL PAR CONCEPTION
-Pas de compte. Pas de suivi. Pas de mesure d'audience. Pas de publicité. SunWatt ne contacte que le serveur FusionSolar de votre lien Kiosk et les services publics de prix. Vos réglages et les dernières données restent sur votre appareil. Rien n'est envoyé au développeur.
+Pas de compte. Pas de suivi. Pas de mesure d'audience. Pas de publicité. SunWatt ne contacte que le service solaire que vous choisissez (FusionSolar, SolarEdge ou PVOutput) et les services publics de prix. Vos réglages, vos clés API et les dernières données restent sur votre appareil. Rien n'est envoyé au développeur.
 
-SunWatt est gratuit. Il n'est pas affilié à Huawei, à Red Eléctrica ni au Fraunhofer ISE. Les prix day-ahead viennent d'Energy-Charts (Fraunhofer ISE), licence CC BY 4.0. Le prix de gros n'est pas le prix de votre facture.
+SunWatt est gratuit. Il n'est pas affilié à Huawei, à SolarEdge, à PVOutput, à Red Eléctrica ni au Fraunhofer ISE. Les prix day-ahead viennent d'Energy-Charts (Fraunhofer ISE), licence CC BY 4.0. Le prix de gros n'est pas le prix de votre facture.

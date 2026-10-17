@@ -146,7 +146,7 @@ public struct SourceStateView: View {
     }
 
     private var hint: Text {
-        kind == .notConfigured ? wtext("Set up the kiosk in SunWatt") : wtext("Open SunWatt to check the connection")
+        kind == .notConfigured ? wtext("Set up solar in SunWatt") : wtext("Open SunWatt to check the connection")
     }
 }
 

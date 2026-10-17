@@ -8,7 +8,11 @@ PRECIO DE LA LUZ (PVPC)
 • Ideal para decidir cuándo poner la lavadora, el lavavajillas o cargar el coche
 
 PRODUCCIÓN SOLAR
-Pega el enlace Kiosk de tu planta Huawei FusionSolar y verás la potencia actual en kW, la energía de hoy en kWh y la curva de producción del día. El primer arranque te explica cómo conseguir el enlace en menos de un minuto.
+Conecta tu instalación y verás la potencia actual en kW, la energía de hoy en kWh y la curva de producción del día. Funciona con:
+• Huawei FusionSolar: pega el enlace Kiosk de tu planta
+• SolarEdge: introduce el ID del sitio y la clave API
+• PVOutput: introduce el ID de tu sistema y la clave API. PVOutput funciona con muchas marcas de inversores, como Fronius, SMA, Enphase, GoodWe o Growatt
+El primer arranque te explica dónde encontrar cada dato en un par de minutos.
 
 WIDGETS
 • Widgets pequeño, mediano y grande para la pantalla de inicio
@@ -31,6 +35,6 @@ EN LA APP
 • Guía para añadir los widgets
 
 PRIVADA POR DISEÑO
-Sin cuenta. Sin rastreo. Sin analíticas. Sin anuncios. SunWatt solo se conecta con el servidor de FusionSolar de tu enlace Kiosk y con los servicios públicos de precios. Tus ajustes y los últimos datos se quedan en tu dispositivo. No se envía nada al desarrollador.
+Sin cuenta. Sin rastreo. Sin analíticas. Sin anuncios. SunWatt solo se conecta con el servicio de monitorización que elijas (FusionSolar, SolarEdge o PVOutput) y con los servicios que publican los precios. Tus ajustes, tus claves y los últimos datos se quedan en tu dispositivo. No se envía nada al desarrollador.
 
-SunWatt es gratis. No está afiliada a Huawei, Red Eléctrica ni Fraunhofer ISE. Los precios del mercado mayorista de otros países proceden de Energy-Charts (Fraunhofer ISE), licencia CC BY 4.0. El precio mayorista no es el de tu factura.
+SunWatt es gratis. No está afiliada a Huawei, SolarEdge, PVOutput, Red Eléctrica ni Fraunhofer ISE. Los precios del mercado mayorista de otros países proceden de Energy-Charts (Fraunhofer ISE), licencia CC BY 4.0. El precio mayorista no es el de tu factura.

@@ -67,3 +67,14 @@ Each entry: decision, why, how to change it.
 - `SolarSnapshot.endpointID` = SHA-256 of kiosk host + token (`KioskEndpoint.cacheID`, never the token). A cached snapshot with another or no identifier is ignored (old caches are refetched once).
 - After midnight (Europe/Madrid) a snapshot from an earlier day shows no curve, power or daily energy (`SunWattEntry.solarForDisplay`) and is marked stale.
 - Not done: requests in flight are not shared between widgets started at the same instant on a cold cache; only the window protects them.
+
+## D15. More solar providers: SolarEdge and PVOutput (user request, 2026-10-17)
+- `SunWattSettings.solarProvider` (`fusionSolar` default, `solarEdge`, `pvOutput`) + `solarSiteID` + `solarAPIKey`. Old stored settings decode as FusionSolar; an unknown provider value falls back to FusionSolar. `kioskURL` stays, so switching back keeps the link.
+- Why these two: both have an official, documented, free API that works with an ID + key, no OAuth. SolarEdge is the biggest brand after Huawei in Spain; PVOutput covers many other brands (Fronius, SMA, Enphase, GoodWe, Growatt…) through their uploaders. Not done: Fronius local API (home Wi-Fi only, needs HTTP + local network permission), Home Assistant (needs remote access), Enphase/SMA (OAuth app registration).
+- SolarEdge: `GET /site/{id}/overview` (power now, energy day/month/year/lifetime, last update) and `GET /site/{id}/power` for today (15-minute curve), sent together. Key in the `api_key` query item (that is how the API works); redacted from error messages. 401/403 → `SunWattError.solarCredentialsRejected`.
+- SolarEdge limit is 300 requests a day per site. `SolarProvider.minimumFetchInterval` = 20 min: the loader reuses a snapshot of the same account younger than that, even on an explicit refresh. At most 144 requests a day per device, so iPhone + Watch together stay under 300.
+- PVOutput: `GET /service/r2/getstatus.jsp?h=1&limit=288&asc=1`, key and system ID in `X-Pvoutput-Apikey` / `X-Pvoutput-SystemId` headers. "No status found" (400, before the first upload of the day) is a day without production. "Exceeded … requests" (403) is a rate limit, not a wrong key. "Power now" is the latest status if it is at most 30 min old, else 0.
+- Both send local site times without a zone; they are read in the device time zone (the plant is almost always where the phone is). The charts still use Europe/Madrid (D8), the same as for FusionSolar.
+- Cache identity: `SolarAccount.cacheID` = SHA-256 of provider + ID + key (FusionSolar keeps `KioskEndpoint.cacheID`, so existing caches stay valid). A snapshot from another provider or account is never shown.
+- Test data: SolarEdge and PVOutput fixtures are synthetic, written from the documented formats (no real account was available). Run a live check with a real site before release.
+- Change: add a case to `SolarProvider` and `SolarAccount` (see AGENTS.md, "Adding things").

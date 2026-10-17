@@ -1,28 +1,30 @@
 SunWatt - notes for App Review
 
-No login. The app has no accounts and no sign-in screen. Nothing to enter except an optional link (see below).
+No login. The app has no accounts and no sign-in screen. Nothing to enter except optional solar details (see below).
 
 What the app does
-SunWatt shows widgets with (1) the electricity price and (2) the output of a home solar plant (Huawei FusionSolar). The price part works with no setup.
+SunWatt shows widgets with (1) the electricity price and (2) the output of a home solar plant. For solar, the user picks one provider under "Solar system": Huawei FusionSolar (kiosk link), SolarEdge (site ID + API key from the SolarEdge monitoring portal) or PVOutput (system ID + API key from pvoutput.org; many inverter brands upload to PVOutput). The price part works with no setup.
 
 How to test without a solar plant
-A demo FusionSolar kiosk link is not available. The kiosk link belongs to a private solar plant and we cannot share one. The solar part is optional:
+A demo FusionSolar kiosk link, SolarEdge key or PVOutput key is not available. They belong to a private solar plant and we cannot share one. The solar part is optional:
 1. Open the app. Tap "Get started" on the welcome page.
 2. Choose a country (for example Spain, or any other in the list) and continue.
-3. On the "Solar production" page (the FusionSolar kiosk link), tap "Skip, prices only". Then finish the onboarding. The dashboard shows the current price, today's chart and the cheapest upcoming hours. Tomorrow's prices appear later in the day, when the data provider publishes them.
+3. On the "Solar production" page (FusionSolar, SolarEdge or PVOutput), tap "Skip, prices only". Then finish the onboarding. The dashboard shows the current price, today's chart and the cheapest upcoming hours. Tomorrow's prices appear later in the day, when the data provider publishes them.
 4. Add a widget: touch and hold the Home Screen, tap "Edit" > "Add Widget", search "SunWatt". Choose small, medium or large. In the widget settings choose "Price" (not "Solar"). Lock Screen widgets and the Control Center control can be added the same way.
 5. Tap a widget to refresh it.
 6. Siri / Shortcuts: say "What's the electricity price in SunWatt?".
 
-With no kiosk link, the solar widgets show a short message that solar is not set up. This is expected.
+With no solar system set up, the solar widgets show a short message that solar is not set up. This is expected.
 
 Network and data
 The app contacts only:
 - apidatos.ree.es (Red Eléctrica, public PVPC prices for Spain)
 - api.energy-charts.info (Energy-Charts, Fraunhofer ISE, CC BY 4.0, day-ahead prices for other countries)
-- the FusionSolar server named in the kiosk link the user pastes (only if the user adds one)
-No API keys. No tracking, no analytics, no ads. Nothing is sent to the developer. Settings and last data are stored on the device (App Group shared with the widgets).
+- the FusionSolar server named in the kiosk link the user pastes (only if the user chooses FusionSolar)
+- monitoringapi.solaredge.com (official SolarEdge Monitoring API, HTTPS; only if the user chooses SolarEdge)
+- pvoutput.org (PVOutput API, HTTPS; only if the user chooses PVOutput)
+The app has no API keys of its own. A SolarEdge or PVOutput API key is entered by the user, is sent only to that provider, and is stored only on the device (App Group shared with the widgets, and synced to the user's own Apple Watch). No tracking, no analytics, no ads. Nothing is sent to the developer. Settings and last data are stored on the device (App Group shared with the widgets).
 
 Other
-Not affiliated with Huawei, Red Eléctrica or Fraunhofer ISE. Public data is used under its terms (CC BY 4.0 with attribution in the app). The app needs an internet connection to load prices.
+Not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE. Public data is used under its terms (CC BY 4.0 with attribution in the app). The app needs an internet connection to load prices.
 Contact: REPLACE-ME@example.com

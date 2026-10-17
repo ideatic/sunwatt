@@ -42,12 +42,32 @@ hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0}
 <p class="muted">The link gives read-only access to your plant data. Anyone who has it can see that data. Turn the toggle off to stop it.</p>
 </details>
 
+<details><summary>How do I connect SolarEdge?</summary>
+<ol>
+<li>Sign in to the SolarEdge monitoring portal in a browser.</li>
+<li>Go to Admin &gt; Site Access &gt; API Access.</li>
+<li>Accept the terms, turn on API access and copy the API key. The site ID is shown on the same page.</li>
+<li>In SunWatt, open "Solar production" (in the onboarding or in Settings), choose SolarEdge under "Solar system" and enter the site ID and the API key.</li>
+</ol>
+<p class="muted">You need admin access to the site. If you cannot see Admin, ask your installer to give you access or the API key. The key stays on your device and is sent only to SolarEdge.</p>
+</details>
+
+<details><summary>How do I connect PVOutput?</summary>
+<ol>
+<li>Sign in to pvoutput.org in a browser.</li>
+<li>Open Settings.</li>
+<li>Turn on API Access and copy the API key. Your system ID is shown on the same page.</li>
+<li>In SunWatt, open "Solar production" (in the onboarding or in Settings), choose PVOutput under "Solar system" and enter the system ID and the API key.</li>
+</ol>
+<p class="muted">PVOutput works with many inverter brands (Fronius, SMA, Enphase, GoodWe, Growatt and more) once your inverter or monitoring app uploads to it. The key stays on your device and is sent only to PVOutput.</p>
+</details>
+
 <details><summary>I do not have a solar plant. Can I still use SunWatt?</summary>
-<p>Yes. Skip the solar step in the onboarding. Price widgets work with no link.</p>
+<p>Yes. Skip the solar step in the onboarding. Price widgets work with no solar system set up.</p>
 </details>
 
 <details><summary>Why can solar data be up to 30 minutes old?</summary>
-<p>The kiosk page of FusionSolar updates about every 5 minutes, and the plant sends its data to the cloud with a delay. iOS also decides when a widget may refresh. Tap a widget to refresh it. Even then, the value cannot be newer than the one FusionSolar has.</p>
+<p>The kiosk page of FusionSolar updates about every 5 minutes, and the plant sends its data to the cloud with a delay. iOS also decides when a widget may refresh. Tap a widget to refresh it. Even then, the value cannot be newer than the one FusionSolar has. SolarEdge reports power in 15-minute steps, and PVOutput is only as fresh as your last upload to it.</p>
 </details>
 
 <details><summary>Why do tomorrow's prices appear only in the evening?</summary>
@@ -99,12 +119,32 @@ hr{border:0;border-top:1px solid var(--line);margin:2.5rem 0}
 <p class="muted">El enlace da acceso de solo lectura a los datos de tu planta. Quien lo tenga puede verlos. Desactiva el interruptor para anularlo.</p>
 </details>
 
+<details><summary>¿Cómo conecto SolarEdge?</summary>
+<ol>
+<li>Inicia sesión en el portal de monitorización de SolarEdge en un navegador.</li>
+<li>Ve a Admin &gt; Site Access &gt; API Access.</li>
+<li>Acepta las condiciones, activa API Access y copia la clave API. El ID del sitio aparece en la misma página.</li>
+<li>En SunWatt, abre "Producción solar" (en la bienvenida o en Ajustes), elige SolarEdge en "Sistema de monitorización" e introduce el ID del sitio y la clave API.</li>
+</ol>
+<p class="muted">Necesitas acceso de administrador a la instalación. Si no ves Admin, pide a tu instalador que te dé acceso o la clave API. La clave se queda en tu dispositivo y solo se envía a SolarEdge.</p>
+</details>
+
+<details><summary>¿Cómo conecto PVOutput?</summary>
+<ol>
+<li>Inicia sesión en pvoutput.org en un navegador.</li>
+<li>Abre Settings.</li>
+<li>Activa API Access y copia la clave API. El ID de tu sistema aparece en la misma página.</li>
+<li>En SunWatt, abre "Producción solar" (en la bienvenida o en Ajustes), elige PVOutput en "Sistema de monitorización" e introduce el ID del sistema y la clave API.</li>
+</ol>
+<p class="muted">PVOutput funciona con muchas marcas de inversores (Fronius, SMA, Enphase, GoodWe, Growatt y más) siempre que tu inversor o su app de monitorización suban datos a PVOutput. La clave se queda en tu dispositivo y solo se envía a PVOutput.</p>
+</details>
+
 <details><summary>No tengo placas solares. ¿Puedo usar SunWatt?</summary>
-<p>Sí. Omite el paso solar en la bienvenida. Los widgets de precio funcionan sin enlace.</p>
+<p>Sí. Omite el paso solar en la bienvenida. Los widgets de precio funcionan sin configurar ningún sistema de monitorización.</p>
 </details>
 
 <details><summary>¿Por qué los datos solares pueden tener hasta 30 minutos?</summary>
-<p>La página Kiosk de FusionSolar se actualiza cada 5 minutos aproximadamente y la planta envía sus datos a la nube con retraso. Además, iOS decide cuándo puede actualizarse un widget. Toca un widget para actualizarlo. Aun así, el valor no puede ser más reciente que el que tiene FusionSolar.</p>
+<p>La página Kiosk de FusionSolar se actualiza cada 5 minutos aproximadamente y la planta envía sus datos a la nube con retraso. Además, iOS decide cuándo puede actualizarse un widget. Toca un widget para actualizarlo. Aun así, el valor no puede ser más reciente que el que tiene FusionSolar. SolarEdge informa de la potencia en intervalos de 15 minutos y PVOutput solo está tan actualizado como tu última subida de datos.</p>
 </details>
 
 <details><summary>¿Por qué los precios de mañana aparecen por la tarde?</summary>

@@ -8,7 +8,11 @@ STROOMPRIJS
 • Prijzen voor morgen zodra ze zijn gepubliceerd
 
 ZONNE-OPBRENGST
-Plak de Kiosk-link van je Huawei FusionSolar-installatie en zie het huidige vermogen in kW, de energie van vandaag in kWh en de opbrengstcurve. Bij de eerste start leg je in minder dan een minuut uit hoe je de link krijgt.
+Koppel je monitoringsysteem en zie het huidige vermogen in kW, de energie van vandaag in kWh en de opbrengstcurve. Werkt met:
+• Huawei FusionSolar: plak de Kiosk-link van je installatie
+• SolarEdge: vul je site-ID en API-sleutel in
+• PVOutput: vul je systeem-ID en API-sleutel in. PVOutput werkt met veel omvormermerken, zoals Fronius, SMA, Enphase, GoodWe en Growatt
+Bij de eerste start zie je in een paar minuten waar je alles vindt.
 
 WIDGETS
 • Kleine, middelgrote en grote widgets voor het beginscherm
@@ -31,6 +35,6 @@ IN DE APP
 • Gids om de widgets toe te voegen
 
 PRIVÉ VAN ONTWERP
-Geen account. Geen tracking. Geen analyse. Geen advertenties. SunWatt maakt alleen verbinding met de FusionSolar-server in je Kiosk-link en met openbare prijsdiensten. Instellingen en laatste gegevens blijven op je apparaat. Er wordt niets naar de ontwikkelaar gestuurd.
+Geen account. Geen tracking. Geen analyse. Geen advertenties. SunWatt maakt alleen verbinding met het monitoringsysteem dat je kiest (FusionSolar, SolarEdge of PVOutput) en met openbare prijsdiensten. Instellingen, sleutels en laatste gegevens blijven op je apparaat. Er wordt niets naar de ontwikkelaar gestuurd.
 
-SunWatt is gratis. De app is niet verbonden met Huawei, Red Eléctrica of Fraunhofer ISE. Day-ahead-prijzen komen van Energy-Charts (Fraunhofer ISE), licentie CC BY 4.0. De groothandelsprijs is niet de prijs op je rekening.
+SunWatt is gratis. De app is niet gelieerd aan Huawei, SolarEdge, PVOutput, Red Eléctrica of Fraunhofer ISE. Day-ahead-prijzen komen van Energy-Charts (Fraunhofer ISE), licentie CC BY 4.0. De groothandelsprijs is niet de prijs op je rekening.

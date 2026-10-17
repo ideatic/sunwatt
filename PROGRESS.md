@@ -22,6 +22,11 @@
 - Final: 298 tests, `scripts/verify.sh` -> VERIFY OK (iOS Simulator tests, macOS build, watchOS build).
 - One unexplained failure: right after one merge, a single `swift test` run reported 176 issues; it never reproduced (20+ runs, clean builds). `verify.sh` now prints the failing tests and keeps the log if it happens again.
 
+- [x] More solar providers (user request): SolarEdge (Monitoring API) and PVOutput, besides FusionSolar. Provider picker in onboarding and Settings, API key + ID editor with "Test connection", 20-min fetch limit for SolarEdge, strings in 7 languages, store texts and privacy/support pages updated, `SolarProviderTests` (DECISIONS D15).
+  - Written in a Linux session without Xcode: **not compiled or tested yet**. Run `scripts/verify.sh` on the Mac, then render `Screenshots/app` (new `settingsSolarEdge` screen) and check the Settings and onboarding solar pages.
+  - SolarEdge/PVOutput fixtures are synthetic (documented formats). Do a live check with a real site.
+  - Translations reviewed by one Haiku LQA agent per locale (AGENTS.md, "Translations"). Portal menu names are kept in English in every language (SolarEdge: Admin › Site Access › API Access; PVOutput: Settings › API Access): check them against the real portals, including a localized SolarEdge portal.
+
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
 - Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).

@@ -1,7 +1,11 @@
 SunWatt puts two numbers you check every day where you can see them: how much your solar panels are producing, and what electricity costs right now.
 
 SOLAR
-Paste your Huawei FusionSolar kiosk link and see your current power in kW, today's energy in kWh and today's production curve. The onboarding shows you how to get the link in under a minute.
+Connect your solar system and see your current power in kW, today's energy in kWh and today's production curve. SunWatt works with:
+• Huawei FusionSolar: paste your kiosk link
+• SolarEdge: enter your site ID and API key
+• PVOutput: enter your system ID and API key. PVOutput works with many inverter brands, such as Fronius, SMA, Enphase, GoodWe and Growatt
+The onboarding shows you where to find each one in a couple of minutes.
 
 ELECTRICITY PRICE
 • Spain: the regulated PVPC price from Red Eléctrica
@@ -31,6 +35,6 @@ IN THE APP
 • Guide to add widgets to your Home Screen
 
 PRIVATE BY DESIGN
-No account. No tracking. No analytics. No ads. SunWatt only talks to the FusionSolar server in your kiosk link and to the public price services. Your settings and last data stay on your device. Nothing is sent to the developer.
+No account. No tracking. No analytics. No ads. SunWatt only talks to the solar service you choose (FusionSolar, SolarEdge or PVOutput) and to the public price services. Your settings, keys and last data stay on your device. Nothing is sent to the developer.
 
-SunWatt is free. It is not affiliated with Huawei, Red Eléctrica or Fraunhofer ISE. Day-ahead prices for countries other than Spain come from Energy-Charts (Fraunhofer ISE), licensed CC BY 4.0. Wholesale prices are not the price on your bill.
+SunWatt is free. It is not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE. Day-ahead prices for countries other than Spain come from Energy-Charts (Fraunhofer ISE), licensed CC BY 4.0. Wholesale prices are not the price on your bill.

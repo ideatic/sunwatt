@@ -780,47 +780,6 @@
         }
       }
     },
-    "Set up the kiosk in SunWatt" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Richte den Kiosk in SunWatt ein"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configura el kiosco en SunWatt"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurez le kiosque dans SunWatt"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configura il chiosco in SunWatt"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stel de kiosk in SunWatt in"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configure o quiosque no SunWatt"
-          }
-        }
-      }
-    },
     "Set up the kiosk in the app" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -981,6 +940,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Atualizado %@"
+          }
+        }
+      }
+    },
+    "Set up solar in SunWatt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura la producción solar"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configure a solar no SunWatt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez le solaire dans SunWatt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar in SunWatt einrichten"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura l’impianto in SunWatt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonne-energie instellen in SunWatt"
           }
         }
       }

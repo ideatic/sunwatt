@@ -100,7 +100,7 @@ public struct SolarAnswer: Sendable, Equatable {
     public static func make(from data: SunWattData, now: Date, strings: IntentStrings = .current) -> SolarAnswer {
         if case .notConfigured = data.solarStatus {
             return SolarAnswer(outcome: .notConfigured, currentKW: nil, todayKWh: nil, dialog: strings.text(
-                "Solar production is not set up. Add your FusionSolar link in the SunWatt settings."))
+                "Solar production is not set up. Connect your solar system in the SunWatt settings."))
         }
         // A snapshot from yesterday has no power or daily energy for today (see `SunWattEntry.solarForDisplay`).
         guard let solar = SunWattEntry(date: now, data: data).solarForDisplay, let power = solar.currentPowerKW else {

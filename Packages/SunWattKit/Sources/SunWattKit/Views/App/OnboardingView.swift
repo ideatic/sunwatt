@@ -95,7 +95,7 @@ private struct OnboardingBar: View {
         switch page {
         case .welcome: atext("Get started")
         case .done: atext("Open SunWatt")
-        case .solar where model.settings.kioskURL.isEmpty: atext("Skip, prices only")
+        case .solar where !model.settings.hasSolarInput: atext("Skip, prices only")
         default: atext("Continue")
         }
     }
@@ -182,7 +182,7 @@ private struct WelcomePage: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             VStack(alignment: .leading, spacing: Theme.Spacing.m + 2) {
-                feature(Theme.Solar.symbol, AnyShapeStyle(Theme.Solar.gradient), "Solar production", "Live from your Huawei FusionSolar plant.")
+                feature(Theme.Solar.symbol, AnyShapeStyle(Theme.Solar.gradient), "Solar production", "Live from Huawei FusionSolar, SolarEdge or PVOutput.")
                 feature(Theme.Price.symbol, AnyShapeStyle(Theme.Price.green), "Electricity prices", "Hour by hour, for Spain and seven more markets.")
                 feature("square.grid.2x2.fill", AnyShapeStyle(Theme.Solar.orange), "Widgets", "For the Home Screen, the Lock Screen and the desktop.")
             }
@@ -230,15 +230,9 @@ private struct SolarPage: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.l) {
-            PageTitle(title: "Connect your solar plant", subtitle: "Paste the kiosk link of your FusionSolar plant. You can also do this later.")
-            VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-                KioskLinkEditor(model: model)
-                Button { model.present(.kioskHelp) } label: {
-                    Label { atext("How do I get the kiosk link?") } icon: { Image(systemName: "questionmark.circle") }
-                }
-                .buttonStyle(SoftButtonStyle())
-            }
-            .appCard()
+            PageTitle(title: "Connect your solar plant", subtitle: "Choose your monitoring system and connect it. You can also do this later.")
+            SolarSetupEditor(model: model)
+                .appCard()
         }
     }
 }
@@ -320,7 +314,7 @@ private struct DonePage: View {
     var body: some View {
         let palette = AppPalette(scheme)
         let region = model.settings.priceRegion
-        let hasSolar = KioskInputState(model.settings.kioskURL) != .empty && model.isSolarConfigured
+        let hasSolar = model.settings.hasSolarInput && model.isSolarConfigured
         VStack(spacing: Theme.Spacing.xl) {
             ZStack {
                 Circle().fill(RadialGradient(colors: [palette.success.opacity(0.28), .clear], center: .center, startRadius: 5, endRadius: 110))
@@ -346,7 +340,11 @@ private struct DonePage: View {
                 summaryRow(symbol: Theme.Solar.symbol, tint: AnyShapeStyle(Theme.Solar.gradient)) {
                     atext(hasSolar ? "Solar plant connected" : "Prices only")
                 } detail: {
-                    atext(hasSolar ? "FusionSolar kiosk" : "You can add the solar plant later in Settings.")
+                    if hasSolar {
+                        Text(verbatim: model.settings.solarProvider.displayName)
+                    } else {
+                        atext("You can add the solar plant later in Settings.")
+                    }
                 }
             }
             .appCard()

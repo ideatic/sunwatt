@@ -3,7 +3,7 @@ import Foundation
 /// Fetches both sources concurrently, saves good data to the store, falls back to cached data on failure.
 public struct SunWattLoader: Sendable {
     public let store: AppGroupStore
-    /// Builds the solar source from settings; nil when the kiosk URL is not configured/invalid.
+    /// Builds the solar source from settings; nil when the selected solar provider is not configured or invalid.
     public let makeSolar: @Sendable (SunWattSettings) -> SolarDataSource?
     /// Builds the price source for the region chosen in settings.
     public let makePrices: @Sendable (PriceRegion) -> PriceDataSource
@@ -35,7 +35,7 @@ public struct SunWattLoader: Sendable {
     }
 
     public static let defaultSolar: @Sendable (SunWattSettings) -> SolarDataSource? = { settings in
-        KioskEndpoint(parsing: settings.kioskURL).map { FusionSolarKioskClient(endpoint: $0) }
+        SolarAccount(settings: settings)?.client()
     }
 
     public static let defaultPrices: @Sendable (PriceRegion) -> PriceDataSource = { region in
@@ -54,7 +54,7 @@ public struct SunWattLoader: Sendable {
     ///
     /// `maxCacheAge`: when greater than 0 and the store holds data fetched less than this many seconds ago for
     /// every source in use, that data is returned as `.fresh` without any network request. Solar counts only if
-    /// the kiosk link is configured, belongs to the stored snapshot and was fetched on the current Madrid day;
+    /// the solar account is configured, belongs to the stored snapshot and was fetched on the current Madrid day;
     /// prices count only for the current region and when a point covers now. 0 (default) always fetches.
     public func load(deadline: TimeInterval = 15, maxCacheAge: TimeInterval = 0) async -> SunWattData {
         if Task.isCancelled { return cached() }
@@ -66,7 +66,8 @@ public struct SunWattLoader: Sendable {
             return recent
         }
         let priceSource = makePrices(settings.priceRegion)
-        async let solarResult = Self.fetchSolar(solarSource, deadline: deadline)
+        let reusedSolar = solarSource == nil ? nil : recentSolar(settings: settings, now: nowDate)
+        async let solarResult = Self.fetchSolar(solarSource, reusing: reusedSolar, deadline: deadline)
         async let priceResult = Self.fetchPrices(priceSource, includeTomorrow: settings.showTomorrowPrices, deadline: deadline)
         let solarOutcome = await solarResult
         let priceOutcome = await priceResult
@@ -137,15 +138,26 @@ public struct SunWattLoader: Sendable {
         return data
     }
 
-    /// Identifier of the kiosk link in `settings`; nil when it is not a valid kiosk link.
+    /// Identifier of the solar account in `settings`; nil when it is not set up or not valid.
     static func endpointID(for settings: SunWattSettings) -> String? {
-        KioskEndpoint(parsing: settings.kioskURL)?.cacheID
+        SolarAccount(settings: settings)?.cacheID
     }
 
-    /// The stored solar snapshot, only when it was fetched from the kiosk link now in `settings`.
+    /// The stored solar snapshot, only when it was fetched from the solar account now in `settings`.
     /// A snapshot without an identifier (written before it existed) never matches.
     private func cachedSolar(for settings: SunWattSettings) -> SolarSnapshot? {
         guard let id = Self.endpointID(for: settings), let solar = store.loadSolar(), solar.endpointID == id else { return nil }
+        return solar
+    }
+
+    /// The stored snapshot when the provider limits how often it may be fetched (`SolarProvider.minimumFetchInterval`)
+    /// and it is younger than that limit, from the current Madrid day.
+    private func recentSolar(settings: SunWattSettings, now: Date) -> SolarSnapshot? {
+        guard let provider = SolarAccount(settings: settings)?.provider, provider.minimumFetchInterval > 0,
+              let solar = cachedSolar(for: settings) else { return nil }
+        let age = now.timeIntervalSince(solar.fetchedAt)
+        guard age >= 0, age < provider.minimumFetchInterval,
+              Constants.madridCalendar.isDate(solar.fetchedAt, inSameDayAs: now) else { return nil }
         return solar
     }
 
@@ -171,9 +183,9 @@ public struct SunWattLoader: Sendable {
     }
 
     private func unconfiguredStatus(_ settings: SunWattSettings) -> SourceStatus {
-        settings.kioskURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            ? .notConfigured
-            : .error(message: SunWattError.invalidKioskURL.localizedDescription)
+        settings.hasSolarInput
+            ? .error(message: settings.invalidSolarInputError.localizedDescription)
+            : .notConfigured
     }
 
     /// A transient failure of the tomorrow request must not erase tomorrow prices fetched earlier:
@@ -195,7 +207,9 @@ public struct SunWattLoader: Sendable {
         return false
     }
 
-    private static func fetchSolar(_ source: SolarDataSource?, deadline: TimeInterval) async -> Result<SolarSnapshot, Error> {
+    /// `reusing`: a recent snapshot returned instead of fetching (see `recentSolar`).
+    private static func fetchSolar(_ source: SolarDataSource?, reusing recent: SolarSnapshot?, deadline: TimeInterval) async -> Result<SolarSnapshot, Error> {
+        if let recent { return .success(recent) }
         guard let source else { return .failure(SunWattError.notConfigured) }
         return await race(deadline: deadline) { try await source.fetch() }
     }

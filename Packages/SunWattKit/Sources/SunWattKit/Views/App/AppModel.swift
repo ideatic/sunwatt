@@ -302,14 +302,17 @@ public final class AppModel {
         store.settings = new
         onSettingsSaved?(new)
         let regionChanged = new.priceRegion != old.priceRegion
-        let kioskChanged = new.kioskURL != old.kioskURL
-            && (KioskInputState(new.kioskURL) != .invalid || KioskInputState(old.kioskURL) != .invalid)
+        // Another provider, another valid account, or input appearing/disappearing (the solar status changes
+        // between "not set up" and "not valid"). Edits that stay invalid fetch nothing.
+        let solarChanged = new.solarProvider != old.solarProvider
+            || SolarAccount(settings: new) != SolarAccount(settings: old)
+            || new.hasSolarInput != old.hasSolarInput
         let tomorrowChanged = new.showTomorrowPrices != old.showTomorrowPrices
-        let needsFetch = regionChanged || kioskChanged || tomorrowChanged
+        let needsFetch = regionChanged || solarChanged || tomorrowChanged
         // When data must be fetched, the widgets reload once the new data is stored (end of `refresh`): reloading
         // them now would make every widget fetch the same data at the same time.
         if !needsFetch { reloadWidgets() }
-        if regionChanged || kioskChanged { invalidateLoad() }
+        if regionChanged || solarChanged { invalidateLoad() }
         if regionChanged {
             // Cached prices of another region do not apply: show placeholders until the new region loads.
             let cached = loader.cached()
@@ -352,6 +355,24 @@ public final class AppModel {
         }
     }
 
+    /// Fetches SolarEdge or PVOutput once with the typed ID and key (not necessarily saved).
+    public func testSolarAPI(provider: SolarProvider, siteID: String, apiKey: String) async -> Result<SolarSnapshot, Error> {
+        guard provider.usesAPIKey, let credentials = SolarAPICredentials(siteID: siteID, apiKey: apiKey) else {
+            return .failure(SunWattError.invalidSolarCredentials)
+        }
+        if isDemo {
+            try? await Task.sleep(for: .milliseconds(400))
+            if let solar = SampleData.entry(.day).data.solar { return .success(solar) }
+            return .failure(SunWattError.unavailable)
+        }
+        let account: SolarAccount = provider == .solarEdge ? .solarEdge(credentials) : .pvOutput(credentials)
+        do {
+            return .success(try await account.client().fetch())
+        } catch {
+            return .failure(error)
+        }
+    }
+
     // MARK: Derived
 
     /// Binding helper for the settings screens.
@@ -368,7 +389,7 @@ public final class AppModel {
 
     var isSolarConfigured: Bool {
         if isDemo { return !demoNotConfigured }
-        return KioskEndpoint(parsing: settings.kioskURL) != nil
+        return SolarAccount(settings: settings) != nil
     }
 }
 #endif

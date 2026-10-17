@@ -132,13 +132,8 @@ struct SettingsContent: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             CardHeader(
                 symbol: Theme.Solar.symbol, tint: AnyShapeStyle(Theme.Solar.gradient),
-                title: atext("Solar production"), subtitle: atext("FusionSolar kiosk link"))
-            KioskLinkEditor(model: model, initialTest: initialTest)
-            hairline
-            Button { present(.kioskHelp) } label: {
-                Label { atext("How do I get the kiosk link?") } icon: { Image(systemName: "questionmark.circle") }
-            }
-            .buttonStyle(SoftButtonStyle())
+                title: atext("Solar production"), subtitle: Text(verbatim: model.settings.solarProvider.displayName))
+            SolarSetupEditor(model: model, initialTest: initialTest)
         }
         .appCard()
     }
@@ -213,8 +208,10 @@ struct SettingsContent: View {
                 sourceLine("Red Eléctrica de España", "PVPC")
                 sourceLine("Energy-Charts (Fraunhofer ISE)", "CC BY 4.0")
                 sourceLine("Huawei FusionSolar", "Kiosk")
+                sourceLine("SolarEdge", "Monitoring API")
+                sourceLine("PVOutput", "API")
             }
-            atext("SunWatt is an independent app. It is not affiliated with Huawei, Red Eléctrica or Fraunhofer ISE.")
+            atext("SunWatt is an independent app. It is not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE.")
                 .font(.system(.caption, design: .rounded))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -270,7 +267,7 @@ struct KioskLinkEditor: View {
                 .opacity(input == .empty || input == .invalid ? 0.5 : 1)
                 Spacer(minLength: 0)
             }
-            testResult(palette: palette)
+            SolarTestResult(state: test)
         }
         .onDisappear { draft.commitNow() }
         .onChange(of: scenePhase) { _, phase in
@@ -317,56 +314,6 @@ struct KioskLinkEditor: View {
         .font(.system(.footnote, design: .rounded).weight(.medium))
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, Theme.Spacing.xs)
-    }
-
-    @ViewBuilder
-    private func testResult(palette: AppPalette) -> some View {
-        switch test {
-        case .idle:
-            EmptyView()
-        case .testing:
-            HStack(spacing: Theme.Spacing.s) {
-                ProgressView().controlSize(.small)
-                atext("Connecting…").font(.system(.footnote, design: .rounded)).foregroundStyle(.secondary)
-            }
-        case .success(let solar):
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 6) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.success)
-                    atext("Connected").font(.system(.subheadline, design: .rounded).weight(.bold))
-                }
-                resultRow("Plant", solar.stationName ?? "–")
-                resultRow("Power now", "\(Format.kW(solar.currentPowerKW)) kW")
-                resultRow("Energy today", "\(Format.kWh(solar.dailyEnergyKWh)) kWh")
-                resultRow("Data as of", solar.dataAsOf.map { Format.time($0) } ?? "–")
-            }
-            .padding(Theme.Spacing.m)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.success.opacity(0.12)))
-        case .failure(let message):
-            HStack(alignment: .top, spacing: 8) {
-                Image(systemName: "xmark.octagon.fill").foregroundStyle(palette.warning)
-                VStack(alignment: .leading, spacing: 2) {
-                    atext("Connection failed").font(.system(.subheadline, design: .rounded).weight(.bold))
-                    Text(verbatim: message)
-                        .font(.system(.footnote, design: .rounded))
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            .padding(Theme.Spacing.m)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.warning.opacity(0.12)))
-        }
-    }
-
-    private func resultRow(_ title: LocalizedStringKey, _ value: String) -> some View {
-        HStack {
-            atext(title).foregroundStyle(.secondary)
-            Spacer(minLength: Theme.Spacing.s)
-            Text(verbatim: value).fontWeight(.semibold).monospacedDigit().lineLimit(1)
-        }
-        .font(.system(.footnote, design: .rounded))
     }
 
     private func runTest() {

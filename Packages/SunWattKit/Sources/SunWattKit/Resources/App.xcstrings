@@ -1600,88 +1600,6 @@
         }
       }
     },
-    "FusionSolar kiosk" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "FusionSolar-Kiosk"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kiosco de FusionSolar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kiosque FusionSolar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chiosco FusionSolar"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "FusionSolar-kiosk"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quiosque FusionSolar"
-          }
-        }
-      }
-    },
-    "FusionSolar kiosk link" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Link zum FusionSolar-Kiosk"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enlace del kiosco de FusionSolar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lien du kiosque FusionSolar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Link del chiosco FusionSolar"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Link naar de FusionSolar-kiosk"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ligação do quiosque FusionSolar"
-          }
-        }
-      }
-    },
     "Get started" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2174,47 +2092,6 @@
         }
       }
     },
-    "Live from your Huawei FusionSolar plant." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Live von Ihrer Huawei-FusionSolar-Anlage."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En directo desde tu planta Huawei FusionSolar."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En direct de votre installation Huawei FusionSolar."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In diretta dal tuo impianto Huawei FusionSolar."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Live van je Huawei FusionSolar-installatie."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Em direto da sua central Huawei FusionSolar."
-          }
-        }
-      }
-    },
     "Lock Screen" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2621,88 +2498,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Colar"
-          }
-        }
-      }
-    },
-    "Paste the kiosk link from FusionSolar to see today's production here and in the widget." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fügen Sie den Kiosk-Link von FusionSolar ein, um die heutige Erzeugung hier und im Widget zu sehen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pega el enlace del kiosco de FusionSolar para ver aquí y en el widget la producción de hoy."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Collez le lien du kiosque FusionSolar pour voir la production du jour ici et dans le widget."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incolla il link del chiosco di FusionSolar per vedere la produzione di oggi qui e nel widget."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plak de kiosklink van FusionSolar om de productie van vandaag hier en in de widget te zien."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cole a ligação do quiosque do FusionSolar para ver a produção de hoje aqui e no widget."
-          }
-        }
-      }
-    },
-    "Paste the kiosk link of your FusionSolar plant. You can also do this later." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fügen Sie den Kiosk-Link Ihrer FusionSolar-Anlage ein. Das geht auch später."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pega el enlace del kiosco de tu planta FusionSolar. También puedes hacerlo más tarde."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Collez le lien du kiosque de votre installation FusionSolar. Vous pouvez aussi le faire plus tard."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incolla il link del chiosco del tuo impianto FusionSolar. Puoi farlo anche più tardi."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plak de kiosklink van je FusionSolar-installatie. Je kunt dit ook later doen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cole a ligação do quiosque da sua central FusionSolar. Também pode fazê-lo mais tarde."
           }
         }
       }
@@ -3892,88 +3687,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Produção solar"
-          }
-        }
-      }
-    },
-    "Solar: Huawei FusionSolar kiosk" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solar: Huawei-FusionSolar-Kiosk"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solar: kiosco de Huawei FusionSolar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solaire : kiosque Huawei FusionSolar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solare: chiosco Huawei FusionSolar"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zon: Huawei FusionSolar-kiosk"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solar: quiosque Huawei FusionSolar"
-          }
-        }
-      }
-    },
-    "SunWatt is an independent app. It is not affiliated with Huawei, Red Eléctrica or Fraunhofer ISE." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SunWatt ist eine unabhängige App. Sie steht in keiner Verbindung zu Huawei, Red Eléctrica oder Fraunhofer ISE."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SunWatt es una app independiente. No está afiliada a Huawei, Red Eléctrica ni Fraunhofer ISE."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SunWatt est une app indépendante. Elle n'est affiliée ni à Huawei, ni à Red Eléctrica, ni à Fraunhofer ISE."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SunWatt è un'app indipendente. Non è affiliata a Huawei, Red Eléctrica o Fraunhofer ISE."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SunWatt is een onafhankelijke app. Ze is niet verbonden aan Huawei, Red Eléctrica of Fraunhofer ISE."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A SunWatt é uma app independente. Não está associada à Huawei, à Red Eléctrica nem ao Fraunhofer ISE."
           }
         }
       }
@@ -5904,6 +5617,539 @@
         }
       },
       "extractionState" : "manual"
+    },
+    "Live from Huawei FusionSolar, SolarEdge or PVOutput." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En directo desde Huawei FusionSolar, SolarEdge o PVOutput."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em direto do Huawei FusionSolar, SolarEdge ou PVOutput."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En direct de Huawei FusionSolar, SolarEdge ou PVOutput."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live von Huawei FusionSolar, SolarEdge oder PVOutput."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In diretta da Huawei FusionSolar, SolarEdge o PVOutput."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live via Huawei FusionSolar, SolarEdge of PVOutput."
+          }
+        }
+      }
+    },
+    "Choose your monitoring system and connect it. You can also do this later." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige tu sistema de monitorización y conéctalo. También puedes hacerlo más tarde."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o seu sistema de monitorização e ligue-o. Também pode fazê-lo mais tarde."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez votre système de suivi et connectez-le. Vous pouvez aussi le faire plus tard."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wählen Sie Ihr Monitoring-System und verbinden Sie es. Das geht auch später."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli il tuo sistema di monitoraggio e collegalo. Puoi farlo anche più tardi."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kies je monitoringsysteem en koppel het. Je kunt dit ook later doen."
+          }
+        }
+      }
+    },
+    "Solar: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar: %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solaire : %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solar: %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solare: %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zon: %@"
+          }
+        }
+      }
+    },
+    "Connect Huawei FusionSolar, SolarEdge or PVOutput to see today's production here and in the widget." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conecta Huawei FusionSolar, SolarEdge o PVOutput para ver aquí y en el widget la producción de hoy."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ligue o Huawei FusionSolar, SolarEdge ou PVOutput para ver a produção de hoje aqui e no widget."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez Huawei FusionSolar, SolarEdge ou PVOutput pour voir la production du jour ici et dans le widget."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinden Sie Huawei FusionSolar, SolarEdge oder PVOutput, um die heutige Erzeugung hier und im Widget zu sehen."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collega Huawei FusionSolar, SolarEdge o PVOutput per vedere la produzione di oggi qui e nel widget."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koppel Huawei FusionSolar, SolarEdge of PVOutput om de productie van vandaag hier en in de widget te zien."
+          }
+        }
+      }
+    },
+    "SunWatt is an independent app. It is not affiliated with Huawei, SolarEdge, PVOutput, Red Eléctrica or Fraunhofer ISE." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt es una app independiente. No está afiliada a Huawei, SolarEdge, PVOutput, Red Eléctrica ni Fraunhofer ISE."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A SunWatt é uma app independente. Não está associada à Huawei, à SolarEdge, ao PVOutput, à Red Eléctrica nem ao Fraunhofer ISE."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt est une app indépendante. Elle n'est affiliée ni à Huawei, ni à SolarEdge, ni à PVOutput, ni à Red Eléctrica, ni à Fraunhofer ISE."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt ist eine unabhängige App. Sie steht in keiner Verbindung zu Huawei, SolarEdge, PVOutput, Red Eléctrica oder Fraunhofer ISE."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt è un'app indipendente. Non è affiliata a Huawei, SolarEdge, PVOutput, Red Eléctrica o Fraunhofer ISE."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt is een onafhankelijke app. Ze is niet gelieerd aan Huawei, SolarEdge, PVOutput, Red Eléctrica of Fraunhofer ISE."
+          }
+        }
+      }
+    },
+    "In the SolarEdge monitoring portal open Admin, then Site Access and API Access. Accept the terms, then copy the API key and the site ID." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En el portal de monitorización de SolarEdge abre Admin y luego Site Access y API Access. Acepta las condiciones y copia la clave API y el ID del sitio."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No portal de monitorização da SolarEdge abra Admin e depois Site Access e API Access. Aceite os termos e copie a chave API e o ID do site."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans le portail de suivi SolarEdge, ouvrez Admin, puis Site Access et API Access. Acceptez les conditions, puis copiez la clé API et l'ID du site."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen Sie im SolarEdge-Monitoring-Portal „Admin“, dann „Site Access“ und „API Access“. Akzeptieren Sie die Bedingungen und kopieren Sie den API-Schlüssel und die Standort-ID."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nel portale di monitoraggio SolarEdge apri Admin, poi Site Access e API Access. Accetta i termini, poi copia la chiave API e l’ID del sito."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ga in het SolarEdge-monitoringportaal naar Admin, daarna naar Site Access en API Access. Accepteer de voorwaarden en kopieer de API-sleutel en de site-ID."
+          }
+        }
+      }
+    },
+    "On pvoutput.org open Settings. Turn on API Access, then copy the API Key and the System Id shown on that page." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En pvoutput.org abre Settings. Activa API Access y copia la API Key y el System Id que aparecen en esa página."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em pvoutput.org abra Settings. Ative API Access e copie a API Key e o System Id que aparecem nessa página."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur pvoutput.org, ouvrez Settings. Activez API Access, puis copiez l'API Key et le System Id affichés sur cette page."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnen Sie auf pvoutput.org „Settings“. Schalten Sie „API Access“ ein und kopieren Sie den „API Key“ und die „System Id“ auf dieser Seite."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su pvoutput.org apri Settings. Attiva API Access, poi copia l’API Key e il System Id mostrati in quella pagina."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ga op pvoutput.org naar Settings. Zet API Access aan en kopieer de API Key en de System Id op die pagina."
+          }
+        }
+      }
+    },
+    "Solar system" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema de monitorización"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema de monitorização"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Système de suivi"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitoring-System"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema di monitoraggio"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitoringsysteem"
+          }
+        }
+      }
+    },
+    "Site ID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID del sitio"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID do site"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID du site"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standort-ID"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID del sito"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Site-ID"
+          }
+        }
+      }
+    },
+    "System ID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID del sistema"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID do sistema"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID du système"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System-ID"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID del sistema"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systeem-ID"
+          }
+        }
+      }
+    },
+    "API key" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clave API"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chave API"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clé API"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API-Schlüssel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiave API"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API-sleutel"
+          }
+        }
+      }
+    },
+    "Enter the ID and the API key." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce el ID y la clave API."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduza o ID e a chave API."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez l'ID et la clé API."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geben Sie die ID und den API-Schlüssel ein."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci l’ID e la chiave API."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voer de ID en de API-sleutel in."
+          }
+        }
+      }
+    },
+    "Ready. Test the connection to check it." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo. Prueba la conexión para comprobarlo."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto. Teste a ligação para confirmar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt. Vérifiez avec « Tester la connexion »."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereit. Prüfen Sie die Verbindung mit „Verbindung testen“."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto. Prova la connessione per verificarlo."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klaar. Test de verbinding om het te controleren."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

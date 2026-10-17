@@ -42,7 +42,7 @@ struct DashboardContent: View {
             .redacted(reason: isPlaceholder ? .placeholder : [])
             .allowsHitTesting(!isPlaceholder)
             WidgetStatusCard(model: model)
-            DashboardFooter(entry: entry, region: model.settings.priceRegion, showsUpdated: !isPlaceholder)
+            DashboardFooter(entry: entry, region: model.settings.priceRegion, solarProvider: model.settings.solarProvider, showsUpdated: !isPlaceholder)
         }
     }
 
@@ -146,6 +146,7 @@ private struct DashboardHeader: View {
 private struct DashboardFooter: View {
     let entry: SunWattEntry
     let region: PriceRegion
+    let solarProvider: SolarProvider
     let showsUpdated: Bool
 
     var body: some View {
@@ -155,7 +156,7 @@ private struct DashboardFooter: View {
                     .font(.system(.caption, design: .rounded).weight(.semibold))
             }
             sourceAttribution(region)
-            atext("Solar: Huawei FusionSolar kiosk")
+            atext("Solar: \(solarProvider.displayName)")
         }
         .font(.system(.caption2, design: .rounded))
         .foregroundStyle(.secondary)
@@ -252,7 +253,7 @@ private struct SolarSetupCard: View {
                 title: atext("Solar production"))
             VStack(alignment: .leading, spacing: 4) {
                 atext("Add your solar plant").font(.system(.title3, design: .rounded).weight(.bold))
-                atext("Paste the kiosk link from FusionSolar to see today's production here and in the widget.")
+                atext("Connect Huawei FusionSolar, SolarEdge or PVOutput to see today's production here and in the widget.")
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -260,8 +261,10 @@ private struct SolarSetupCard: View {
             HStack(spacing: Theme.Spacing.s) {
                 SettingsOpener(model: model) { atext("Set up solar") }
                     .buttonStyle(PrimaryButtonStyle(compact: true))
-                Button { model.present(.kioskHelp) } label: { atext("How do I get it?") }
-                    .buttonStyle(SoftButtonStyle(compact: true))
+                if model.settings.solarProvider == .fusionSolar {
+                    Button { model.present(.kioskHelp) } label: { atext("How do I get it?") }
+                        .buttonStyle(SoftButtonStyle(compact: true))
+                }
             }
         }
         .appCard()

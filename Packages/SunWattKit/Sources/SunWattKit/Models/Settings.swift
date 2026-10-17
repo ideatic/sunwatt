@@ -22,20 +22,34 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
     public var priceRegion: PriceRegion
     /// True once the user finished (or skipped) the first-launch onboarding in the app.
     public var onboardingCompleted: Bool
+    /// Where the solar data comes from. FusionSolar reads `kioskURL`; SolarEdge and PVOutput read the ID and key.
+    public var solarProvider: SolarProvider
+    /// SolarEdge site ID or PVOutput system ID.
+    public var solarSiteID: String
+    /// SolarEdge or PVOutput API key. A secret, like the kiosk link: never log it.
+    public var solarAPIKey: String
 
     public init(
         kioskURL: String = "",
         showTomorrowPrices: Bool = true,
         priceRegion: PriceRegion = .spain,
-        onboardingCompleted: Bool = false
+        onboardingCompleted: Bool = false,
+        solarProvider: SolarProvider = .fusionSolar,
+        solarSiteID: String = "",
+        solarAPIKey: String = ""
     ) {
         self.kioskURL = kioskURL
         self.showTomorrowPrices = showTomorrowPrices
         self.priceRegion = priceRegion
         self.onboardingCompleted = onboardingCompleted
+        self.solarProvider = solarProvider
+        self.solarSiteID = solarSiteID
+        self.solarAPIKey = solarAPIKey
     }
 
-    private enum CodingKeys: String, CodingKey { case kioskURL, showTomorrowPrices, priceRegion, onboardingCompleted }
+    private enum CodingKeys: String, CodingKey {
+        case kioskURL, showTomorrowPrices, priceRegion, onboardingCompleted, solarProvider, solarSiteID, solarAPIKey
+    }
 
     /// Missing keys (older stored settings) fall back to defaults.
     public init(from decoder: Decoder) throws {
@@ -44,6 +58,10 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         showTomorrowPrices = try c.decodeIfPresent(Bool.self, forKey: .showTomorrowPrices) ?? true
         priceRegion = try c.decodeIfPresent(PriceRegion.self, forKey: .priceRegion) ?? .spain
         onboardingCompleted = try c.decodeIfPresent(Bool.self, forKey: .onboardingCompleted) ?? false
+        // An unknown provider (settings from a newer app version) falls back to FusionSolar.
+        solarProvider = (try? c.decodeIfPresent(SolarProvider.self, forKey: .solarProvider)) ?? .fusionSolar
+        solarSiteID = try c.decodeIfPresent(String.self, forKey: .solarSiteID) ?? ""
+        solarAPIKey = try c.decodeIfPresent(String.self, forKey: .solarAPIKey) ?? ""
     }
 }
 

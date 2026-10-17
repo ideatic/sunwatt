@@ -8,7 +8,11 @@ PREZZO DELL'ELETTRICITÀ
 • Prezzi di domani appena pubblicati
 
 PRODUZIONE SOLARE
-Incolla il link Kiosk del tuo impianto Huawei FusionSolar e vedi la potenza attuale in kW, l'energia di oggi in kWh e la curva di produzione. Al primo avvio una guida spiega come ottenere il link in meno di un minuto.
+Collega il tuo impianto e vedi la potenza attuale in kW, l'energia di oggi in kWh e la curva di produzione. Funziona con:
+• Huawei FusionSolar: incolla il link Kiosk del tuo impianto
+• SolarEdge: inserisci l'ID del sito e la chiave API
+• PVOutput: inserisci l'ID del sistema e la chiave API. PVOutput funziona con molte marche di inverter, come Fronius, SMA, Enphase, GoodWe e Growatt
+Al primo avvio una guida spiega dove trovare ogni dato in pochi minuti.
 
 WIDGET
 • Widget piccolo, medio e grande per la schermata Home
@@ -31,6 +35,6 @@ NELL'APP
 • Guida per aggiungere i widget
 
 PRIVATA PER SCELTA
-Nessun account. Nessun tracciamento. Nessuna analisi. Nessuna pubblicità. SunWatt contatta solo il server FusionSolar del tuo link Kiosk e i servizi pubblici dei prezzi. Impostazioni e ultimi dati restano sul tuo dispositivo. Nulla viene inviato allo sviluppatore.
+Nessun account. Nessun tracciamento. Nessuna analisi. Nessuna pubblicità. SunWatt contatta solo il servizio solare che scegli (FusionSolar, SolarEdge o PVOutput) e i servizi pubblici dei prezzi. Impostazioni, chiavi e ultimi dati restano sul tuo dispositivo. Nulla viene inviato allo sviluppatore.
 
-SunWatt è gratis. Non è affiliata a Huawei, Red Eléctrica o Fraunhofer ISE. I prezzi day-ahead provengono da Energy-Charts (Fraunhofer ISE), licenza CC BY 4.0. Il prezzo all'ingrosso non è il prezzo della tua bolletta.
+SunWatt è gratis. Non è affiliata a Huawei, SolarEdge, PVOutput, Red Eléctrica o Fraunhofer ISE. I prezzi day-ahead provengono da Energy-Charts (Fraunhofer ISE), licenza CC BY 4.0. Il prezzo all'ingrosso non è il prezzo della tua bolletta.

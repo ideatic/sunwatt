@@ -493,46 +493,46 @@
       },
       "extractionState" : "manual"
     },
-    "Set up the kiosk URL in Settings." : {
+    "Set up your solar system in Settings." : {
+      "extractionState" : "manual",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lege die Kiosk-URL in den Einstellungen fest."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configura la URL del kiosco en Ajustes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurez l’URL du kiosque dans les Réglages."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imposta l’URL del kiosk nelle Impostazioni."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stel de kiosk-URL in bij Instellingen."
+            "value" : "Configura tu sistema de monitorización en Ajustes."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configure o URL do quiosque nas Definições."
+            "value" : "Configure o seu sistema de monitorização nas Definições."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurez votre système de suivi dans les Réglages."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richte dein Monitoring-System in den Einstellungen ein."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura il tuo impianto solare nelle Impostazioni."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stel je monitoringsysteem in bij Instellingen."
           }
         }
-      },
-      "extractionState" : "manual"
+      }
     },
     "Spain" : {
       "localizations" : {
@@ -574,6 +574,88 @@
         }
       },
       "extractionState" : "manual"
+    },
+    "The API key or the ID was rejected. Check both, and that API access is on." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se ha rechazado la clave API o el ID. Revisa ambos y comprueba que el acceso a la API esté activado."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A chave API ou o ID foi rejeitado. Verifique ambos e se o acesso à API está ativado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La clé API ou l’ID a été refusé. Vérifiez les deux, et que l’accès à l’API est activé."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der API-Schlüssel oder die ID wurde abgelehnt. Prüfe beides und ob der API-Zugriff aktiviert ist."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La chiave API o l’ID non è stato accettato. Controlla entrambi e che l’accesso API sia attivo."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De API-sleutel of de ID is geweigerd. Controleer beide en of API-toegang aan staat."
+          }
+        }
+      }
+    },
+    "The ID must be a number and the API key letters and digits only." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El ID debe ser un número y la clave API solo puede tener letras y dígitos."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ID tem de ser um número e a chave API só pode ter letras e algarismos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’ID doit être un nombre et la clé API ne contenir que des lettres et des chiffres."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die ID muss eine Zahl sein und der API-Schlüssel darf nur Buchstaben und Ziffern enthalten."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’ID deve essere un numero e la chiave API solo lettere e cifre."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De ID moet een getal zijn en de API-sleutel mag alleen letters en cijfers bevatten."
+          }
+        }
+      }
     },
     "The kiosk URL is not valid. It must contain the kk parameter." : {
       "localizations" : {

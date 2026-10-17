@@ -370,43 +370,43 @@
       },
       "extractionState" : "manual"
     },
-    "Solar production is not set up. Add your FusionSolar link in the SunWatt settings." : {
+    "Solar production is not set up. Connect your solar system in the SunWatt settings." : {
       "extractionState" : "manual",
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Solarerzeugung ist nicht eingerichtet. Füge deinen FusionSolar-Link in den SunWatt-Einstellungen hinzu."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La producción solar no está configurada. Añade tu enlace de FusionSolar en los ajustes de SunWatt."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La production solaire n’est pas configurée. Ajoutez votre lien FusionSolar dans les réglages de SunWatt."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La produzione solare non è configurata. Aggiungi il tuo link FusionSolar nelle impostazioni di SunWatt."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De zonne-opbrengst is niet ingesteld. Voeg je FusionSolar-link toe in de SunWatt-instellingen."
+            "value" : "La producción solar no está configurada. Conecta tu sistema de monitorización en los ajustes de SunWatt."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A produção solar não está configurada. Adiciona a tua ligação do FusionSolar nas definições do SunWatt."
+            "value" : "A produção solar não está configurada. Liga o teu sistema de monitorização nas definições do SunWatt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La production solaire n’est pas configurée. Connectez votre système de suivi dans les réglages de SunWatt."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Solarerzeugung ist nicht eingerichtet. Verbinde dein Monitoring-System in den SunWatt-Einstellungen."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La produzione solare non è configurata. Collega il tuo impianto nelle impostazioni di SunWatt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De zonne-opbrengst is niet ingesteld. Koppel je monitoringsysteem in de SunWatt-instellingen."
           }
         }
       }
