@@ -33,6 +33,6 @@
 	<key>WKApplication</key>
 	<true/>
 	<key>WKCompanionAppBundleIdentifier</key>
-	<string>com.ideatic.homedash</string>
+	<string>com.ideatic.sunwatt</string>
 </dict>
 </plist>

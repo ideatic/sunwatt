@@ -121,42 +121,42 @@
         }
       }
     },
-    "HomeDash": {
+    "SunWatt": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "SunWatt"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "SunWatt"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "SunWatt"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "SunWatt"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "SunWatt"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "HomeDash"
+            "value": "SunWatt"
           }
         }
       }

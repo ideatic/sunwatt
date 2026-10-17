@@ -1,5 +1,5 @@
 import Foundation
-import HomeDashKit
+import SunWattKit
 #if os(iOS)
 import WatchConnectivity
 #endif
@@ -11,7 +11,7 @@ final class PhoneWatchSync: NSObject, @unchecked Sendable {
 
     #if os(iOS)
     private let lock = NSLock()
-    private var pending: HomeDashSettings?
+    private var pending: SunWattSettings?
 
     /// Activates the WatchConnectivity session and sends the stored settings.
     func start() {
@@ -24,7 +24,7 @@ final class PhoneWatchSync: NSObject, @unchecked Sendable {
 
     /// Sends `settings` to the watch as application context (the system keeps only the latest).
     /// Before the session is active the latest value waits and is sent on activation.
-    func push(_ settings: HomeDashSettings) {
+    func push(_ settings: SunWattSettings) {
         guard WCSession.isSupported() else { return }
         let session = WCSession.default
         guard session.activationState == .activated else {
@@ -34,13 +34,13 @@ final class PhoneWatchSync: NSObject, @unchecked Sendable {
         send(settings, on: session)
     }
 
-    private func send(_ settings: HomeDashSettings, on session: WCSession) {
+    private func send(_ settings: SunWattSettings, on session: WCSession) {
         guard session.isPaired, session.isWatchAppInstalled else { return }
         try? session.updateApplicationContext(WatchSettingsSync.context(for: settings))
     }
     #else
     func start() {}
-    func push(_ settings: HomeDashSettings) {}
+    func push(_ settings: SunWattSettings) {}
     #endif
 }
 
