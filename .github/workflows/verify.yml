@@ -1,0 +1,84 @@
+name: Verify
+
+# Builds and tests SunWatt on a GitHub-hosted Mac (Xcode 27, macOS 27): `swift test` for the package,
+# iOS Simulator tests, macOS and watchOS builds. Same steps as `scripts/verify.sh` locally.
+# No secrets are used: builds are unsigned (CODE_SIGNING_ALLOWED=NO) and tests never reach the network.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 27
+        run: |
+          ls -d /Applications/Xcode*.app
+          # Prefer a release build over betas; fall back to the newest Xcode 27 of any kind.
+          XCODE=$(ls -d /Applications/Xcode_27*.app | grep -viE 'beta|candidate' | sort -V | tail -n 1)
+          [ -n "$XCODE" ] || XCODE=$(ls -d /Applications/Xcode_27*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+          swift --version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Simulator runtimes
+        run: |
+          xcrun simctl list runtimes
+          xcrun simctl list runtimes | grep -q "iOS 27" || xcodebuild -downloadPlatform iOS
+          xcrun simctl list runtimes | grep -q "watchOS 27" || xcodebuild -downloadPlatform watchOS
+
+      - name: Pick an iPhone simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          phones = [d for runtime, list_ in devices.items() if "iOS-27" in runtime
+                    for d in list_ if d["name"].startswith("iPhone")]
+          phones.sort(key=lambda d: ("Pro" not in d["name"], d["name"]))
+          print(phones[0]["udid"] if phones else "")
+          ')
+          if [ -z "$UDID" ]; then
+            RUNTIME=$(xcrun simctl list runtimes -j | python3 -c '
+          import json, sys
+          rts = [r for r in json.load(sys.stdin)["runtimes"] if r["name"].startswith("iOS 27") and r["isAvailable"]]
+          print(rts[-1]["identifier"] if rts else "")
+          ')
+            TYPE=$(xcrun simctl list devicetypes -j | python3 -c '
+          import json, sys
+          types = [t["identifier"] for t in json.load(sys.stdin)["devicetypes"] if t["name"].startswith("iPhone")]
+          print(types[-1])
+          ')
+            UDID=$(xcrun simctl create "SunWatt CI iPhone" "$TYPE" "$RUNTIME")
+          fi
+          xcrun simctl list devices | grep "$UDID"
+          echo "SUNWATT_SIM=platform=iOS Simulator,id=$UDID" >> "$GITHUB_ENV"
+
+      - name: Verify (swift test, iOS Simulator tests, macOS and watchOS builds)
+        env:
+          SUNWATT_XCODEBUILD_ARGS: CODE_SIGNING_ALLOWED=NO
+        run: scripts/verify.sh
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-logs
+          path: build/logs
+          if-no-files-found: ignore
+          retention-days: 14

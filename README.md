@@ -47,7 +47,9 @@ xcodegen generate && open SunWatt.xcodeproj
 scripts/verify.sh
 ```
 
-Runs `swift test`, the iOS Simulator tests, and the macOS and watchOS builds. It ends with `VERIFY OK` or `VERIFY FAILED`.
+Runs `swift test`, the iOS Simulator tests, and the macOS and watchOS builds. It ends with `VERIFY OK` or `VERIFY FAILED`. Full logs go to `build/logs/`.
+
+The same check runs on GitHub (`.github/workflows/verify.yml`, Xcode 27 Mac runner, unsigned) on every push to `main` and every pull request.
 
 Live check against the real services (kiosk from `Config/kiosk.local`, all 8 price regions, 15 s apart because Energy-Charts rate-limits):
 

@@ -77,6 +77,7 @@ scripts/verify.sh quick    # swift test only
 cd Packages/SunWattKit && swift test --filter LoaderTests   # one suite
 ```
 
+- CI: `.github/workflows/verify.yml` runs `scripts/verify.sh` on a GitHub-hosted Mac (`xcode-27` runner, unsigned builds) on every push to `main` and every pull request. Full logs are in the run's `verify-logs` artifact. Use it when no Mac is at hand (e.g. a Linux session).
 - Tests use Swift Testing (`import Testing`, `@Suite`, `@Test`), not XCTest.
 - Network is always stubbed (`StubHTTPClient`). Fixtures live in `Tests/SunWattKitTests/Fixtures/` (real responses, anonymized; `*-synthetic.json` are hand-made).
 - Live tests are opt-in and slow (15 s between requests): `cd Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests`. They read `Config/kiosk.local` and hit all 8 price regions. SolarEdge and PVOutput run only when `Config/solaredge.local` / `Config/pvoutput.local` exist (line 1: ID, line 2: API key; git-ignored).

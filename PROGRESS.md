@@ -27,6 +27,8 @@
   - SolarEdge/PVOutput fixtures are synthetic. Formats checked on 2026-10-17 against open-source clients (no account available): SolarEdge field names and time format match `clambin/solaredge` (Go); PVOutput history column order, `limit=288`, 400 "No status found", 403 rate limit and the `X-Pvoutput-*` headers match `openclimatefix/pvoutput` (Python). A live check with a real site is still the final proof.
   - Translations reviewed by one Haiku LQA agent per locale (AGENTS.md, "Translations"). Portal menu names are kept in English in every language (SolarEdge: Admin › Site Access › API Access; PVOutput: Settings › API Access): checked against third-party setup guides: PVOutput matches (Settings page: enable API Access, key and System Id on the same page); SolarEdge is Admin (cog icon) › Site Access › API Access in most guides, but some portal versions call it "Plant Access" / "System Access" with an "Access Control" tab. The Admin menu only shows for accounts with admin rights (else ask the installer; the support page says so).
 
+- [x] CI: GitHub workflow `Verify` runs `scripts/verify.sh` on an Xcode 27 Mac runner (unsigned).
+
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
 - Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).
