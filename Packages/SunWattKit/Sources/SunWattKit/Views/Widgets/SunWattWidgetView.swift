@@ -37,7 +37,8 @@ public struct SunWattWidgetView: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // A circular gauge is smaller than its slot: centred, or it sits in the top-left of the circle.
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: family == .accessoryCircular ? .center : .topLeading)
     }
 
     @ViewBuilder

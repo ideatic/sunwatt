@@ -53,15 +53,20 @@ enum StoreDevice: String, CaseIterable {
         }
     }
 
-    /// The Mac has no Lock Screen widgets.
+    /// Each slide shows a different surface. The Mac has no Lock Screen; the watch pairs with the iPhone only; on the
+    /// iPad the setup screen is a small card lost in the big screen.
     var shots: [StoreShot] {
-        self == .mac ? [.solar, .price, .cheap, .app] : StoreShot.allCases
+        switch self {
+        case .iphone: StoreShot.allCases
+        case .ipad: [.solar, .price, .lock, .app]
+        case .mac: [.solar, .price, .app, .setup]
+        }
     }
 }
 
 /// The screens in store order (AppStore/SCREENSHOTS.md). Solar first: it is the main feature.
 enum StoreShot: String, CaseIterable {
-    case solar, price, cheap, lock, app
+    case solar, price, watch, lock, app, setup
 
 
     func caption(_ folder: String) -> String {
@@ -78,10 +83,8 @@ enum StoreShot: String, CaseIterable {
                   "pt-PT": "A tua produção solar, ao vivo", "fr-FR": "Votre production solaire en direct",
                   "de-DE": "Ihre Solarleistung live", "it": "La tua produzione solare, live",
                   "nl-NL": "Je zonne-opbrengst, live"],
-        "cheap": ["en-US": "Find the cheapest hours", "es-ES": "Encuentra las horas más baratas",
-                  "pt-PT": "Descobre as horas mais baratas", "fr-FR": "Repérez les heures les moins chères",
-                  "de-DE": "Die günstigsten Stunden finden", "it": "Trova le ore più convenienti",
-                  "nl-NL": "Vind de goedkoopste uren"],
+        "watch": ["en-US": "Also on your Apple Watch", "es-ES": "También en tu Apple Watch", "pt-PT": "Também no teu Apple Watch", "fr-FR": "Aussi sur votre Apple Watch",
+                  "de-DE": "Auch auf Ihrer Apple Watch", "it": "Anche sul tuo Apple Watch", "nl-NL": "Ook op je Apple Watch"],
         "lock": ["en-US": "On Lock Screen and Control Center", "es-ES": "En bloqueo y Centro de control",
                  "pt-PT": "No ecrã bloqueado e Centro de Controlo", "fr-FR": "Écran verrouillé et Centre de contrôle",
                  "de-DE": "Sperrbildschirm & Kontrollzentrum", "it": "Blocco e Centro di Controllo",
@@ -89,6 +92,8 @@ enum StoreShot: String, CaseIterable {
         "app": ["en-US": "Charts you can explore", "es-ES": "Gráficas que puedes explorar",
                 "pt-PT": "Gráficos que podes explorar", "fr-FR": "Des graphiques interactifs",
                 "de-DE": "Interaktive Diagramme", "it": "Grafici interattivi", "nl-NL": "Interactieve grafieken"],
+        "setup": ["en-US": "For Huawei, SolarEdge and PVOutput", "es-ES": "Para Huawei, SolarEdge y PVOutput", "pt-PT": "Para Huawei, SolarEdge e PVOutput", "fr-FR": "Pour Huawei, SolarEdge et PVOutput",
+                  "de-DE": "Für Huawei, SolarEdge und PVOutput", "it": "Per Huawei, SolarEdge e PVOutput", "nl-NL": "Voor Huawei, SolarEdge en PVOutput"],
     ]
 }
 
@@ -115,7 +120,7 @@ struct StoreScreenshotView: View {
                 let natural = contentSize
                 let scale = min(proxy.size.width / natural.width, proxy.size.height / natural.height)
                 // Devices hang from the top; floating widgets sit in the middle of the space.
-                let centered = shot == .price || shot == .solar
+                let centered = shot == .price || shot == .solar || shot == .watch
                 content
                     .frame(width: natural.width, height: natural.height)
                     .scaleEffect(scale, anchor: centered ? .center : .top)
@@ -161,7 +166,8 @@ struct StoreScreenshotView: View {
         case .price: device == .mac ? CGSize(width: 364 + 24 + 170, height: 382) : CGSize(width: 364, height: 382 + 16 + 170)
         case .solar: device == .mac ? CGSize(width: 364 + 24 + 170, height: 170 * 2 + 16) : CGSize(width: 364, height: 170 * 3 + 16 * 2)
         case .lock: framedSize(CGSize(width: 393, height: 852))
-        case .cheap, .app:
+        case .watch: CGSize(width: Self.watchSize.width + Self.watchShift.width, height: Self.watchSize.height + Self.watchShift.height)
+        case .app, .setup:
             device == .mac ? AppSnapshotView.size(for: .mac) : framedSize(AppSnapshotView.size(for: device.appDevice))
         }
     }
@@ -209,10 +215,12 @@ struct StoreScreenshotView: View {
                     card(.medium, .both)
                 }
             }
-        case .cheap:
-            appScreen(.dashboardDay)
+        case .watch:
+            watches
         case .app:
             appScreen(.dashboardSelection)
+        case .setup:
+            appScreen(.onboardingSolar)
         case .lock:
             lockScreen
         }
@@ -267,6 +275,56 @@ struct StoreScreenshotView: View {
 
     private var dynamicIsland: some View {
         Capsule().fill(Color.black).frame(width: 122, height: 35).padding(.top, 11)
+    }
+
+    // MARK: Apple Watch
+
+    private static let watchBezel: CGFloat = 14
+    private static var watchSize: CGSize {
+        let screen = WatchSnapshotView.screenSize
+        return CGSize(width: screen.width + watchBezel * 2 + 8, height: screen.height + watchBezel * 2)
+    }
+    /// The solar watch sits behind, to the right and lower, so both screens read.
+    private static let watchShift = CGSize(width: 120, height: 230)
+
+    private var watches: some View {
+        ZStack(alignment: .topLeading) {
+            watch(WatchSolarPage(entry: entry))
+                .offset(x: Self.watchShift.width, y: Self.watchShift.height)
+            watch(WatchPricePage(entry: entry))
+        }
+        // `offset` does not move the layout box: claim the space of both watches, or the back one spills out.
+        .frame(width: Self.watchSize.width + Self.watchShift.width, height: Self.watchSize.height + Self.watchShift.height,
+               alignment: .topLeading)
+    }
+
+    /// Apple Watch stand-in: the real watch page on a black screen, a dark case and the Digital Crown.
+    private func watch(_ page: some View) -> some View {
+        let screen = WatchSnapshotView.screenSize
+        return page
+            .padding(.horizontal, 12)
+            .padding(.top, 34)
+            .padding(.bottom, 10)
+            .frame(width: screen.width, height: screen.height)
+            .background(Color.black)
+            .overlay(alignment: .topTrailing) {
+                Text(SampleData.now.formatted(
+                    Date.FormatStyle(locale: Locale(identifier: language.locale), timeZone: TimeZone(identifier: "Europe/Madrid")!)
+                        .hour(.defaultDigits(amPM: .omitted)).minute(.twoDigits)))
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .padding(.top, 10).padding(.trailing, 22)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 40, style: .continuous))
+            .environment(\.colorScheme, .dark)
+            .foregroundStyle(.white)
+            .modifier(DeviceFrame(radius: 40, bezel: Self.watchBezel))
+            .overlay(alignment: .trailing) {
+                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                    .fill(LinearGradient(colors: [Color(white: 0.55), Color(white: 0.25)], startPoint: .top, endPoint: .bottom))
+                    .frame(width: 8, height: 44)
+                    .offset(x: 6, y: -50)
+            }
+            .padding(.trailing, 8)
     }
 
     // MARK: Lock Screen

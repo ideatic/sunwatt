@@ -20,12 +20,16 @@ Existing widget renders are in `Screenshots/widgets/` (small, medium, large, Loc
 
 ## Screens, in order (iPhone, iPad, Mac)
 
-1. Solar widgets (today curve, current kW): the main feature. Caption key `solar`.
-2. Price widgets on the Home Screen: small + medium + large, price high, coloured. Caption key `price`.
-3. Cheapest hours: large widget or dashboard card with "cheapest upcoming hours". Caption key `cheap`.
-4. Lock Screen widgets (rectangular + circular) and the Control Center control. Caption key `lock`.
-5. App dashboard with the interactive chart and country picker. Caption key `app`.
-6. Siri / Shortcuts result ("What's the electricity price in SunWatt?"). Caption key `siri`.
+Every slide shows a different surface, so the set does not repeat the same UI.
+
+1. Solar widgets (today curve, current kW): the main feature. Caption key `solar`. All devices.
+2. Price widgets on the Home Screen: small + medium + large. Caption key `price`. All devices.
+3. Apple Watch: price page (with the cheapest hours) in front, solar page behind. Caption key `watch`. iPhone only.
+4. Lock Screen widgets (rectangular + circular) and the Control Center controls. Caption key `lock`. iPhone, iPad.
+5. App dashboard with the interactive chart (a touched point). Caption key `app`. All devices.
+6. Setup screen with the three solar systems. Caption key `setup`. iPhone, Mac (on the iPad it is a small card lost on the big screen).
+
+Not used now: `cheap` (the watch and the dashboard already show the cheapest hours) and `siri`.
 
 Apple Watch (3 shots): price complication on a watch face; Watch app with today's chart; solar value. Captions: `watch` (only 1 line on watch art, optional).
 
@@ -41,6 +45,7 @@ All slides use the warm day background so the set reads as one; the Lock Screen 
 | lock | On Lock Screen and Control Center | En bloqueo y Centro de control | No ecrã bloqueado e Centro de Controlo | Écran verrouillé et Centre de contrôle | Sperrbildschirm & Kontrollzentrum | Blocco e Centro di Controllo | Toegangsscherm en Bedieningscentrum |
 | app | Charts you can explore | Gráficas que puedes explorar | Gráficos que podes explorar | Des graphiques interactifs | Interaktive Diagramme | Grafici interattivi | Interactieve grafieken |
 | siri | Just ask Siri | Pregúntaselo a Siri | Pergunta à Siri | Demandez à Siri | Einfach Siri fragen | Chiedi a Siri | Vraag het aan Siri |
-| watch | Price on your wrist | El precio en tu muñeca | O preço no pulso | Le prix au poignet | Der Preis am Handgelenk | Il prezzo al polso | De prijs op je pols |
+| watch | Also on your Apple Watch | También en tu Apple Watch | Também no teu Apple Watch | Aussi sur votre Apple Watch | Auch auf Ihrer Apple Watch | Anche sul tuo Apple Watch | Ook op je Apple Watch |
+| setup | For Huawei, SolarEdge and PVOutput | Para Huawei, SolarEdge y PVOutput | Para Huawei, SolarEdge e PVOutput | Pour Huawei, SolarEdge et PVOutput | Für Huawei, SolarEdge und PVOutput | Per Huawei, SolarEdge e PVOutput | Voor Huawei, SolarEdge en PVOutput |
 
 Length check: the longest are pt-PT `lock` (38) and nl-NL `lock` (35). Run a quick count after any edit: each must be 40 or less. Spanish captions say "luz" (PVPC); for Spain screens 1 and 3 may add "PVPC" in the screenshot art.

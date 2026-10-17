@@ -78,3 +78,10 @@ Critique (all 67 PNGs reviewed: light/dark, day/night/stale/error, accented/vibr
 
 ## Open points
 - Real accented/vibrant tinting only shows on device.
+
+## 2026-10-17: circular gauge centred
+
+- Critique: on the store Lock Screen slide the round gauges sat high and to the left inside their circle; the
+  rectangular widget between them looked lower. The gauge is smaller than the 76 pt slot and the widget view
+  aligned every family to the top-left.
+- Change: `SunWattWidgetView` centres the `accessoryCircular` family; the other families stay top-left.
