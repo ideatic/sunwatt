@@ -32,6 +32,8 @@ Then run `scripts/release.sh --upload`. Xcode must be signed in to the ideatic a
 - creates a distribution certificate if none works
 - uploads the iOS build (with the watch app) and the macOS build to App Store Connect
 
+The script writes the new build number into `project.yml`. Commit it after the upload (`git commit -am "Build <number>"`), so the next upload gets a higher number.
+
 Processing takes 5 to 30 minutes. You get an e-mail. If the upload says the app record is missing, do step a) and run again.
 
 ## d) TestFlight
