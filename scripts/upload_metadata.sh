@@ -12,14 +12,14 @@
 #   -h, --help                                      Show this text.
 #
 # Auth (upload only): App Store Connect API key as a fastlane JSON file.
-#   Path: env ASC_API_KEY_PATH (default private/asc_api_key.json, git-ignored). See docs/RELEASE.md.
+#   Path: env ASC_API_KEY_PATH (default private/appstore_key.json, git-ignored). See docs/RELEASE.md.
 # The key file is never printed.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 APP_ID=com.ideatic.sunwatt
 METADATA=AppStore/metadata
-KEY_PATH="${ASC_API_KEY_PATH:-private/asc_api_key.json}"
+KEY_PATH="${ASC_API_KEY_PATH:-private/appstore_key.json}"
 
 MODE=dry-run
 PLATFORM=both
@@ -87,7 +87,7 @@ API key file not found: $KEY_PATH
 Create it:
   1. App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys.
   2. Generate a key with the App Manager role. Download the .p8 file once (Apple shows it only once).
-  3. Write the JSON file (key_id, issuer_id, path of the .p8 in "key_filepath"). See docs/RELEASE.md.
+  3. Write the JSON file (key_id, issuer_id, the .p8 text in "key"). See docs/RELEASE.md.
 Or set ASC_API_KEY_PATH to another JSON file.
 MSG
   exit 1

@@ -34,7 +34,7 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 | `AppStore/` | Store metadata in 7 languages, privacy answers, review notes, `check_metadata.py`. |
 | `docs/` | Privacy/support pages (to host) and `RELEASE.md`. |
 | `scripts/` | `verify.sh` (full check), `release.sh` (archive/upload), export options. |
-| `private/` | Git-ignored, never committed: `kiosk.local` (the developer's kiosk link, one line, for debug prefill and live tests), `solaredge.local` / `pvoutput.local` (live tests), `asc_api_key.json` + `AuthKey_*.p8` (App Store Connect API key for `scripts/upload_metadata.sh`). Put every other secret or personal value here too. |
+| `private/` | Git-ignored, never committed: `kiosk.local` (the developer's kiosk link, one line, for debug prefill and live tests), `solaredge.local` / `pvoutput.local` (live tests), `appstore_key.json` (App Store Connect API key for `scripts/upload_metadata.sh`, the `.p8` text inline in `key`). Put every other secret or personal value here too. |
 
 ### Inside `SunWattKit/Sources/SunWattKit`
 
