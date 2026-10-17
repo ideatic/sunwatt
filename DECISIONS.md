@@ -32,7 +32,7 @@ Each entry: decision, why, how to change it.
 - Real DST fixtures: 2026-03-29 (23 points) and 2025-10-26 (25 points, two "02:00" with +02:00 and +01:00).
 
 ## D7. Kiosk URL for debug builds
-- Lives in git-ignored `Config/kiosk.local`. Never in source, never logged.
+- Lives in git-ignored `private/kiosk.local`. Never in source, never logged.
 
 ## D8. More countries (user request, 2026-10-17 night)
 - Spain keeps the retail PVPC price (Red Eléctrica). Portugal, France, Germany+Luxembourg, Austria, Belgium, Netherlands and North Italy use day-ahead wholesale prices from Energy-Charts (`api.energy-charts.info/price?bzn=...`, Fraunhofer ISE, CC BY 4.0, no token). All 8 verified live on 2026-10-17.
@@ -54,7 +54,7 @@ Each entry: decision, why, how to change it.
 - `SunWattLoader.load(deadline: 15)` races each fetch against a 15 s deadline (widget extensions get ~30 s). Dedicated ephemeral `URLSession.sunWatt` (10 s request / 12 s resource timeout, no URL cache so the kiosk token is not written to disk).
 
 ## D12. Live tests are opt-in
-- `SUNWATT_LIVE=1 swift test --filter LiveTests` hits the real kiosk (URL from `Config/kiosk.local`) and all 8 price regions, 15 s apart; SolarEdge and PVOutput too when `Config/solaredge.local` / `Config/pvoutput.local` exist. Not part of the normal run.
+- `SUNWATT_LIVE=1 swift test --filter LiveTests` hits the real kiosk (URL from `private/kiosk.local`) and all 8 price regions, 15 s apart; SolarEdge and PVOutput too when `private/solaredge.local` / `private/pvoutput.local` exist. Not part of the normal run.
 
 ## D13. Product name: SunWatt (user decision)
 - "HomeDash" sounded like a smart-home app. The name is now **SunWatt** (App Store name "SunWatt: Solar & Power Price").

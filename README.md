@@ -39,7 +39,7 @@ Platforms: iOS 27, iPadOS 27, macOS 27, watchOS 27. Languages: English, Spanish,
 xcodegen generate && open SunWatt.xcodeproj
 ```
 
-4. Optional, for debug builds: put your kiosk link in `Config/kiosk.local` (one line, git-ignored). Debug builds use it to pre-fill Settings. Release builds never contain it.
+4. Optional, for debug builds: put your kiosk link in `private/kiosk.local` (one line, git-ignored). Debug builds use it to pre-fill Settings. Release builds never contain it.
 
 ## Build and test
 
@@ -51,7 +51,7 @@ Runs `swift test`, the iOS Simulator tests, and the macOS and watchOS builds. It
 
 The same check runs on GitHub (`.github/workflows/verify.yml`, Xcode 27 Mac runner, unsigned) on every push to `main` and every pull request.
 
-Live check against the real services (kiosk from `Config/kiosk.local`, all 8 price regions, 15 s apart because Energy-Charts rate-limits):
+Live check against the real services (kiosk from `private/kiosk.local`, all 8 price regions, 15 s apart because Energy-Charts rate-limits):
 
 ```bash
 cd Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests

@@ -12,14 +12,14 @@
 #   -h, --help                                      Show this text.
 #
 # Auth (upload only): App Store Connect API key as a fastlane JSON file.
-#   Path: env ASC_API_KEY_PATH (default $HOME/.appstoreconnect/sunwatt_api_key.json). See docs/RELEASE.md.
+#   Path: env ASC_API_KEY_PATH (default private/asc_api_key.json, git-ignored). See docs/RELEASE.md.
 # The key file is never printed.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 APP_ID=com.ideatic.sunwatt
 METADATA=AppStore/metadata
-KEY_PATH="${ASC_API_KEY_PATH:-$HOME/.appstoreconnect/sunwatt_api_key.json}"
+KEY_PATH="${ASC_API_KEY_PATH:-private/asc_api_key.json}"
 
 MODE=dry-run
 PLATFORM=both

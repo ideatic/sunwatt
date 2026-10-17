@@ -34,7 +34,7 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power Price"). Team `EX6
 | `AppStore/` | Store metadata in 7 languages, privacy answers, review notes, `check_metadata.py`. |
 | `docs/` | Privacy/support pages (to host) and `RELEASE.md`. |
 | `scripts/` | `verify.sh` (full check), `release.sh` (archive/upload), export options. |
-| `Config/kiosk.local` | Git-ignored, one line: the developer's kiosk link for debug prefill and live tests. |
+| `private/` | Git-ignored, never committed: `kiosk.local` (the developer's kiosk link, one line, for debug prefill and live tests), `solaredge.local` / `pvoutput.local` (live tests), `asc_api_key.json` + `AuthKey_*.p8` (App Store Connect API key for `scripts/upload_metadata.sh`). Put every other secret or personal value here too. |
 
 ### Inside `SunWattKit/Sources/SunWattKit`
 
@@ -121,7 +121,7 @@ cd Packages/SunWattKit && swift test --filter LoaderTests   # one suite
 - CI: `.github/workflows/verify.yml` runs `scripts/verify.sh` on a GitHub-hosted Mac (`xcode-27` runner, unsigned builds) on every push to `main` and every pull request. Full logs are in the run's `verify-logs` artifact. Use it when no Mac is at hand (e.g. a Linux session).
 - Tests use Swift Testing (`import Testing`, `@Suite`, `@Test`), not XCTest.
 - Network is always stubbed (`StubHTTPClient`). Fixtures live in `Tests/SunWattKitTests/Fixtures/` (real responses, anonymized; `*-synthetic.json` are hand-made).
-- Live tests are opt-in and slow (15 s between requests): `cd Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests`. They read `Config/kiosk.local` and hit all 8 price regions. SolarEdge and PVOutput run only when `Config/solaredge.local` / `Config/pvoutput.local` exist (line 1: ID, line 2: API key; git-ignored).
+- Live tests are opt-in and slow (15 s between requests): `cd Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests`. They read `private/kiosk.local` and hit all 8 price regions. SolarEdge and PVOutput run only when `private/solaredge.local` / `private/pvoutput.local` exist (line 1: ID, line 2: API key; git-ignored).
 - Simulator default: iPhone 18 Pro, iOS 27.0 (`SUNWATT_SIM` overrides). macOS builds run with `CODE_SIGNING_ALLOWED=NO` and only compile (DECISIONS D4).
 
 ### Screenshots and design checks

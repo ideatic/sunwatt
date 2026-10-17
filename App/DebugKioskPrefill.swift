@@ -3,7 +3,7 @@ import Foundation
 import SunWattKit
 
 /// Debug builds only: when the kiosk URL setting is empty, fills it from `kiosk.local`, which the build copies
-/// from the git-ignored `Config/kiosk.local` into the app bundle (see the pre-build script in project.yml).
+/// from the git-ignored `private/kiosk.local` into the app bundle (see the pre-build script in project.yml).
 /// Release builds neither contain the file nor this code. The value is never logged.
 enum DebugKioskPrefill {
     static func apply() {

@@ -56,14 +56,14 @@ Follow `AppStore/SCREENSHOTS.md` (sizes, order, 7 languages). Upload for iPhone 
 Uploads `AppStore/metadata/` (7 locales) with fastlane deliver. It never uploads a binary, never submits for review and never releases.
 
 1. Install: `brew install fastlane`.
-2. API key: App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys > "+". Role: App Manager. Download the `.p8` file once (Apple shows it only once). Keep it outside the repo, for example `~/.appstoreconnect/AuthKey_XXXXXXXXXX.p8`.
-3. Write `~/.appstoreconnect/sunwatt_api_key.json` (or set `ASC_API_KEY_PATH` to another path). Placeholder values:
+2. API key: App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys > "+". Role: App Manager. Download the `.p8` file once (Apple shows it only once). Keep it in the git-ignored `private/` folder, for example `private/AuthKey_XXXXXXXXXX.p8`.
+3. Write `private/asc_api_key.json` (the script's default; or set `ASC_API_KEY_PATH` to another path). Placeholder values:
 
 ```json
 {
   "key_id": "XXXXXXXXXX",
   "issuer_id": "00000000-0000-0000-0000-000000000000",
-  "key_filepath": "/Users/you/.appstoreconnect/AuthKey_XXXXXXXXXX.p8",
+  "key_filepath": "/path/to/sunwatt/private/AuthKey_XXXXXXXXXX.p8",
   "in_house": false
 }
 ```

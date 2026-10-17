@@ -1,5 +1,5 @@
-# Local secrets / per-machine config (kiosk URL lives here, never commit it)
-Config/*.local
+# private/: secrets and per-machine data (kiosk link, API keys, App Store Connect key). Never commit it.
+private/
 # Xcode
 *.xcodeproj/
 xcuserdata/
