@@ -698,6 +698,47 @@
         }
       }
     },
+    "The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is set to “Enable (unrestricted)” in the dongle." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El inversor no ha respondido. Revisa la dirección, que estés en tu Wi-Fi de casa y que Modbus TCP esté en “Enable (unrestricted)” en el dongle."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O inversor não respondeu. Verifique o endereço, a ligação à rede Wi-Fi de casa e se o Modbus TCP está definido como “Enable (unrestricted)” no dongle."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’onduleur n’a pas répondu. Vérifiez l’adresse, que vous êtes bien connecté au Wi-Fi de la maison et que Modbus TCP est réglé sur “Enable (unrestricted)” dans le dongle."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Wechselrichter hat nicht geantwortet. Prüfe die Adresse, ob du im Heim-WLAN bist und ob im Dongle Modbus TCP auf “Enable (unrestricted)” eingestellt ist."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’inverter non ha risposto. Controlla l’indirizzo, che tu sia connesso alla Wi-Fi di casa e che nel dongle Modbus TCP sia impostato su “Enable (unrestricted)”."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De omvormer reageert niet. Controleer het adres, of je op je thuis-wifi zit en of Modbus TCP in de dongle op “Enable (unrestricted)” staat."
+          }
+        }
+      }
+    },
     "The kiosk URL is not valid. It must contain the kk parameter." : {
       "localizations" : {
         "de" : {
@@ -779,6 +820,47 @@
         }
       },
       "extractionState" : "manual"
+    },
+    "This is not a valid address. Use the dongle's IP address, for example 192.168.1.50." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No es una dirección válida. Usa la dirección IP del dongle, por ejemplo 192.168.1.50."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este não é um endereço válido. Use o endereço IP do dongle, por exemplo 192.168.1.50."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette adresse n’est pas valide. Utilisez l’adresse IP du dongle, par exemple 192.168.1.50."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist keine gültige Adresse. Verwende die IP-Adresse des Dongles, zum Beispiel 192.168.1.50."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non è un indirizzo valido. Usa l’indirizzo IP del dongle, per esempio 192.168.1.50."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dit is geen geldig adres. Gebruik het IP-adres van de dongle, bijvoorbeeld 192.168.1.50."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

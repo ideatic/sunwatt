@@ -72,6 +72,8 @@ public struct SolarSnapshot: Codable, Hashable, Sendable {
     /// Home consumption and grid exchange. Nil when the plant has no meter (export only, or the source has no such
     /// data): then nothing about consumption is shown.
     public var home: HomeEnergy?
+    /// True when the figures were read from the inverter on the home network just now (not through the cloud).
+    public var isLive: Bool?
 
     public init(
         stationName: String? = nil,

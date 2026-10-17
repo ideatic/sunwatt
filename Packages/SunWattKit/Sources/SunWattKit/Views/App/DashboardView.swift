@@ -335,6 +335,14 @@ private struct SolarCard: View {
     private var timeMarker: some View {
         if isStale {
             StaleBadge(since: solar.dataAsOf ?? solar.fetchedAt)
+        } else if solar.isLive == true {
+            // Read from the inverter on the home network a moment ago.
+            HStack(spacing: 5) {
+                Circle().fill(Theme.Price.green).frame(width: 7, height: 7)
+                atext("Live")
+            }
+            .font(.system(.caption, design: .rounded).weight(.semibold))
+            .foregroundStyle(.secondary)
         } else if let time = solar.dataAsOf {
             atext("As of \(Format.time(time))")
                 .font(.system(.caption, design: .rounded).weight(.medium))

@@ -83,6 +83,9 @@ public struct SunWattLoader: Sendable {
             switch solarOutcome {
             case .success(var snapshot):
                 store.clearKioskRejection()
+                if snapshot.isLive == true, let cached = cachedSolar(for: settings) {
+                    snapshot = Self.fillingIn(snapshot, from: cached)
+                }
                 snapshot.endpointID = Self.endpointID(for: settings)
                 store.saveSolar(snapshot)
                 data.solar = snapshot
@@ -151,13 +154,33 @@ public struct SunWattLoader: Sendable {
         return data
     }
 
+    /// A live inverter reading without the kiosk part (kiosk unreachable): today's earlier curve, the plant name and
+    /// month/year totals come from the stored snapshot.
+    static func fillingIn(_ live: SolarSnapshot, from cached: SolarSnapshot) -> SolarSnapshot {
+        var result = live
+        let calendar = Constants.madridCalendar
+        let firstLive = live.curve.first?.time ?? live.fetchedAt
+        let earlier = cached.curve.filter { calendar.isDate($0.time, inSameDayAs: live.fetchedAt) && $0.time < firstLive && $0.kW != nil }
+        if live.curve.filter({ $0.kW != nil }).count <= 1, !earlier.isEmpty {
+            result.curve = earlier + live.curve
+        }
+        result.stationName = result.stationName ?? cached.stationName
+        if calendar.isDate(cached.fetchedAt, equalTo: live.fetchedAt, toGranularity: .month) {
+            result.monthEnergyKWh = result.monthEnergyKWh ?? cached.monthEnergyKWh
+        }
+        if calendar.isDate(cached.fetchedAt, equalTo: live.fetchedAt, toGranularity: .year) {
+            result.yearEnergyKWh = result.yearEnergyKWh ?? cached.yearEnergyKWh
+        }
+        return result
+    }
+
     /// How long Huawei must keep rejecting the kiosk link before SunWatt calls it expired. One rejection can be a
     /// passing problem on Huawei's side; an expired link is rejected on every refresh.
     public static let kioskExpiredAfter: TimeInterval = 30 * 60
 
     /// True when the FusionSolar link in `settings` has been rejected for at least `kioskExpiredAfter`.
     func isKioskLinkExpired(settings: SunWattSettings, now: Date) -> Bool {
-        guard case .fusionSolar(let endpoint)? = SolarAccount(settings: settings),
+        guard let endpoint = SolarAccount(settings: settings)?.kioskEndpoint,
               let since = store.kioskRejectedSince(linkID: endpoint.cacheID) else { return false }
         return now.timeIntervalSince(since) >= Self.kioskExpiredAfter
     }

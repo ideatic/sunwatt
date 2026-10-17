@@ -70,7 +70,12 @@ public struct AppRootView: View {
         }
         // Restarted on every phase change; stops while the app is in the background.
         .task(id: scenePhase) {
-            if scenePhase == .active { await model.runClock() }
+            if scenePhase == .active {
+                // The hour clock, and live inverter reads when the dongle is set up and answers.
+                async let clock: Void = model.runClock()
+                async let live: Void = model.runLive()
+                _ = await (clock, live)
+            }
         }
         .environment(\.appIdiom, AppIdiom.platformDefault)
     }

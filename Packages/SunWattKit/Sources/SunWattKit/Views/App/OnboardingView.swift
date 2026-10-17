@@ -231,7 +231,7 @@ private struct SolarPage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.l) {
             PageTitle(title: "Connect your solar plant", subtitle: "Choose your monitoring system and connect it. You can also do this later.")
-            SolarSetupEditor(model: model)
+            SolarSetupEditor(model: model, showsInverter: false)
                 .appCard()
         }
     }

@@ -392,6 +392,67 @@ public final class AppModel {
         }
     }
 
+    // MARK: Huawei inverter on the home network
+
+    /// Reads the inverter at `host` once, trying the saved unit ID first, then 1 and 0 (the IDs Huawei dongles use).
+    /// On success returns the reading and the unit ID that answered.
+    public func testInverter(_ host: String) async -> Result<(HuaweiInverterReading, Int), Error> {
+        guard HuaweiLocalEndpoint(parsing: host) != nil else { return .failure(SunWattError.invalidInverterAddress) }
+        if isDemo {
+            try? await Task.sleep(for: .milliseconds(400))
+            return .success((HuaweiInverterReading(activePowerKW: 2.9, dailyEnergyKWh: 5.1, totalEnergyKWh: 44150), 1))
+        }
+        var lastError: Error = SunWattError.inverterUnreachable
+        var tried: [Int] = []
+        for unit in [settings.huaweiLocalUnitID, 1, 0] where !tried.contains(unit) {
+            tried.append(unit)
+            guard let endpoint = HuaweiLocalEndpoint(parsing: host, unitID: unit) else { continue }
+            let client = HuaweiModbusClient(endpoint: endpoint, makeTransport: makeModbusTransport)
+            switch await SunWattLoader.race(deadline: 6, { try await client.read() }) {
+            case .success(let reading): return .success((reading, unit))
+            case .failure(let error):
+                lastError = error
+                // Only a Modbus answer (e.g. "gateway target failed") means another unit ID may work.
+                guard error is ModbusFrame.Failure else {
+                    return .failure(error is CancellationError ? error : SunWattError.inverterUnreachable)
+                }
+            }
+        }
+        return .failure(lastError is ModbusFrame.Failure ? SunWattError.inverterUnreachable : lastError)
+    }
+
+    /// Transport for inverter reads (seam for tests).
+    @ObservationIgnored var makeModbusTransport: @Sendable (HuaweiLocalEndpoint) -> ModbusTransport? = HuaweiModbusClient.defaultTransport
+
+    /// While the app is on screen and the inverter answers, re-reads it every `liveInterval` seconds and updates the
+    /// figures and the curve (nothing is stored; widgets keep their own refresh). Runs until cancelled.
+    public func runLive() async {
+        guard !isDemo else { return }
+        while !Task.isCancelled {
+            try? await Task.sleep(for: .seconds(Self.liveInterval))
+            if Task.isCancelled { return }
+            await liveTick()
+        }
+    }
+
+    static let liveInterval: TimeInterval = 10
+
+    /// One live read. Internal for tests.
+    func liveTick() async {
+        guard !showsOnboarding, !isLoading, case .huaweiLocal(let endpoint, _)? = SolarAccount(settings: settings),
+              data?.solarLinkExpired != true else { return }
+        let client = HuaweiModbusClient(endpoint: endpoint, makeTransport: makeModbusTransport)
+        guard case .success(let reading) = await SunWattLoader.race(deadline: 5, { try await client.read() }),
+              case .huaweiLocal? = SolarAccount(settings: settings) else { return }
+        let date = Date()
+        var snapshot = HuaweiLocalSolarClient.merge(reading, into: data?.solar, at: date)
+        snapshot.endpointID = data?.solar?.endpointID
+        if data == nil { data = SunWattData(solar: nil, prices: nil, solarStatus: .fresh, priceStatus: .stale(since: date)) }
+        data?.solar = snapshot
+        data?.solarStatus = .fresh
+        now = date
+    }
+
     // MARK: Kiosk link expiry
 
     /// When the kiosk link stops working at the latest (saved + 1 year). Set only while the "renew soon" notice

@@ -26,6 +26,8 @@ extension SolarProvider {
 struct SolarSetupEditor: View {
     let model: AppModel
     var initialTest: KioskTestState = .idle
+    /// Settings shows the optional "Live data at home" section; onboarding keeps the first setup short.
+    var showsInverter = true
 
     @Environment(\.openURL) private var openURL
     @Environment(\.colorScheme) private var scheme
@@ -43,6 +45,10 @@ struct SolarSetupEditor: View {
                     Label { atext("How do I get the kiosk link?") } icon: { Image(systemName: "questionmark.circle") }
                 }
                 .buttonStyle(SoftButtonStyle())
+                if showsInverter {
+                    hairline
+                    InverterLinkEditor(model: model)
+                }
             case .solarEdge, .pvOutput:
                 SolarAPIEditor(model: model, provider: provider, initialTest: initialTest)
                     .id(provider)
@@ -244,6 +250,129 @@ struct SolarAPIEditor: View {
             switch await model.testSolarAPI(provider: provider, siteID: id, apiKey: key) {
             case .success(let solar): test = .success(solar)
             case .failure(let error): test = .failure(error.localizedDescription)
+            }
+        }
+    }
+}
+
+/// "Live data at home": the Huawei dongle's address on the home network (Modbus TCP), optional, with a test.
+/// Saved when the user submits, leaves the field or the view goes away.
+struct InverterLinkEditor: View {
+    let model: AppModel
+    @State private var host: String
+    @State private var test: InverterTestState = .idle
+    @Environment(\.colorScheme) private var scheme
+    @Environment(\.scenePhase) private var scenePhase
+
+    enum InverterTestState {
+        case idle, testing
+        case success(HuaweiInverterReading)
+        case failure(String)
+    }
+
+    init(model: AppModel) {
+        self.model = model
+        _host = State(initialValue: model.settings.huaweiLocalHost)
+    }
+
+    var body: some View {
+        let palette = AppPalette(scheme)
+        let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        let valid = HuaweiLocalEndpoint(parsing: trimmed) != nil
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            Label { atext("Live data at home") } icon: { Image(systemName: "house.fill") }
+                .font(.system(.subheadline, design: .rounded).weight(.bold))
+            atext("Optional. If Modbus TCP is set to “Enable (unrestricted)” in the Huawei dongle, SunWatt reads the inverter directly while you are at home, every few seconds. Elsewhere it uses the kiosk link.")
+                .font(.system(.footnote, design: .rounded))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            atext("Dongle IP address")
+                .font(.system(.footnote, design: .rounded).weight(.semibold))
+                .padding(.horizontal, Theme.Spacing.xs)
+            AppTextField(prompt: "192.168.1.50", text: $host, onCommit: commit)
+            if !trimmed.isEmpty, !valid {
+                HStack(alignment: .top, spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                    Text(verbatim: SunWattError.invalidInverterAddress.localizedDescription)
+                }
+                .foregroundStyle(palette.warning)
+                .font(.system(.footnote, design: .rounded).weight(.medium))
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, Theme.Spacing.xs)
+            }
+            Button { runTest() } label: {
+                Label { atext("Test inverter") } icon: { Image(systemName: "bolt.horizontal.circle") }
+            }
+            .buttonStyle(SoftButtonStyle(compact: true))
+            .disabled(!valid)
+            .opacity(valid ? 1 : 0.5)
+            result(palette: palette)
+        }
+        .onChange(of: host) { _, _ in test = .idle }
+        .onDisappear { commit() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { commit() }
+        }
+    }
+
+    @ViewBuilder
+    private func result(palette: AppPalette) -> some View {
+        switch test {
+        case .idle:
+            EmptyView()
+        case .testing:
+            HStack(spacing: Theme.Spacing.s) {
+                ProgressView().controlSize(.small)
+                atext("Connecting…").font(.system(.footnote, design: .rounded)).foregroundStyle(.secondary)
+            }
+        case .success(let reading):
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.success)
+                VStack(alignment: .leading, spacing: 2) {
+                    atext("Inverter found").font(.system(.subheadline, design: .rounded).weight(.bold))
+                    atext("\(Format.kW(max(reading.activePowerKW, 0))) kW now · \(Format.kWh(reading.dailyEnergyKWh)) kWh today")
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
+            }
+            .padding(Theme.Spacing.m)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.success.opacity(0.12)))
+        case .failure(let message):
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "xmark.octagon.fill").foregroundStyle(palette.warning)
+                VStack(alignment: .leading, spacing: 2) {
+                    atext("Connection failed").font(.system(.subheadline, design: .rounded).weight(.bold))
+                    Text(verbatim: message)
+                        .font(.system(.footnote, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(Theme.Spacing.m)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.warning.opacity(0.12)))
+        }
+    }
+
+    private func commit() {
+        let value = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard value != model.settings.huaweiLocalHost else { return }
+        model.updateSettings { $0.huaweiLocalHost = value }
+    }
+
+    private func runTest() {
+        commit()
+        test = .testing
+        let value = host
+        Task {
+            switch await model.testInverter(value) {
+            case .success(let (reading, unit)):
+                test = .success(reading)
+                if unit != model.settings.huaweiLocalUnitID { model.updateSettings { $0.huaweiLocalUnitID = unit } }
+            case .failure(let error):
+                test = .failure(error.localizedDescription)
             }
         }
     }

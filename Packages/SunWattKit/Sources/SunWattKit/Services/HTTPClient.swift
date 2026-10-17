@@ -46,6 +46,10 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
     /// FusionSolar answered `success: false` or 401/403/404 for the kiosk link: most likely the link expired (they
     /// last one year) or the kiosk was turned off. `SunWattLoader` calls it expired once it lasts 30 minutes.
     case kioskLinkRejected
+    /// The inverter address is not a valid IP address or host name.
+    case invalidInverterAddress
+    /// No Modbus answer from the Huawei dongle (not at home, wrong address, or Modbus TCP off).
+    case inverterUnreachable
     /// SolarEdge / PVOutput: the ID is not a number or the key has the wrong format.
     case invalidSolarCredentials
     /// SolarEdge / PVOutput answered 401 or 403: wrong key or ID, or the API access is off.
@@ -60,6 +64,8 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
         switch self {
         case .invalidKioskURL: L10n.string("The kiosk URL is not valid. It must contain the kk parameter.")
         case .kioskLinkRejected: L10n.string("Huawei no longer accepts this kiosk link. Kiosk links expire after a year: create a new one in FusionSolar and paste it in SunWatt.")
+        case .invalidInverterAddress: L10n.string("This is not a valid address. Use the dongle's IP address, for example 192.168.1.50.")
+        case .inverterUnreachable: L10n.string("The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is set to “Enable (unrestricted)” in the dongle.")
         case .invalidSolarCredentials: L10n.string("The ID must be a number and the API key letters and digits only.")
         case .solarCredentialsRejected: L10n.string("The API key or the ID was rejected. Check both, and that API access is on.")
         case .notConfigured: L10n.string("Set up your solar system in Settings.")

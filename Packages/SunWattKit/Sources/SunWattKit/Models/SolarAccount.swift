@@ -55,14 +55,22 @@ public struct SolarAPICredentials: Hashable, Sendable, CustomStringConvertible, 
 /// The solar source configured in settings, validated. Nil (via `init?(settings:)`) when not set up or invalid.
 public enum SolarAccount: Hashable, Sendable {
     case fusionSolar(KioskEndpoint)
+    /// FusionSolar with the inverter on the home network (Modbus TCP), plus the kiosk link when there is one.
+    case huaweiLocal(HuaweiLocalEndpoint, kiosk: KioskEndpoint?)
     case solarEdge(SolarAPICredentials)
     case pvOutput(SolarAPICredentials)
 
     public init?(settings: SunWattSettings) {
         switch settings.solarProvider {
         case .fusionSolar:
-            guard let endpoint = KioskEndpoint(parsing: settings.kioskURL) else { return nil }
-            self = .fusionSolar(endpoint)
+            let kiosk = KioskEndpoint(parsing: settings.kioskURL)
+            if let local = HuaweiLocalEndpoint(parsing: settings.huaweiLocalHost, unitID: settings.huaweiLocalUnitID) {
+                self = .huaweiLocal(local, kiosk: kiosk)
+            } else if let kiosk {
+                self = .fusionSolar(kiosk)
+            } else {
+                return nil
+            }
         case .solarEdge:
             guard let credentials = SolarAPICredentials(siteID: settings.solarSiteID, apiKey: settings.solarAPIKey) else { return nil }
             self = .solarEdge(credentials)
@@ -72,9 +80,18 @@ public enum SolarAccount: Hashable, Sendable {
         }
     }
 
+    /// The kiosk link of a FusionSolar account, if any.
+    public var kioskEndpoint: KioskEndpoint? {
+        switch self {
+        case .fusionSolar(let endpoint): endpoint
+        case .huaweiLocal(_, let kiosk): kiosk
+        case .solarEdge, .pvOutput: nil
+        }
+    }
+
     public var provider: SolarProvider {
         switch self {
-        case .fusionSolar: .fusionSolar
+        case .fusionSolar, .huaweiLocal: .fusionSolar
         case .solarEdge: .solarEdge
         case .pvOutput: .pvOutput
         }
@@ -86,6 +103,10 @@ public enum SolarAccount: Hashable, Sendable {
         switch self {
         case .fusionSolar(let endpoint):
             return endpoint.cacheID
+        case .huaweiLocal(let local, let kiosk):
+            // Same plant as the kiosk link: keep its cache when the inverter address is added.
+            if let kiosk { return kiosk.cacheID }
+            return SHA256.hash(data: Data("huaweiLocal\n\(local.host)".utf8)).map { String(format: "%02x", $0) }.joined()
         case .solarEdge(let credentials), .pvOutput(let credentials):
             let text = "\(provider.rawValue)\n\(credentials.siteID)\n\(credentials.apiKey)"
             return SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
@@ -96,6 +117,8 @@ public enum SolarAccount: Hashable, Sendable {
     public func client(http: HTTPClient = URLSession.sunWatt) -> SolarDataSource {
         switch self {
         case .fusionSolar(let endpoint): FusionSolarKioskClient(endpoint: endpoint, http: http)
+        case .huaweiLocal(let local, let kiosk):
+            HuaweiLocalSolarClient(local: HuaweiModbusClient(endpoint: local), kiosk: kiosk.map { FusionSolarKioskClient(endpoint: $0, http: http) })
         case .solarEdge(let credentials): SolarEdgeClient(credentials: credentials, http: http)
         case .pvOutput(let credentials): PVOutputClient(credentials: credentials, http: http)
         }
@@ -106,11 +129,14 @@ public extension SunWattSettings {
     /// True when the user typed anything for the selected provider (valid or not).
     var hasSolarInput: Bool {
         func filled(_ s: String) -> Bool { !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-        return solarProvider.usesAPIKey ? filled(solarSiteID) || filled(solarAPIKey) : filled(kioskURL)
+        return solarProvider.usesAPIKey ? filled(solarSiteID) || filled(solarAPIKey) : filled(kioskURL) || filled(huaweiLocalHost)
     }
 
     /// The error to show when there is input for the selected provider but it is not valid.
     var invalidSolarInputError: SunWattError {
-        solarProvider.usesAPIKey ? .invalidSolarCredentials : .invalidKioskURL
+        if solarProvider.usesAPIKey { return .invalidSolarCredentials }
+        let hostFilled = !huaweiLocalHost.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        if hostFilled, HuaweiLocalEndpoint(parsing: huaweiLocalHost, unitID: huaweiLocalUnitID) == nil { return .invalidInverterAddress }
+        return .invalidKioskURL
     }
 }

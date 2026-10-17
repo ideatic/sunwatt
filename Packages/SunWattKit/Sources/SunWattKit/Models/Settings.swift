@@ -33,6 +33,11 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
     public var kioskLinkSavedAt: Date?
     /// The user closed the "link expires soon" notice for the current link.
     public var kioskExpiryNoticeDismissed: Bool
+    /// FusionSolar only, optional: IP address or host name of the Huawei dongle on the home network (Modbus TCP).
+    /// When it answers, SunWatt shows live data from the inverter; elsewhere it uses the kiosk link.
+    public var huaweiLocalHost: String
+    /// Modbus unit ID of the inverter behind the dongle (found by "Test inverter"; usually 1).
+    public var huaweiLocalUnitID: Int
 
     public init(
         kioskURL: String = "",
@@ -43,7 +48,9 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         solarSiteID: String = "",
         solarAPIKey: String = "",
         kioskLinkSavedAt: Date? = nil,
-        kioskExpiryNoticeDismissed: Bool = false
+        kioskExpiryNoticeDismissed: Bool = false,
+        huaweiLocalHost: String = "",
+        huaweiLocalUnitID: Int = 1
     ) {
         self.kioskURL = kioskURL
         self.showTomorrowPrices = showTomorrowPrices
@@ -54,11 +61,13 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         self.solarAPIKey = solarAPIKey
         self.kioskLinkSavedAt = kioskLinkSavedAt
         self.kioskExpiryNoticeDismissed = kioskExpiryNoticeDismissed
+        self.huaweiLocalHost = huaweiLocalHost
+        self.huaweiLocalUnitID = huaweiLocalUnitID
     }
 
     private enum CodingKeys: String, CodingKey {
         case kioskURL, showTomorrowPrices, priceRegion, onboardingCompleted, solarProvider, solarSiteID, solarAPIKey
-        case kioskLinkSavedAt, kioskExpiryNoticeDismissed
+        case kioskLinkSavedAt, kioskExpiryNoticeDismissed, huaweiLocalHost, huaweiLocalUnitID
     }
 
     /// Missing keys (older stored settings) fall back to defaults.
@@ -74,6 +83,8 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         solarAPIKey = try c.decodeIfPresent(String.self, forKey: .solarAPIKey) ?? ""
         kioskLinkSavedAt = try c.decodeIfPresent(Date.self, forKey: .kioskLinkSavedAt)
         kioskExpiryNoticeDismissed = try c.decodeIfPresent(Bool.self, forKey: .kioskExpiryNoticeDismissed) ?? false
+        huaweiLocalHost = try c.decodeIfPresent(String.self, forKey: .huaweiLocalHost) ?? ""
+        huaweiLocalUnitID = try c.decodeIfPresent(Int.self, forKey: .huaweiLocalUnitID) ?? 1
     }
 }
 

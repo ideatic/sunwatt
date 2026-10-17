@@ -50,6 +50,8 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         CFBundleLocalizations: [en, es, pt, fr, de, it, nl]
         LSApplicationCategoryType: public.app-category.utilities
+        # Huawei inverter on the home network (Modbus TCP), optional. Localized in InfoPlist.xcstrings.
+        NSLocalNetworkUsageDescription: SunWatt reads your Huawei inverter on your home network to show live solar production.
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
         UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
@@ -107,6 +109,7 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         ITSAppUsesNonExemptEncryption: false
         CFBundleLocalizations: [en, es, pt, fr, de, it, nl]
+        NSLocalNetworkUsageDescription: SunWatt reads your Huawei inverter on your home network to show live solar production.
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
