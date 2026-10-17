@@ -367,6 +367,7 @@ private struct PriceCard: View {
         let context = series.dayContext(for: reference)
         let current = shownDay == .today ? series.currentHour(at: now) : nil
         let fraction = current.flatMap { context?.fraction(of: $0) }
+        let level = current.flatMap { hour in context.map { $0.level(of: hour) } }
 
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             CardHeader(
@@ -375,7 +376,11 @@ private struct PriceCard: View {
                 title: tariffName(region),
                 subtitle: Text("\(region.flag) \(regionName(region))")
             ) {
-                if isStale { StaleBadge(since: series.fetchedAt, timeZone: region.timeZone) }
+                // Level of the current hour in the top right corner, like the data time of the solar card.
+                HStack(spacing: Theme.Spacing.s) {
+                    if isStale { StaleBadge(since: series.fetchedAt, timeZone: region.timeZone) }
+                    if let level { LevelPill(level: level) }
+                }
             }
 
             if hasTomorrow {
@@ -409,10 +414,9 @@ private struct PriceCard: View {
 
     @ViewBuilder
     private func headline(context: PriceDayContext?, current: PricePoint?) -> some View {
-        if let current, let context {
+        if let current, context != nil {
             HStack(alignment: .lastTextBaseline, spacing: Theme.Spacing.m) {
                 FigureText(value: Format.eurPerKWh(current.eurPerKWh), unit: "€/kWh", size: 50)
-                LevelPill(level: context.level(of: current))
                 Spacer(minLength: 0)
             }
         } else if let context {
