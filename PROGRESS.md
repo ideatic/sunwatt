@@ -24,8 +24,8 @@
 
 - [x] More solar providers (user request): SolarEdge (Monitoring API) and PVOutput, besides FusionSolar. Provider picker in onboarding and Settings, API key + ID editor with "Test connection", 20-min fetch limit for SolarEdge, strings in 7 languages, store texts and privacy/support pages updated, `SolarProviderTests` (DECISIONS D15).
   - Written in a Linux session without Xcode: **not compiled or tested yet**. Run `scripts/verify.sh` on the Mac, then render `Screenshots/app` (new `settingsSolarEdge` screen) and check the Settings and onboarding solar pages.
-  - SolarEdge/PVOutput fixtures are synthetic (documented formats). Do a live check with a real site.
-  - Translations reviewed by one Haiku LQA agent per locale (AGENTS.md, "Translations"). Portal menu names are kept in English in every language (SolarEdge: Admin › Site Access › API Access; PVOutput: Settings › API Access): check them against the real portals, including a localized SolarEdge portal.
+  - SolarEdge/PVOutput fixtures are synthetic. Formats checked on 2026-10-17 against open-source clients (no account available): SolarEdge field names and time format match `clambin/solaredge` (Go); PVOutput history column order, `limit=288`, 400 "No status found", 403 rate limit and the `X-Pvoutput-*` headers match `openclimatefix/pvoutput` (Python). A live check with a real site is still the final proof.
+  - Translations reviewed by one Haiku LQA agent per locale (AGENTS.md, "Translations"). Portal menu names are kept in English in every language (SolarEdge: Admin › Site Access › API Access; PVOutput: Settings › API Access): checked against third-party setup guides: PVOutput matches (Settings page: enable API Access, key and System Id on the same page); SolarEdge is Admin (cog icon) › Site Access › API Access in most guides, but some portal versions call it "Plant Access" / "System Access" with an "Access Control" tab. The Admin menu only shows for accounts with admin rights (else ask the installer; the support page says so).
 
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
