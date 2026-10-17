@@ -16,7 +16,7 @@ struct SheetContainer<Content: View>: View {
     var body: some View {
         let palette = AppPalette(scheme)
         VStack(spacing: 0) {
-            if onDone != nil || idiom == .phone {
+            if onDone != nil || idiom != .desktop {
             HStack {
                 atext(title)
                     .font(.system(.title3, design: .rounded).weight(.bold))
@@ -29,7 +29,7 @@ struct SheetContainer<Content: View>: View {
                 }
             }
             .padding(.horizontal, Theme.Spacing.l + 4)
-            .padding(.top, idiom == .phone ? Theme.Spacing.xl : Theme.Spacing.l)
+            .padding(.top, idiom != .desktop ? Theme.Spacing.xl : Theme.Spacing.l)
             .padding(.bottom, Theme.Spacing.m)
             Rectangle().fill(palette.hairline).frame(height: 0.5)
             }
@@ -45,7 +45,7 @@ struct SheetContainer<Content: View>: View {
     private var inner: some View {
         content
             .padding(Theme.Spacing.l + 2)
-            .frame(maxWidth: idiom == .desktop ? 640 : 720)
+            .frame(maxWidth: idiom == .phone ? 720 : 640)
             .frame(maxWidth: .infinity)
     }
 }

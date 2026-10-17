@@ -120,6 +120,12 @@ func renderApp(to directory: URL) throws -> Int {
             for scheme in [ColorScheme.light, .dark] { try emit(kind, device, scheme) }
         }
     }
+    // iPad 13-inch: dashboard, settings, onboarding and widget guide, portrait and landscape.
+    for device in [AppSnapshotView.Device.pad, .padLandscape] {
+        for kind in [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .widgetGuide] {
+            for scheme in [ColorScheme.light, .dark] { try emit(kind, device, scheme) }
+        }
+    }
     // Natural height of the long phone screens (the 852 pt frame clips them).
     for kind in [Kind.dashboardDay, .dashboardNight, .dashboardTomorrow, .settings, .widgetGuide, .kioskHelp] {
         for scheme in [ColorScheme.light, .dark] { try emit(kind, .phone, scheme, full: true) }

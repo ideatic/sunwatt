@@ -20,10 +20,10 @@ struct OnboardingContent: View {
             pager
             OnboardingBar(model: model, page: $page)
                 .padding(.horizontal, Theme.Spacing.l + 4)
-                .padding(.bottom, idiom == .desktop ? Theme.Spacing.xl : Theme.Spacing.m)
+                .padding(.bottom, idiom != .phone ? Theme.Spacing.xl : Theme.Spacing.m)
                 .padding(.top, Theme.Spacing.s)
         }
-        .frame(maxWidth: idiom == .desktop ? 600 : 720)
+        .frame(maxWidth: idiom == .phone ? 720 : 600)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
@@ -87,7 +87,7 @@ private struct OnboardingBar: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .keyboardShortcut(.defaultAction)
             }
-            .frame(maxWidth: idiom == .desktop ? 360 : .infinity)
+            .frame(maxWidth: idiom != .phone ? 360 : .infinity)
         }
     }
 
@@ -119,6 +119,7 @@ private struct OnboardingPageView: View {
     let model: AppModel
     @Binding var page: OnboardingPage
     let current: OnboardingPage
+    @Environment(\.appIdiom) private var idiom
 
     var body: some View {
         Group {
@@ -131,7 +132,7 @@ private struct OnboardingPageView: View {
             }
         }
         .padding(.horizontal, Theme.Spacing.l + 4)
-        .padding(.top, Theme.Spacing.xl)
+        .padding(.top, idiom == .pad ? 120 : Theme.Spacing.xl)
         .padding(.bottom, Theme.Spacing.m)
         .frame(maxWidth: .infinity, alignment: .top)
     }
@@ -266,7 +267,7 @@ private struct WidgetPage: View {
                 Label { atext("Show me how") } icon: { Image(systemName: "plus.square.on.square") }
             }
             .buttonStyle(SoftButtonStyle())
-            atext(idiom == .phone ? "Touch and hold the Home Screen, tap Edit, then Add Widget and search for SunWatt." : "Control-click the desktop, choose Edit Widgets… and search for SunWatt.")
+            atext(idiom != .desktop ? "Touch and hold the Home Screen, tap Edit, then Add Widget and search for SunWatt." : "Control-click the desktop, choose Edit Widgets… and search for SunWatt.")
                 .font(.system(.footnote, design: .rounded))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
