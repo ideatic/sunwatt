@@ -20,14 +20,22 @@ public struct HomeDashSettings: Codable, Hashable, Sendable {
     public var kioskURL: String
     public var showTomorrowPrices: Bool
     public var priceRegion: PriceRegion
+    /// True once the user finished (or skipped) the first-launch onboarding in the app.
+    public var onboardingCompleted: Bool
 
-    public init(kioskURL: String = "", showTomorrowPrices: Bool = true, priceRegion: PriceRegion = .spain) {
+    public init(
+        kioskURL: String = "",
+        showTomorrowPrices: Bool = true,
+        priceRegion: PriceRegion = .spain,
+        onboardingCompleted: Bool = false
+    ) {
         self.kioskURL = kioskURL
         self.showTomorrowPrices = showTomorrowPrices
         self.priceRegion = priceRegion
+        self.onboardingCompleted = onboardingCompleted
     }
 
-    private enum CodingKeys: String, CodingKey { case kioskURL, showTomorrowPrices, priceRegion }
+    private enum CodingKeys: String, CodingKey { case kioskURL, showTomorrowPrices, priceRegion, onboardingCompleted }
 
     /// Missing keys (older stored settings) fall back to defaults.
     public init(from decoder: Decoder) throws {
@@ -35,6 +43,7 @@ public struct HomeDashSettings: Codable, Hashable, Sendable {
         kioskURL = try c.decodeIfPresent(String.self, forKey: .kioskURL) ?? ""
         showTomorrowPrices = try c.decodeIfPresent(Bool.self, forKey: .showTomorrowPrices) ?? true
         priceRegion = try c.decodeIfPresent(PriceRegion.self, forKey: .priceRegion) ?? .spain
+        onboardingCompleted = try c.decodeIfPresent(Bool.self, forKey: .onboardingCompleted) ?? false
     }
 }
 

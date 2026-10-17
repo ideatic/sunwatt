@@ -7,6 +7,8 @@ import HomeDashKit
 
 // Renders every widget family x scheme x state to PNG files.
 // Usage: swift run HomeDashSnapshots <output-dir>
+//        swift run HomeDashSnapshots --app <output-dir>    app screens (iPhone and Mac window, light and dark)
+//        swift run HomeDashSnapshots --icon <output-dir>   app icon PNGs (1024 px)
 
 @MainActor
 struct Job {
@@ -27,12 +29,17 @@ func render(_ job: Job, to directory: URL) throws {
         entry: job.entry, family: job.family, content: job.content, window: job.window,
         scheme: job.scheme, renderingMode: job.mode, locale: Locale(identifier: job.locale)
     )
+    try write(view, name: job.name, scale: 2, to: directory)
+}
+
+@MainActor
+func write(_ view: some View, name: String, scale: CGFloat, to directory: URL) throws {
     let renderer = ImageRenderer(content: view)
-    renderer.scale = 2
+    renderer.scale = scale
     guard let image = renderer.cgImage else {
-        throw NSError(domain: "HomeDashSnapshots", code: 1, userInfo: [NSLocalizedDescriptionKey: "No image for \(job.name)"])
+        throw NSError(domain: "HomeDashSnapshots", code: 1, userInfo: [NSLocalizedDescriptionKey: "No image for \(name)"])
     }
-    let url = directory.appendingPathComponent("\(job.name).png")
+    let url = directory.appendingPathComponent("\(name).png")
     guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil) else {
         throw NSError(domain: "HomeDashSnapshots", code: 2, userInfo: [NSLocalizedDescriptionKey: "Cannot write \(url.path)"])
     }
@@ -94,16 +101,77 @@ func jobs() -> [Job] {
     return result
 }
 
+// MARK: App screens and icon
+
+@MainActor
+func renderApp(to directory: URL) throws -> Int {
+    typealias Kind = AppSnapshotView.Kind
+    var count = 0
+    func emit(_ kind: Kind, _ device: AppSnapshotView.Device, _ scheme: ColorScheme, locale: String = "es_ES", full: Bool = false) throws {
+        Format.locale = Locale(identifier: locale)
+        let view = AppSnapshotView(kind: kind, device: device, scheme: scheme, locale: Locale(identifier: locale), fullHeight: full)
+        let lang = locale.hasPrefix("es") ? "" : "-\(locale.prefix(2))"
+        let name = "\(device.rawValue)-\(kind.rawValue)-\(scheme == .dark ? "dark" : "light")\(lang)\(full ? "-full" : "")"
+        try write(view, name: name, scale: 2, to: directory)
+        count += 1
+    }
+    for kind in Kind.allCases {
+        for device in [AppSnapshotView.Device.phone, .mac] {
+            for scheme in [ColorScheme.light, .dark] { try emit(kind, device, scheme) }
+        }
+    }
+    // Natural height of the long phone screens (the 852 pt frame clips them).
+    for kind in [Kind.dashboardDay, .dashboardNight, .dashboardTomorrow, .settings, .widgetGuide, .kioskHelp] {
+        for scheme in [ColorScheme.light, .dark] { try emit(kind, .phone, scheme, full: true) }
+    }
+    // Languages: English, long German strings, French (France prices).
+    for (locale, kinds) in [
+        ("en_GB", [Kind.dashboardDay, .settings, .onboardingWelcome, .onboardingCountry, .onboardingSolar, .widgetGuide, .kioskHelp]),
+        ("de_DE", [Kind.dashboardDay, .settings, .onboardingCountry, .onboardingSolar, .widgetGuide, .kioskHelp]),
+        ("fr_FR", [Kind.dashboardDay]),
+    ] {
+        for kind in kinds {
+            try emit(kind, .phone, .light, locale: locale, full: kind == .dashboardDay || kind == .settings)
+            try emit(kind, .mac, .light, locale: locale)
+        }
+    }
+    return count
+}
+
+@MainActor
+func renderIcon(to directory: URL) throws {
+    try write(AppIconView(size: 1024, style: .square), name: "icon-ios-1024", scale: 1, to: directory)
+    try write(AppIconView(size: 1024, style: .macOS), name: "icon-mac-1024", scale: 1, to: directory)
+}
+
 @MainActor
 func main() {
     let arguments = CommandLine.arguments
     guard arguments.count >= 2 else {
-        FileHandle.standardError.write(Data("Usage: HomeDashSnapshots <output-dir>\n".utf8))
+        FileHandle.standardError.write(Data("Usage: HomeDashSnapshots [--app|--icon] <output-dir>\n".utf8))
         exit(2)
     }
-    let directory = URL(fileURLWithPath: arguments[1], isDirectory: true)
+    let mode = arguments[1].hasPrefix("--") ? arguments[1] : nil
+    let pathIndex = mode == nil ? 1 : 2
+    guard arguments.count > pathIndex else {
+        FileHandle.standardError.write(Data("Usage: HomeDashSnapshots [--app|--icon] <output-dir>\n".utf8))
+        exit(2)
+    }
+    let directory = URL(fileURLWithPath: arguments[pathIndex], isDirectory: true)
     do {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        switch mode {
+        case "--app":
+            let count = try renderApp(to: directory)
+            print("Wrote \(count) app PNGs to \(directory.path)")
+            return
+        case "--icon":
+            try renderIcon(to: directory)
+            print("Wrote icon PNGs to \(directory.path)")
+            return
+        default:
+            break
+        }
         let all = jobs()
         for job in all { try render(job, to: directory) }
         print("Wrote \(all.count) PNGs to \(directory.path)")
