@@ -24,8 +24,8 @@ Every slide shows a different surface, so the set does not repeat the same UI.
 
 1. Solar widgets (today curve, current kW): the main feature. Caption key `solar`. All devices.
 2. Price widgets on the Home Screen: small + medium + large. Caption key `price`. All devices.
-3. Apple Watch: price page (with the cheapest hours) in front, solar page behind. Caption key `watch`. iPhone only.
-4. Lock Screen widgets (rectangular + circular) and the Control Center controls. Caption key `lock`. iPhone, iPad.
+3. Lock Screen widgets (rectangular + circular) and the Control Center controls. Caption key `lock`. iPhone, iPad.
+4. Apple Watch: price page (with the cheapest hours) in front, solar page behind. Caption key `watch`. iPhone only.
 5. App dashboard with the interactive chart (a touched point). Caption key `app`. All devices.
 6. Setup screen with the three solar systems. Caption key `setup`. iPhone, Mac (on the iPad it is a small card lost on the big screen).
 

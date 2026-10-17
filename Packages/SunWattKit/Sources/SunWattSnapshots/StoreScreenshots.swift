@@ -66,7 +66,7 @@ enum StoreDevice: String, CaseIterable {
 
 /// The screens in store order (AppStore/SCREENSHOTS.md). Solar first: it is the main feature.
 enum StoreShot: String, CaseIterable {
-    case solar, price, watch, lock, app, setup
+    case solar, price, lock, watch, app, setup
 
 
     func caption(_ folder: String) -> String {
