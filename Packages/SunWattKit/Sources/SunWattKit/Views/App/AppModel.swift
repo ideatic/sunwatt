@@ -247,6 +247,35 @@ public final class AppModel {
         await refresh(maxCacheAge: SunWattLoader.sharedCacheWindow)
     }
 
+    /// Keeps the dashboard on the current time while the app is on screen: at each quarter hour (the shortest price
+    /// slot) it moves `now` forward, so the current price changes with the hour, and it reloads data older than the
+    /// widget refresh interval (new solar points, the next day's prices after midnight). Runs until cancelled.
+    public func runClock() async {
+        guard !isDemo else { return }
+        while !Task.isCancelled {
+            let date = Date()
+            let next = Self.nextQuarterHour(after: date)
+            try? await Task.sleep(for: .seconds(next.timeIntervalSince(date) + 1))
+            if Task.isCancelled { return }
+            await tick(at: Date())
+        }
+    }
+
+    /// One clock step. Internal for tests.
+    func tick(at date: Date) async {
+        guard !isDemo else { return }
+        now = date
+        guard !showsOnboarding else { return }
+        if let lastRefresh, date.timeIntervalSince(lastRefresh) < Constants.refreshInterval { return }
+        await refresh(maxCacheAge: SunWattLoader.sharedCacheWindow)
+    }
+
+    /// The next :00, :15, :30 or :45 after `date`. Quarter hours are the same instant in every price time zone.
+    static func nextQuarterHour(after date: Date) -> Date {
+        let quarter: TimeInterval = 15 * 60
+        return Date(timeIntervalSinceReferenceDate: (date.timeIntervalSinceReferenceDate / quarter).rounded(.down) * quarter + quarter)
+    }
+
     /// Reads the widgets the user has placed. A failure means "unknown", not zero.
     public func refreshWidgetCount() async {
         if isDemo { return }

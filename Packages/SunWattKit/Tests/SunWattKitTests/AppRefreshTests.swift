@@ -281,4 +281,46 @@ private func waitUntil(_ condition: () -> Bool) async {
         #expect(started.all.count == 2)
     }
 }
+// MARK: Clock
+
+@MainActor @Suite struct AppModelClockTests {
+    @Test func aTickMovesTheDashboardToTheNewTime() async {
+        let (model, _, reloads) = makeModel(slow: [])
+        await model.refresh()
+        let later = Date().addingTimeInterval(10 * 60)
+        await model.tick(at: later)
+        // The current price is read at `now`: it follows the clock without a reload while the data is fresh.
+        #expect(model.now == later)
+        #expect(model.entry?.date == later)
+        #expect(reloads.count == 1)
+    }
+
+    @Test func aTickReloadsDataOlderThanTheRefreshInterval() async {
+        let (model, _, reloads) = makeModel(slow: [])
+        await model.refresh()
+        await model.tick(at: Date().addingTimeInterval(Constants.refreshInterval + 60))
+        // A refresh ran (it reloads the widgets). It may reuse the 2-minute shared cache here because no real
+        // time passed; 15 real minutes later the cache is older than that and the loader fetches.
+        #expect(reloads.count == 2)
+    }
+
+    @Test func theDemoModelIgnoresTheClock() async {
+        let model = AppModel(launch: AppLaunchOptions(demo: true))
+        let fixed = model.now
+        await model.tick(at: Date().addingTimeInterval(3600))
+        #expect(model.now == fixed)
+    }
+
+    @Test func nextQuarterHourIsTheNextSlotBoundary() {
+        let calendar = Constants.madridCalendar
+        let base = calendar.date(from: DateComponents(year: 2026, month: 10, day: 17, hour: 10, minute: 7, second: 30))!
+        let expected = calendar.date(from: DateComponents(year: 2026, month: 10, day: 17, hour: 10, minute: 15))!
+        #expect(AppModel.nextQuarterHour(after: base) == expected)
+        // Exactly on a boundary: the next one, never the same instant (no busy loop).
+        #expect(AppModel.nextQuarterHour(after: expected) == expected.addingTimeInterval(15 * 60))
+        let late = calendar.date(from: DateComponents(year: 2026, month: 10, day: 17, hour: 23, minute: 59))!
+        #expect(AppModel.nextQuarterHour(after: late) == calendar.date(from: DateComponents(year: 2026, month: 10, day: 18, hour: 0, minute: 0)))
+    }
+}
+
 #endif

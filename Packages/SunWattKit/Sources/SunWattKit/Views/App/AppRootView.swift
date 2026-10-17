@@ -68,6 +68,10 @@ public struct AppRootView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await model.didBecomeActive() } }
         }
+        // Restarted on every phase change; stops while the app is in the background.
+        .task(id: scenePhase) {
+            if scenePhase == .active { await model.runClock() }
+        }
         .environment(\.appIdiom, AppIdiom.platformDefault)
     }
 }
