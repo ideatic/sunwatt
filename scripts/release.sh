@@ -78,7 +78,8 @@ export_archive() { # name
 # iOS indexes App Intents (widget configuration, Siri) by the SunWattKitIntentsPackage symbol in each binary that
 # includes it. A stripped binary leaves widgets as placeholders (DECISIONS D26), so stop before uploading one.
 check_intents_symbol() { # binary
-  if ! nm -gU "$1" | grep -q '10SunWattKit0abC14IntentsPackageVMn'; then
+  # grep reads all input (no -q): an early exit would make nm fail with SIGPIPE under pipefail.
+  if ! nm -gU "$1" | grep '10SunWattKit0abC14IntentsPackageVMn' >/dev/null; then
     echo "FAILED: $1 has no SunWattKitIntentsPackage symbol (check STRIP_STYLE in project.yml)." >&2
     exit 1
   fi
