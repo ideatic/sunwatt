@@ -16,6 +16,8 @@
 # The key file is never printed.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# deliver reads the texts in the shell's encoding; without UTF-8 it stops with "invalid byte sequence in US-ASCII".
+export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 APP_ID=com.ideatic.sunwatt
 METADATA=AppStore/metadata
