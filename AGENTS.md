@@ -114,7 +114,7 @@ The code needs Apple SDKs (SwiftUI, WidgetKit, AppIntents, Charts, CryptoKit). I
 ### Test
 
 ```bash
-scripts/verify.sh          # swift test + iOS Simulator tests + macOS build + watchOS build → VERIFY OK / VERIFY FAILED
+scripts/verify.sh          # swift test + iOS Simulator tests + macOS and watchOS builds + unsigned Release archives with the App Intents symbol check → VERIFY OK / VERIFY FAILED
 scripts/verify.sh quick    # swift test only
 cd Packages/SunWattKit && swift test --filter LoaderTests   # one suite
 ```

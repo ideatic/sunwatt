@@ -17,6 +17,11 @@ final class CallLog: @unchecked Sendable {
     var days: [Date] { lock.lock(); defer { lock.unlock() }; return _days }
 }
 
+/// Test fakes that only answer `fetch(day:)`: today is the real current day.
+extension PriceDataSource {
+    func fetchTodayAndTomorrow(includeTomorrow: Bool) async throws -> PriceSeries { try await fetch(day: Date()) }
+}
+
 struct FakePlain: PriceDataSource {
     var result: Result<PriceSeries, SunWattError>
     var log = CallLog()

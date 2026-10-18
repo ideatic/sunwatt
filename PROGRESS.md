@@ -52,6 +52,8 @@
 - [x] `private/` (git-ignored) holds all local secrets: kiosk link, live-test keys, App Store Connect API key (checked: read-only GET /v1/apps answers 200 and lists SunWatt).
 - [x] Times show AM/PM in 12-hour locales (en_US showed "01:30" for 13:30).
 
+- [x] Second code review (2026-10-18, 10 findings): 9 fixed with tests, 1 was not a bug (REE sends "not published yet" as HTTP 502 with an `errors` body, so that check stays first). Fixed: an unknown price region no longer resets all settings; a failed keychain write no longer brings an old secret back, secrets of an earlier install are deleted at launch, and settings reads reuse the secrets (D27); SolarEdge/PVOutput curves keep both 02:xx hours on the autumn DST day; PVOutput and SolarEdge rate limits are `.rateLimited`; FusionSolar API sessions are shared by the app and the widgets (D28); price sources have no default that reads `Date()`; the App Intents symbol check is general and runs in CI on an unsigned archive (D26).
+
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
 - Daytime kiosk fixture is still synthetic (a real daytime capture was scheduled for 11:30 today).

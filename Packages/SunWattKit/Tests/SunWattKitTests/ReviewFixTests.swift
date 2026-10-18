@@ -29,6 +29,7 @@ final class MemorySecrets: SecretStore, @unchecked Sendable {
         lock.withLock { values[name] = value.isEmpty ? nil : value }
         return true
     }
+    func removeAllSecrets() { lock.withLock { values.removeAll() } }
 }
 
 private let edgeSettings = SunWattSettings(showTomorrowPrices: false, solarProvider: .solarEdge, solarSiteID: "1234567", solarAPIKey: "ABCDEFGH12345678")

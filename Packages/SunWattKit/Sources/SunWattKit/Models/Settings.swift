@@ -98,7 +98,8 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         kioskURL = try c.decodeIfPresent(String.self, forKey: .kioskURL) ?? ""
         showTomorrowPrices = try c.decodeIfPresent(Bool.self, forKey: .showTomorrowPrices) ?? true
-        priceRegion = try c.decodeIfPresent(PriceRegion.self, forKey: .priceRegion) ?? .spain
+        // An unknown region (settings from a newer app version) falls back to Spain instead of losing every setting.
+        priceRegion = (try? c.decodeIfPresent(PriceRegion.self, forKey: .priceRegion)) ?? .spain
         onboardingCompleted = try c.decodeIfPresent(Bool.self, forKey: .onboardingCompleted) ?? false
         // An unknown provider (settings from a newer app version) falls back to FusionSolar.
         solarProvider = (try? c.decodeIfPresent(SolarProvider.self, forKey: .solarProvider)) ?? .fusionSolar

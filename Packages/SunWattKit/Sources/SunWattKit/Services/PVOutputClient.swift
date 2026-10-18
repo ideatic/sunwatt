@@ -51,7 +51,8 @@ public struct PVOutputClient: SolarDataSource {
         let (data, response) = try await HTTPFetch.perform(http, request, redacting: credentials.apiKey)
         let date = now()
         if let status = (response as? HTTPURLResponse)?.statusCode {
-            if status == 401 || (status == 403 && !Self.isRateLimit(data)) { throw SunWattError.solarCredentialsRejected }
+            if status == 429 || (status == 403 && Self.isRateLimit(data)) { throw SunWattError.rateLimited }
+            if status == 401 || status == 403 { throw SunWattError.solarCredentialsRejected }
             if status == 400, Self.isNoStatus(data) {
                 return SolarSnapshot(currentPowerKW: 0, dailyEnergyKWh: 0, curve: [], fetchedAt: date, dataAsOf: nil)
             }
@@ -73,7 +74,7 @@ public struct PVOutputClient: SolarDataSource {
     public static func parse(_ data: Data, fetchedAt: Date, calendar: Calendar) throws -> SolarSnapshot {
         let text = String(decoding: data, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
         struct Record { var time: Date; var energyWh: Double?; var powerW: Double?; var consumedWh: Double?; var consumptionW: Double? }
-        let records = text.split(separator: ";").compactMap { line -> Record? in
+        let parsed = text.split(separator: ";").compactMap { line -> Record? in
             let fields = line.split(separator: ",", omittingEmptySubsequences: false).map { $0.trimmingCharacters(in: .whitespaces) }
             guard fields.count >= 5, let time = timestamp(day: fields[0], time: fields[1], calendar: calendar) else { return nil }
             // Instantaneous power; the interval average when it is missing.
@@ -83,7 +84,12 @@ public struct PVOutputClient: SolarDataSource {
                 consumedWh: fields.count > 7 ? SolarLocalTime.number(fields[7]) : nil,
                 consumptionW: fields.count > 8 ? SolarLocalTime.number(fields[8]) : nil)
         }
-        .sorted { $0.time < $1.time }
+        // `asc=1`: oldest first, so the second 02:xx of the autumn DST day moves one hour later.
+        let records = SolarLocalTime.inOrder(parsed, time: \.time, moving: { record, time in
+            var moved = record
+            moved.time = time
+            return moved
+        }, calendar: calendar)
         guard !records.isEmpty else { throw SunWattError.badResponse("status") }
 
         let limit = fetchedAt.addingTimeInterval(5 * 60)

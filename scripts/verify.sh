@@ -1,5 +1,6 @@
 #!/bin/zsh
-# Regenerates the project, then builds iOS Simulator + macOS and runs all tests.
+# Regenerates the project, then builds iOS Simulator + macOS + watchOS, runs all tests, and archives iOS + macOS
+# (unsigned) to check the App Intents symbols.
 # Usage: scripts/verify.sh [quick]   (quick = swift test only)
 # Environment: SUNWATT_SIM (iOS Simulator destination), SUNWATT_DD (derived data folder),
 # SUNWATT_XCODEBUILD_ARGS (extra xcodebuild arguments, e.g. CODE_SIGNING_ALLOWED=NO on CI).
@@ -36,7 +37,7 @@ run() {
   STEP=$((STEP + 1))
   out="$(xcodebuild "$@" "${EXTRA[@]}" 2>&1)" || FAILED=1
   print -r -- "$out" > "build/logs/xcodebuild-$STEP.log"
-  print -r -- "$out" | grep -E "error:|recorded an issue|\*\* (BUILD|TEST)|Test run with" || true
+  print -r -- "$out" | grep -E "error:|recorded an issue|\*\* (BUILD|TEST|ARCHIVE)|Test run with" || true
 }
 
 echo "== iOS Simulator build + test"
@@ -47,6 +48,15 @@ run -project SunWatt.xcodeproj -scheme SunWatt -destination 'platform=macOS' -de
 
 echo "== watchOS build"
 run -project SunWatt.xcodeproj -scheme SunWattWatch -destination 'generic/platform=watchOS Simulator' -derivedDataPath "$DD" build
+
+echo "== Release archives (unsigned) + App Intents symbol check (DECISIONS D26)"
+# Archives strip symbols like the App Store builds; Debug and simulator builds do not, so only an archive shows a
+# stripped App Intents symbol. Nothing is exported or uploaded.
+for platform in iOS macOS; do
+  run -project SunWatt.xcodeproj -scheme SunWatt -configuration Release -destination "generic/platform=$platform" \
+    -derivedDataPath "$DD" -archivePath "build/verify/$platform.xcarchive" archive CODE_SIGNING_ALLOWED=NO
+done
+scripts/check_appintents_symbols.sh build/verify/iOS.xcarchive build/verify/macOS.xcarchive || FAILED=1
 
 if (( FAILED )); then echo "VERIFY FAILED"; exit 1; fi
 echo "VERIFY OK"

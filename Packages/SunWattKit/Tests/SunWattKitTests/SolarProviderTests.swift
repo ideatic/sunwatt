@@ -190,7 +190,7 @@ private func sampleCredentials(_ id: String = "1234567", _ key: String = edgeKey
         }
         let http = StubHTTPClient(.ok(Data(), status: 429))
         let client = SolarEdgeClient(credentials: sampleCredentials(), http: http, now: { providerNow })
-        await #expect(throws: SunWattError.http(status: 429)) { try await client.fetch() }
+        await #expect(throws: SunWattError.rateLimited) { try await client.fetch() }
     }
 
     @Test func networkErrorsNeverContainTheKey() async {
@@ -278,7 +278,7 @@ private func sampleCredentials(_ id: String = "1234567", _ key: String = edgeKey
         let cases: [(Int, String, SunWattError)] = [
             (401, "Unauthorized 401: Invalid API Key", .solarCredentialsRejected),
             (403, "Forbidden 403: Read access denied", .solarCredentialsRejected),
-            (403, "Forbidden 403: Exceeded 60 requests per hour", .http(status: 403)),
+            (403, "Forbidden 403: Exceeded 60 requests per hour", .rateLimited),
             (400, "Bad request 400: Invalid system id", .http(status: 400)),
         ]
         for (status, body, expected) in cases {

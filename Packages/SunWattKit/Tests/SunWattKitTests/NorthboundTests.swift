@@ -62,6 +62,21 @@ import Testing
         #expect(http.requests.last?.url?.lastPathComponent == "getKpiStationHour")
     }
 
+    // Second review, finding 6: the app and the widget extension (two processes) share one session through the keychain.
+    @Test func anotherProcessReusesTheSession() async throws {
+        let http = try stub()
+        let keychain = MemorySecrets()
+        _ = try await NorthboundClient(credentials: credentials, http: http, now: { now },
+                                       sessions: NorthboundSessionStore(persistence: keychain)).fetch()
+        let first = http.requests.count
+        // A new process: a new store, the same keychain.
+        _ = try await NorthboundClient(credentials: credentials, http: http, now: { now.addingTimeInterval(600) },
+                                       sessions: NorthboundSessionStore(persistence: keychain)).fetch()
+        let later = http.requests.dropFirst(first).compactMap { $0.url?.lastPathComponent }
+        #expect(later == ["getStationRealKpi", "getDevRealKpi"])
+        #expect(http.requests.dropFirst(first).allSatisfy { $0.value(forHTTPHeaderField: "xsrf-token") == "token-1" })
+    }
+
     @Test func anEndedSessionLogsInAgainOnce() async throws {
         let http = ScriptedHTTP { request, count in
             switch request.url?.lastPathComponent {

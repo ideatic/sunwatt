@@ -56,15 +56,9 @@ public protocol PriceDataSource: Sendable {
     /// Fetches prices for the market day (in the source's time zone) that contains `day`.
     func fetch(day: Date) async throws -> PriceSeries
     /// Today, plus tomorrow when `includeTomorrow` and the source has published it.
-    /// A failure for tomorrow must NOT fail the whole call.
-    /// Default: `fetch(day:)` for the current instant only.
+    /// A failure for tomorrow must NOT fail the whole call. "Today" comes from the source's own injected clock (no
+    /// default implementation: it would have to read `Date()`).
     func fetchTodayAndTomorrow(includeTomorrow: Bool) async throws -> PriceSeries
-}
-
-public extension PriceDataSource {
-    func fetchTodayAndTomorrow(includeTomorrow: Bool) async throws -> PriceSeries {
-        try await fetch(day: Date())
-    }
 }
 
 /// Errors shown to the user. `errorDescription` is localized (see L10n).

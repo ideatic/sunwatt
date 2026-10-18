@@ -59,22 +59,25 @@ public struct NorthboundCredentials: Hashable, Sendable, CustomStringConvertible
     }
 }
 
-/// What a client keeps between fetches in one process (app, widget extension): the session token, the plant, its
-/// inverters and today's hourly curve. Keyed by account; nothing is written to disk.
+/// What a client keeps between fetches: the session token, the plant, its inverters and today's hourly curve. Keyed by
+/// account. With `persistence` (the shared store: the keychain of the App Group) the app and the widget extension share
+/// it: Huawei allows one session per account, so separate logins would end each other's session, and a new widget
+/// process would need the login, plant and device calls again within its deadline. The token is a secret, so it is
+/// only ever kept in the keychain (AGENTS.md rule 1).
 public actor NorthboundSessionStore {
-    public static let shared = NorthboundSessionStore()
+    public static let shared = NorthboundSessionStore(persistence: KeychainSecretStore(accessGroup: Constants.appGroupID))
 
-    struct Station: Sendable, Hashable {
+    struct Station: Codable, Sendable, Hashable {
         var code: String
         var name: String?
     }
 
-    struct Device: Sendable, Hashable {
+    struct Device: Codable, Sendable, Hashable {
         var id: String
         var typeID: Int
     }
 
-    struct Session: Sendable {
+    struct Session: Codable, Sendable {
         var token: String?
         var station: Station?
         var inverters: [Device]?
@@ -83,15 +86,32 @@ public actor NorthboundSessionStore {
     }
 
     private var sessions: [String: Session] = [:]
+    private let persistence: SecretStore?
 
-    public init() {}
+    /// `persistence`: where sessions are shared between processes; nil keeps them in this process only (tests).
+    public init(persistence: SecretStore? = nil) {
+        self.persistence = persistence
+    }
 
-    func session(_ key: String) -> Session { sessions[key] ?? Session() }
+    private static func itemName(_ key: String) -> String { "northbound.\(key)" }
+
+    /// The latest session: from the keychain when shared (another process may have logged in since), else from memory.
+    func session(_ key: String) -> Session {
+        if let persistence, let text = persistence.secret(Self.itemName(key)),
+           let stored = try? JSONDecoder().decode(Session.self, from: Data(text.utf8)) {
+            sessions[key] = stored
+            return stored
+        }
+        return sessions[key] ?? Session()
+    }
 
     func update(_ key: String, _ change: @Sendable (inout Session) -> Void) {
-        var session = sessions[key] ?? Session()
+        var session = self.session(key)
         change(&session)
         sessions[key] = session
+        if let persistence, let data = try? JSONEncoder().encode(session) {
+            persistence.setSecret(String(decoding: data, as: UTF8.self), for: Self.itemName(key))
+        }
     }
 }
 

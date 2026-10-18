@@ -164,6 +164,19 @@ Each entry: decision, why, how to change it.
 
 ## D26: Archives keep global symbols (`STRIP_STYLE: non-global`)
 
-- Decision: `project.yml` sets `STRIP_STYLE: non-global` for every target. `scripts/release.sh` stops before export if the iOS or macOS app or widget binary has no `SunWattKitIntentsPackage` symbol.
+- Decision: `project.yml` sets `STRIP_STYLE: non-global` for every target. `scripts/check_appintents_symbols.sh` reads every `Metadata.appintents/extract.packagedata` in a built app and checks that the bundle's binary exports each listed package symbol. `scripts/release.sh` runs it before export; `scripts/verify.sh` (CI, every push and pull request) archives iOS and macOS unsigned and runs it too.
 - Why: the app and widget metadata (`Metadata.appintents/extract.packagedata`) include `SunWattKitIntentsPackage` by its symbol name. On install, iOS (`linkd`) looks for that symbol in the binary. The archive stripped all global symbols from the app binary, so `linkd` logged "did not match any imported or exported symbol" and "Could not create bundle record for com.ideatic.sunwatt". Then no App Intent of SunWatt was known: widgets from TestFlight stayed placeholders ("No AppIntent in snapshot(for:with:)"), and Siri shortcuts failed. Debug and simulator builds are not stripped, so they worked. Seen on an iPhone with build 202610172346, 2026-10-18.
-- How to change: only with another way to keep that symbol (for example `-exported_symbol` linker flags), and the check in `release.sh` must still pass.
+- Why an archive in CI: Debug and simulator builds are never stripped, so only an archive shows the problem. An unsigned archive with `STRIP_STYLE=all` fails the check (tested 2026-10-18).
+- How to change: only with another way to keep that symbol (for example `-exported_symbol` linker flags), and the check must still pass.
+
+## D27: Which secrets are in the keychain is written down; old installs' secrets are not used
+
+- Decision: every settings save writes `sunwatt.keychainSecrets` (the names of the secrets now in the keychain and a new revision). The getter reads only the listed secrets from the keychain; the others come from the plist. Settings saved before this key existed read every keychain secret, as before. Without stored settings the getter returns defaults without secrets, and the app deletes all SunWatt keychain items at launch (`forgetSecretsOfEarlierInstall`). Secrets read once are reused while the plist bytes and the revision stay the same.
+- Why: (1) a keychain write or delete that failed left the old keychain value, which won over the new plist value, so a changed or cleared kiosk link came back; (2) iOS keeps keychain items when the app is deleted, so a reinstall brought the old kiosk link back (seen 2026-10-18); (3) each settings read cost 2 + 2 per plant keychain round trips.
+- How to change: keep the rule "the plist value wins unless the last save put the secret in the keychain". A cache must stay keyed on something every process changes on save (the revision).
+
+## D28: FusionSolar API sessions are shared through the keychain
+
+- Decision: `NorthboundSessionStore.shared` keeps the session (token, plant, inverters, hourly curve) in the App Group keychain, one item per account (`northbound.<sha256>`), and reads it before each use.
+- Why: Huawei allows one session per account. With a session per process, the app and the widget extension ended each other's session (failCode 305) and spent the login quota, and a new widget process needed up to 6 calls one after another within the 15 s deadline. The token is a secret, so it never goes to a file (AGENTS.md rule 1).
+- How to change: any other shared place must be the keychain, not the plist or the cache files.

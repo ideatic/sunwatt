@@ -7,6 +7,7 @@ struct SunWattApp: App {
 
     init() {
         AppGroupStore.shared.adoptSettings(from: .standard)
+        AppGroupStore.shared.forgetSecretsOfEarlierInstall()
         AppGroupStore.shared.moveSecretsToKeychain()
         #if DEBUG
         DebugKioskPrefill.apply()

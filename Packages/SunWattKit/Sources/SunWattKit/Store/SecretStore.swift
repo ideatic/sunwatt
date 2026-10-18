@@ -10,6 +10,8 @@ public protocol SecretStore: Sendable {
     /// group): the caller then keeps the value where it was.
     @discardableResult
     func setSecret(_ value: String, for name: String) -> Bool
+    /// Deletes every secret of this store (secrets left by an earlier install).
+    func removeAllSecrets()
 }
 
 /// Generic passwords in the keychain, shared with the widget extension through the App Group access group.
@@ -68,5 +70,21 @@ public struct KeychainSecretStore: SecretStore {
                 .error("Keychain write failed: \(status, privacy: .public)")
         }
         return status == errSecSuccess
+    }
+
+    public func removeAllSecrets() {
+        var query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrSynchronizable as String: false,
+        ]
+        if let accessGroup { query[kSecAttrAccessGroup as String] = accessGroup }
+        #if os(macOS)
+        query[kSecUseDataProtectionKeychain as String] = true
+        #endif
+        let status = SecItemDelete(query as CFDictionary)
+        if status != errSecSuccess, status != errSecItemNotFound {
+            Logger(subsystem: "com.ideatic.sunwatt", category: "keychain").error("Keychain cleanup failed: \(status, privacy: .public)")
+        }
     }
 }

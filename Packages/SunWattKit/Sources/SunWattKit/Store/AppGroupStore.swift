@@ -55,35 +55,76 @@ public final class AppGroupStore: @unchecked Sendable {
         return (.standard, support.appendingPathComponent("SunWatt", isDirectory: true), false)
     }
 
-    /// Settings from `defaults`, with the kiosk link and the API key from the keychain. A secret the keychain does
-    /// not have (older installs, or a build that cannot use it) is read from `defaults`.
+    /// Which secrets are in the keychain now, written by every settings save. A secret that is not listed is read from
+    /// the plist, so a failed keychain write or delete never lets an older keychain value win (DECISIONS D27).
+    /// `revision` changes with every save: other processes see that their cached secrets are out of date.
+    /// Missing (settings saved before it existed): every secret the keychain has wins, as before.
+    private struct KeychainIndex: Codable, Equatable {
+        var names: [String]
+        var revision: String
+    }
+    private static let keychainIndexKey = "sunwatt.keychainSecrets"
+
+    /// Secrets read for these stored bytes and this index revision; reused while neither changes (each keychain read is
+    /// a round trip to securityd, and the settings are read many times per load).
+    private var secretCache: (settings: Data, revision: String?, values: [String: String])?
+
+    /// The secret fields of `settings`: keychain item name and where the value lives.
+    private static func secretSlots(_ settings: SunWattSettings) -> [(name: String, path: WritableKeyPath<SunWattSettings, String>)] {
+        var slots: [(name: String, path: WritableKeyPath<SunWattSettings, String>)] = [
+            (kioskSecret, \.kioskURL), (apiKeySecret, \.solarAPIKey),
+        ]
+        for index in settings.additionalPlants.indices {
+            let id = settings.additionalPlants[index].id
+            slots.append((plantKioskSecret(id), \.additionalPlants[index].kioskURL))
+            slots.append((plantAPIKeySecret(id), \.additionalPlants[index].apiKey))
+        }
+        return slots
+    }
+
+    private func keychainIndexLocked() -> KeychainIndex? {
+        defaults.data(forKey: Self.keychainIndexKey).flatMap { try? JSONDecoder().decode(KeychainIndex.self, from: $0) }
+    }
+
+    /// Settings from `defaults`, with the kiosk link and the API keys from the keychain where the last save put them.
+    /// No stored settings: defaults without secrets (keychain items outlive an uninstall; they are not this install's).
     public var settings: SunWattSettings {
         get {
             lock.lock(); defer { lock.unlock() }
-            var value = defaults.data(forKey: Self.settingsKey)
-                .flatMap { try? JSONDecoder().decode(SunWattSettings.self, from: $0) } ?? SunWattSettings()
-            if let secrets {
-                if let kiosk = secrets.secret(Self.kioskSecret) { value.kioskURL = kiosk }
-                if let key = secrets.secret(Self.apiKeySecret) { value.solarAPIKey = key }
-                for index in value.additionalPlants.indices {
-                    let id = value.additionalPlants[index].id
-                    if let kiosk = secrets.secret(Self.plantKioskSecret(id)) { value.additionalPlants[index].kioskURL = kiosk }
-                    if let key = secrets.secret(Self.plantAPIKeySecret(id)) { value.additionalPlants[index].apiKey = key }
+            guard let data = defaults.data(forKey: Self.settingsKey),
+                  var value = try? JSONDecoder().decode(SunWattSettings.self, from: data) else { return SunWattSettings() }
+            guard let secrets else { return value }
+            let index = keychainIndexLocked()
+            if let cache = secretCache, cache.settings == data, cache.revision == index?.revision {
+                for slot in Self.secretSlots(value) { if let secret = cache.values[slot.name] { value[keyPath: slot.path] = secret } }
+                return value
+            }
+            var values: [String: String] = [:]
+            var complete = true
+            for slot in Self.secretSlots(value) where index?.names.contains(slot.name) ?? true {
+                if let secret = secrets.secret(slot.name) {
+                    values[slot.name] = secret
+                    value[keyPath: slot.path] = secret
+                } else if index != nil {
+                    // Listed but unreadable (keychain locked before the first unlock): read again next time.
+                    complete = false
                 }
             }
+            secretCache = complete ? (data, index?.revision, values) : nil
             return value
         }
         set {
             lock.lock(); defer { lock.unlock() }
             var stored = newValue
-            // Saved in the keychain: blank in the plist. Otherwise (no keychain access) the plist keeps it.
+            var index = KeychainIndex(names: [], revision: UUID().uuidString)
+            // Saved in the keychain: blank in the plist and listed in the index. Otherwise (no keychain access) the
+            // plist keeps it and the index leaves it out.
             if let secrets {
-                if secrets.setSecret(newValue.kioskURL, for: Self.kioskSecret) { stored.kioskURL = "" }
-                if secrets.setSecret(newValue.solarAPIKey, for: Self.apiKeySecret) { stored.solarAPIKey = "" }
-                for index in stored.additionalPlants.indices {
-                    let plant = stored.additionalPlants[index]
-                    if secrets.setSecret(plant.kioskURL, for: Self.plantKioskSecret(plant.id)) { stored.additionalPlants[index].kioskURL = "" }
-                    if secrets.setSecret(plant.apiKey, for: Self.plantAPIKeySecret(plant.id)) { stored.additionalPlants[index].apiKey = "" }
+                for slot in Self.secretSlots(newValue) {
+                    let secret = newValue[keyPath: slot.path]
+                    guard secrets.setSecret(secret, for: slot.name) else { continue }
+                    stored[keyPath: slot.path] = ""
+                    if !secret.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { index.names.append(slot.name) }
                 }
                 // A removed plant's secrets go too.
                 let kept = Set(newValue.additionalPlants.map(\.id))
@@ -94,9 +135,23 @@ public final class AppGroupStore: @unchecked Sendable {
                     secrets.setSecret("", for: Self.plantAPIKeySecret(plant.id))
                 }
             }
-            guard let data = try? JSONEncoder().encode(stored) else { return }
+            guard let data = try? JSONEncoder().encode(stored), let indexData = try? JSONEncoder().encode(index) else { return }
+            secretCache = nil
+            // The index first: a reader between the two writes then looks in the keychain for a value just moved there.
+            if secrets != nil { defaults.set(indexData, forKey: Self.keychainIndexKey) }
             defaults.set(data, forKey: Self.settingsKey)
         }
+    }
+
+    /// Deletes keychain secrets left by an earlier install. iOS removes the App Group (settings) with the app but keeps
+    /// keychain items, so a reinstall would bring an old kiosk link or API key back. Call at app launch after
+    /// `adoptSettings(from:)`; does nothing while settings exist.
+    public func forgetSecretsOfEarlierInstall() {
+        lock.lock(); defer { lock.unlock() }
+        guard let secrets, defaults.data(forKey: Self.settingsKey) == nil else { return }
+        secrets.removeAllSecrets()
+        defaults.removeObject(forKey: Self.keychainIndexKey)
+        secretCache = nil
     }
 
     /// Moves settings saved in the private fallback (`local`) into the shared store, once: Mac builds before the

@@ -66,8 +66,9 @@ public struct SolarEdgeClient: SolarDataSource {
 
     private func get(_ url: URL) async throws -> Data {
         let (data, response) = try await HTTPFetch.perform(http, HTTPFetch.request(url), redacting: credentials.apiKey)
-        if let status = (response as? HTTPURLResponse)?.statusCode, status == 401 || status == 403 {
-            throw SunWattError.solarCredentialsRejected
+        if let status = (response as? HTTPURLResponse)?.statusCode {
+            if status == 401 || status == 403 { throw SunWattError.solarCredentialsRejected }
+            if status == 429 { throw SunWattError.rateLimited }
         }
         try HTTPFetch.checkStatus(response)
         return data
@@ -131,12 +132,12 @@ public struct SolarEdgeClient: SolarDataSource {
     /// Points in kW; values later than `fetchedAt` + 5 min lose their value.
     static func curve(_ values: [[String: Any]], scale: Double, fetchedAt: Date, calendar: Calendar) -> [CurvePoint] {
         let limit = fetchedAt.addingTimeInterval(5 * 60)
-        return values.compactMap { item -> CurvePoint? in
+        let points = values.compactMap { item -> CurvePoint? in
             guard let text = item["date"] as? String, let time = SolarLocalTime.parse(text, calendar: calendar) else { return nil }
-            let kW = SolarLocalTime.number(item["value"]).map { $0 * scale }
-            return CurvePoint(time: time, kW: time > limit ? nil : kW)
+            return CurvePoint(time: time, kW: SolarLocalTime.number(item["value"]).map { $0 * scale })
         }
-        .sorted { $0.time < $1.time }
+        return SolarLocalTime.inOrder(points, time: \.time, moving: { CurvePoint(time: $1, kW: $0.kW) }, calendar: calendar)
+            .map { $0.time > limit ? CurvePoint(time: $0.time, kW: nil) : $0 }
     }
 
     /// The meters of a `powerDetails` body by type ("Production", "Consumption", "FeedIn", "Purchased", ...).
@@ -211,6 +212,27 @@ public enum SolarLocalTime {
         let check = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
         guard check.year == year, check.month == month, check.day == day, check.hour == hour, check.minute == minute else { return nil }
         return date
+    }
+
+    /// `items` in the order the provider sent them (oldest first; a newest-first list is turned around), with strictly
+    /// increasing times. On the autumn DST
+    /// day the local times 02:00-02:59 come twice; `date(...)` gives the first instant for both, so a time that does not
+    /// move forward is the repeated hour: it moves one hour later. Anything still not later than the previous item
+    /// (a real duplicate) is dropped. The `SolarDataSource` contract allows no two points at the same time.
+    static func inOrder<T>(_ items: [T], time: (T) -> Date, moving: (T, Date) -> T, calendar: Calendar) -> [T] {
+        var result: [T] = []
+        let oldestFirst = items.count > 1 && time(items[0]) > time(items[items.count - 1]) ? Array(items.reversed()) : items
+        for item in oldestFirst {
+            var current = item
+            if let last = result.last.map(time), time(current) <= last {
+                let later = time(current).addingTimeInterval(3600)
+                let wall: (Date) -> DateComponents = { calendar.dateComponents([.day, .hour, .minute, .second], from: $0) }
+                guard later > last, wall(later) == wall(time(current)) else { continue }
+                current = moving(current, later)
+            }
+            result.append(current)
+        }
+        return result
     }
 
     /// Lenient number: JSON number or numeric string; nil for anything else, NaN or infinity.
