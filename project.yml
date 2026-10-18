@@ -16,6 +16,9 @@ settings:
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     DEVELOPMENT_LANGUAGE: en
+    # Archives strip symbols. "all" removed the symbol of SunWattKitIntentsPackage from the app binary, so iOS could
+    # not index the App Intents (widget configuration, Siri) and widgets from TestFlight stayed placeholders (DECISIONS D26).
+    STRIP_STYLE: non-global
 packages:
   SunWattKit:
     path: Packages/SunWattKit

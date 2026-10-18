@@ -75,8 +75,23 @@ export_archive() { # name
     -exportOptionsPlist "$OPTIONS" -exportPath "$EXPORT/$1" "${PROV[@]}"
 }
 
+# iOS indexes App Intents (widget configuration, Siri) by the SunWattKitIntentsPackage symbol in each binary that
+# includes it. A stripped binary leaves widgets as placeholders (DECISIONS D26), so stop before uploading one.
+check_intents_symbol() { # binary
+  if ! nm -gU "$1" | grep -q '10SunWattKit0abC14IntentsPackageVMn'; then
+    echo "FAILED: $1 has no SunWattKitIntentsPackage symbol (check STRIP_STYLE in project.yml)." >&2
+    exit 1
+  fi
+}
+
 archive iOS 'generic/platform=iOS'
 archive macOS 'generic/platform=macOS'
+IOS_APP="$ARCHIVES/iOS.xcarchive/Products/Applications/SunWatt.app"
+MAC_APP="$ARCHIVES/macOS.xcarchive/Products/Applications/SunWatt.app"
+for bin in "$IOS_APP/SunWatt" "$IOS_APP/PlugIns/SunWattWidgets.appex/SunWattWidgets" \
+  "$MAC_APP/Contents/MacOS/SunWatt" "$MAC_APP/Contents/PlugIns/SunWattWidgets.appex/Contents/MacOS/SunWattWidgets"; do
+  check_intents_symbol "$bin"
+done
 export_archive iOS
 export_archive macOS
 

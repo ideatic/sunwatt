@@ -161,3 +161,9 @@ Each entry: decision, why, how to change it.
 - Why: the in-place refresh (`Button(intent: RefreshWidgetIntent())` over the widget) only dimmed the widget for a moment; widgets cannot show a spinner, so users could not tell what was happening. The app shows the loading state and the full data.
 - How to change: put the overlay button back in `SunWattWidgetEntryView` (git history has it) and the "Tap to refresh" texts.
 
+
+## D26: Archives keep global symbols (`STRIP_STYLE: non-global`)
+
+- Decision: `project.yml` sets `STRIP_STYLE: non-global` for every target. `scripts/release.sh` stops before export if the iOS or macOS app or widget binary has no `SunWattKitIntentsPackage` symbol.
+- Why: the app and widget metadata (`Metadata.appintents/extract.packagedata`) include `SunWattKitIntentsPackage` by its symbol name. On install, iOS (`linkd`) looks for that symbol in the binary. The archive stripped all global symbols from the app binary, so `linkd` logged "did not match any imported or exported symbol" and "Could not create bundle record for com.ideatic.sunwatt". Then no App Intent of SunWatt was known: widgets from TestFlight stayed placeholders ("No AppIntent in snapshot(for:with:)"), and Siri shortcuts failed. Debug and simulator builds are not stripped, so they worked. Seen on an iPhone with build 202610172346, 2026-10-18.
+- How to change: only with another way to keep that symbol (for example `-exported_symbol` linker flags), and the check in `release.sh` must still pass.
