@@ -38,7 +38,7 @@ import Testing
         let shown = model.showing(tapped)
         #expect(shown.current == tapped)
         #expect(shown.level == .high)
-        #expect(shown.fraction == 1)
+        #expect((shown.fraction ?? 0) > 2.0 / 3) // the day's top third (statistics may come from 15-minute prices)
         #expect(shown.points == model.points && shown.staleSince == model.staleSince)
     }
 }

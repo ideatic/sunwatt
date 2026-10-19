@@ -18,7 +18,7 @@ echo "== swift test"
 mkdir -p build/logs
 LOG="$PWD/build/logs/swift-test.log"
 if ! (cd Packages/SunWattKit && swift test >"$LOG" 2>&1); then
-  grep -E "recorded an issue|error:" "$LOG" | head -n 40 || true
+  grep -E "recorded an issue|error:|✘" "$LOG" | head -n 40 || true
   tail -n 3 "$LOG"
   echo "swift test FAILED (full log: $LOG)"
   exit 1
