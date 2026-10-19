@@ -5,7 +5,7 @@
 #   scripts/upload_metadata.sh                      Dry run (default). Checks AppStore/metadata and prints what
 #                                                   would be uploaded. Does not contact Apple. No key needed.
 #   scripts/upload_metadata.sh --upload             Real upload. Runs fastlane deliver. No binary, no review
-#                                                   submission, no automatic release.
+#                                                   submission. Release type: automatic after approval.
 #   --screenshots <dir>                             Also upload screenshots. deliver reads <dir>/<locale>/*.png
 #                                                   (locale folders like en-US, es-ES). Default: no screenshots.
 #   --platform ios|osx|both                         Default both. macOS needs its own deliver run.
@@ -73,7 +73,7 @@ if [[ -n "$SHOTS" ]]; then
 else
   echo "Screenshots:    no (skip_screenshots true)"
 fi
-echo "Binary:         not uploaded. No review submission. No automatic release."
+echo "Binary:         not uploaded. No review submission. Release: automatic after approval."
 
 if [[ "$MODE" != upload ]]; then
   echo "MODE: DRY RUN. Nothing was sent to Apple. Run with --upload to upload."
@@ -125,7 +125,8 @@ for platform in "${PLATFORMS[@]}"; do
     --metadata_path "$UPLOAD_METADATA"
     --skip_binary_upload true
     --submit_for_review false
-    --automatic_release false
+    # Release as soon as Apple approves (owner's choice, 2026-10-19). deliver sets the release type on every upload.
+    --automatic_release true
     --precheck_include_in_app_purchases false
     --force true
   )
