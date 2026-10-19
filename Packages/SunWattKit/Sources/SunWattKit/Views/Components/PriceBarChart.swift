@@ -16,15 +16,19 @@ public struct PriceBarChart: View {
     public let points: [PricePoint]
     public let now: Date
     public let style: Style
+    /// A bar to mark instead of the current hour (an hour tapped on the watch); past and future shading still follow
+    /// `now`.
+    public let marked: PricePoint?
 
     @Environment(\.widgetRenderingMode) private var mode
     @Environment(\.colorScheme) private var scheme
 
-    public init(series: PriceSeries, points: [PricePoint], now: Date, style: Style = .mini) {
+    public init(series: PriceSeries, points: [PricePoint], now: Date, style: Style = .mini, marked: PricePoint? = nil) {
         self.series = series
         self.points = points
         self.now = now
         self.style = style
+        self.marked = marked
     }
 
     public var body: some View {
@@ -33,7 +37,7 @@ public struct PriceBarChart: View {
         let isFull = style == .full
         let baseDomain = ChartLayout.priceYDomain(points: points)
         let span = baseDomain.upperBound - baseDomain.lowerBound
-        let current = points.first { $0.contains(now) }
+        let current = marked ?? points.first { $0.contains(now) }
         // Headroom above the tallest bar for the "now" marker.
         let yDomain = baseDomain.lowerBound...(baseDomain.upperBound + (current == nil ? 0 : span * 0.14))
         let minHeight = span * (isFull ? Theme.Price.minBarFractionFull : Theme.Price.minBarFractionMini)

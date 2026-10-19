@@ -132,6 +132,18 @@ struct PriceModel {
         }
     }
 
+    /// The same model with `point` in the place of the current hour (an hour tapped in a chart): its price, level and
+    /// colour. Points, statistics and the stale mark stay.
+    func showing(_ point: PricePoint) -> PriceModel {
+        var copy = self
+        copy.current = point
+        if let context = series?.dayContext(for: point.start) {
+            copy.level = context.level(of: point)
+            copy.fraction = context.fraction(of: point)
+        }
+        return copy
+    }
+
     var isAvailable: Bool { series != nil && !points.isEmpty }
     var timeZone: TimeZone { series?.region.timeZone ?? Constants.madrid }
     var region: PriceRegion { series?.region ?? .spain }

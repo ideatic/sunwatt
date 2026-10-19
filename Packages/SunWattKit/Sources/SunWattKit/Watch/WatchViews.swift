@@ -85,14 +85,22 @@ public struct WatchRootView: View {
     }
 }
 
-/// Current price (big, coloured by level), today's bars with the current hour marked, cheapest next hours.
+/// Current price (big, coloured by level), today's bars with the current hour marked, cheapest next hours. Tapping a
+/// bar shows that hour's price instead, like tapping a bar in the iPhone app; it goes back to now on a second tap,
+/// a tap on the current hour, or after `selectionTimeout`.
 public struct WatchPricePage: View {
     public let entry: SunWattEntry
+    @State private var selected: PricePoint?
+
+    static let selectionTimeout: Duration = .seconds(8)
 
     public init(entry: SunWattEntry) { self.entry = entry }
 
     public var body: some View {
-        let price = PriceModel(entry: entry, window: .wholeDay)
+        let base = PriceModel(entry: entry, window: .wholeDay)
+        // A tapped hour that is no longer in today's bars (after midnight) is dropped.
+        let tapped = selected.flatMap { point in base.points.contains(point) ? point : nil }
+        let price = tapped.map { base.showing($0) } ?? base
         Group {
             if let series = price.series, price.isAvailable {
                 VStack(alignment: .leading, spacing: 3) {
@@ -108,9 +116,17 @@ public struct WatchPricePage: View {
                     }
                     FigureText(value: Format.eurPerKWh(price.current?.eurPerKWh), unit: "€/kWh", size: 30)
                         .foregroundStyle(price.fraction.map { Theme.Price.color(fraction: $0) } ?? Color.primary)
-                    LevelLabel(price: price)
-                    PriceBarChart(series: series, points: price.points, now: entry.date, style: .mini)
+                    HStack(spacing: 5) {
+                        if let tapped {
+                            // The tapped hour, so the figure is not read as the price now.
+                            Text(verbatim: Format.hour(tapped.start, timeZone: series.region.timeZone))
+                                .font(.system(.caption, design: .rounded).weight(.bold))
+                        }
+                        LevelLabel(price: price)
+                    }
+                    PriceBarChart(series: series, points: price.points, now: entry.date, style: .mini, marked: tapped)
                         .frame(height: 48)
+                        .overlay { tapTarget(points: price.points) }
                         .padding(.top, 4)
                     cheapest(series)
                         .padding(.top, 4)
@@ -120,6 +136,34 @@ public struct WatchPricePage: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .task(id: selected) {
+            guard selected != nil else { return }
+            try? await Task.sleep(for: Self.selectionTimeout)
+            if !Task.isCancelled { selected = nil }
+        }
+    }
+
+    /// Taps over the bars select an hour. Taps only: vertical swipes still page.
+    private func tapTarget(points: [PricePoint]) -> some View {
+        GeometryReader { geometry in
+            Color.clear
+                .contentShape(Rectangle())
+                .gesture(SpatialTapGesture().onEnded { tap in
+                    guard geometry.size.width > 0,
+                          let point = Self.point(atFraction: Double(tap.location.x / geometry.size.width), of: points) else { return }
+                    // The same bar again, or the current hour: back to now.
+                    selected = (point == selected || point.contains(entry.date)) ? nil : point
+                })
+        }
+    }
+
+    /// The bar under a horizontal position (0 = left edge, 1 = right edge) of a chart without axes, whose x domain is
+    /// `ChartLayout.priceDomain(points:)`.
+    static func point(atFraction fraction: Double, of points: [PricePoint]) -> PricePoint? {
+        guard let domain = ChartLayout.priceDomain(points: points) else { return nil }
+        let span = domain.upperBound.timeIntervalSince(domain.lowerBound)
+        let date = domain.lowerBound.addingTimeInterval(span * min(max(fraction, 0), 0.9999))
+        return points.first { $0.contains(date) }
     }
 
     @ViewBuilder

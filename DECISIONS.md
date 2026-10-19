@@ -186,4 +186,5 @@ Each entry: decision, why, how to change it.
 - Decision: the watch app shows a solar page per plant first, then the price page (the iPhone dashboard order). It opens on the price page only when no solar plant is set up. The vertical pager (`WatchRootView`) sits at the root of the window; each page has its own `TimelineView(.everyMinute)`. Page tags are plant ids, not positions.
 - Why: on a real watch the Digital Crown and swipes did nothing while the whole pager sat inside a minute `TimelineView` (the likely cause; nothing else in the watch views takes gestures or the crown). Owner asked for solar first.
 - How to change: keep the clock inside the pages. The `-price` launch argument opens on the price page for simulator captures (it replaced `-solar`).
+- Tapping a bar of the watch price chart shows that hour's price, level and hour in the big figure, with the marker on that bar (`PriceBarChart.marked`, `PriceModel.showing`). A second tap, a tap on the current hour or 8 s (`WatchPricePage.selectionTimeout`) go back to now. Taps only, so vertical swipes still page.
 
