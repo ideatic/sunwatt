@@ -61,7 +61,7 @@ public struct WatchRootView: View {
     }
 
     /// The first solar page, or the price page when no solar plant is set up (prices only: no setup prompt first).
-    static func firstPage(_ data: SunWattData) -> Page {
+    nonisolated static func firstPage(_ data: SunWattData) -> Page {
         if !data.hasSeveralPlants, data.solarStatus == .notConfigured { return .price }
         return .solar(plantID: data.plantID)
     }
@@ -159,7 +159,7 @@ public struct WatchPricePage: View {
 
     /// The bar under a horizontal position (0 = left edge, 1 = right edge) of a chart without axes, whose x domain is
     /// `ChartLayout.priceDomain(points:)`.
-    static func point(atFraction fraction: Double, of points: [PricePoint]) -> PricePoint? {
+    nonisolated static func point(atFraction fraction: Double, of points: [PricePoint]) -> PricePoint? {
         guard let domain = ChartLayout.priceDomain(points: points) else { return nil }
         let span = domain.upperBound.timeIntervalSince(domain.lowerBound)
         let date = domain.lowerBound.addingTimeInterval(span * min(max(fraction, 0), 0.9999))
