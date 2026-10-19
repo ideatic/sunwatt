@@ -6,33 +6,82 @@ func watchText(_ key: LocalizedStringKey) -> Text {
     Text(key, tableName: "Watch", bundle: .module)
 }
 
-/// The watch app: price page and solar page, paged vertically with the Digital Crown.
+/// The watch app: a solar page per plant first (as in the iPhone app), then the price page, paged vertically with
+/// the Digital Crown or a vertical swipe.
+///
+/// The pager sits at the root and is never rebuilt by the clock: each page has its own minute `TimelineView`. With
+/// the whole pager inside a `TimelineView` (build 202610181936) the crown and swipes did nothing on a real watch.
 public struct WatchRootView: View {
-    public let entry: SunWattEntry
-    @State private var page: Int
+    /// A page of the watch app; tags are stable across data refreshes (plant ids, not positions).
+    enum Page: Hashable {
+        case solar(plantID: String)
+        case price
+    }
 
-    /// `startOnSolar` opens the solar page first (used by the `-solar` launch argument for screenshots).
-    public init(entry: SunWattEntry, startOnSolar: Bool = false) {
-        self.entry = entry
-        _page = State(initialValue: startOnSolar ? 1 : 0)
+    private let entryAt: @MainActor (Date) -> SunWattEntry
+    /// True: pages redraw every minute with `entryAt(now)`. False: a fixed entry (snapshots, previews).
+    private let ticks: Bool
+    @State private var page: Page?
+
+    /// The live app. `entryAt` gives the data to show at a time; `startOnPrice` opens the price page first (used by
+    /// the `-price` launch argument for screenshots).
+    public init(entryAt: @escaping @MainActor (Date) -> SunWattEntry, startOnPrice: Bool = false) {
+        self.entryAt = entryAt
+        ticks = true
+        _page = State(initialValue: startOnPrice ? .price : nil)
+    }
+
+    /// A fixed entry (snapshots and previews).
+    public init(entry: SunWattEntry, startOnPrice: Bool = false) {
+        entryAt = { _ in entry }
+        ticks = false
+        _page = State(initialValue: startOnPrice ? .price : nil)
     }
 
     public var body: some View {
+        let data = entryAt(Date()).data
         #if os(watchOS)
-        TabView(selection: $page) {
-            // Trailing space keeps content clear of the vertical page indicator.
-            WatchPricePage(entry: entry).padding(.trailing, 10).tag(0)
-            // One solar page per plant (one plant: one page, as always).
-            ForEach(Array(entry.data.allPlants.indices), id: \.self) { index in
-                WatchSolarPage(entry: SunWattEntry(date: entry.date, data: entry.data.showingPlant(at: index)))
-                    .padding(.trailing, 10)
-                    .tag(1 + index)
+        TabView(selection: Binding(get: { page ?? Self.firstPage(data) }, set: { page = $0 })) {
+            if data.hasSeveralPlants {
+                ForEach(data.allPlants, id: \.id) { plant in
+                    solarPage(plantID: plant.id)
+                }
+            } else {
+                // One plant: one fixed solar page, as always.
+                solarPage(plantID: data.plantID)
             }
+            timed { WatchPricePage(entry: $0) }
+                .padding(.trailing, 10)
+                .tag(Page.price)
         }
         .tabViewStyle(.verticalPage)
         #else
-        WatchPricePage(entry: entry)
+        timed { WatchPricePage(entry: $0) }
         #endif
+    }
+
+    /// The first solar page, or the price page when no solar plant is set up (prices only: no setup prompt first).
+    static func firstPage(_ data: SunWattData) -> Page {
+        if !data.hasSeveralPlants, data.solarStatus == .notConfigured { return .price }
+        return .solar(plantID: data.plantID)
+    }
+
+    private func solarPage(plantID: String) -> some View {
+        timed { entry in
+            WatchSolarPage(entry: SunWattEntry(date: entry.date, data: entry.data.showingPlant(id: plantID)))
+        }
+        .padding(.trailing, 10) // Clear of the vertical page indicator.
+        .tag(Page.solar(plantID: plantID))
+    }
+
+    /// `content` with the entry for now, redrawn every minute in the live app.
+    @ViewBuilder
+    private func timed<Content: View>(@ViewBuilder _ content: @escaping (SunWattEntry) -> Content) -> some View {
+        if ticks {
+            TimelineView(.everyMinute) { context in content(entryAt(context.date)) }
+        } else {
+            content(entryAt(Date()))
+        }
     }
 }
 

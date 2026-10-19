@@ -49,9 +49,8 @@ struct SunWattWatchApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TimelineView(.everyMinute) { context in
-                WatchRootView(entry: model.entry(at: context.date), startOnSolar: CommandLine.arguments.contains("-solar"))
-            }
+            // The pages keep their own minute clock; the pager itself must not be rebuilt by one (it stops paging).
+            WatchRootView(entryAt: { model.entry(at: $0) }, startOnPrice: CommandLine.arguments.contains("-price"))
             .task(id: scenePhase) {
                 guard scenePhase == .active else { return }
                 // Refresh on activation, then every refresh interval while the app stays on screen.

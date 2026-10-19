@@ -180,3 +180,10 @@ Each entry: decision, why, how to change it.
 - Decision: `NorthboundSessionStore.shared` keeps the session (token, plant, inverters, hourly curve) in the App Group keychain, one item per account (`northbound.<sha256>`), and reads it before each use.
 - Why: Huawei allows one session per account. With a session per process, the app and the widget extension ended each other's session (failCode 305) and spent the login quota, and a new widget process needed up to 6 calls one after another within the 15 s deadline. The token is a secret, so it never goes to a file (AGENTS.md rule 1).
 - How to change: any other shared place must be the keychain, not the plist or the cache files.
+
+## D29: Watch app pages: solar first, pager outside the clock
+
+- Decision: the watch app shows a solar page per plant first, then the price page (the iPhone dashboard order). It opens on the price page only when no solar plant is set up. The vertical pager (`WatchRootView`) sits at the root of the window; each page has its own `TimelineView(.everyMinute)`. Page tags are plant ids, not positions.
+- Why: on a real watch the Digital Crown and swipes did nothing while the whole pager sat inside a minute `TimelineView` (the likely cause; nothing else in the watch views takes gestures or the crown). Owner asked for solar first.
+- How to change: keep the clock inside the pages. The `-price` launch argument opens on the price page for simulator captures (it replaced `-solar`).
+
