@@ -26,3 +26,9 @@ Renderer now also writes `complication-solar-<family>-<state>-<scheme>.png` (sta
 ## Iteration 5
 - Re-rendered all families. Circular: value + "kWh" fit in the ring, sun at the gauge gap. Rectangular: headline, kW + time row, mini curve all fit at 172x76. Inline and corner fit in Spanish. Accented circular: ring position (marker dot) still reads.
 - Open point: on a real watch the circular gauge label placement is decided by watchOS; check on device.
+
+## 2026-10-19: tap the production curve
+
+- Owner report (real watch, TestFlight 202610192142): tapping the price chart shows that hour, tapping the production chart did nothing.
+- Change: `WatchSolarPage` selects the measured point nearest to the tap (only points the chart draws; nothing after the last measurement). The figure shows that power, a bold time sits before "kWh today", and the glowing dot moves there with a dashed rule. Back to now on a second tap, a tap on the latest point, or after 8 s (same as the price page).
+- New render `app-solar-tapped-dark` (10:10, 2,4 kW): figure, time label and marker read clearly; the normal page is unchanged.

@@ -97,6 +97,12 @@ func main() {
                    name: "app-solar-unconfigured-dark-de", to: directory)
         try render(WatchSnapshotView(entry: SampleData.entry(.day), kind: .pricePage, scheme: .dark, locale: Locale(identifier: "de_DE")),
                    name: "app-price-day-dark-de", to: directory)
+        // Solar page with a time tapped (10:00): figure, time label and marked point.
+        let day = SampleData.entry(.day)
+        if let tapped = day.data.solar?.curve.min(by: { abs($0.time.timeIntervalSince(day.date.addingTimeInterval(-3.5 * 3600))) < abs($1.time.timeIntervalSince(day.date.addingTimeInterval(-3.5 * 3600))) }) {
+            try render(WatchSnapshotView(entry: day, kind: .solarPageTapped(tapped), scheme: .dark, locale: locale),
+                       name: "app-solar-tapped-dark", to: directory)
+        }
         // English pages and complication for the README and the website (docs/readme).
         Format.locale = Locale(identifier: "en_US")
         let english = Locale(identifier: "en_US")
@@ -106,7 +112,7 @@ func main() {
                    name: "app-solar-day-dark-en", to: directory)
         try render(WatchSnapshotView(entry: SampleData.entry(.day), kind: .complication(.rectangular), scheme: .dark, locale: english),
                    name: "complication-rectangular-day-dark-en", to: directory)
-        print("Rendered \(count + 5) images to \(directory.path)")
+        print("Rendered \(count + 6) images to \(directory.path)")
     } catch {
         FileHandle.standardError.write(Data("error: \(error.localizedDescription)\n".utf8))
         exit(1)

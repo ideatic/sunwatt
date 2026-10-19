@@ -15,13 +15,16 @@ public struct SolarCurveChart: View {
     public let snapshot: SolarSnapshot
     public let now: Date
     public let style: Style
+    /// A point to mark instead of the latest one (a time tapped on the watch); the glowing dot moves there.
+    public let marked: CurvePoint?
 
     @Environment(\.widgetRenderingMode) private var mode
 
-    public init(snapshot: SolarSnapshot, now: Date, style: Style = .mini) {
+    public init(snapshot: SolarSnapshot, now: Date, style: Style = .mini, marked: CurvePoint? = nil) {
         self.snapshot = snapshot
         self.now = now
         self.style = style
+        self.marked = marked
     }
 
     public var body: some View {
@@ -31,7 +34,8 @@ public struct SolarCurveChart: View {
         let points = ChartLayout.solarPoints(curve: snapshot.curve, domain: domain)
         let yMax = ChartLayout.solarYMax(peak: points.map(\.kW).max())
         let isFull = style == .full
-        let dotPoint = snapshot.isIdle ? nil : points.last
+        let markedPoint = marked.flatMap { point in point.kW.map { SolarPlotPoint(time: point.time, kW: max(0, $0)) } }
+        let dotPoint = markedPoint ?? (snapshot.isIdle ? nil : points.last)
         let peak = points.max { $0.kW < $1.kW }
 
         Chart {
@@ -63,6 +67,11 @@ public struct SolarCurveChart: View {
                             .monospacedDigit()
                             .foregroundStyle(.secondary)
                     }
+            }
+            if let markedPoint {
+                RuleMark(x: .value("Selected", markedPoint.time))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 2]))
+                    .foregroundStyle(Color.primary.opacity(0.35))
             }
             if let dot = dotPoint {
                 PointMark(x: .value("Time", dot.time), y: .value("kW", dot.kW))

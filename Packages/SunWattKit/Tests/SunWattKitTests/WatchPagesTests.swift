@@ -41,4 +41,28 @@ import Testing
         #expect((shown.fraction ?? 0) > 2.0 / 3) // the day's top third (statistics may come from 15-minute prices)
         #expect(shown.points == model.points && shown.staleSince == model.staleSince)
     }
+
+    @Test func tapOnTheCurvePicksTheNearestMeasuredPoint() throws {
+        let entry = SampleData.entry(.day)
+        let curve = try #require(entry.data.solar?.curve)
+        let domain = ChartLayout.solarDomain(curve: curve, now: entry.date)
+        let measured = curve.filter { $0.kW != nil && domain.contains($0.time) }
+        let span = domain.upperBound.timeIntervalSince(domain.lowerBound)
+        // A tap at 10:00 picks the point measured nearest to 10:00.
+        let tenOClock = try #require(Constants.madridCalendar.date(bySettingHour: 10, minute: 0, second: 0, of: entry.date))
+        let fraction = tenOClock.timeIntervalSince(domain.lowerBound) / span
+        let point = try #require(WatchSolarPage.point(atFraction: fraction, curve: curve, now: entry.date))
+        #expect(abs(point.time.timeIntervalSince(tenOClock)) <= 5 * 60)
+        #expect(point.kW != nil)
+        // Left edge: the first point the chart draws.
+        #expect(WatchSolarPage.point(atFraction: 0, curve: curve, now: entry.date) == measured.first)
+    }
+
+    @Test func tapAfterTheLastMeasurementSelectsNothing() throws {
+        let entry = SampleData.entry(.day)
+        let curve = try #require(entry.data.solar?.curve)
+        // The day sample ends at 13:30; the right edge is the evening.
+        #expect(WatchSolarPage.point(atFraction: 1, curve: curve, now: entry.date) == nil)
+        #expect(WatchSolarPage.point(atFraction: 0.5, curve: [], now: entry.date) == nil)
+    }
 }

@@ -213,18 +213,28 @@ public struct WatchPricePage: View {
 }
 
 /// Current power, today's energy, production curve and data time.
+/// Production now (big), today's energy and curve. Tapping the curve shows the power at that time instead, like the
+/// price page; it goes back to now on a second tap of the same point, a tap on the latest point, or after
+/// `WatchPricePage.selectionTimeout`.
 public struct WatchSolarPage: View {
     public let entry: SunWattEntry
+    @State private var selected: CurvePoint?
 
-    public init(entry: SunWattEntry) { self.entry = entry }
+    /// `selected` starts the page with a time already tapped (snapshots).
+    public init(entry: SunWattEntry, selected: CurvePoint? = nil) {
+        self.entry = entry
+        _selected = State(initialValue: selected)
+    }
 
     public var body: some View {
         let solar = SolarModel(entry: entry)
         Group {
             if solar.isAvailable, let snapshot = solar.snapshot {
+                // A tapped point that is no longer in the curve (new day, new data) is dropped.
+                let tapped = selected.flatMap { point in snapshot.curve.contains(point) ? point : nil }
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 4) {
-                        SolarIcon(idle: solar.isIdle, size: 13)
+                        SolarIcon(idle: solar.isIdle && tapped == nil, size: 13)
                         // Several plants: the plant's name.
                         Group {
                             if let name = solar.plantName { Text(verbatim: name).lineLimit(1) } else { wtext("Production") }
@@ -234,10 +244,22 @@ public struct WatchSolarPage: View {
                         Spacer(minLength: 2)
                         DataTimeMarker(time: solar.dataTime, stale: solar.staleSince != nil)
                     }
-                    SolarFigure(solar: solar, size: 32)
-                        .foregroundStyle(solar.isIdle ? AnyShapeStyle(.secondary) : AnyShapeStyle(Theme.Solar.amber))
-                    SolarDailyCaption(solar: solar)
-                    SolarCurveChart(snapshot: snapshot, now: entry.date, style: .mini)
+                    if let tapped, let kW = tapped.kW {
+                        FigureText(value: Format.kW(kW), unit: "kW", size: 32)
+                            .foregroundStyle(Theme.Solar.amber)
+                        HStack(spacing: 5) {
+                            // The tapped time, so the figure is not read as the power now.
+                            Text(verbatim: Format.time(tapped.time))
+                                .font(.system(.caption, design: .rounded).weight(.bold))
+                            SolarDailyCaption(solar: solar)
+                        }
+                    } else {
+                        SolarFigure(solar: solar, size: 32)
+                            .foregroundStyle(solar.isIdle ? AnyShapeStyle(.secondary) : AnyShapeStyle(Theme.Solar.amber))
+                        SolarDailyCaption(solar: solar)
+                    }
+                    SolarCurveChart(snapshot: snapshot, now: entry.date, style: .mini, marked: tapped)
+                        .overlay { tapTarget(snapshot: snapshot) }
                         .frame(maxHeight: .infinity)
                         .padding(.top, 6)
                         .padding(.bottom, 8)
@@ -261,6 +283,41 @@ public struct WatchSolarPage: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .task(id: selected) {
+            guard selected != nil else { return }
+            try? await Task.sleep(for: WatchPricePage.selectionTimeout)
+            if !Task.isCancelled { selected = nil }
+        }
+    }
+
+    /// Taps over the curve select a time. Taps only: vertical swipes still page.
+    private func tapTarget(snapshot: SolarSnapshot) -> some View {
+        GeometryReader { geometry in
+            Color.clear
+                .contentShape(Rectangle())
+                .gesture(SpatialTapGesture().onEnded { tap in
+                    guard geometry.size.width > 0 else { return }
+                    let point = Self.point(atFraction: Double(tap.location.x / geometry.size.width),
+                                           curve: snapshot.curve, now: entry.date)
+                    // Nothing measured there, the same point again, or the latest point: back to now.
+                    let latest = snapshot.curve.last { $0.kW != nil }
+                    selected = (point == nil || point == selected || point == latest) ? nil : point
+                })
+        }
+    }
+
+    /// The measured point nearest to a horizontal position (0 = left edge, 1 = right edge) of the mini chart, whose x
+    /// domain is `ChartLayout.solarDomain`. Nil after the last measurement (the future) or without data.
+    nonisolated static func point(atFraction fraction: Double, curve: [CurvePoint], now: Date) -> CurvePoint? {
+        // Only points the chart draws (inside its domain).
+        let domain = ChartLayout.solarDomain(curve: curve, now: now)
+        let measured = curve.filter { $0.kW != nil && domain.contains($0.time) }
+        guard let last = measured.last else { return nil }
+        let span = domain.upperBound.timeIntervalSince(domain.lowerBound)
+        let date = domain.lowerBound.addingTimeInterval(span * min(max(fraction, 0), 1))
+        // A tap well right of the curve's end is on empty chart, not on the latest point.
+        if date.timeIntervalSince(last.time) > 15 * 60 { return nil }
+        return measured.min { abs($0.time.timeIntervalSince(date)) < abs($1.time.timeIntervalSince(date)) }
     }
 }
 
@@ -270,6 +327,8 @@ public struct WatchSnapshotView: View {
     public enum Kind: Sendable {
         case pricePage
         case solarPage
+        /// The solar page with a time already tapped.
+        case solarPageTapped(CurvePoint)
         case complication(WatchComplicationFamily)
         case solarComplication(WatchComplicationFamily)
     }
@@ -295,7 +354,7 @@ public struct WatchSnapshotView: View {
 
     public static func imageSize(for kind: Kind) -> CGSize {
         switch kind {
-        case .pricePage, .solarPage:
+        case .pricePage, .solarPage, .solarPageTapped:
             CGSize(width: screenSize.width + padding * 2, height: screenSize.height + padding * 2)
         case .complication(let family), .solarComplication(let family):
             CGSize(width: max(family.size.width, 120) + 40, height: max(family.size.height, 70) + 40)
@@ -310,6 +369,8 @@ public struct WatchSnapshotView: View {
                 screen(WatchPricePage(entry: entry))
             case .solarPage:
                 screen(WatchSolarPage(entry: entry))
+            case .solarPageTapped(let point):
+                screen(WatchSolarPage(entry: entry, selected: point))
             case .complication(let family):
                 complication(family, solar: false)
             case .solarComplication(let family):
