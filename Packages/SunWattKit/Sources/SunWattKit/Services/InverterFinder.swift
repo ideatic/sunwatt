@@ -9,30 +9,49 @@ public enum LocalInverterKind: Sendable {
     case huawei
     /// SolarEdge and PVOutput: a SunSpec inverter (SolarEdge, SMA, Fronius, …; port 502 or 1502).
     case sunSpec
+    /// Fronius: the inverter's Solar API over HTTP (port 80, no unit ID).
+    case fronius
 
     public init(provider: SolarProvider) {
         self = provider.profile.localInverter
     }
 
     /// Ports tried when the address names none.
-    public var ports: [UInt16] { self == .huawei ? [502] : SunSpecClient.usualPorts }
-    /// Unit IDs tried, in order.
-    public var unitIDs: [Int] { self == .huawei ? [1, 0] : SunSpecClient.usualUnitIDs }
+    public var ports: [UInt16] {
+        switch self {
+        case .huawei: [502]
+        case .sunSpec: SunSpecClient.usualPorts
+        case .fronius: [FroniusSolarAPIClient.port]
+        }
+    }
+    /// The port an address without one means; saved addresses leave it out.
+    public var defaultPort: UInt16 { ports[0] }
+    /// Unit IDs tried, in order (the Solar API has none: one pass).
+    public var unitIDs: [Int] {
+        switch self {
+        case .huawei: [1, 0]
+        case .sunSpec: SunSpecClient.usualUnitIDs
+        case .fronius: [1]
+        }
+    }
     /// How long one read may take. Huawei dongles pause 1 s after connecting; a SunSpec inverter asked with the wrong
     /// unit ID may not answer at all, so that wait is kept short.
     var readDeadline: TimeInterval { self == .huawei ? 6 : 4 }
 
-    /// `makeTransport` nil: the reader's own (Huawei waits longer after connecting).
-    public func reader(_ endpoint: ModbusEndpoint, makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?) -> any LocalInverterReader {
+    /// `makeTransport` nil: the reader's own (Huawei waits longer after connecting). `http` (Fronius) nil: the shared
+    /// session.
+    public func reader(_ endpoint: ModbusEndpoint, makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?,
+                       http: HTTPClient? = nil) -> any LocalInverterReader {
         switch self {
         case .huawei: HuaweiModbusClient(endpoint: endpoint, makeTransport: makeTransport)
         case .sunSpec: SunSpecClient(endpoint: endpoint, makeTransport: makeTransport)
+        case .fronius: FroniusSolarAPIClient(endpoint: endpoint, http: http)
         }
     }
 }
 
-/// "Find inverter": looks for inverters on the home network. Neither Huawei dongles nor SunSpec inverters announce
-/// themselves (no Bonjour), so every address of the device's Wi-Fi/Ethernet subnet (at most the 254 around it) is tried
+/// "Find inverter": looks for inverters on the home network. Neither Huawei dongles, SunSpec inverters nor the Fronius
+/// Solar API announce themselves (no Bonjour), so every address of the device's Wi-Fi/Ethernet subnet (at most the 254 around it) is tried
 /// on the kind's ports with a quick TCP connect; the few that accept are read like an inverter (each unit ID in turn).
 /// Read-only, like the live data. Takes a few seconds; the first run makes iOS ask for Local Network access.
 public struct InverterFinder: Sendable {
@@ -59,6 +78,8 @@ public struct InverterFinder: Sendable {
     var probe: @Sendable (String, UInt16) async -> Bool
     /// Transport for the full read of a host that accepted; nil: the reader's own.
     var makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?
+    /// HTTP for the Solar API read (Fronius); nil: the shared session.
+    var http: HTTPClient?
     /// Connections tried at the same time.
     var concurrency = 64
 
@@ -70,21 +91,23 @@ public struct InverterFinder: Sendable {
     }
 
     init(kind: LocalInverterKind, candidates: @escaping @Sendable () -> [String], probe: @escaping @Sendable (String, UInt16) async -> Bool,
-         makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?) {
+         makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?, http: HTTPClient? = nil) {
         self.kind = kind
         self.candidates = candidates
         self.probe = probe
         self.makeTransport = makeTransport
+        self.http = http
     }
 
     /// Inverters that answered, in address order. Empty when none did (or no local network).
     public func find() async -> [Match] {
         let open = await openPorts(candidates().flatMap { host in kind.ports.map { (host, $0) } })
-        let kind = kind, makeTransport = makeTransport
+        let kind = kind, makeTransport = makeTransport, http = http
         let matches = await withTaskGroup(of: Match?.self) { group in
             for (host, port) in open {
                 group.addTask {
-                    try? await Self.identify(kind: kind, host: host, ports: [port], unitIDs: kind.unitIDs, makeTransport: makeTransport).get()
+                    try? await Self.identify(kind: kind, host: host, ports: [port], unitIDs: kind.unitIDs, makeTransport: makeTransport,
+                                             http: http).get()
                 }
             }
             var found: [Match] = []
@@ -120,16 +143,17 @@ public struct InverterFinder: Sendable {
     /// scan and by "Test inverter". A Modbus answer that is not an inverter (wrong unit ID, "gateway target failed")
     /// or, for SunSpec, no answer in time tries the next unit ID; a refused connection the next port.
     public static func identify(kind: LocalInverterKind, host: String, ports: [UInt16], unitIDs: [Int],
-                                makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?) async -> Result<Match, Error> {
+                                makeTransport: (@Sendable (ModbusEndpoint) -> ModbusTransport?)?,
+                                http: HTTPClient? = nil) async -> Result<Match, Error> {
         var lastError: Error = SunWattError.inverterUnreachable
         for port in ports {
             units: for unit in unitIDs {
                 guard (0...247).contains(unit) else { continue }
                 let endpoint = ModbusEndpoint(host: host, port: port, unitID: UInt8(unit))
-                let reader = kind.reader(endpoint, makeTransport: makeTransport)
+                let reader = kind.reader(endpoint, makeTransport: makeTransport, http: http)
                 switch await SunWattLoader.race(deadline: kind.readDeadline, { try await reader.identifyLive() }) {
                 case .success(let (model, reading)):
-                    return .success(Match(address: endpoint.text, unitID: unit, model: model, reading: reading))
+                    return .success(Match(address: endpoint.text(defaultPort: kind.defaultPort), unitID: unit, model: model, reading: reading))
                 case .failure(let error):
                     if error is CancellationError { return .failure(error) }
                     lastError = error

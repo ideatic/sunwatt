@@ -46,6 +46,12 @@ struct SolarSetupEditor: View {
                     InverterLinkEditor(model: model, plantID: plantID)
                         .id(provider)
                 }
+            case .homeNetwork:
+                // The inverter is the whole setup (also in onboarding).
+                InverterLinkEditor(model: model, plantID: plantID)
+                    .id(provider)
+                hairline
+                help(provider)
             case .apiKey:
                 SolarAPIEditor(model: model, provider: provider, plantID: plantID, initialTest: initialTest)
                     .id(provider)
@@ -95,6 +101,7 @@ struct SolarSetupEditor: View {
     private func apiHelp(_ provider: SolarProvider) -> Text {
         switch provider {
         case .fusionSolar, .fusionSolarAPI: Text(verbatim: "")
+        case .fronius: atext("Fronius offers no free cloud access for apps, so SunWatt reads the inverter only at home. To see your data away from home as well, have the inverter upload to PVOutput and choose PVOutput.")
         case .solarEdge: atext("In the SolarEdge monitoring portal open Admin, then Site Access and API Access. Accept the terms, then copy the API key and the site ID.")
         case .pvOutput: atext("On pvoutput.org open Settings. Turn on API Access, then copy the API Key and the System Id shown on that page.")
         }
@@ -109,7 +116,7 @@ struct SolarSetupEditor: View {
     }
 }
 
-/// Three buttons side by side: FusionSolar, SolarEdge, PVOutput.
+/// One button per provider, side by side: FusionSolar, SolarEdge, PVOutput, Fronius.
 struct SolarProviderPicker: View {
     @Binding var selection: SolarProvider
     @Environment(\.colorScheme) private var scheme
@@ -220,14 +227,14 @@ struct SolarAPIEditor: View {
     /// Field label and key example per provider (exhaustive: a new provider needs its own).
     private var idLabel: LocalizedStringKey {
         switch provider {
-        case .fusionSolar, .fusionSolarAPI, .pvOutput: "System ID"
+        case .fusionSolar, .fusionSolarAPI, .pvOutput, .fronius: "System ID"
         case .solarEdge: "Site ID"
         }
     }
 
     private var keyPrompt: String {
         switch provider {
-        case .fusionSolar, .fusionSolarAPI, .pvOutput: "a1b2c3d4…"
+        case .fusionSolar, .fusionSolarAPI, .pvOutput, .fronius: "a1b2c3d4…"
         case .solarEdge: "ABCD1234…"
         }
     }
@@ -316,7 +323,15 @@ struct InverterLinkEditor: View {
     }
 
     private var kind: LocalInverterKind { model.localInverterKind(plant: plantID) }
-    private var isHuawei: Bool { kind == .huawei }
+
+    /// An example address in the field, per kind.
+    private var placeholder: String {
+        switch kind {
+        case .huawei: "192.168.1.50"
+        case .sunSpec: "192.168.1.40"
+        case .fronius: "192.168.1.30"
+        }
+    }
 
     var body: some View {
         let palette = AppPalette(scheme)
@@ -326,21 +341,24 @@ struct InverterLinkEditor: View {
             Label { atext("Live data at home") } icon: { Image(systemName: "house.fill") }
                 .font(.system(.subheadline, design: .rounded).weight(.bold))
             Group {
-                if isHuawei {
+                switch kind {
+                case .huawei:
                     atext("Optional. If Modbus TCP is set to “Enable (unrestricted)” in the Huawei dongle, SunWatt reads the inverter directly while you are at home, every few seconds. Elsewhere it uses the kiosk link.")
-                } else {
+                case .sunSpec:
                     atext("Optional. If your inverter offers SunSpec over Modbus TCP (SolarEdge, SMA, Fronius and other brands; it may have to be turned on, for example by your installer), SunWatt reads it directly while you are at home, every few seconds. Elsewhere it uses \(model.settings(focusedOn: plantID).solarProvider.displayName).")
+                case .fronius:
+                    atext("SunWatt reads your Fronius inverter through its Solar API on the home network, every few seconds while you are at home. Away from home, the app and widgets show the last data they received.")
                 }
             }
             .font(.system(.footnote, design: .rounded))
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
             Group {
-                if isHuawei { atext("Dongle IP address") } else { atext("Inverter IP address") }
+                if kind == .huawei { atext("Dongle IP address") } else { atext("Inverter IP address") }
             }
             .font(.system(.footnote, design: .rounded).weight(.semibold))
             .padding(.horizontal, Theme.Spacing.xs)
-            AppTextField(prompt: isHuawei ? "192.168.1.50" : "192.168.1.40", text: $host, onCommit: commit)
+            AppTextField(prompt: placeholder, text: $host, onCommit: commit)
             if !trimmed.isEmpty, !valid {
                 HStack(alignment: .top, spacing: 6) {
                     Image(systemName: "exclamationmark.triangle.fill")
@@ -404,10 +422,13 @@ struct InverterLinkEditor: View {
                 VStack(alignment: .leading, spacing: 2) {
                     atext("No inverter found").font(.system(.subheadline, design: .rounded).weight(.bold))
                     Group {
-                        if isHuawei {
+                        switch kind {
+                        case .huawei:
                             atext("Check that this device is on the home Wi-Fi, that Modbus TCP is enabled in the dongle and that SunWatt may use the local network (Settings → Privacy & Security → Local Network).")
-                        } else {
+                        case .sunSpec:
                             atext("Check that this device is on the home Wi-Fi, that SunSpec over Modbus TCP is enabled in the inverter and that SunWatt may use the local network (Settings → Privacy & Security → Local Network).")
+                        case .fronius:
+                            atext("Check that this device is on the home Wi-Fi, that the Solar API is turned on in the inverter's settings and that SunWatt may use the local network (Settings → Privacy & Security → Local Network).")
                         }
                     }
                     .font(.system(.footnote, design: .rounded))
@@ -520,8 +541,9 @@ struct InverterLinkEditor: View {
         resultHost = match.address
         host = match.address
         commit()
-        let key = AppModel.unitKey(kind)
-        if match.unitID != model.settings(focusedOn: plantID)[keyPath: key] { model.updatePlant(plantID) { $0[keyPath: key] = match.unitID } }
+        if let key = AppModel.unitKey(kind), match.unitID != model.settings(focusedOn: plantID)[keyPath: key] {
+            model.updatePlant(plantID) { $0[keyPath: key] = match.unitID }
+        }
         test = .success(match)
     }
 

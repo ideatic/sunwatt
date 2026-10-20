@@ -698,43 +698,43 @@
         }
       }
     },
-    "The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is turned on (in a Huawei dongle: “Enable (unrestricted)”)." : {
+    "The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that its local access is turned on: Modbus TCP (in a Huawei dongle: “Enable (unrestricted)”) or, on a Fronius inverter, the Solar API." : {
       "extractionState" : "manual",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Wechselrichter hat nicht geantwortet. Prüfe die Adresse, ob du im Heim-WLAN bist und ob der lokale Zugriff eingeschaltet ist: Modbus TCP (bei einem Huawei-Dongle: “Enable (unrestricted)”) oder bei einem Fronius-Wechselrichter die Solar API."
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El inversor no ha respondido. Revisa la dirección, que estés en tu Wi-Fi de casa y que Modbus TCP esté activado (en un dongle de Huawei: “Enable (unrestricted)”)."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O inversor não respondeu. Verifique o endereço, a ligação à rede Wi-Fi de casa e se o Modbus TCP está ativado (num dongle Huawei: “Enable (unrestricted)”)."
+            "value" : "El inversor no ha respondido. Revisa la dirección, que estés en tu Wi-Fi de casa y que su acceso local esté activado: Modbus TCP (en un dongle de Huawei: “Enable (unrestricted)”) o, en un inversor Fronius, la Solar API."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’onduleur n’a pas répondu. Vérifiez l’adresse, que vous êtes bien connecté au Wi-Fi de la maison et que Modbus TCP est activé (sur un dongle Huawei : “Enable (unrestricted)”)."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Wechselrichter hat nicht geantwortet. Prüfe die Adresse, ob du im Heim-WLAN bist und ob Modbus TCP eingeschaltet ist (bei einem Huawei-Dongle: “Enable (unrestricted)”)."
+            "value" : "L’onduleur n’a pas répondu. Vérifiez l’adresse, que vous êtes bien connecté au Wi-Fi de la maison et que son accès local est activé : Modbus TCP (sur un dongle Huawei : “Enable (unrestricted)”) ou, sur un onduleur Fronius, la Solar API."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’inverter non ha risposto. Controlla l’indirizzo, che tu sia connesso alla Wi-Fi di casa e che Modbus TCP sia attivato (nel dongle Huawei: “Enable (unrestricted)”)."
+            "value" : "L'inverter non ha risposto. Controlla l'indirizzo, che tu sia connesso al Wi-Fi di casa e che l'accesso locale sia attivo: Modbus TCP (nel dongle Huawei: “Enable (unrestricted)”) oppure, su un inverter Fronius, la Solar API."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De omvormer reageert niet. Controleer het adres, of je op je thuis-wifi zit en of Modbus TCP is ingeschakeld (bij een Huawei-dongle: “Enable (unrestricted)”)."
+            "value" : "De omvormer reageert niet. Controleer het adres, of je op je thuis-wifi zit en of de lokale toegang is ingeschakeld: Modbus TCP (bij een Huawei-dongle: “Enable (unrestricted)”) of, bij een Fronius-omvormer, de Solar API."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O inversor não respondeu. Verifique o endereço, se está ligado à rede Wi-Fi de casa e se o acesso local está ativado: Modbus TCP (num dongle Huawei: “Enable (unrestricted)”) ou, num inversor Fronius, a Solar API."
           }
         }
       }

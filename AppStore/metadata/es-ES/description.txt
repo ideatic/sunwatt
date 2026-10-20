@@ -12,6 +12,7 @@ Conecta tu instalación solar y verás la potencia actual en kW, la energía de 
 • Huawei FusionSolar: pega el enlace Kiosk de tu planta o introduce la cuenta de API que te crea tu instalador
 • SolarEdge: introduce el ID del sitio y la clave API
 • PVOutput: introduce el ID de tu sistema y la clave API. PVOutput funciona con muchas marcas de inversores, como Fronius, SMA, Enphase, GoodWe o Growatt
+• Fronius: introduce la dirección del inversor en tu red de casa (datos mientras estás en casa)
 • Varias instalaciones a la vez
 • Datos en directo desde casa, si quieres: con el dongle de Huawei o con un inversor SunSpec
 La primera vez, la app te explica dónde encontrar cada dato en un par de minutos.

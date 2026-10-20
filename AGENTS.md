@@ -6,11 +6,12 @@ Guide for coding agents (and humans) working on SunWatt. Read this first, then `
 
 SunWatt shows home energy data in widgets and an app:
 
-- **Solar production** from one of four providers (`SolarProvider`, chosen under "Solar system"):
+- **Solar production** from one of five providers (`SolarProvider`, chosen under "Solar system"):
   - Huawei FusionSolar *kiosk link* (public read-only URL with a `kk=` token),
   - SolarEdge Monitoring API (site ID + API key; `overview` + `power`, 2 requests per fetch),
   - PVOutput (system ID + API key in headers; covers many inverter brands).
   - Huawei FusionSolar *API account* (Northbound API: user name + system code from the installer, server `*.fusionsolar.huawei.com`; rate-limited, at most one fetch every 10 min).
+  - Fronius inverter on the home network (Solar API, plain HTTP on port 80, no account; no cloud, so data only at home, DECISIONS D30).
   - Optional live data at home over Modbus TCP: the Huawei dongle (FusionSolar) or a SunSpec inverter (SolarEdge, PVOutput users), read-only (DECISIONS D18, D20).
 - **Electricity price**: Spain retail PVPC (Red Eléctrica, `apidatos.ree.es`); Portugal, France, Germany+Luxembourg, Austria, Belgium, Netherlands, North Italy day-ahead wholesale (Energy-Charts, `api.energy-charts.info`, Fraunhofer ISE, CC BY 4.0). Wholesale is labelled "Day-ahead price", never sold as retail.
 
@@ -40,7 +41,7 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power"). Team `EX68NKELW
 ### Inside `SunWattKit/Sources/SunWattKit`
 
 - `Models/`: `SolarPlant` (one plant; the first lives in the original settings fields, further ones in `additionalPlants`), `PriceRegion` (8 regions, time zone, source), `PriceSeries` (+ analysis: min/max/cheapest hours, + building/aggregation 15 min → hourly), `SolarSnapshot`, `Settings`, `SunWattData`.
-- `Services/`: `HTTPClient` protocol (stubbed in tests), `FusionSolarKioskClient`, `KioskEndpoint` (parse/validate link, `cacheID` = SHA-256 of host+token), `NorthboundClient` (FusionSolar API account), `SolarEdgeClient`, `PVOutputClient` (+ `SolarLocalTime` helpers), `LocalInverter` (`ModbusEndpoint`, `LocalInverterSolarClient`: cloud + inverter), `HuaweiModbus`, `SunSpec`, `InverterFinder` ("Find inverter" scan), `HTMLEntities`, `PVPCClient`, `EnergyChartsClient`.
+- `Services/`: `HTTPClient` protocol (stubbed in tests), `FusionSolarKioskClient`, `KioskEndpoint` (parse/validate link, `cacheID` = SHA-256 of host+token), `NorthboundClient` (FusionSolar API account), `SolarEdgeClient`, `PVOutputClient` (+ `SolarLocalTime` helpers), `LocalInverter` (`ModbusEndpoint`, `LocalInverterSolarClient`: cloud + inverter), `HuaweiModbus`, `SunSpec`, `Fronius` (`FroniusSolarAPIClient`, HTTP), `InverterFinder` ("Find inverter" scan), `HTMLEntities`, `PVPCClient`, `EnergyChartsClient`.
 - `Models/SolarAccount`: `SolarProvider`, `SolarAPICredentials` (validated ID + key), `SolarAccount` (validated settings → client + `cacheID`). Every solar consumer goes through `SolarAccount(settings:)` / `SolarAccount(plant:)`; do not read `kioskURL` directly. Code written for one plant serves any plant through `SunWattSettings.focused(on:)`; with one plant nothing in the UI may change (`SunWattData.plantName` is nil, `otherPlants` empty).
 - `Store/AppGroupStore`: settings + last good data in the App Group, local fallback when the group container is missing.
 - `Timeline/`: `SunWattLoader` (fetch with deadline + cache window), `TimelineBuilder` (widget entries, stale flags), `PriceRangeDataSource`.

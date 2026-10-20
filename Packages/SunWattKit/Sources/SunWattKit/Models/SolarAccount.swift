@@ -12,6 +12,9 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
     /// Huawei FusionSolar Northbound API ("API account"): user name + system code of an account the installer creates.
     /// Shown as the second way to connect FusionSolar, not as its own button.
     case fusionSolarAPI
+    /// A Fronius inverter read through its Solar API on the home network (`SunWattSettings.froniusHost`). No cloud:
+    /// Fronius's Solar.web API is paid. Away from home the last data stays on screen.
+    case fronius
 
     public var id: String { rawValue }
 
@@ -43,6 +46,11 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
                 displayName: "Huawei FusionSolar API", shortName: "FusionSolar", setup: .northboundAccount,
                 portalURL: URL(string: "https://\(NorthboundCredentials.defaultHost)"),
                 minimumFetchInterval: 10 * 60, localInverter: .huawei, keepsCloudHome: false, pickerGroup: .fusionSolar)
+        case .fronius:
+            // The inverter on the home network only: no request limit, no cloud consumption to keep.
+            SolarProviderProfile(
+                displayName: "Fronius", shortName: "Fronius", setup: .homeNetwork, portalURL: nil,
+                minimumFetchInterval: 0, localInverter: .fronius, keepsCloudHome: false)
         }
     }
 
@@ -54,7 +62,7 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
 
     /// Brand name, the same in every language.
     public var displayName: String { profile.displayName }
-    /// Short name for the provider picker (three fit side by side on a phone).
+    /// Short name for the provider picker (four fit side by side on a phone).
     public var shortName: String { profile.shortName }
     /// Where the user finds the ID and API key.
     public var portalURL: URL? { profile.portalURL }
@@ -62,7 +70,12 @@ public enum SolarProvider: String, Codable, Sendable, CaseIterable, Identifiable
     public var usesAPIKey: Bool { profile.setup == .apiKey }
     /// True when the provider's credentials are kept in `solarSiteID` and `solarAPIKey` (ID + key, or user name +
     /// system code): switching between such providers clears them.
-    public var usesCredentialFields: Bool { profile.setup != .kioskLink }
+    public var usesCredentialFields: Bool {
+        switch profile.setup {
+        case .apiKey, .northboundAccount: true
+        case .kioskLink, .homeNetwork: false
+        }
+    }
     /// Solar data younger than this is reused instead of fetched, even on an explicit refresh.
     public var minimumFetchInterval: TimeInterval { profile.minimumFetchInterval }
 }
@@ -77,6 +90,8 @@ public struct SolarProviderProfile: Sendable {
         case apiKey
         /// A user name + system code (`NorthboundCredentials`) on a FusionSolar server; the code in the keychain.
         case northboundAccount
+        /// Only the inverter's address on the home network (Fronius); no account, no secret.
+        case homeNetwork
     }
 
     /// Brand name, the same in every language.
@@ -141,6 +156,8 @@ public enum SolarAccount: Hashable, Sendable {
     case pvOutput(SolarAPICredentials, local: ModbusEndpoint? = nil)
     /// FusionSolar Northbound API account; `local`: the Huawei dongle on the home network (optional).
     case fusionSolarAPI(NorthboundCredentials, local: ModbusEndpoint? = nil)
+    /// A Fronius inverter's Solar API on the home network (port 80 unless the address names another).
+    case fronius(local: ModbusEndpoint)
 
     /// The first plant's account.
     public init?(settings: SunWattSettings) {
@@ -163,13 +180,16 @@ public enum SolarAccount: Hashable, Sendable {
         case .fusionSolarAPI:
             guard let credentials = NorthboundCredentials(host: plant.northboundHost, userName: plant.siteID, systemCode: plant.apiKey) else { return nil }
             self = .fusionSolarAPI(credentials, local: HuaweiLocalEndpoint(parsing: plant.huaweiLocalHost, unitID: plant.huaweiLocalUnitID))
+        case .fronius:
+            guard let local = ModbusEndpoint(parsing: plant.froniusHost, defaultPort: FroniusSolarAPIClient.port) else { return nil }
+            self = .fronius(local: local)
         }
     }
 
     /// The account of an ID + API key provider; nil for a provider set up otherwise.
     public static func api(_ provider: SolarProvider, _ credentials: SolarAPICredentials, local: ModbusEndpoint? = nil) -> SolarAccount? {
         switch provider {
-        case .fusionSolar, .fusionSolarAPI: nil
+        case .fusionSolar, .fusionSolarAPI, .fronius: nil
         case .solarEdge: .solarEdge(credentials, local: local)
         case .pvOutput: .pvOutput(credentials, local: local)
         }
@@ -179,14 +199,15 @@ public enum SolarAccount: Hashable, Sendable {
     public var kioskEndpoint: KioskEndpoint? {
         switch self {
         case .fusionSolar(let kiosk, _): kiosk
-        case .solarEdge, .pvOutput, .fusionSolarAPI: nil
+        case .solarEdge, .pvOutput, .fusionSolarAPI, .fronius: nil
         }
     }
 
-    /// The inverter read on the home network, if set up: the Huawei dongle or a SunSpec inverter.
+    /// The inverter read on the home network, if set up: the Huawei dongle, a SunSpec inverter or a Fronius inverter.
     public var localInverter: ModbusEndpoint? {
         switch self {
         case .fusionSolar(_, let local), .solarEdge(_, let local), .pvOutput(_, let local), .fusionSolarAPI(_, let local): local
+        case .fronius(let local): local
         }
     }
 
@@ -201,6 +222,7 @@ public enum SolarAccount: Hashable, Sendable {
         case .solarEdge: .solarEdge
         case .pvOutput: .pvOutput
         case .fusionSolarAPI: .fusionSolarAPI
+        case .fronius: .fronius
         }
     }
 
@@ -219,6 +241,9 @@ public enum SolarAccount: Hashable, Sendable {
         case .fusionSolarAPI(let credentials, _):
             let text = "\(provider.rawValue)\n\(credentials.host)\n\(credentials.userName)\n\(credentials.systemCode)"
             return SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
+        case .fronius(let local):
+            let text = "\(provider.rawValue)\n\(local.host)\n\(local.port)"
+            return SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
         }
     }
 
@@ -233,6 +258,8 @@ public enum SolarAccount: Hashable, Sendable {
             withLocal(local, cloud: PVOutputClient(credentials: credentials, http: http))
         case .fusionSolarAPI(let credentials, let local):
             withLocal(local, cloud: NorthboundClient(credentials: credentials, http: http))
+        case .fronius(let local):
+            withLocal(local, cloud: nil)
         }
     }
 
@@ -242,8 +269,8 @@ public enum SolarAccount: Hashable, Sendable {
         localReader().map { LocalInverterSolarClient(local: $0, cloud: nil, keepsCloudHome: provider.profile.keepsCloudHome) }
     }
 
-    /// The cloud source, with the inverter on the home network in front of it when one is set up. `cloud` is nil only
-    /// for a FusionSolar plant set up with the dongle alone.
+    /// The cloud source, with the inverter on the home network in front of it when one is set up. `cloud` is nil for a
+    /// FusionSolar plant set up with the dongle alone and for Fronius.
     private func withLocal(_ local: ModbusEndpoint?, cloud: SolarDataSource?) -> SolarDataSource {
         if let local {
             return LocalInverterSolarClient(local: provider.profile.localInverter.reader(local, makeTransport: nil), cloud: cloud,
@@ -266,6 +293,7 @@ public extension SunWattSettings {
         switch solarProvider.profile.setup {
         case .kioskLink: return filled(kioskURL) || filled(huaweiLocalHost)
         case .apiKey, .northboundAccount: return filled(solarSiteID) || filled(solarAPIKey)
+        case .homeNetwork: return filled(froniusHost)
         }
     }
 
@@ -274,6 +302,7 @@ public extension SunWattSettings {
         switch solarProvider.profile.setup {
         case .apiKey: return .invalidSolarCredentials
         case .northboundAccount: return .invalidNorthboundAccount
+        case .homeNetwork: return .invalidInverterAddress
         case .kioskLink: break
         }
         let hostFilled = !huaweiLocalHost.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty

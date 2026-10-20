@@ -93,7 +93,7 @@ public enum SunWattError: Error, Equatable, Sendable, LocalizedError {
         case .invalidKioskURL: L10n.string("The kiosk URL is not valid. It must contain the kk parameter.")
         case .kioskLinkRejected: L10n.string("Huawei no longer accepts this kiosk link. Kiosk links expire after a year: create a new one in FusionSolar and paste it in SunWatt.")
         case .invalidInverterAddress: L10n.string("This is not a valid address. Use the IP address of the inverter or its dongle, for example 192.168.1.50.")
-        case .inverterUnreachable: L10n.string("The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that Modbus TCP is turned on (in a Huawei dongle: “Enable (unrestricted)”).")
+        case .inverterUnreachable: L10n.string("The inverter did not answer. Check the address, that you are on your home Wi-Fi, and that its local access is turned on: Modbus TCP (in a Huawei dongle: “Enable (unrestricted)”) or, on a Fronius inverter, the Solar API.")
         case .invalidSolarCredentials: L10n.string("The ID must be a number and the API key letters and digits only.")
         case .solarCredentialsRejected: L10n.string("The API key or the ID was rejected. Check both, and that API access is on.")
         case .invalidNorthboundAccount: L10n.string("Enter the user name and the password (system code) of your FusionSolar API account.")

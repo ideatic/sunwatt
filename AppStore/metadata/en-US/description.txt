@@ -7,6 +7,7 @@ Connect your solar system and see your current power in kW, today's energy in kW
 • Huawei FusionSolar: paste your kiosk link, or enter the API account your installer creates for you
 • SolarEdge: enter your site ID and API key
 • PVOutput: enter your system ID and API key. PVOutput works with many inverter brands, such as Fronius, SMA, Enphase, GoodWe and Growatt
+• Fronius: enter the inverter's address on your home network (data while you are at home)
 • Several solar plants in one app
 • Optional live data at home: read a Huawei dongle or a SunSpec inverter on your home network (Modbus TCP, read-only)
 The onboarding shows you where to find each one in a couple of minutes.

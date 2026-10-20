@@ -43,6 +43,8 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
     public var sunSpecHost: String
     /// Modbus unit ID of the SunSpec inverter (found by "Test inverter"; 1, SMA 126).
     public var sunSpecUnitID: Int
+    /// Fronius only: address of the inverter on the home network ("host" or "host:port"; the Solar API's port is 80).
+    public var froniusHost: String
     /// FusionSolar API account only: the FusionSolar server (e.g. "eu5.fusionsolar.huawei.com"); empty: the default.
     /// The user name is kept in `solarSiteID` and the system code (a secret) in `solarAPIKey`.
     public var northboundHost: String
@@ -65,6 +67,7 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         huaweiLocalUnitID: Int = 1,
         sunSpecHost: String = "",
         sunSpecUnitID: Int = 1,
+        froniusHost: String = "",
         northboundHost: String = "",
         primaryPlantName: String = "",
         additionalPlants: [SolarPlant] = []
@@ -82,6 +85,7 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         self.huaweiLocalUnitID = huaweiLocalUnitID
         self.sunSpecHost = sunSpecHost
         self.sunSpecUnitID = sunSpecUnitID
+        self.froniusHost = froniusHost
         self.northboundHost = northboundHost
         self.primaryPlantName = primaryPlantName
         self.additionalPlants = additionalPlants
@@ -90,7 +94,7 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case kioskURL, showTomorrowPrices, priceRegion, onboardingCompleted, solarProvider, solarSiteID, solarAPIKey
         case kioskLinkSavedAt, kioskExpiryNoticeDismissed, huaweiLocalHost, huaweiLocalUnitID, sunSpecHost, sunSpecUnitID
-        case northboundHost, primaryPlantName, additionalPlants
+        case froniusHost, northboundHost, primaryPlantName, additionalPlants
     }
 
     /// Missing keys (older stored settings) fall back to defaults.
@@ -111,6 +115,7 @@ public struct SunWattSettings: Codable, Hashable, Sendable {
         huaweiLocalUnitID = try c.decodeIfPresent(Int.self, forKey: .huaweiLocalUnitID) ?? 1
         sunSpecHost = try c.decodeIfPresent(String.self, forKey: .sunSpecHost) ?? ""
         sunSpecUnitID = try c.decodeIfPresent(Int.self, forKey: .sunSpecUnitID) ?? 1
+        froniusHost = try c.decodeIfPresent(String.self, forKey: .froniusHost) ?? ""
         northboundHost = try c.decodeIfPresent(String.self, forKey: .northboundHost) ?? ""
         primaryPlantName = try c.decodeIfPresent(String.self, forKey: .primaryPlantName) ?? ""
         // A plant that cannot be read is dropped rather than losing every setting.

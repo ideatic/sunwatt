@@ -74,6 +74,13 @@ struct SolarContractCase: Sendable, CustomTestStringConvertible {
                     FakeModbusTransport(registers: fakeSunSpecRegisters())
                 }), cloud: nil, keepsCloudHome: true, now: { now })
             },
+        SolarContractCase(
+            name: "Fronius inverter", now: madrid(2026, 6, 1, 12, 35), routes: nil, secret: nil, rejected: nil,
+            expectsLive: true) { _, now in
+                LocalInverterSolarClient(local: FroniusSolarAPIClient(endpoint: ModbusEndpoint(host: "x", port: 80),
+                                                                      http: froniusStub("fronius-powerflow-day-synthetic.json")),
+                                         cloud: nil, now: { now })
+            },
     ]
 
     /// Every reply carries a session token header (the FusionSolar API login sends it; others ignore it).
@@ -327,5 +334,62 @@ struct InverterContractCase: Sendable, CustomTestStringConvertible {
         let used = Set(PriceRegion.allCases.map { kind($0.profile.source) })
         let covered = Set(PriceContractCase.all.map { kind($0.region.profile.source) })
         #expect(used == covered)
+    }
+}
+
+// MARK: Inverters read over HTTP
+
+/// The Solar API answering with `fixture`. The inverter is on the home network: its errors are "unreachable", not the
+/// cloud errors checked above.
+func froniusStub(_ fixture: String) -> StubHTTPClient {
+    let http = StubHTTPClient()
+    http.on("GetPowerFlowRealtimeData", .ok((try? Fixture.data(fixture)) ?? Data()))
+    return http
+}
+
+/// One HTTP inverter reader against its fixture.
+struct HTTPInverterContractCase: Sendable, CustomTestStringConvertible {
+    let name: String
+    let fixture: String
+    let make: @Sendable (ModbusEndpoint, HTTPClient) -> any LocalInverterReader
+
+    var testDescription: String { name }
+
+    static let all: [HTTPInverterContractCase] = [
+        HTTPInverterContractCase(name: "Fronius day", fixture: "fronius-powerflow-day-synthetic.json") { FroniusSolarAPIClient(endpoint: $0, http: $1) },
+        HTTPInverterContractCase(name: "Fronius GEN24 night", fixture: "fronius-powerflow-gen24-night-synthetic.json") {
+            FroniusSolarAPIClient(endpoint: $0, http: $1)
+        },
+    ]
+}
+
+@Suite struct HTTPInverterReaderContractTests {
+    private let endpoint = ModbusEndpoint(host: "x", port: 80)
+
+    @Test(arguments: HTTPInverterContractCase.all)
+    func readingIsGetOnly(_ inverter: HTTPInverterContractCase) async throws {
+        let http = froniusStub(inverter.fixture)
+        let reader = inverter.make(endpoint, http)
+        let reading = try await reader.readLive()
+        #expect(reading.activePowerKW.isFinite)
+        #expect((reading.dailyEnergyKWh ?? 0) >= 0 && (reading.totalEnergyKWh ?? 0) >= 0 && (reading.homeConsumptionKW ?? 0) >= 0)
+        #expect(http.requests.count == 1, "one request per call")
+        #expect(http.requests.allSatisfy { ($0.httpMethod ?? "GET") == "GET" && $0.httpBody == nil }, "GET only")
+        let (_, identified) = try await reader.identifyLive()
+        #expect(identified == reading)
+    }
+
+    @Test(arguments: HTTPInverterContractCase.all)
+    func errors(_ inverter: HTTPInverterContractCase) async {
+        await #expect(throws: SunWattError.inverterUnreachable) {
+            try await inverter.make(endpoint, StubHTTPClient(.failure(URLError(.cannotConnectToHost)))).readLive()
+        }
+        // Another device answered on the port.
+        await #expect(throws: SunWattError.inverterUnreachable) {
+            try await inverter.make(endpoint, StubHTTPClient(.ok(Data("<html>Router</html>".utf8), status: 404))).readLive()
+        }
+        await #expect(throws: CancellationError.self) {
+            try await inverter.make(endpoint, StubHTTPClient(.failure(CancellationError()))).readLive()
+        }
     }
 }

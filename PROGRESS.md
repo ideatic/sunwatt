@@ -55,6 +55,7 @@
 - [x] Second code review (2026-10-18, 10 findings): 9 fixed with tests, 1 was not a bug (REE sends "not published yet" as HTTP 502 with an `errors` body, so that check stays first). Fixed: an unknown price region no longer resets all settings; a failed keychain write no longer brings an old secret back, secrets of an earlier install are deleted at launch, and settings reads reuse the secrets (D27); SolarEdge/PVOutput curves keep both 02:xx hours on the autumn DST day; PVOutput and SolarEdge rate limits are `.rateLimited`; FusionSolar API sessions are shared by the app and the widgets (D28); price sources have no default that reads `Date()`; the App Intents symbol check is general and runs in CI on an unsigned archive (D26).
 - [ ] Watch app did not page on a real watch (build 202610181936: Digital Crown and swipes did nothing). Pager no longer wrapped in a `TimelineView`, solar first like the iPhone app (DECISIONS D29). To check on the watch with the next build.
 - [x] Watch price chart: tap a bar to see that hour's price (owner request, DECISIONS D29). To check on the watch with the next build.
+- [x] Fronius inverters on the home network through the Solar API (fifth provider, Find/Test inverter, home consumption with batteries, texts in 7 languages, privacy page, store texts; DECISIONS D30). Not yet tried on a real Fronius inverter; fixtures are synthetic. Settings provider picker now has 4 buttons: render and check at phone width.
 
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).

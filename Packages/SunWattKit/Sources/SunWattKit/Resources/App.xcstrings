@@ -7711,6 +7711,129 @@
         }
       },
       "comment" : "FusionSolar API account: help under the fields."
+    },
+    "SunWatt reads your Fronius inverter through its Solar API on the home network, every few seconds while you are at home. Away from home, the app and widgets show the last data they received." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt liest Ihren Fronius-Wechselrichter über dessen Solar API im Heimnetz, alle paar Sekunden, solange Sie zu Hause sind. Unterwegs zeigen die App und die Widgets die zuletzt empfangenen Daten an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt lee tu inversor Fronius a través de su Solar API en la red de casa, cada pocos segundos mientras estás en casa. Fuera de casa, la app y los widgets muestran los últimos datos recibidos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt lit votre onduleur Fronius via sa Solar API sur votre réseau local, toutes les quelques secondes pendant que vous êtes chez vous. Hors de chez vous, l’application et les widgets affichent les dernières données reçues."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt legge il tuo inverter Fronius tramite la sua Solar API sulla rete di casa, ogni pochi secondi mentre sei a casa. Fuori casa, l'app e i widget mostrano gli ultimi dati ricevuti."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SunWatt leest je Fronius-omvormer via de Solar API op je thuisnetwerk, elke paar seconden terwijl je thuis bent. Buiten huis tonen de app en widgets de laatste gegevens die ze hebben ontvangen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O SunWatt lê o seu inversor Fronius através da Solar API, na rede doméstica, a cada poucos segundos enquanto estiver em casa. Fora de casa, a aplicação e os widgets mostram os últimos dados que receberam."
+          }
+        }
+      }
+    },
+    "Check that this device is on the home Wi-Fi, that the Solar API is turned on in the inverter's settings and that SunWatt may use the local network (Settings → Privacy & Security → Local Network)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfen Sie, ob dieses Gerät mit dem WLAN zu Hause verbunden ist, ob die Solar API in den Einstellungen des Wechselrichters eingeschaltet ist und ob SunWatt das lokale Netzwerk verwenden darf (Einstellungen → Datenschutz & Sicherheit → Lokales Netzwerk)."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba que este dispositivo está conectado al Wi-Fi de casa, que la Solar API está activada en los ajustes del inversor y que SunWatt puede usar la red local (Ajustes → Privacidad y seguridad → Red local)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez que cet appareil est connecté au Wi-Fi de la maison, que la Solar API est activée dans les réglages de l’onduleur et que SunWatt est autorisé à utiliser le réseau local (Réglages → Confidentialité et sécurité → Réseau local)."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica che questo dispositivo sia connesso al Wi-Fi di casa, che la Solar API sia attivata nelle impostazioni dell'inverter e che SunWatt possa usare la rete locale (Impostazioni → Privacy e sicurezza → Rete locale)."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controleer of dit apparaat op het wifi-netwerk van thuis zit, of de Solar API is ingeschakeld in de instellingen van de omvormer en of SunWatt het lokale netwerk mag gebruiken (Instellingen → Privacy en beveiliging → Lokaal netwerk)."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifique se este dispositivo está na rede Wi-Fi de casa, se a Solar API está ativada nas definições do inversor e se o SunWatt pode usar a rede local (Definições → Privacidade e segurança → Rede local)."
+          }
+        }
+      }
+    },
+    "Fronius offers no free cloud access for apps, so SunWatt reads the inverter only at home. To see your data away from home as well, have the inverter upload to PVOutput and choose PVOutput." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fronius bietet für Apps keinen kostenlosen Cloud-Zugriff, daher liest SunWatt den Wechselrichter nur zu Hause aus. Um Ihre Daten auch unterwegs zu sehen, lassen Sie den Wechselrichter seine Daten an PVOutput hochladen und wählen Sie dann PVOutput aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fronius no ofrece acceso gratuito a la nube para apps, así que SunWatt lee el inversor solo cuando estás en casa. Para ver tus datos también fuera de casa, haz que el inversor suba los datos a PVOutput y elige PVOutput."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fronius ne propose aucun accès cloud gratuit aux applications : SunWatt lit donc l’onduleur uniquement à la maison. Pour voir vos données aussi hors de chez vous, faites transmettre les données de l’onduleur à PVOutput, puis choisissez PVOutput."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fronius non offre un accesso cloud gratuito alle app, quindi SunWatt legge l'inverter solo a casa. Per vedere i tuoi dati anche fuori casa, configura l'inverter perché invii i dati a PVOutput e scegli PVOutput."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fronius biedt apps geen gratis cloudtoegang, dus SunWatt leest de omvormer alleen thuis uit. Wil je je gegevens ook buiten huis zien, laat de omvormer dan uploaden naar PVOutput en kies PVOutput."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Fronius não oferece acesso gratuito à nuvem para aplicações, por isso o SunWatt lê o inversor apenas em casa. Para ver os seus dados também fora de casa, configure o inversor para os carregar no PVOutput e escolha PVOutput."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

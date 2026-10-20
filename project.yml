@@ -55,6 +55,9 @@ targets:
         LSApplicationCategoryType: public.app-category.utilities
         # Huawei inverter on the home network (Modbus TCP), optional. Localized in InfoPlist.xcstrings.
         NSLocalNetworkUsageDescription: SunWatt reads your inverter on your home network to show live solar production.
+        # Fronius Solar API: plain HTTP to the inverter's local address (ATS allows only local hosts this way).
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
         # Other ways Siri may hear the app name in App Shortcut phrases.
         INAlternativeAppNames:
           - INAlternativeAppName: Sun Watt
@@ -123,6 +126,8 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         CFBundleLocalizations: [en, es, pt, fr, de, it, nl]
         NSLocalNetworkUsageDescription: SunWatt reads your inverter on your home network to show live solar production.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:

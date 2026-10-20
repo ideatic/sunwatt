@@ -504,10 +504,10 @@ public final class AppModel {
         return result
     }
 
-    // MARK: Inverter on the home network (Huawei dongle or SunSpec)
+    // MARK: Inverter on the home network (Huawei dongle, SunSpec or Fronius Solar API)
 
     /// What the selected provider reads on the home network: the Huawei dongle for FusionSolar, a SunSpec inverter
-    /// for SolarEdge and PVOutput.
+    /// for SolarEdge and PVOutput, the Solar API for Fronius.
     public var localInverterKind: LocalInverterKind { localInverterKind(plant: SolarPlant.primaryID) }
 
     public func localInverterKind(plant id: String) -> LocalInverterKind {
@@ -516,33 +516,37 @@ public final class AppModel {
 
     /// The settings that hold its address and unit ID.
     var localInverterHostKey: WritableKeyPath<SunWattSettings, String> { Self.hostKey(localInverterKind) }
-    var localInverterUnitKey: WritableKeyPath<SunWattSettings, Int> { Self.unitKey(localInverterKind) }
+    var localInverterUnitKey: WritableKeyPath<SunWattSettings, Int>? { Self.unitKey(localInverterKind) }
 
     static func hostKey(_ kind: LocalInverterKind) -> WritableKeyPath<SunWattSettings, String> {
         switch kind {
         case .huawei: \.huaweiLocalHost
         case .sunSpec: \.sunSpecHost
+        case .fronius: \.froniusHost
         }
     }
 
-    static func unitKey(_ kind: LocalInverterKind) -> WritableKeyPath<SunWattSettings, Int> {
+    /// Nil for the Fronius Solar API, which has no unit ID.
+    static func unitKey(_ kind: LocalInverterKind) -> WritableKeyPath<SunWattSettings, Int>? {
         switch kind {
         case .huawei: \.huaweiLocalUnitID
         case .sunSpec: \.sunSpecUnitID
+        case .fronius: nil
         }
     }
 
     /// Reads the inverter at `address` once: the saved unit ID first, then the kind's usual ones; for SunSpec without a
-    /// port, 502 and then 1502 (SolarEdge). On success the address to save (with the port that answered) and the unit ID.
+    /// port, 502 and then 1502 (SolarEdge); Fronius on port 80. On success the address to save (with the port that
+    /// answered) and the unit ID.
     public func testInverter(_ address: String, plant id: String = SolarPlant.primaryID) async -> Result<InverterFinder.Match, Error> {
-        guard let endpoint = ModbusEndpoint(parsing: address) else { return .failure(SunWattError.invalidInverterAddress) }
         let kind = localInverterKind(plant: id)
+        guard let endpoint = ModbusEndpoint(parsing: address, defaultPort: kind.defaultPort) else { return .failure(SunWattError.invalidInverterAddress) }
         if isDemo {
             try? await Task.sleep(for: .milliseconds(400))
             return .success(Self.demoInverter(kind))
         }
         let ports = ModbusEndpoint.hasPort(address) ? [endpoint.port] : kind.ports
-        var units = [settings(focusedOn: id)[keyPath: Self.unitKey(kind)]]
+        var units = Self.unitKey(kind).map { [settings(focusedOn: id)[keyPath: $0]] } ?? []
         units += kind.unitIDs.filter { !units.contains($0) }
         return await InverterFinder.identify(kind: kind, host: endpoint.host, ports: ports, unitIDs: units, makeTransport: makeModbusTransport)
     }
@@ -565,6 +569,9 @@ public final class AppModel {
         case .sunSpec:
             InverterFinder.Match(address: "192.168.1.40:1502", unitID: 1, model: "SolarEdge SE5000H",
                                  reading: LiveInverterReading(activePowerKW: 2.9, totalEnergyKWh: 18420))
+        case .fronius:
+            InverterFinder.Match(address: "192.168.1.30", unitID: 1, model: "Fronius",
+                                 reading: LiveInverterReading(activePowerKW: 2.9, dailyEnergyKWh: 5.1, totalEnergyKWh: 21730))
         }
     }
 

@@ -5,6 +5,7 @@ Connectez votre installation solaire pour voir la puissance actuelle en kW, l’
 • Huawei FusionSolar : collez le lien Kiosk de votre installation, ou saisissez le compte API que votre installateur crée pour vous
 • SolarEdge : saisissez l’ID du site et la clé API
 • PVOutput : saisissez l’ID du système et la clé API. PVOutput fonctionne avec de nombreuses marques d’onduleurs, comme Fronius, SMA, Enphase, GoodWe et Growatt
+• Fronius : saisissez l’adresse de l’onduleur sur votre réseau local (données pendant que vous êtes chez vous)
 Plusieurs installations sont possibles. À la maison, vous pouvez aussi lire les données en direct de votre onduleur (dongle Huawei ou onduleur SunSpec).
 Le premier lancement vous explique en quelques minutes où trouver chaque information.
 

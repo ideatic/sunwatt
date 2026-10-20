@@ -12,6 +12,7 @@ Collega il tuo impianto fotovoltaico e vedi la potenza attuale in kW, l’energi
 • Huawei FusionSolar: incolla il link Kiosk del tuo impianto oppure inserisci l’account API che il tuo installatore crea per te
 • SolarEdge: inserisci l’ID del sito e la chiave API
 • PVOutput: inserisci l’ID dell’impianto e la chiave API. PVOutput funziona con molte marche di inverter, come Fronius, SMA, Enphase, GoodWe e Growatt
+• Fronius: inserisci l'indirizzo dell'inverter sulla tua rete di casa (dati mentre sei a casa)
 Al primo avvio una guida spiega dove trovare ogni dato in pochi minuti.
 In casa puoi avere dati in tempo reale, in sola lettura, dal dongle Huawei o da un inverter SunSpec.
 

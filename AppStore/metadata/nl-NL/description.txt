@@ -12,6 +12,7 @@ Koppel je monitoringsysteem en zie het huidige vermogen in kW, de energie van va
 • Huawei FusionSolar: plak de kiosklink van je installatie of voer het API-account in dat je installateur voor je aanmaakt
 • SolarEdge: vul je site-ID en API-sleutel in
 • PVOutput: vul je systeem-ID en API-sleutel in. PVOutput werkt met veel omvormermerken, zoals Fronius, SMA, Enphase, GoodWe en Growatt
+• Fronius: vul het IP-adres van de omvormer op je thuisnetwerk in (gegevens terwijl je thuis bent)
 • Optioneel live gegevens thuis, via de Huawei-dongle of een SunSpec-omvormer
 • Meerdere installaties mogelijk
 De introductie laat in een paar minuten zien waar je alles vindt.

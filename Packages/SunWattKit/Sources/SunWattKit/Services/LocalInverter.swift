@@ -1,11 +1,12 @@
 import Foundation
 
-// Inverters read directly on the home network with Modbus TCP: Huawei (through its dongle, `HuaweiModbusClient`) and
-// SunSpec inverters (SolarEdge, SMA, Fronius, …, `SunSpecClient`). Read-only (function 0x03). While the inverter
-// answers (at home) its live figures are shown; elsewhere the cloud source of the provider.
+// Inverters read directly on the home network: with Modbus TCP Huawei (through its dongle, `HuaweiModbusClient`) and
+// SunSpec inverters (SolarEdge, SMA, Fronius, …, `SunSpecClient`), read-only (function 0x03); over HTTP Fronius
+// inverters through their Solar API (`FroniusSolarAPIClient`, GET only). While the inverter answers (at home) its live
+// figures are shown; elsewhere the cloud source of the provider (Fronius: none, the last data).
 
 /// Address of an inverter (or its dongle) on the home network: an IPv4 address or a host name, optionally ":port"
-/// (default 502), and the Modbus unit ID (usually 1).
+/// (Modbus: default 502; the Fronius Solar API: 80, unit ID unused), and the Modbus unit ID (usually 1).
 public struct ModbusEndpoint: Hashable, Sendable {
     public var host: String
     public var port: UInt16
@@ -18,11 +19,11 @@ public struct ModbusEndpoint: Hashable, Sendable {
     }
 
     /// Nil for anything that is not a plain host: no scheme, no path, no spaces.
-    public init?(parsing text: String, unitID: Int = 1) {
+    public init?(parsing text: String, unitID: Int = 1, defaultPort: UInt16 = 502) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, (0...247).contains(unitID) else { return nil }
         var host = trimmed
-        var port: UInt16 = 502
+        var port = defaultPort
         if let colon = trimmed.lastIndex(of: ":") {
             guard let value = UInt16(trimmed[trimmed.index(after: colon)...]), value > 0 else { return nil }
             port = value
@@ -45,7 +46,10 @@ public struct ModbusEndpoint: Hashable, Sendable {
     }
 
     /// How the address is saved: "host", or "host:port" when the port is not 502.
-    public var text: String { port == 502 ? host : "\(host):\(port)" }
+    public var text: String { text(defaultPort: 502) }
+
+    /// "host", or "host:port" when the port is not `defaultPort` (the kind's usual one).
+    public func text(defaultPort: UInt16) -> String { port == defaultPort ? host : "\(host):\(port)" }
 }
 
 /// The Huawei name, from before SunSpec support.
@@ -61,26 +65,32 @@ public struct LiveInverterReading: Hashable, Sendable {
     public var totalEnergyKWh: Double?
     /// Power at the grid connection from a meter the inverter reads (kW): positive when feeding the grid.
     public var meterActivePowerKW: Double?
+    /// The home's consumption (kW) when the inverter measures it (Fronius: right also with a battery). Nil: worked out
+    /// from production and the meter.
+    public var homeConsumptionKW: Double?
 
-    public init(activePowerKW: Double, dailyEnergyKWh: Double? = nil, totalEnergyKWh: Double? = nil, meterActivePowerKW: Double? = nil) {
+    public init(activePowerKW: Double, dailyEnergyKWh: Double? = nil, totalEnergyKWh: Double? = nil, meterActivePowerKW: Double? = nil,
+                homeConsumptionKW: Double? = nil) {
         self.activePowerKW = activePowerKW
         self.dailyEnergyKWh = dailyEnergyKWh
         self.totalEnergyKWh = totalEnergyKWh
         self.meterActivePowerKW = meterActivePowerKW
+        self.homeConsumptionKW = homeConsumptionKW
     }
 }
 
-/// An inverter that can be read on the home network (Modbus TCP, read-only). Contract, checked for every reader by
-/// `ProviderContractTests`:
+/// An inverter that can be read on the home network (Modbus TCP or HTTP, read-only). Contract, checked for every
+/// reader by `ProviderContractTests`:
 ///
 /// - **Reading.** `activePowerKW` is finite (may be slightly negative at night; callers clamp it). Energy figures are
 ///   nil when the inverter does not count them, never negative. `identifyLive` returns the same reading as `readLive`
 ///   plus the model name when the inverter reports one.
 /// - **Errors.** `CancellationError`; `SunWattError.inverterUnreachable` when there is no connection (away from home,
-///   port closed, Modbus TCP off); `ModbusFrame.Failure` when a device answered but not as this kind of inverter
-///   (wrong unit ID, another device, Modbus exception): callers try the next unit ID only then.
-/// - **Budget.** One connection per call, closed afterwards; callers put a deadline on it (5 s for live reads) and
-///   the reader stops when cancelled. Never writes a register.
+///   port closed, Modbus TCP or the Solar API off), and for an HTTP reader also when another device answered;
+///   `ModbusFrame.Failure` (Modbus readers) when a device answered but not as this kind of inverter (wrong unit ID,
+///   another device, Modbus exception): callers try the next unit ID only then.
+/// - **Budget.** One connection (Modbus) or one GET (HTTP) per call, closed afterwards; callers put a deadline on it
+///   (5 s for live reads) and the reader stops when cancelled. Never writes a register, never sends anything but GET.
 public protocol LocalInverterReader: Sendable {
     func readLive() async throws -> LiveInverterReading
     /// The model name (when the inverter gives it) and a reading, on one connection. Used by "Find inverter".
@@ -135,8 +145,8 @@ enum ModbusSession {
     }
 }
 
-/// The cloud source of the provider (kiosk link, SolarEdge, PVOutput) and the inverter on the home network, read
-/// together. When the inverter answers (at home), its live figures replace the cloud's and its reading is added to the
+/// The cloud source of the provider (kiosk link, SolarEdge, PVOutput, FusionSolar API) and the inverter on the home
+/// network, read together. When the inverter answers (at home), its live figures replace the cloud's and its reading is added to the
 /// cloud curve; otherwise (away, or the inverter is busy) the cloud snapshot is used as it is. Without a cloud source
 /// (`cloud` nil), only the inverter.
 public struct LocalInverterSolarClient: SolarDataSource {
@@ -204,7 +214,8 @@ public struct LocalInverterSolarClient: SolarDataSource {
         if let meter = reading.meterActivePowerKW {
             // Meter: > 0 feeding the grid. HomeEnergy.gridKW: > 0 buying.
             let grid = -meter
-            snapshot.home = HomeEnergy(consumptionKW: max(power + grid, 0), gridKW: grid, dailyConsumptionKWh: nil)
+            let consumption = reading.homeConsumptionKW ?? max(power + grid, 0)
+            snapshot.home = HomeEnergy(consumptionKW: consumption, gridKW: grid, dailyConsumptionKWh: nil)
         } else if !keepsBaseHome {
             snapshot.home = nil
         }

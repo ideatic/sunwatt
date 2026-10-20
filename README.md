@@ -2,7 +2,7 @@
 
 # SunWatt
 
-Widgets for your home energy: solar production (Huawei FusionSolar kiosk link, SolarEdge or PVOutput) and the electricity price (Spain PVPC, plus day-ahead prices for Portugal, France, Germany & Luxembourg, Austria, Belgium, Netherlands and North Italy).
+Widgets for your home energy: solar production (Huawei FusionSolar kiosk link or API account, SolarEdge, PVOutput, or a Fronius inverter on the home network) and the electricity price (Spain PVPC, plus day-ahead prices for Portugal, France, Germany & Luxembourg, Austria, Belgium, Netherlands and North Italy).
 
 Platforms: iOS 27, iPadOS 27, macOS 27, watchOS 27. Languages: English, Spanish, Portuguese, French, German, Italian, Dutch.
 
@@ -119,5 +119,6 @@ cd Packages/SunWattKit && swift run SunWattSnapshots ../../Screenshots/widgets &
   - **Huawei FusionSolar**: the kiosk link (sign in to the FusionSolar web portal → open the plant → "Kiosk" at the top → turn on the toggle → copy the link). Huawei caches kiosk data for up to about 30 minutes; the app always shows the data time.
   - **SolarEdge**: site ID + API key from the monitoring portal (Admin → Site Access → API Access). Monitoring API, 15-minute curve; at most one fetch every 20 minutes (300 requests/day limit).
   - **PVOutput**: system ID + API key from pvoutput.org Settings (turn on API Access). Covers many inverter brands that upload to PVOutput (Fronius, SMA, Enphase, GoodWe, Growatt…).
+  - **Fronius**: the inverter's address on the home network (its Solar API; on GEN24 inverters turn it on in the inverter's web page). Data only while at home: Fronius has no free cloud API.
 - Spain: PVPC from Red Eléctrica (`apidatos.ree.es`), no token.
 - Other countries: day-ahead prices from Energy-Charts (Fraunhofer ISE), CC BY 4.0.
