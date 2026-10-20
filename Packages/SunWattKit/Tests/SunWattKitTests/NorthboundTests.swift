@@ -149,7 +149,7 @@ import Testing
         #expect(account.client() is NorthboundClient)
         #expect(account.provider.minimumFetchInterval == 600)
         #expect(account.provider.pickerGroup == .fusionSolar)
-        #expect(!SolarProvider.pickerCases.contains(.fusionSolarAPI) && SolarProvider.pickerCases.count == 3)
+        #expect(!SolarProvider.pickerCases.contains(.fusionSolarAPI) && SolarProvider.pickerCases == [.fusionSolar, .solarEdge, .pvOutput, .fronius])
         #expect(account.provider.profile.localInverter == .huawei)
         // With the dongle at home: live data on top, the Huawei reader.
         plant.huaweiLocalHost = "192.168.1.50"
