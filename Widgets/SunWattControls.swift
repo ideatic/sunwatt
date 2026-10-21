@@ -7,10 +7,12 @@ import WidgetKit
 struct SunWattControlValue: Sendable {
     var title: String
     var subtitle: String
+    var isIdle: Bool
 
     init(_ content: ControlContent) {
         title = content.title
         subtitle = content.subtitle
+        isIdle = content.isIdle
     }
 }
 
@@ -37,34 +39,35 @@ struct SolarControlProvider: ControlValueProvider {
     }
 }
 
-/// Control Center / Lock Screen: current price. Tapping refreshes the data in place (no app launch).
+/// Control Center / Lock Screen: current price. A tap opens the app, which loads fresh data (`SunWattLink.refreshURL`),
+/// like a widget tap. In the small Control Center size iOS shows only the icon; the larger sizes show the value.
 struct PriceControl: ControlWidget {
     static let kind = "com.ideatic.sunwatt.price-control"
 
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind, provider: PriceControlProvider()) { value in
-            ControlWidgetButton(action: RefreshWidgetIntent()) {
+            ControlWidgetButton(action: OpenURLIntent(SunWattLink.refreshURL)) {
                 Label(value.title, systemImage: "bolt.fill")
                 Text(value.subtitle)
             }
         }
         .displayName("Electricity price")
-        .description("Shows the current electricity price. Tap to refresh.")
+        .description("Shows the current electricity price. Tap to open the app with fresh data.")
     }
 }
 
-/// Control: current solar production.
+/// Control: current solar production (a moon at night). A tap opens the app, like the price control.
 struct SolarControl: ControlWidget {
     static let kind = "com.ideatic.sunwatt.solar-control"
 
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind, provider: SolarControlProvider()) { value in
-            ControlWidgetButton(action: RefreshWidgetIntent()) {
-                Label(value.title, systemImage: "sun.max.fill")
+            ControlWidgetButton(action: OpenURLIntent(SunWattLink.refreshURL)) {
+                Label(value.title, systemImage: value.isIdle ? "moon.stars.fill" : "sun.max.fill")
                 Text(value.subtitle)
             }
         }
         .displayName("Solar production")
-        .description("Shows the current solar production. Tap to refresh.")
+        .description("Shows the current solar production. Tap to open the app with fresh data.")
     }
 }

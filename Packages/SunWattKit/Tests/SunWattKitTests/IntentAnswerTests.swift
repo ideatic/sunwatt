@@ -132,6 +132,8 @@ private let dayData = SampleData.entry(.day).data
         #expect(off.title == "Not set up")
         let night = ControlContent.solar(from: SampleData.entry(.night).data, now: SampleData.nightNow, strings: try strings("en"))
         #expect(night.title == "No production")
+        #expect(night.isIdle, "the control shows a moon: in the small Control Center size the icon is all there is")
+        #expect(!en.isIdle)
     }
 }
 

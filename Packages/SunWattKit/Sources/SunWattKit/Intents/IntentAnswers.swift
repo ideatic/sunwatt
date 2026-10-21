@@ -197,6 +197,9 @@ public struct CheapestHoursAnswer: Sendable, Equatable {
 public struct ControlContent: Sendable, Equatable {
     public var title: String
     public var subtitle: String
+    /// Solar: no production now (night). The control then shows a moon: in the small Control Center size the icon is
+    /// all iOS shows.
+    public var isIdle = false
 
     public static func price(from data: SunWattData, now: Date, strings: IntentStrings = .current) -> ControlContent {
         guard let series = data.prices, let point = series.currentHour(at: now) else {
@@ -218,7 +221,7 @@ public struct ControlContent: Sendable, Equatable {
         }
         let today = solar.dailyEnergyKWh.map { strings.text("Today %@ kWh", strings.energy($0)) }
         if solar.isIdle {
-            return ControlContent(title: strings.text("No production"), subtitle: today ?? "")
+            return ControlContent(title: strings.text("No production"), subtitle: today ?? "", isIdle: true)
         }
         return ControlContent(title: "\(strings.number(power)) kW", subtitle: today ?? "")
     }

@@ -51,11 +51,12 @@ struct AccessoryRectangularView: View {
             }
         }
         if solar.isAvailable, content == .both {
+            // Primary style: on the Lock Screen the secondary one nearly vanishes on light wallpapers.
             wtext("\(Format.kWh(solar.dailyKWh)) kWh today")
-                .font(.system(.caption2, design: .rounded).weight(.medium))
+                .font(.system(.caption, design: .rounded).weight(.semibold))
                 .monospacedDigit()
-                .foregroundStyle(.secondary)
                 .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
     }
 

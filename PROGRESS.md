@@ -56,6 +56,7 @@
 - [ ] Watch app did not page on a real watch (build 202610181936: Digital Crown and swipes did nothing). Pager no longer wrapped in a `TimelineView`, solar first like the iPhone app (DECISIONS D29). To check on the watch with the next build.
 - [x] Watch price chart: tap a bar to see that hour's price (owner request, DECISIONS D29). To check on the watch with the next build.
 - [x] Fronius inverters on the home network through the Solar API (fifth provider, Find/Test inverter, home consumption with batteries, texts in 7 languages, privacy page, store texts; DECISIONS D30). Not yet tried on a real Fronius inverter; fixtures are synthetic. Settings provider picker now has 4 buttons: render and check at phone width.
+- [x] Controls (Control Center, Lock Screen): a tap opens the app with fresh data instead of a silent refresh; the solar control shows a moon at night. iOS shows only the icon in the small Control Center size (it cannot be hidden); the larger sizes show the values. Lock Screen widget: "kWh today" in the primary style (was barely visible on light wallpapers). To check on the iPhone.
 
 ## Known issues
 - macOS signing: team is set now; local unsigned macOS builds only compile (DECISIONS D4).
