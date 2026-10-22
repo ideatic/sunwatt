@@ -1,0 +1,1 @@
+panele,falownik,energia,słoneczna,taryfa,PVPC,spot,najtańsze,godziny,rynek,dzień,dynamiczna,kWh

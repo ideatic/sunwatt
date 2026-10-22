@@ -6,7 +6,7 @@ Usage: python3 -I AppStore/check_metadata.py AppStore/metadata
 import pathlib
 import sys
 
-LOCALES = ["en-US", "es-ES", "pt-PT", "fr-FR", "de-DE", "it", "nl-NL"]
+LOCALES = ["en-US", "es-ES", "pt-PT", "fr-FR", "de-DE", "it", "nl-NL", "zh-Hans", "zh-Hant", "pl"]
 LIMITS = {
     "name": 30,
     "subtitle": 30,

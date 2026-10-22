@@ -1,0 +1,1 @@
+首个版本。适用于 iPhone、iPad、Mac 和 Apple Watch 的光伏与电价小组件，支持 Siri 和快捷指令。

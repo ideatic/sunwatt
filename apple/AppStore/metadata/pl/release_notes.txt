@@ -1,0 +1,1 @@
+Pierwsza wersja. Widżety fotowoltaiki i ceny prądu dla iPhone, iPad, Mac i Apple Watch, z obsługą Siri i Skrótów.

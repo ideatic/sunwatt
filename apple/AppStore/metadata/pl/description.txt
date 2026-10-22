@@ -1,0 +1,46 @@
+Produkcja Twojej fotowoltaiki i cena prądu zawsze pod ręką. SunWatt pokazuje oba w widżetach, na ekranie blokady, w Centrum sterowania i na Apple Watch. Działa z Huawei FusionSolar, SolarEdge i PVOutput.
+
+Bezpłatnie. Bez konta, bez śledzenia, bez reklam.
+
+FOTOWOLTAIKA
+Podłącz swoją instalację fotowoltaiczną i zobacz aktualną moc w kW, dzisiejszą energię w kWh oraz dzisiejszą krzywą produkcji. SunWatt współpracuje z:
+• Huawei FusionSolar: wklej link Kiosk albo wpisz konto API, które dla Ciebie zakłada Twój instalator
+• SolarEdge: wpisz identyfikator obiektu (site ID) i klucz API
+• PVOutput: wpisz identyfikator systemu i klucz API. PVOutput współpracuje z wieloma markami falowników, na przykład Fronius, SMA, Enphase, GoodWe i Growatt
+• Fronius: wpisz adres falownika w Twojej sieci domowej (dane tylko wtedy, gdy jesteś w domu)
+• Kilka instalacji fotowoltaicznych w jednej aplikacji
+• Opcjonalnie dane na żywo w domu: odczyt z dongla Huawei lub falownika SunSpec w sieci domowej (Modbus TCP, tylko odczyt)
+Ekran wprowadzenia pokaże, gdzie znaleźć każde z tych ustawień w kilka minut.
+
+CENA PRĄDU
+• Hiszpania: regulowana cena PVPC od Red Eléctrica
+• Portugalia, Francja, Niemcy i Luksemburg, Austria, Belgia, Holandia oraz północne Włochy: hurtowe ceny z rynku dnia następnego
+• Aktualna cena z kolorem zależnym od poziomu, więc od razu widzisz, czy jest tania, czy droga
+• Dzisiejszy wykres i najtańsze nadchodzące godziny
+• Ceny na jutro, jak tylko zostaną opublikowane
+
+WIDŻETY I STEROWANIE
+• Małe, średnie i duże widżety na ekranie głównym
+• Prostokątne i okrągłe widżety na ekranie blokady
+• Dwa sterowania w Centrum sterowania: cena i fotowoltaika
+• Wybierz fotowoltaikę, cenę albo oba
+• Pokaż cały dzień albo 6 poprzednich godzin i 12 następnych
+• Dotknij widżetu, aby otworzyć aplikację ze świeżymi danymi
+• Wygląd jasny, ciemny, tonowany i przezroczysty
+
+SIRI I SKRÓTY
+Zapytaj Siri o aktualną cenę prądu, o produkcję fotowoltaiki teraz albo o najtańsze godziny. Użyj ich we własnych skrótach i automatyzacjach, na przykład aby uruchomić zmywarkę, gdy prąd jest tani.
+
+APPLE WATCH
+Aplikacja na Apple Watch i komplikacje pokazują cenę prądu i moc Twojej instalacji na nadgarstku.
+
+W APLIKACJI
+• Pulpit z interaktywnymi wykresami
+• Wybór kraju
+• Przewodnik po dodawaniu widżetów na ekran główny
+• Dostępna w językach: angielskim, hiszpańskim, portugalskim, francuskim, niemieckim, włoskim i holenderskim
+
+PRYWATNOŚĆ OD PODSTAW
+Bez konta. Bez śledzenia. Bez analityki. Bez reklam. SunWatt łączy się tylko z usługą solarną, którą wybierzesz (FusionSolar, SolarEdge lub PVOutput), oraz z publicznymi usługami cen prądu. Twoje ustawienia, klucze i ostatnie dane zostają na urządzeniu. Nic nie trafia do dewelopera.
+
+SunWatt jest bezpłatny. Nie jest powiązany z Huawei, SolarEdge, PVOutput, Red Eléctrica ani Fraunhofer ISE. Ceny z rynku dnia następnego dla krajów innych niż Hiszpania pochodzą z Energy-Charts (Fraunhofer ISE), na licencji CC BY 4.0. Ceny hurtowe nie są ceną z Twojego rachunku.
