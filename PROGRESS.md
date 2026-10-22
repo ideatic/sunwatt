@@ -85,3 +85,21 @@
 - [x] 2026-10-18: 1.0 resubmitted (iOS and macOS) with build 202610181936 (second review fixes; replaced 202610181901, which was resubmitted earlier with: strip fix, dark-mode axis labels, widget tap opens the app (D25)). Store texts uploaded. If `release.sh` fails with "Failed to Use Accounts", sign in again in Xcode → Settings → Apple Accounts (javier@marinros.com, team ideatic). Not yet checked on the iPhone from TestFlight. `main` not pushed yet (pushing publishes the support page for D25).
 - [x] 2026-10-19: 1.0 taken out of review and resubmitted (iOS and macOS) with build 202610192205: Apple Watch fixes (solar pages first, crown and swipes page on a real watch, tap a price bar or the production curve to see that time), checked on a real watch from TestFlight. Store texts uploaded again (widget tap line, review notes). Done through the App Store Connect API (spaceship), `main` pushed.
 - [ ] Release is automatic after approval (set 2026-10-19 for iOS and macOS; `upload_metadata.sh` keeps it). Optionally create a new kiosk link afterwards (the reviewers' copy stops working).
+- [ ] Next Apple update: store texts in Simplified Chinese (`zh-Hans`), Traditional Chinese (`zh-Hant`) and Polish (`pl`) are ready in `apple/AppStore/metadata/` (D40) and go up with `upload_metadata.sh`. Write the new release notes in these 3 languages too. Screenshots for them are optional (the store shows the English ones). Owner request, 2026-10-22.
+
+## Android (`android/`, DECISIONS D31 to D40)
+- [x] 2026-10-22: plan (`android/PLAN.md`), Gradle project (`core`, `ui-shared`, `app`, `wear`, `build-logic`), strings generated from the `.xcstrings` catalogs in 7 languages, Android-only texts in `android/strings/Android.xcstrings`.
+- [x] Core logic ported with tests on the shared Apple fixtures: 5 solar providers, 8 price regions, local inverters (Huawei, SunSpec, Fronius), inverter finder, loader, timeline. Tests: core 471, ui-shared 19, app 71, wear 27, build-logic 40.
+- [x] Phone app, Glance widgets (small, medium, large, pin from the app), Quick Settings tiles, app shortcuts, `sunwatt://refresh`, WorkManager refresh, Wear OS app and complications. Debug builds prefill the kiosk link from `private/kiosk.local`; release builds do not contain it.
+- [x] `scripts/check_parity.py` compares the Kotlin stored raw values with the Swift ones. Play listing texts in 7 languages (`android/play/`).
+- [x] Emulator test run: `android/Screenshots/ITERATIONS.md`.
+- [ ] Phone to watch settings sync not tested end to end (needs paired devices).
+- [x] 2026-10-22: release build on a real phone (Redmi Note 8 Pro, Android 10 = minSdk): crashed at start because R8 removed the WorkManager database constructor; fixed with a keep rule in `app/` and `wear/` `proguard-rules.pro`. Cold start after the fix: 250 to 430 ms (the 8 to 11 s on the emulator was emulator load). Wear release build checked on the emulator.
+- [ ] Add a baseline profile.
+- [x] 2026-10-22: Redmi (MIUI) widget fixes: toast after pinning, size estimate when the launcher sends no size, capsules before Android 12, no stale badge on data the worker just stored. Details in `android/Screenshots/ITERATIONS.md`.
+- [x] 2026-10-22: CI job `Android` (`.github/workflows/android.yml`): build-logic and unit tests, debug and release builds, lint, Play listing check.
+- [ ] Privacy and support pages for Android (`docs/`).
+- Play warns that native debug symbols are missing. Not fixable: the only native library (`libandroidx.graphics.path.so`, from AndroidX) ships stripped. R8 mapping files are in the bundles, so Kotlin crashes are readable.
+- [x] 2026-10-22: upload key in `private/` (D39), signed release bundles, fastlane lanes in `android/fastlane/`. Play Console app created in the Ideatic account ("SunWatt: Solar & Power", app ID 4974496635921169976).
+- [x] 2026-10-22: Play store images in all 7 app languages; store-only listings in `zh-CN`, `zh-TW`, `pl-PL` (D40). The Chinese and Polish texts had no native-speaker check.
+- [ ] After the first Play Store upload: start a new session to add Android to the GitHub Pages site (`docs/`: privacy, support, store links). Owner request, 2026-10-22.

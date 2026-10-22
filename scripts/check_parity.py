@@ -7,6 +7,7 @@ Usage: python3 -I scripts/check_parity.py   (from any folder; exit code 1 on a p
 2. Every provider, price region, inverter kind, widget option, app link, App Intent and widget
    found in the Apple code has a row, so a new one cannot land without its Android status.
 3. Android cannot be `done` while android/ has no app code.
+4. The Kotlin enums of the stored values have the same raw values as the Swift enums (FEATURES.md, "Stored values").
 """
 import re
 import sys
@@ -15,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 FEATURES = ROOT / "FEATURES.md"
 KIT = ROOT / "apple/Packages/SunWattKit/Sources/SunWattKit"
+CORE = ROOT / "android/core/src/main/kotlin/com/ideatic/sunwatt/core"
 STATUSES = {"done", "planned", "n/a"}
 ID_PATTERN = re.compile(r"^[a-z][A-Za-z0-9-]*$")
 
@@ -27,6 +29,16 @@ ENUMS = [
     (KIT / "Models/Settings.swift", "PriceWindow", "price-window-"),
     (KIT / "Models/SunWattLink.swift", "SunWattLink", "link-"),
 ]
+
+# The same enums in the Android core: Swift enum name -> Kotlin file (DECISIONS D34).
+KOTLIN_ENUMS = {
+    "SolarProvider": CORE / "models/SolarAccount.kt",
+    "PriceRegion": CORE / "models/PriceRegion.kt",
+    "LocalInverterKind": CORE / "models/LocalInverter.kt",
+    "WidgetContent": CORE / "models/Settings.kt",
+    "PriceWindow": CORE / "models/Settings.kt",
+    "SunWattLink": CORE / "models/SunWattLink.kt",
+}
 
 
 def enum_cases(path: Path, name: str) -> list[str]:
@@ -49,6 +61,43 @@ def enum_cases(path: Path, name: str) -> list[str]:
     if not cases:
         raise SystemExit(f"FAILED  enum {name} has no cases the script can read (update scripts/check_parity.py)")
     return cases
+
+
+def kotlin_enum_values(path: Path, name: str) -> list[str]:
+    """Raw values of a Kotlin stored enum, written one entry per line: `    NAME("rawValue"),` (CONVENTIONS.md)."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    start = next((i for i, line in enumerate(lines) if re.match(rf"enum class {name}\(val rawValue: String\)", line)), None)
+    if start is None:
+        raise SystemExit(f"FAILED  enum class {name} not found in {path.relative_to(ROOT)} (update scripts/check_parity.py)")
+    values = []
+    for line in lines[start + 1:]:
+        if line.startswith("}"):
+            break
+        match = re.match(r'^    [A-Z][A-Z0-9_]*\("([^"]*)"\)\s*[,;]', line)
+        if match:
+            values.append(match.group(1))
+        if line.rstrip().endswith(";") and match:
+            break
+    if not values:
+        raise SystemExit(f"FAILED  enum class {name} has no entries the script can read (update scripts/check_parity.py)")
+    return values
+
+
+def stored_value_problems() -> list[str]:
+    """Kotlin raw values that differ from the Swift ones. Nothing to compare while android/core does not exist."""
+    if not CORE.exists():
+        return []
+    problems = []
+    for path, name, _ in ENUMS:
+        swift = enum_cases(path, name)
+        if name not in KOTLIN_ENUMS:
+            raise SystemExit(f"FAILED  no Kotlin file for enum {name} in KOTLIN_ENUMS (update scripts/check_parity.py)")
+        kotlin = kotlin_enum_values(KOTLIN_ENUMS[name], name)
+        if sorted(swift) != sorted(kotlin):
+            only_swift = sorted(set(swift) - set(kotlin))
+            only_kotlin = sorted(set(kotlin) - set(swift))
+            problems.append(f"{name}: stored values differ; only in Swift {only_swift}, only in Kotlin {only_kotlin}")
+    return problems
 
 
 def code_ids() -> dict[str, str]:
@@ -114,6 +163,8 @@ def main() -> int:
     for row_id, source in sorted(code_ids().items()):
         if row_id not in seen:
             problems.append(f"FEATURES.md: no row '{row_id}' for {source} (add it with its Android status)")
+
+    problems += stored_value_problems()
 
     if problems:
         for problem in problems:

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- The phone looks for this capability to know that a watch with the SunWatt app is paired. -->
+    <string-array name="android_wear_capabilities" translatable="false" tools:ignore="UnusedResources">
+        <item>sunwatt_watch</item>
+    </string-array>
+</resources>

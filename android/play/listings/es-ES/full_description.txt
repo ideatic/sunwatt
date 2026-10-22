@@ -1,0 +1,42 @@
+Tu producción solar y el precio de la luz, siempre a la vista. SunWatt muestra los dos en widgets de la pantalla de inicio, en Ajustes rápidos y en tu reloj Wear OS. Funciona con Huawei FusionSolar, SolarEdge, PVOutput y Fronius.
+
+Gratis. Sin cuenta, sin rastreo y sin anuncios.
+
+PRODUCCIÓN SOLAR
+Conecta tu instalación solar y verás la potencia actual en kW, la energía de hoy en kWh y la curva de producción del día. SunWatt funciona con:
+• Huawei FusionSolar: pega tu enlace Kiosk o introduce la cuenta de API que te crea tu instalador
+• SolarEdge: introduce el ID del sitio y la clave API
+• PVOutput: introduce el ID de tu sistema y la clave API. PVOutput funciona con muchas marcas de inversores, como Fronius, SMA, Enphase, GoodWe o Growatt
+• Fronius: introduce la dirección del inversor en tu red de casa (datos mientras estás en casa)
+• Varias instalaciones a la vez
+• Datos en directo en casa, si quieres: lee un dongle de Huawei o un inversor SunSpec en tu red de casa (Modbus TCP, solo lectura)
+La primera vez, la app te explica dónde encontrar cada dato en un par de minutos.
+
+PRECIO DE LA LUZ
+• España: el precio regulado PVPC de Red Eléctrica
+• Portugal, Francia, Alemania y Luxemburgo, Austria, Bélgica, Países Bajos y norte de Italia: precios mayoristas del mercado diario (day-ahead)
+• Precio actual con color según el nivel: barato, normal o caro
+• Gráfica de hoy y las próximas horas más baratas
+• Precios de mañana en cuanto se publican
+
+WIDGETS Y AJUSTES RÁPIDOS
+• Widgets pequeños, medianos y grandes para la pantalla de inicio
+• Dos mosaicos de Ajustes rápidos: precio y producción solar
+• Elige solar, precio o ambos
+• Día completo, o las 6 horas anteriores y las 12 siguientes
+• Toca un widget para abrir la app con datos nuevos
+• Accesos directos de la app: precio ahora, solar ahora y las horas más baratas
+
+WEAR OS
+App para el reloj y complicaciones con el precio de la luz y tu producción solar en la muñeca.
+
+EN LA APP
+• Panel con gráficas interactivas
+• Selector de país
+• Tema claro y oscuro
+• Disponible en inglés, español, portugués, francés, alemán, italiano y neerlandés
+
+PRIVACIDAD POR DISEÑO
+Sin cuenta. Sin rastreo. Sin analíticas. Sin anuncios. SunWatt solo se conecta con el servicio de monitorización solar que elijas y con los servicios públicos que publican los precios. Tus ajustes, tus claves y los últimos datos se quedan en tu dispositivo, cifrados con Android Keystore. No se envía nada al desarrollador.
+
+SunWatt es gratis. No tiene ninguna relación con Huawei, SolarEdge, PVOutput, Fronius, Red Eléctrica ni Fraunhofer ISE. Los precios del mercado diario de los países que no son España proceden de Energy-Charts (Fraunhofer ISE), con licencia CC BY 4.0. El precio del mercado diario no es el de tu factura.

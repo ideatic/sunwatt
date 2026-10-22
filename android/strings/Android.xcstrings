@@ -1,0 +1,972 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "Add a widget now": {
+      "comment": "Widget guide: title of the card with buttons that add a widget directly.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt Widget hinzufügen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade un widget ahora"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un widget maintenant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi subito un widget"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voeg nu een widget toe"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adicionar um widget agora"
+          }
+        }
+      }
+    },
+    "Add the price tile": {
+      "comment": "Button: asks Android to add the electricity price tile to Quick Settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preiskachel hinzufügen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir el mosaico de precio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter la tuile du prix"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi il riquadro del prezzo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voeg de prijstegel toe"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adicionar o bloco de preço"
+          }
+        }
+      }
+    },
+    "Add the solar tile": {
+      "comment": "Button: asks Android to add the solar power tile to Quick Settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solarkachel hinzufügen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir el mosaico solar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter la tuile solaire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi il riquadro solare"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voeg de zonnetegel toe"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adicionar o bloco solar"
+          }
+        }
+      }
+    },
+    "Check that this device is on the home Wi-Fi and that Modbus TCP is enabled in the dongle.": {
+      "comment": "Error help after 'Test inverter' failed (Huawei dongle). Keep 'Modbus TCP' and 'dongle' as in the existing translations.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüfen Sie, ob dieses Gerät mit dem WLAN zu Hause verbunden ist und ob Modbus TCP im Dongle aktiviert ist."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprueba que este dispositivo está conectado al Wi-Fi de casa y que Modbus TCP está activado en el dongle."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifiez que cet appareil est connecté au Wi-Fi de la maison et que Modbus TCP est activé dans le dongle."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica che questo dispositivo sia connesso al Wi-Fi di casa e che Modbus TCP sia attivo nel dongle."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controleer of dit apparaat op het wifi-netwerk van thuis zit en of Modbus TCP is ingeschakeld in de dongle."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifique se este dispositivo está na rede Wi-Fi de casa e se o Modbus TCP está ativado no dongle."
+          }
+        }
+      }
+    },
+    "Check that this device is on the home Wi-Fi and that SunSpec over Modbus TCP is enabled in the inverter.": {
+      "comment": "Error help after 'Test inverter' failed (SunSpec inverter).",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüfen Sie, ob dieses Gerät mit dem WLAN zu Hause verbunden ist und ob SunSpec über Modbus TCP im Wechselrichter aktiviert ist."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprueba que este dispositivo está conectado al Wi-Fi de casa y que SunSpec sobre Modbus TCP está activado en el inversor."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifiez que cet appareil est connecté au Wi-Fi de la maison et que SunSpec sur Modbus TCP est activé dans l'onduleur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica che questo dispositivo sia connesso al Wi-Fi di casa e che SunSpec su Modbus TCP sia attivo nell’inverter."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controleer of dit apparaat op het wifi-netwerk van thuis zit en of SunSpec over Modbus TCP is ingeschakeld in de omvormer."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifique se este dispositivo está na rede Wi-Fi de casa e se o SunSpec sobre Modbus TCP está ativado no inversor."
+          }
+        }
+      }
+    },
+    "Check that this device is on the home Wi-Fi and that the Solar API is turned on in the inverter's settings.": {
+      "comment": "Error help after 'Test inverter' failed (Fronius). Keep 'Solar API' in English.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüfen Sie, ob dieses Gerät mit dem WLAN zu Hause verbunden ist und ob die Solar API in den Einstellungen des Wechselrichters eingeschaltet ist."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprueba que este dispositivo está conectado al Wi-Fi de casa y que la Solar API está activada en los ajustes del inversor."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérifiez que cet appareil est connecté au Wi-Fi de la maison et que la Solar API est activée dans les réglages de l'onduleur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifica che questo dispositivo sia connesso al Wi-Fi di casa e che la Solar API sia attiva nelle impostazioni dell’inverter."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controleer of dit apparaat op het wifi-netwerk van thuis zit en of de Solar API is ingeschakeld in de instellingen van de omvormer."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verifique se este dispositivo está na rede Wi-Fi de casa e se a Solar API está ativada nas definições do inversor."
+          }
+        }
+      }
+    },
+    "Choose a size. Your phone asks where to place it.": {
+      "comment": "Widget guide: text of that card.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wählen Sie eine Größe. Ihr Telefon fragt, wo das Widget platziert werden soll."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige un tamaño. Tu móvil te pregunta dónde colocarlo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez une taille. Votre téléphone vous demande où le placer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli una dimensione. Il telefono chiede dove posizionarlo."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies een formaat. Je telefoon vraagt waar je hem wilt plaatsen."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escolha um tamanho. O telemóvel pergunta onde o quer colocar."
+          }
+        }
+      }
+    },
+    "Choose the app language in Android Settings": {
+      "comment": "Settings, under 'Language'.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wählen Sie die App-Sprache in den Android-Einstellungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige el idioma de la app en los Ajustes de Android"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisissez la langue de l'app dans les Réglages Android"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli la lingua dell’app nelle Impostazioni di Android"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kies de taal van de app in de Android-instellingen"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escolha o idioma da app nas Definições do Android."
+          }
+        }
+      }
+    },
+    "Current price and solar power in the Quick Settings panel. Tap a tile to open SunWatt with fresh data.": {
+      "comment": "Widget guide: Quick Settings section text.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktueller Preis und Solarleistung im Bereich der Schnelleinstellungen. Tippen Sie auf eine Kachel, um SunWatt mit aktuellen Daten zu öffnen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio actual y potencia solar en el panel de ajustes rápidos. Toca un mosaico para abrir SunWatt con datos actualizados."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prix actuel et puissance solaire dans le panneau Réglages rapides. Touchez une tuile pour ouvrir SunWatt avec des données à jour."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prezzo attuale e potenza solare nel pannello Impostazioni rapide. Tocca un riquadro per aprire SunWatt con dati aggiornati."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huidige prijs en zonnevermogen in het paneel Snelle instellingen. Tik op een tegel om SunWatt te openen met actuele gegevens."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preço atual e potência solar no painel de Definições rápidas. Toque num bloco para abrir a SunWatt com dados atualizados."
+          }
+        }
+      }
+    },
+    "Drag it to the Home Screen": {
+      "comment": "Widget guide, step title. Home Screen = the Android home screen.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf den Home-Bildschirm ziehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrastra el widget a la pantalla de inicio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faites glisser le widget sur l'écran d'accueil"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascinalo nella schermata Home"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep hem naar het beginscherm"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arraste-o para o ecrã principal"
+          }
+        }
+      }
+    },
+    "For the Home Screen and Quick Settings.": {
+      "comment": "Onboarding welcome page, under the widgets feature line.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für den Home-Bildschirm und die Schnelleinstellungen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para la pantalla de inicio y los ajustes rápidos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour l'écran d'accueil et les Réglages rapides."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per la schermata Home e le Impostazioni rapide."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voor het beginscherm en Snelle instellingen."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para o ecrã principal e as Definições rápidas."
+          }
+        }
+      }
+    },
+    "It is in the menu that appears. On some phones it is called Add widget.": {
+      "comment": "Widget guide, step 2 detail.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es befindet sich im Menü. Auf manchen Geräten heißt es Widget hinzufügen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Está en el menú que aparece. En algunos móviles se llama Añadir widget."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il se trouve dans le menu qui apparaît. Sur certains téléphones, il s'appelle Ajouter un widget."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "È nel menu che appare. Su alcuni telefoni si chiama Aggiungi widget."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Het staat in het menu dat verschijnt. Op sommige telefoons heet het Widget toevoegen."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Está no menu que aparece. Em alguns telemóveis chama-se Adicionar widget."
+          }
+        }
+      }
+    },
+    "Large": {
+      "comment": "Widget size, button label. Short.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Groß"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grande"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grand"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grande"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Groot"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grande"
+          }
+        }
+      }
+    },
+    "Medium": {
+      "comment": "Widget size, button label. Short.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mittel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mediano"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moyen"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medio"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Middel"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Médio"
+          }
+        }
+      }
+    },
+    "Press an empty spot until a menu appears.": {
+      "comment": "Widget guide, step 1 detail: how to open the home screen menu on Android.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halten Sie eine freie Stelle gedrückt, bis ein Menü erscheint."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado un espacio vacío hasta que aparezca un menú."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appuyez sur un endroit vide jusqu'à l'apparition du menu."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni premuto un punto vuoto finché non appare un menu."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Houd een lege plek ingedrukt tot er een menu verschijnt."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque sem soltar num espaço vazio até aparecer um menu."
+          }
+        }
+      }
+    },
+    "Quick Settings tiles": {
+      "comment": "Widget guide: section title. Use the Android term for Quick Settings tiles in this language.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kacheln der Schnelleinstellungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mosaicos de ajustes rápidos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuiles des Réglages rapides"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riquadri Impostazioni rapide"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tegels voor Snelle instellingen"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blocos de Definições rápidas"
+          }
+        }
+      }
+    },
+    "Small": {
+      "comment": "Widget size, button label. Short.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klein"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pequeño"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Petit"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piccolo"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klein"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pequeno"
+          }
+        }
+      }
+    },
+    "Swipe down twice from the top, tap the pencil icon and drag the SunWatt tiles into the panel.": {
+      "comment": "Widget guide: how to add the tiles by hand on older Android versions.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wischen Sie zweimal von oben nach unten, tippen Sie auf das Stiftsymbol und ziehen Sie die SunWatt-Kacheln in den Bereich."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desliza hacia abajo dos veces desde arriba, toca el icono del lápiz y arrastra los mosaicos de SunWatt al panel."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balayez l'écran vers le bas deux fois depuis le haut, touchez l'icône en forme de crayon, puis faites glisser les tuiles SunWatt dans le panneau."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scorri due volte verso il basso dalla parte alta dello schermo, tocca l’icona della matita e trascina i riquadri SunWatt nel pannello."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veeg twee keer van boven naar beneden, tik op het potloodicoon en sleep de SunWatt-tegels naar het paneel."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deslize duas vezes para baixo a partir do topo, toque no ícone do lápis e arraste os blocos da SunWatt para o painel."
+          }
+        }
+      }
+    },
+    "Tap Widgets": {
+      "comment": "Widget guide, step 2 title. 'Widgets' is the launcher menu item; use the word the Android launcher shows in this language.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf Widgets tippen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca Widgets"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touchez Widgets"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca Widget"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tik op Widgets"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque em Widgets"
+          }
+        }
+      }
+    },
+    "Touch and hold the Home Screen, tap Widgets and search for SunWatt.": {
+      "comment": "Onboarding, widget page hint.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halten Sie den Home-Bildschirm gedrückt, tippen Sie auf Widgets und suchen Sie nach SunWatt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsada la pantalla de inicio, toca Widgets y busca SunWatt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenez le doigt sur l'écran d'accueil, touchez Widgets et cherchez SunWatt."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni premuta la schermata Home, tocca Widget e cerca SunWatt."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Houd het beginscherm ingedrukt, tik op Widgets en zoek naar SunWatt."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque sem soltar no ecrã principal, toque em Widgets e procure SunWatt."
+          }
+        }
+      }
+    },
+    "Touch and hold the widget, then drop it where you like.": {
+      "comment": "Widget guide, step detail.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halten Sie das Widget gedrückt und lassen Sie es dort los, wo Sie möchten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado el widget y suéltalo donde quieras."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenez le doigt sur le widget, puis relâchez-le à l'endroit de votre choix."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni premuto il widget, poi rilascialo dove preferisci."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Houd de widget ingedrukt en zet hem neer waar je wilt."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque sem soltar no widget e, depois, largue-o onde quiser."
+          }
+        }
+      }
+    },
+    "Widget added to your Home Screen.": {
+      "comment": "Short toast after the home screen adds a SunWatt widget that the user asked for in the app.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget zu Ihrem Home-Bildschirm hinzugefügt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget añadido a tu pantalla de inicio."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget ajouté à votre écran d'accueil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget aggiunto alla schermata Home."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget toegevoegd aan je beginscherm."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget adicionado ao ecrã principal."
+          }
+        }
+      }
+    },
+    "Your home screen cannot add widgets from an app. Follow the steps below.": {
+      "comment": "Widget guide: shown when the launcher cannot add widgets for the app.",
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ihr Home-Bildschirm kann Widgets nicht aus einer App hinzufügen. Folgen Sie den Schritten unten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pantalla de inicio no puede añadir widgets desde una app. Sigue los pasos de abajo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre écran d'accueil ne peut pas ajouter de widgets depuis une app. Suivez les étapes ci-dessous."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La schermata Home non può aggiungere widget da un’app. Segui i passaggi qui sotto."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je beginscherm kan geen widgets vanuit een app toevoegen. Volg de stappen hieronder."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O seu ecrã principal não consegue adicionar widgets a partir de uma app. Siga os passos abaixo."
+          }
+        }
+      }
+    }
+  }
+}

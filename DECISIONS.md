@@ -207,3 +207,52 @@ Each entry: decision, why, how to change it.
 - Decision: `FEATURES.md` lists every feature with its status in each app (`done`, `planned`, `n/a` with a reason) and the contracts both apps keep. `scripts/check_parity.py` reads the Apple code (`SolarProvider`, `PriceRegion`, `LocalInverterKind`, `WidgetContent`, `PriceWindow`, `SunWattLink`, every `AppIntent`, `Widget` and `ControlWidget`) and fails when one has no row, when a status is invalid, or when Android is `done` without Android code. It runs in the CI job `Parity` (Linux, every push and pull request, also Android-only ones) and as the first step of `apple/scripts/verify.sh`. The pull request template asks for both apps.
 - Why: a feature added to one app is easy to forget in the other. Exhaustive switches stop a half-done case inside one app (AGENTS.md, Architecture); this check does the same across the two apps. Text rules alone are not enough, so the check is mechanical.
 - How to change: when the Android code gets its own enums for the stored values, extend the script so it also reads the Kotlin raw values and compares them with the Swift ones. Add a new source of feature IDs to `ENUMS` or `code_ids()` in the script, not as a special case in `FEATURES.md`.
+
+## D33: Android stack and minimum version
+
+- Decision: the Android app is Kotlin with Jetpack Compose and Material 3, Glance widgets, Quick Settings tiles for the controls, WorkManager for background refresh, coroutines, kotlinx.serialization and OkHttp (behind an own `HttpClient` interface). Build: Gradle 9.8, AGP 9.4, version catalog. `minSdk` 29 (Android 10), `targetSdk` 36. The plan is `android/PLAN.md`.
+- Why: native code gives the fastest cold start and widget update, and the smallest APK. Compose and Glance are declarative like SwiftUI and WidgetKit, so screens port one by one. Coroutine cancellation maps to Swift task cancellation. `minSdk` 29 gives `java.time` without desugaring and drops old code paths, and still covers about 95 % of active devices.
+- How to change: a lower `minSdk` needs core library desugaring for `java.time`. Another HTTP library must stay behind `HttpClient`.
+
+## D34: Android logic is a pure Kotlin module that reads the Apple fixtures
+
+- Decision: `android/core` is a Kotlin JVM library (no Android types) with the port of `SunWattKit` logic: models, solar and price clients, inverter readers, loader, timeline, formatting. Its tests read the fixtures in place from `apple/Packages/SunWattKit/Tests/SunWattKitTests/Fixtures/` (system property `sunwatt.fixtures`) and mirror the Swift tests, `ProviderContractTests` included. Stored enums are written one entry per line, `NAME("rawValue"),`, so `scripts/check_parity.py` compares their raw values with the Swift ones.
+- Why: one set of fixtures keeps the parsers of both apps in step (FEATURES.md, "Fixtures"). JVM tests are fast and need no emulator. Conventions for the port (time with `java.time.Instant`, injected clock, rethrow `CancellationException`, secrets hidden in `toString`) are in `android/core/CONVENTIONS.md`.
+- How to change: if the fixtures move, change the path in `android/core/build.gradle.kts` and in the Swift `FixtureLoader`.
+
+## D35: Android strings are generated from the `.xcstrings` catalogs at build time
+
+- Decision: the Gradle plugin `sunwatt.xcstrings` (`android/build-logic`) converts `Core`, `Widgets`, `App`, `Intents`, `Watch` (SunWattKit) and `apple/Widgets/Resources/Localizable.xcstrings` into `values*/strings_<table>.xml` for en, es, pt, fr, de, it, nl under `build/`. Resource names are `<table>_<slug of the English key>` (see `android/build-logic/README.md`). Placeholders become Android ones (`%@` → `%s`, `%lld` → `%d`, indexed when a string has more than one). A missing translation fails the build. The `InfoPlist` and Siri phrase catalogs are not converted (iOS only).
+- Why: the catalogs are the single source of texts (FEATURES.md, "Texts"). Generated files in `build/` cannot be edited by hand by mistake, and a changed catalog reaches Android on the next build.
+- How to change: a text only Android uses still goes in a catalog with all 7 languages. A rename of an English key changes the Android resource name, so the Kotlin code that uses it must change in the same commit.
+
+## D36: FusionSolar API session on Android stays in the app process
+
+- Decision: on Android the app, its widgets and its Quick Settings tiles run in one process, so one in-process `NorthboundSessionStore` holds the session. The token is kept in memory and, encrypted with the Keystore key, in the app's private storage so a new process does not log in again. The Wear OS app has its own session and keeps the 10 min fetch interval.
+- Why: D28 solves a problem of iOS (app and widget extension are separate processes). Huawei allows one session per account and limits logins; one store per process keeps that rule on Android too. The token is a secret (AGENTS.md rule 1): never in a plain file, a log or an error text.
+- How to change: if a widget or tile ever moves to its own process, the store must be shared across processes (for example a bound service), never through a plain file.
+
+## D37: Android settings store, Android-only texts
+
+- Decision: on Android the settings are one JSON file in the app's private storage, written atomically. Each secret field (kiosk link, API key, system code, the same fields of further plants) holds only its AES-GCM ciphertext; the key lives in the Android Keystore (`KeystoreSecretCipher`). A secret that cannot be decrypted (for example after a restore to a new phone) reads as empty, and the other settings stay. Caches (solar per plant, prices, failures, kiosk rejections) are plain JSON files next to it. `android:allowBackup` is off.
+- Why: one atomic file cannot get out of step with the secrets, so the keychain index of D27 is not needed. Android deletes app files and Keystore keys on uninstall, so the iOS problem of D27 (old secrets after a reinstall) does not exist. Backups could not decrypt the secrets anyway.
+- Texts only the Android app uses (widget guide steps, Quick Settings tiles, Android variants of iOS-worded help texts) are in `android/strings/Android.xcstrings`: the same format and the same 7 languages as the Apple catalogs, converted by the same plugin (table prefix `android`). Translated by one Haiku agent per locale, as in AGENTS.md.
+- How to change: if the Apple app ever needs one of these texts, move the key to an Apple catalog and delete it here in the same change.
+
+## D38: Shared Android UI code is a library
+
+- Decision: `android/ui-shared` (Android library) holds what the phone app and the Wear OS app both use: `KeystoreSecretCipher` (the watch uses its own key alias), the colours, and the chart models and renderers. The renderers draw on `android.graphics.Canvas`, so the same code draws in Compose (app, watch) and into bitmaps for Glance widgets.
+- Why: one chart look on the phone, the widgets and the watch, and no copied security code.
+- How to change: code only one app uses stays in that app. Nothing in `ui-shared` may depend on `:app` or `:wear`.
+
+## D39: Android release signing and version codes
+
+- Decision: release builds are signed with an upload key in the top-level `private/` (`android_upload.jks`, passwords in `android_upload.properties`, both git-ignored). Google keeps the app signing key (Play App Signing). Without the properties file the release build stays unsigned (CI). One version for both apps in `android/gradle.properties` (`sunwatt.versionCode`, `sunwatt.versionName`); the phone bundle gets code 2n − 1 and the watch bundle 2n (n = `sunwatt.versionCode`), because the phone and watch bundles share one Play listing and every bundle needs its own code. A first try added 1,000,000,000 to the watch code; Play refuses such a jump ("version code is significantly higher"), as it eats the room left below the maximum code. Uploads go through fastlane `supply` (`android/fastlane/`), with the Play service account key in `private/google-service-account.json`.
+- Why: with Play App Signing a lost upload key can be reset by Google; a lost app signing key could not. One version number keeps the two apps in step.
+- How to change: to rotate the upload key, make a new one and ask Google to register it (Play Console, App integrity). Raise `sunwatt.versionCode` by one for every upload.
+
+## D40: Store-only languages (Chinese, Polish)
+
+- Decision: the store listings also ship in Simplified Chinese (Play `zh-CN`, App Store `zh-Hans`), Traditional Chinese (`zh-TW` / `zh-Hant`) and Polish (`pl-PL` / `pl`), while the app UI stays in its 7 languages. These listings say which languages the app has. Their Play images reuse the English screenshots with local captions. The App Store texts are ready in `apple/AppStore/metadata/` and go up with the next Apple release.
+- Why: Huawei FusionSolar is widely used by Chinese-speaking owners and Poland is a large home-solar market. A local listing helps them find the app at low cost; translating the app itself is a bigger job (all catalogs, tests, both apps).
+- How to change: to translate the app into one of these languages, add it to the `.xcstrings` catalogs (both apps read them), to `XcstringsConverter.TRANSLATIONS`, and retake the screenshots in that language.

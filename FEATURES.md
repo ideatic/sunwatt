@@ -29,76 +29,76 @@ When the Android code gets its own enums for the stored values above, extend `sc
 
 | ID | Feature | Apple | Android | Notes |
 | --- | --- | --- | --- | --- |
-| solar-fusionSolar | Huawei FusionSolar kiosk link | done | planned | Android port not started. |
-| solar-solarEdge | SolarEdge Monitoring API | done | planned | Android port not started. |
-| solar-pvOutput | PVOutput | done | planned | Android port not started. |
-| solar-fusionSolarAPI | Huawei FusionSolar API account (Northbound) | done | planned | Android port not started. Session shared between app and widgets (D28). |
-| solar-fronius | Fronius inverter on the home network | done | planned | Android port not started. Local network only (D30). |
-| solar-multiplePlants | More than one solar plant | done | planned | Android port not started. |
+| solar-fusionSolar | Huawei FusionSolar kiosk link | done | done | Fixture and contract tests pass; tried live with a real kiosk link on the emulator. |
+| solar-solarEdge | SolarEdge Monitoring API | done | done | Fixture and contract tests pass; not tried with a live account. |
+| solar-pvOutput | PVOutput | done | done | Fixture and contract tests pass; not tried with a live account. |
+| solar-fusionSolarAPI | Huawei FusionSolar API account (Northbound) | done | done | Fixture and contract tests pass; not tried with a live account. Session shared between app and widgets in one process (D28, D36); the watch has its own session. |
+| solar-fronius | Fronius inverter on the home network | done | done | Fixture and contract tests pass; not tried with a real inverter. Local network only (D30). |
+| solar-multiplePlants | More than one solar plant | done | done | Add and remove plants tried on the emulator. |
 
 ## Local inverter (live data at home)
 
 | ID | Feature | Apple | Android | Notes |
 | --- | --- | --- | --- | --- |
-| inverter-huawei | Huawei dongle over Modbus TCP | done | planned | Android port not started. |
-| inverter-sunSpec | SunSpec inverter over Modbus TCP | done | planned | Android port not started. |
-| inverter-fronius | Fronius Solar API over HTTP | done | planned | Android port not started. |
-| inverter-finder | "Find inverter" scan of the home network | done | planned | Android port not started. |
+| inverter-huawei | Huawei dongle over Modbus TCP | done | done | Tests with a fake Modbus transport; not tried with a real dongle. |
+| inverter-sunSpec | SunSpec inverter over Modbus TCP | done | done | Tests with a fake Modbus transport; not tried with a real inverter. |
+| inverter-fronius | Fronius Solar API over HTTP | done | done | Tests with stubbed HTTP; not tried with a real inverter. |
+| inverter-finder | "Find inverter" scan of the home network | done | done | Tests with fakes; not tried on a real home network. |
 
 ## Electricity price regions
 
 | ID | Feature | Apple | Android | Notes |
 | --- | --- | --- | --- | --- |
-| price-spain | Spain, PVPC retail (Red Eléctrica) | done | planned | Android port not started. |
-| price-portugal | Portugal, day-ahead (Energy-Charts) | done | planned | Android port not started. |
-| price-france | France, day-ahead | done | planned | Android port not started. |
-| price-germany | Germany + Luxembourg, day-ahead | done | planned | Android port not started. |
-| price-austria | Austria, day-ahead | done | planned | Android port not started. |
-| price-belgium | Belgium, day-ahead | done | planned | Android port not started. |
-| price-netherlands | Netherlands, day-ahead | done | planned | Android port not started. |
-| price-italyNorth | North Italy, day-ahead | done | planned | Android port not started. |
-| price-cheapestHours | Cheapest hours, min and max of the day | done | planned | Android port not started. |
+| price-spain | Spain, PVPC retail (Red Eléctrica) | done | done | Live data tried on the emulator. |
+| price-portugal | Portugal, day-ahead (Energy-Charts) | done | done | Fixture and contract tests; Energy-Charts live data tried on the emulator. |
+| price-france | France, day-ahead | done | done | Fixture and contract tests. |
+| price-germany | Germany + Luxembourg, day-ahead | done | done | Fixture and contract tests. |
+| price-austria | Austria, day-ahead | done | done | Fixture and contract tests. |
+| price-belgium | Belgium, day-ahead | done | done | Fixture and contract tests. |
+| price-netherlands | Netherlands, day-ahead | done | done | Fixture and contract tests. |
+| price-italyNorth | North Italy, day-ahead | done | done | Fixture and contract tests. |
+| price-cheapestHours | Cheapest hours, min and max of the day | done | done | Same analysis as Apple, tested. |
 
 ## Widgets and system surfaces
 
 | ID | Feature | Apple | Android | Notes |
 | --- | --- | --- | --- | --- |
-| surface-SunWattWidget | Home screen widget: small, medium, large; Lock Screen rectangular and circular (iOS) | done | planned | Android: Glance home screen widgets; Lock Screen only where the Android version supports it. |
-| widget-content-both | Widget shows solar and price | done | planned | Android port not started. |
-| widget-content-solarOnly | Widget shows only solar | done | planned | Android port not started. |
-| widget-content-priceOnly | Widget shows only price | done | planned | Android port not started. |
-| price-window-wholeDay | Price chart: whole day | done | planned | Android port not started. |
-| price-window-around | Price chart: 6 h before, 12 h after | done | planned | Android port not started. |
-| widget-tapOpensApp | Tap a widget: the app opens and loads fresh data (D25) | done | planned | Android port not started. |
-| surface-PriceControl | Control: current price (Control Center) | done | planned | Android: Quick Settings tile. |
-| surface-SolarControl | Control: current solar power (Control Center) | done | planned | Android: Quick Settings tile. |
-| surface-SunWattWatchWidget | Watch complication: price | done | planned | Android: Wear OS complication, after the phone app. |
-| surface-SunWattSolarComplication | Watch complication: solar | done | planned | Android: Wear OS complication, after the phone app. |
+| surface-SunWattWidget | Home screen widget: small, medium, large; Lock Screen rectangular and circular (iOS) | done | done | Android: Glance home screen widgets small, medium, large, light and dark. No Lock Screen widgets on Android phones (n/a). |
+| widget-content-both | Widget shows solar and price | done | done | Widget configuration screen. |
+| widget-content-solarOnly | Widget shows only solar | done | done | Widget configuration screen. |
+| widget-content-priceOnly | Widget shows only price | done | done | Widget configuration screen. |
+| price-window-wholeDay | Price chart: whole day | done | done |  |
+| price-window-around | Price chart: 6 h before, 12 h after | done | done |  |
+| widget-tapOpensApp | Tap a widget: the app opens and loads fresh data (D25) | done | done | Tried on the emulator. |
+| surface-PriceControl | Control: current price (Control Center) | done | done | Android: Quick Settings tile. At the small tile size the system shows only the icon. |
+| surface-SolarControl | Control: current solar power (Control Center) | done | done | Android: Quick Settings tile. At the small tile size the system shows only the icon. |
+| surface-SunWattWatchWidget | Watch complication: price | done | done | Android: Wear OS complication (short, ranged, long text). Checked in a preview on the Wear OS emulator. |
+| surface-SunWattSolarComplication | Watch complication: solar | done | done | Android: Wear OS complication (short, ranged, long text). Checked in a preview on the Wear OS emulator. |
 
 ## Voice and shortcuts
 
 | ID | Feature | Apple | Android | Notes |
 | --- | --- | --- | --- | --- |
-| intent-GetCurrentPriceIntent | Ask the current price (Siri, Shortcuts) | done | planned | Android: app shortcut / App Actions. |
-| intent-GetSolarProductionIntent | Ask the solar production (Siri, Shortcuts) | done | planned | Android: app shortcut / App Actions. |
-| intent-GetCheapestHoursIntent | Ask the cheapest hours (Siri, Shortcuts) | done | planned | Android: app shortcut / App Actions. |
+| intent-GetCurrentPriceIntent | Ask the current price (Siri, Shortcuts) | done | done | Android: app shortcut that shows the answer. No Google Assistant voice phrase yet. |
+| intent-GetSolarProductionIntent | Ask the solar production (Siri, Shortcuts) | done | done | Android: app shortcut that shows the answer. No Google Assistant voice phrase yet. |
+| intent-GetCheapestHoursIntent | Ask the cheapest hours (Siri, Shortcuts) | done | done | Android: app shortcut that shows the answer. No Google Assistant voice phrase yet. |
 
 ## App links
 
 | ID | Feature | Apple | Android | Notes |
 | --- | --- | --- | --- | --- |
-| link-refresh | `sunwatt://refresh`: open the app and load fresh data | done | planned | Android port not started. |
+| link-refresh | `sunwatt://refresh`: open the app and load fresh data | done | done | Tried on the emulator. |
 
 ## App
 
 | ID | Feature | Apple | Android | Notes |
 | --- | --- | --- | --- | --- |
-| app-onboarding | Onboarding with "Skip, prices only" | done | planned | Android port not started. |
-| app-dashboard | Dashboard with interactive solar and price charts | done | planned | Android port not started. |
-| app-settings | Settings: country, solar system, "Test connection", how-to | done | planned | Android port not started. |
-| app-widgetGuide | Guide to add the widgets, detects installed widgets | done | planned | Android: can pin a widget from the app (`requestPinAppWidget`). |
-| app-watchApp | Watch app: solar and price pages, settings from the phone | done | planned | Android: Wear OS app, after the phone app. |
-| app-languages | 7 languages: en, es, pt, fr, de, it, nl | done | planned | Android strings generated from the `.xcstrings` catalogs. |
-| app-darkMode | Light and dark mode | done | planned | Android port not started. |
-| app-attribution | Energy-Charts attribution visible | done | planned | Android port not started. |
-| app-secretsKeystore | Secrets in the platform keystore (keychain) | done | planned | Android: Android Keystore. |
+| app-onboarding | Onboarding with "Skip, prices only" | done | done |  |
+| app-dashboard | Dashboard with interactive solar and price charts | done | done |  |
+| app-settings | Settings: country, solar system, "Test connection", how-to | done | done |  |
+| app-widgetGuide | Guide to add the widgets, detects installed widgets | done | done | Android: pins a widget from the app (`requestPinAppWidget`) and shows the steps when the home screen cannot. |
+| app-watchApp | Watch app: solar and price pages, settings from the phone | done | planned | Android: Wear OS app pages and complications work on the emulator. Settings sync from the phone (Data Layer) is built but not tested end to end: the emulators were not paired. |
+| app-languages | 7 languages: en, es, pt, fr, de, it, nl | done | done | Android strings generated from the `.xcstrings` catalogs (D35). |
+| app-darkMode | Light and dark mode | done | done |  |
+| app-attribution | Energy-Charts attribution visible | done | done |  |
+| app-secretsKeystore | Secrets in the platform keystore (keychain) | done | done | Android: secret fields encrypted with an Android Keystore key (D37). |

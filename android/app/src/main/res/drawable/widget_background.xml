@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Soft widget background (Theme.Background.widget, light) with the amber glow of WidgetBackground. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:angle="315" android:startColor="#FFFFFFFF" android:endColor="#FFF5F2ED" />
+            <corners android:radius="22dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:type="radial" android:centerX="0" android:centerY="0" android:gradientRadius="220dp"
+                android:startColor="#1FFFB833" android:endColor="#00FFB833" />
+            <corners android:radius="22dp" />
+        </shape>
+    </item>
+</layer-list>

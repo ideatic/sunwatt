@@ -1,0 +1,10 @@
+local.properties
+.gradle/
+build/
+.idea/
+*.iml
+.kotlin/
+
+# fastlane run output
+fastlane/report.xml
+fastlane/README.md

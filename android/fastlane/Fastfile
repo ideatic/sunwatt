@@ -1,0 +1,43 @@
+# SunWatt for Android: Google Play uploads with fastlane supply. Run from android/:
+#   fastlane android build                      signed phone and watch bundles (upload key in ../private/)
+#   fastlane android metadata                   store texts and images from play/listings/
+#   fastlane android upload track:internal      both bundles to a track (phone: <track>, watch: wear:<track>)
+# Raise sunwatt.versionCode in gradle.properties before every upload.
+default_platform(:android)
+
+ANDROID_DIR = File.expand_path("..", __dir__)
+PHONE_AAB = "#{ANDROID_DIR}/app/build/outputs/bundle/release/app-release.aab"
+WEAR_AAB = "#{ANDROID_DIR}/wear/build/outputs/bundle/release/wear-release.aab"
+LISTINGS = "#{ANDROID_DIR}/play/listings"
+# The phone bundle's code (phone 2n - 1, watch 2n; see app/build.gradle.kts).
+PHONE_VERSION_CODE = 2 * File.read("#{ANDROID_DIR}/gradle.properties")[/^sunwatt\.versionCode=(\d+)/, 1].to_i - 1
+
+platform :android do
+  desc "Builds the signed phone and watch bundles"
+  lane :build do
+    gradle(project_dir: ANDROID_DIR, tasks: [":app:bundleRelease", ":wear:bundleRelease"])
+  end
+
+  desc "Uploads the store texts and images of every locale"
+  lane :metadata do
+    # supply looks up a release even without release notes: point it at the current version on the internal track.
+    supply(
+      metadata_path: LISTINGS, track: "internal", version_code: PHONE_VERSION_CODE,
+      skip_upload_aab: true, skip_upload_apk: true, skip_upload_changelogs: true,
+    )
+  end
+
+  # status: "draft" until the app has been published once (Play rejects other statuses on a draft app),
+  # then "completed" to roll out to the track.
+  desc "Uploads both bundles: the phone one to <track>, the watch one to the Wear OS track wear:<track>"
+  lane :upload do |options|
+    track = options[:track] || "internal"
+    status = options[:status] || "draft"
+    { PHONE_AAB => track, WEAR_AAB => "wear:#{track}" }.each do |aab, target|
+      supply(
+        aab: aab, track: target, release_status: status,
+        skip_upload_metadata: true, skip_upload_images: true, skip_upload_screenshots: true, skip_upload_changelogs: true,
+      )
+    end
+  end
+end

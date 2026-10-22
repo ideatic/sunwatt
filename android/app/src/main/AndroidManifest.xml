@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- "Find inverter" reads the device's Wi-Fi subnet through ConnectivityManager. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".SunWattApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="SunWatt"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SunWatt">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- sunwatt://refresh: a widget tap opens the app and refreshes (DECISIONS D25). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sunwatt" android:host="refresh" />
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
+        </activity>
+
+        <!-- Widgets, tiles, background refresh, app shortcuts (widgets piece). -->
+        <receiver android:name=".widget.SunWattSmallWidgetReceiver" android:exported="true" android:label="@string/widgetext_sunwatt">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_small" />
+        </receiver>
+        <receiver android:name=".widget.SunWattMediumWidgetReceiver" android:exported="true" android:label="@string/widgetext_sunwatt">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_medium" />
+        </receiver>
+        <receiver android:name=".widget.SunWattLargeWidgetReceiver" android:exported="true" android:label="@string/widgetext_sunwatt">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_info_large" />
+        </receiver>
+        <receiver android:name=".widget.WidgetPinnedReceiver" android:exported="false" />
+        <activity android:name=".widget.WidgetConfigActivity" android:exported="true" android:theme="@style/Theme.SunWatt">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" /></intent-filter>
+        </activity>
+
+        <service
+            android:name=".tile.PriceTileService"
+            android:exported="true"
+            android:icon="@drawable/widget_ic_bolt"
+            android:label="@string/widgetext_electricity_price"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter><action android:name="android.service.quicksettings.action.QS_TILE" /></intent-filter>
+        </service>
+        <service
+            android:name=".tile.SolarTileService"
+            android:exported="true"
+            android:icon="@drawable/widget_ic_sun"
+            android:label="@string/widgetext_solar_production"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter><action android:name="android.service.quicksettings.action.QS_TILE" /></intent-filter>
+        </service>
+
+        <activity
+            android:name=".shortcuts.AnswerActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:taskAffinity=""
+            android:theme="@style/Theme.SunWatt.Answer" />
+
+        <!-- Connects WidgetUpdates to the widgets and starts the refresh work at process start. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data android:name="com.ideatic.sunwatt.widget.WidgetsInitializer" android:value="androidx.startup" />
+        </provider>
+    </application>
+</manifest>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Debug only: `start .demo.SeedActivity with the extra scenario = day`. -->
+        <activity android:name=".demo.SeedActivity" android:exported="true" android:taskAffinity="" android:theme="@android:style/Theme.NoDisplay" />
+        <activity android:name=".demo.ComplicationPreviewActivity" android:exported="true" android:taskAffinity="" android:theme="@android:style/Theme.DeviceDefault" />
+    </application>
+</manifest>

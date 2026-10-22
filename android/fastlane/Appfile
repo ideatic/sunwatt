@@ -1,0 +1,3 @@
+# The Play service account key lives in the top-level private/ (git-ignored), never in the repo.
+json_key_file(File.expand_path("../../private/google-service-account.json", __dir__))
+package_name("com.ideatic.sunwatt")

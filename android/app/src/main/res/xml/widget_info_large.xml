@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.ideatic.sunwatt.widget.WidgetConfigActivity"
+    android:description="@string/widgetext_solar_production_and_electricity_price_tap"
+    android:initialLayout="@layout/glance_default_loading_layout"
+    android:minWidth="250dp"
+    android:previewImage="@drawable/widget_preview_large"
+    android:minHeight="250dp"
+    android:minResizeWidth="250dp"
+    android:minResizeHeight="250dp"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="4"
+    android:targetCellHeight="4"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable|configuration_optional" />

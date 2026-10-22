@@ -182,7 +182,8 @@ Step by step in `apple/RELEASE.md`. `apple/scripts/release.sh` is a dry run by d
 
 ## Working conventions
 
-- Small, focused commits with plain-language messages (`Area: what changed`).
+- Small, focused commits. Conventional commits in English: `<type>(<optional scope>): <subject>`, one line, lower case, imperative, no full stop, 72 characters at most, no attribution trailer.
 - Record each non-obvious decision in `DECISIONS.md` (decision, why, how to change it) and update `PROGRESS.md` when a step is done or a known issue changes.
 - Run `python3 -I scripts/check_parity.py` and `apple/scripts/verify.sh` before merging (plus the Android build and tests when `android/` changed); report failures with their output, do not hide flaky tests (raise the timeout or fix the cause, and note it in `PROGRESS.md`).
 - Before pushing, grep tracked files for `kk=` followed by a real token and for real plant names or addresses.
+- When a session ends, run `scripts/clean.sh`. It deletes build outputs, caches and renders (Apple and Android) that the next build makes again, and skips when another session is building. Copy anything you still need out of a render folder first. Never delete `private/` or other files by hand to "clean up".

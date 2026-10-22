@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <application>
+        <!-- Debug only: asks the launcher to pin a widget (see DebugWidgetReceiver). -->
+        <receiver android:name=".widget.DebugWidgetReceiver" android:exported="true" />
+        <!-- Debug only: lets adb start the answer card the launcher shortcuts open. -->
+        <activity android:name=".shortcuts.AnswerActivity" android:exported="true" tools:replace="android:exported" />
+        <!-- Debug only: fills an empty kiosk link from private/kiosk.local (see DebugKioskPrefill). -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data android:name="com.ideatic.sunwatt.debug.DebugKioskPrefill" android:value="androidx.startup" />
+        </provider>
+    </application>
+</manifest>

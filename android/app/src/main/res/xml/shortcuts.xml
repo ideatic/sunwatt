@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App shortcuts: the Siri / Shortcuts intents of the Apple app (price now, solar now, cheapest hours). Each opens a
+     small card with the answer (AnswerActivity). No Google Assistant capability fits these questions honestly, so none is declared. -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="price"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_ic_price"
+        android:shortcutShortLabel="@string/widgetext_electricity_price"
+        android:shortcutLongLabel="@string/intents_electricity_price_now">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.ideatic.sunwatt.shortcuts.AnswerActivity"
+            android:targetPackage="com.ideatic.sunwatt">
+            <extra android:name="answer" android:value="price" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="solar"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_ic_solar"
+        android:shortcutShortLabel="@string/widgetext_solar_production"
+        android:shortcutLongLabel="@string/intents_solar_production_now">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.ideatic.sunwatt.shortcuts.AnswerActivity"
+            android:targetPackage="com.ideatic.sunwatt">
+            <extra android:name="answer" android:value="solar" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="cheapestHours"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_ic_cheapest"
+        android:shortcutShortLabel="@string/intents_cheapest_hours"
+        android:shortcutLongLabel="@string/intents_cheapest_hours">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.ideatic.sunwatt.shortcuts.AnswerActivity"
+            android:targetPackage="com.ideatic.sunwatt">
+            <extra android:name="answer" android:value="cheapestHours" />
+        </intent>
+    </shortcut>
+</shortcuts>

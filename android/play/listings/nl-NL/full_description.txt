@@ -1,0 +1,42 @@
+Je zonne-opbrengst en de stroomprijs, altijd in beeld. SunWatt toont beide in widgets op je beginscherm, in Snelle instellingen en op je Wear OS-horloge. Werkt met Huawei FusionSolar, SolarEdge, PVOutput en Fronius.
+
+Gratis. Geen account, geen tracking, geen advertenties.
+
+ZONNE-OPBRENGST
+Koppel je zonne-installatie en zie het huidige vermogen in kW, de energie van vandaag in kWh en de opbrengstcurve van vandaag. SunWatt werkt met:
+• Huawei FusionSolar: plak de kiosklink van je installatie, of voer het API-account in dat je installateur voor je aanmaakt
+• SolarEdge: vul je site-ID en API-sleutel in
+• PVOutput: vul je systeem-ID en API-sleutel in. PVOutput werkt met veel omvormermerken, zoals Fronius, SMA, Enphase, GoodWe en Growatt
+• Fronius: vul het IP-adres van de omvormer op je thuisnetwerk in (gegevens alleen terwijl je thuis bent)
+• Meerdere zonne-installaties in één app
+• Optioneel live gegevens thuis: lees een Huawei-dongle of een SunSpec-omvormer op je thuisnetwerk uit (Modbus TCP, alleen lezen)
+De introductie laat in een paar minuten zien waar je elk van deze gegevens vindt.
+
+STROOMPRIJS
+• Spanje: de gereguleerde PVPC-prijs van Red Eléctrica
+• Portugal, Frankrijk, Duitsland en Luxemburg, Oostenrijk, België, Nederland en Noord-Italië: day-ahead-groothandelsprijzen
+• Huidige prijs gekleurd naar niveau, zodat je in één oogopslag ziet of stroom goedkoop of duur is
+• Grafiek van vandaag en de goedkoopste komende uren
+• Prijzen voor morgen zodra ze zijn gepubliceerd
+
+WIDGETS EN SNELLE INSTELLINGEN
+• Kleine, middelgrote en grote widgets voor het beginscherm
+• Twee tegels in Snelle instellingen: prijs en zonne-opbrengst
+• Kies zonne-opbrengst, prijs of beide
+• Hele dag, of de afgelopen 6 uur plus de komende 12 uur
+• Tik op een widget om de app te openen met verse gegevens
+• App-snelkoppelingen: prijs nu, zonne-opbrengst nu en de goedkoopste uren
+
+WEAR OS
+Een Wear OS-app en complicaties tonen de stroomprijs en je zonne-opbrengst op je pols.
+
+IN DE APP
+• Dashboard met interactieve grafieken
+• Landkeuze
+• Licht en donker thema
+• Beschikbaar in het Engels, Spaans, Portugees, Frans, Duits, Italiaans en Nederlands
+
+PRIVACY VOOROP
+Geen account. Geen tracking. Geen analyses. Geen advertenties. SunWatt maakt alleen verbinding met het zonne-monitoringsysteem dat je kiest en met openbare prijsdiensten. Je instellingen, sleutels en laatste gegevens blijven op je apparaat, versleuteld met de Android Keystore. Er wordt niets naar de ontwikkelaar gestuurd.
+
+SunWatt is gratis. De app is niet gelieerd aan Huawei, SolarEdge, PVOutput, Fronius, Red Eléctrica of Fraunhofer ISE. Day-ahead-prijzen voor andere landen dan Spanje komen van Energy-Charts (Fraunhofer ISE), licentie CC BY 4.0. De groothandelsprijs is niet de prijs op je rekening.

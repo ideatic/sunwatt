@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The answer card of an app shortcut floats over the home screen: transparent window, no title. -->
+    <style name="Theme.SunWatt.Answer" parent="Theme.SunWatt">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+</resources>
