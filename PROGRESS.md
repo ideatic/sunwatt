@@ -101,5 +101,6 @@
 - [ ] Privacy and support pages for Android (`docs/`).
 - Play warns that native debug symbols are missing. Not fixable: the only native library (`libandroidx.graphics.path.so`, from AndroidX) ships stripped. R8 mapping files are in the bundles, so Kotlin crashes are readable.
 - [x] 2026-10-22: upload key in `private/` (D39), signed release bundles, fastlane lanes in `android/fastlane/`. Play Console app created in the Ideatic account ("SunWatt: Solar & Power", app ID 4974496635921169976).
+- [x] 2026-10-22: version 1.0 (phone code 3, watch code 4) sent to Google review for production in 178 countries, with the Wear OS opt-in and the store listing in 10 languages. Managed publishing is off: it goes live when Google approves. Internal testing has phone 1 and watch 2.
 - [x] 2026-10-22: Play store images in all 7 app languages; store-only listings in `zh-CN`, `zh-TW`, `pl-PL` (D40). The Chinese and Polish texts had no native-speaker check.
-- [ ] After the first Play Store upload: start a new session to add Android to the GitHub Pages site (`docs/`: privacy, support, store links). Owner request, 2026-10-22.
+- [x] 2026-10-22: Android on the GitHub Pages site (`docs/`): Google Play badge (Google's official badge, not distorted) and trademark line on the home page, Android and Wear OS in the privacy policy (Keystore, Wear OS sync, WorkManager, "Find inverter", no backups, Play Data safety) and support FAQ (widgets, Quick Settings tiles, shortcuts, Wear OS), in English and Spanish.
