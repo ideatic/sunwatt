@@ -82,7 +82,6 @@ When the Android code gets its own enums for the stored values above, extend `sc
 | intent-GetCurrentPriceIntent | Ask the current price (Siri, Shortcuts) | done | planned | Android: app shortcut / App Actions. |
 | intent-GetSolarProductionIntent | Ask the solar production (Siri, Shortcuts) | done | planned | Android: app shortcut / App Actions. |
 | intent-GetCheapestHoursIntent | Ask the cheapest hours (Siri, Shortcuts) | done | planned | Android: app shortcut / App Actions. |
-| intent-RefreshWidgetIntent | Refresh the widgets (App Intent) | done | n/a | No longer used by the widget since D25 (a tap opens the app). Android uses `link-refresh`. |
 
 ## App links
 

@@ -1,6 +1,5 @@
 import AppIntents
 import Foundation
-import WidgetKit
 
 /// Registers the package intents with the app and the widget extension (both list it in `includedPackages`).
 public struct SunWattKitIntentsPackage: AppIntentsPackage {}
@@ -55,32 +54,5 @@ public struct GetCheapestHoursIntent: AppIntent {
         return .result(
             dialog: IntentDialog(stringLiteral: answer.dialog),
             view: CheapestHoursSnippetView(answer: answer, timeZone: data.prices?.region.timeZone ?? Constants.madrid))
-    }
-}
-
-/// Refreshes the data and reloads widgets and controls. Used as the tap action of the widgets and the controls.
-/// The user asked for new data, so it always fetches (`maxCacheAge: 0`); the reload that follows reads the stored result.
-public struct RefreshWidgetIntent: AppIntent {
-    public static let title = LocalizedStringResource("Refresh", table: "Intents", bundle: #bundle)
-    public static let description = IntentDescription(LocalizedStringResource("Updates the SunWatt widgets with the latest data.", table: "Intents", bundle: #bundle))
-    public static let isDiscoverable = false
-    public static let openAppWhenRun = false
-
-    public init() {}
-
-    public func perform() async throws -> some IntentResult {
-        await Self.refresh(load: { _ = await SunWattLoader().load(deadline: 10, maxCacheAge: 0) }, reload: Self.reloadEverything)
-        return .result()
-    }
-
-    /// The seam used by tests: load first (it saves to the store), then reload.
-    static func refresh(load: () async -> Void, reload: () -> Void) async {
-        await load()
-        reload()
-    }
-
-    static func reloadEverything() {
-        WidgetCenter.shared.reloadAllTimelines()
-        ControlCenter.shared.reloadAllControls()
     }
 }

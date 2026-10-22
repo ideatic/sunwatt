@@ -161,34 +161,3 @@ private let dayData = SampleData.entry(.day).data
         #expect(store.loadPrices() == prices)
     }
 }
-
-@Suite struct RefreshIntentTests {
-    final class Order: @unchecked Sendable {
-        private let lock = NSLock()
-        private var events: [String] = []
-        func add(_ e: String) { lock.lock(); events.append(e); lock.unlock() }
-        var all: [String] { lock.lock(); defer { lock.unlock() }; return events }
-    }
-
-    @Test func isConstructibleAndHidden() throws {
-        _ = RefreshWidgetIntent()
-        #expect(RefreshWidgetIntent.isDiscoverable == false)
-        #expect(RefreshWidgetIntent.openAppWhenRun == false)
-    }
-
-    @Test func titleIsLocalizedInEverySupportedLanguage() throws {
-        for code in L10n.languages {
-            let s = try strings(code)
-            let title = s.text("Refresh")
-            #expect(!title.isEmpty)
-            if code != "en" { #expect(title != "Refresh", "\(code)") }
-        }
-        #expect(try strings("es").text("Refresh") == "Actualizar")
-    }
-
-    @Test func loadsBeforeReloading() async {
-        let order = Order()
-        await RefreshWidgetIntent.refresh(load: { order.add("load") }, reload: { order.add("reload") })
-        #expect(order.all == ["load", "reload"])
-    }
-}

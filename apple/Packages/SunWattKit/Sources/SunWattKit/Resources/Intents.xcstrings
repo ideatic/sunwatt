@@ -534,47 +534,6 @@
         }
       }
     },
-    "Refresh" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktualisieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualizar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualiser"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiorna"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vernieuwen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atualizar"
-          }
-        }
-      },
-      "extractionState" : "manual"
-    },
     "Solar production is not set up. Connect your solar system in the SunWatt settings." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1271,47 +1230,6 @@
           }
         }
       }
-    },
-    "Updates the SunWatt widgets with the latest data." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktualisiert die SunWatt-Widgets mit den neuesten Daten."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actualiza los widgets de SunWatt con los datos más recientes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Met à jour les widgets SunWatt avec les dernières données."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiorna i widget di SunWatt con i dati più recenti."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Werkt de SunWatt-widgets bij met de nieuwste gegevens."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atualiza os widgets do SunWatt com os dados mais recentes."
-          }
-        }
-      },
-      "extractionState" : "manual"
     },
     "Your FusionSolar kiosk link has expired. Create a new one and paste it in the SunWatt settings." : {
       "extractionState" : "manual",

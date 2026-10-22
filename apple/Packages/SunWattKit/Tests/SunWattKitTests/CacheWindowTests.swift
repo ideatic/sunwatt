@@ -174,7 +174,7 @@ private func loader(_ store: AppGroupStore, counter: CountingSources, solar: Boo
     @Test func explicitRefreshIgnoresTheWindow() async {
         let counter = CountingSources()
         let store = seeded(age: 5)
-        // What RefreshWidgetIntent does: maxCacheAge 0.
+        // What an explicit refresh does (widget tap, app refresh): maxCacheAge 0.
         _ = await loader(store, counter: counter).load(deadline: 10, maxCacheAge: 0)
         #expect(counter.solarCalls == 1 && counter.priceCalls == 1)
     }
