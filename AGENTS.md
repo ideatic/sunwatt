@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guide for coding agents (and humans) working on SunWatt. Read this first, then `DECISIONS.md` (why things are the way they are) and `PROGRESS.md` (what is done and what is open).
+Guide for coding agents (and humans) working on SunWatt. Read this first, then `FEATURES.md` (what the product does, in each app), `DECISIONS.md` (why things are the way they are) and `PROGRESS.md` (what is done and what is open).
 
 ## What the app is
 
@@ -21,12 +21,25 @@ Platforms: iOS / iPadOS / macOS / watchOS **27.0** (Xcode 27). Languages: en (so
 
 Product name: **SunWatt** (store name "SunWatt: Solar & Power"). Team `EX68NKELW9`, bundle IDs `com.ideatic.sunwatt`, `.widgets`, `.watchkitapp`, `.watchkitapp.widgets`, App Group `group.com.ideatic.sunwatt` (Mac: `EX68NKELW9.com.ideatic.sunwatt`, DECISIONS D4).
 
+## Two apps, one product
+
+SunWatt has an Apple app (`apple/`) and an Android app (`android/`). They are one product: same features, same behaviour, same data. The rules:
+
+- **Every feature goes in both apps.** A new feature, a changed behaviour or a bug fix in shared logic is built in both apps in the same change when you can. When one app must wait, its row in `FEATURES.md` says `planned` with the reason. Never leave a feature in one app without a row.
+- **`FEATURES.md` is the list.** Update its row in the same change. `scripts/check_parity.py` (CI job `Parity`, and the first step of `apple/scripts/verify.sh`) fails when a provider, price region, inverter kind, widget option, app link, App Intent or widget in the code has no row. Add the row; never weaken the check.
+- **Keep the shared contracts** listed in `FEATURES.md`: stored raw values, `sunwatt://` links, provider contracts, limits and time zones, shared fixtures, texts from the `.xcstrings` catalogs, secret handling, attribution. A contract changes in both apps at once.
+- **Port, do not reinvent.** The Apple code is the reference for each feature that exists there. Port its rules, edge cases and tests; do not design a second behaviour. When the Android app finds a better way, change both apps and record it in `DECISIONS.md`.
+- **Platform-only work** (a surface one platform does not have) is fine: write `n/a` and the reason, and use the nearest equivalent on the other platform.
+- **Starting work on one app:** first read the `planned` rows for that app in `FEATURES.md`. When a change touches only one app, say in the answer which `FEATURES.md` rows the other app still owes.
+
 ## Repository layout
 
 | Path | What |
 | --- | --- |
 | `apple/` | The Apple app (iOS, iPadOS, macOS, watchOS). Every `apple/…` path below. Its scripts run from here and read secrets from `../private/`. |
 | `android/` | The Android app (planned). Same product rules as here (DECISIONS D31). |
+| `FEATURES.md` | Features of the product and their status in each app, plus the contracts both apps keep. |
+| `scripts/check_parity.py` | Checks `FEATURES.md` against the code (DECISIONS D32). |
 | `apple/project.yml` | XcodeGen spec, the source of truth. `apple/SunWatt.xcodeproj` is generated and git-ignored. Version (`MARKETING_VERSION`) and build number (`CURRENT_PROJECT_VERSION`) live only here. |
 | `apple/App/` | App target (iOS + macOS): entry point, Siri shortcuts, watch sync, debug kiosk prefill, assets. |
 | `apple/Widgets/` | Widget extension: widget, controls, App Intent config, intent strings. |
@@ -63,6 +76,7 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power"). Team `EX68NKELW
 8. **Privacy manifests** (`PrivacyInfo.xcprivacy`) exist for every target and the package bundle. Adding a required-reason API means updating them.
 9. **No "add widget" API** exists; the app shows a guide and detects installed widgets via `WidgetCenter.currentConfigurations()`.
 10. **Providers keep their contracts.** Every solar provider, price source and local inverter reader keeps the contract written on its protocol (`SolarDataSource`, `PriceDataSource`, `LocalInverterReader`) and has a case in `ProviderContractTests`. Change a contract only together with its doc comment, its contract tests and every conforming type.
+11. **Both apps stay at parity.** Every feature has a row in `FEATURES.md` with its status in each app, and `scripts/check_parity.py` passes. A shared contract changes in both apps at once (see "Two apps, one product").
 
 ## Code standards and patterns
 
@@ -141,6 +155,8 @@ After any visual change: render, look at the PNGs (light/dark, day/night/stale/e
 
 ### Adding things
 
+Everything below is done for both apps ("Two apps, one product"): add or update the `FEATURES.md` row, and build the Android side too, or mark it `planned` with the reason.
+
 - **Solar provider**: add a case to `SolarProvider` and its `SolarProviderProfile` (name, setup kind, portal, request limit, local inverter kind), a client that keeps the `SolarDataSource` contract (written on the protocol), a case in `SolarAccount` (`init(settings:)`, `cacheID`, `client`), the per-provider texts in `SolarSetupViews` (the compiler points at each exhaustive `switch`), strings in all languages, fixtures + parser tests, **one case in `ProviderContractTests`** (the shared contract checks then run on it), and mention it in the privacy page and store texts. Same for a price source (`PriceDataSource`, `PriceContractCase`) or an inverter kind (`LocalInverterReader`, `InverterContractCase`).
 - **Price region**: add a case to `PriceRegion` and its `PriceRegionProfile` (time zone, flag, `PriceSource` with the zone code) and its `displayName`, strings in `Core.xcstrings` in all languages, a real fixture + a `PriceContractCase` (the shared contract checks then run on it), and run the live test once. A new kind of source also needs a client that keeps the `PriceDataSource` contract and its texts in the exhaustive `switch`es on `PriceSource` (tariff name, note, attribution).
 - **User-facing string**: add the key to the right catalog with all 7 languages.
@@ -148,7 +164,7 @@ After any visual change: render, look at the PNGs (light/dark, day/night/stale/e
 
 ### Translations (one Haiku subagent per locale, acting as LQA)
 
-Every new or changed user-facing string (string catalogs, App Store metadata, `docs/` pages) is translated like this:
+The `.xcstrings` catalogs are the single source of the app texts for both apps; Android `strings.xml` files are generated from them and never edited by hand. A text that only Android uses still goes in a catalog. Every new or changed user-facing string (string catalogs, store metadata, `docs/` pages) is translated like this:
 
 1. Write the English source text first and add the key with its English value.
 2. Start **one subagent per locale** (es, pt, fr, de, it, nl) on the **Haiku** model. Each one handles only its own language, so terms and grammar from one language never leak into another. Give each one:
@@ -168,5 +184,5 @@ Step by step in `apple/RELEASE.md`. `apple/scripts/release.sh` is a dry run by d
 
 - Small, focused commits with plain-language messages (`Area: what changed`).
 - Record each non-obvious decision in `DECISIONS.md` (decision, why, how to change it) and update `PROGRESS.md` when a step is done or a known issue changes.
-- Run `apple/scripts/verify.sh` before merging; report failures with their output, do not hide flaky tests (raise the timeout or fix the cause, and note it in `PROGRESS.md`).
+- Run `python3 -I scripts/check_parity.py` and `apple/scripts/verify.sh` before merging (plus the Android build and tests when `android/` changed); report failures with their output, do not hide flaky tests (raise the timeout or fix the cause, and note it in `PROGRESS.md`).
 - Before pushing, grep tracked files for `kk=` followed by a real token and for real plant names or addresses.

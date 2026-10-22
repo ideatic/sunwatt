@@ -13,6 +13,9 @@ EXTRA=(${=SUNWATT_XCODEBUILD_ARGS:-})
 # An empty file means "no prefill" (fresh clones, CI).
 [[ -f ../private/kiosk.local ]] || { mkdir -p ../private && : > ../private/kiosk.local; }
 
+echo "== feature parity (FEATURES.md, both apps)"
+python3 -I ../scripts/check_parity.py
+
 echo "== swift test"
 # Full logs of every step stay in build/logs (uploaded by CI).
 mkdir -p build/logs
