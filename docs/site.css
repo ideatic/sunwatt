@@ -74,6 +74,8 @@ p { margin: 0 0 1rem; }
 .hero .lead { font-size: clamp(1.1rem, 2.6vw, 1.35rem); color: var(--muted); max-width: 36rem; margin: 0 auto 1.6rem; }
 .badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; align-items: center; }
 .badges img { height: 48px; width: auto; }
+/* El PNG de Google Play trae un margen transparente: más alto para igualar la insignia de Apple */
+.badges img.play { height: 71px; max-width: none; margin: -11.5px; }
 .badge-note { color: var(--muted); font-size: .9rem; margin-top: .8rem; }
 .platforms { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 1.4rem; }
 .chip { display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line);
