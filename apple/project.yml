@@ -80,8 +80,8 @@ targets:
           DEST="${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/kiosk.local"
           if [ "${CONFIGURATION}" = "Debug" ]; then
             mkdir -p "$(dirname "${DEST}")"
-            if [ -f "${SRCROOT}/private/kiosk.local" ]; then
-              cp "${SRCROOT}/private/kiosk.local" "${DEST}"
+            if [ -f "${SRCROOT}/../private/kiosk.local" ]; then
+              cp "${SRCROOT}/../private/kiosk.local" "${DEST}"
             else
               : > "${DEST}"
             fi
@@ -89,7 +89,7 @@ targets:
             rm -f "${DEST}"
           fi
         inputFiles:
-          - $(SRCROOT)/private/kiosk.local
+          - $(SRCROOT)/../private/kiosk.local
         outputFiles:
           - $(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/kiosk.local
     settings:

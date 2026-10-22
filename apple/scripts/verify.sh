@@ -9,9 +9,9 @@ cd "$(dirname "$0")/.."
 SIM="${SUNWATT_SIM:-platform=iOS Simulator,name=iPhone 18 Pro,OS=27.0}"
 DD="${SUNWATT_DD:-build/dd}"
 EXTRA=(${=SUNWATT_XCODEBUILD_ARGS:-})
-# The debug prefill build step declares private/kiosk.local as an input (script sandboxing), so it must exist.
+# The debug prefill build step declares ../private/kiosk.local as an input (script sandboxing), so it must exist.
 # An empty file means "no prefill" (fresh clones, CI).
-[[ -f private/kiosk.local ]] || { mkdir -p private && : > private/kiosk.local; }
+[[ -f ../private/kiosk.local ]] || { mkdir -p ../private && : > ../private/kiosk.local; }
 
 echo "== swift test"
 # Full logs of every step stay in build/logs (uploaded by CI).

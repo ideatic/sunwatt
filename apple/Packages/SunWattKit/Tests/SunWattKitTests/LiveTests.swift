@@ -8,7 +8,7 @@ import Foundation
 @Suite(.serialized, .enabled(if: ProcessInfo.processInfo.environment["SUNWATT_LIVE"] == "1"))
 struct LiveTests {
     static func kioskURL() throws -> String {
-        let root = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "../../../../private/kiosk.local")
+        let root = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "../../../../../private/kiosk.local")
         return try String(contentsOf: root.standardized, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
@@ -23,7 +23,7 @@ struct LiveTests {
 
     /// `private/<name>.local`: two lines, site/system ID then API key. Nil when the file is missing (test skipped).
     static func apiCredentials(_ name: String) -> SolarAPICredentials? {
-        let url = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "../../../../private/\(name).local")
+        let url = URL(filePath: #filePath).deletingLastPathComponent().appending(path: "../../../../../private/\(name).local")
         guard let text = try? String(contentsOf: url.standardized, encoding: .utf8) else { return nil }
         let lines = text.split(whereSeparator: \.isNewline).map(String.init)
         guard lines.count >= 2 else { return nil }

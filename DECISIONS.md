@@ -4,27 +4,27 @@ Each entry: decision, why, how to change it.
 
 ## D1. SDK and deployment target: iOS 27.0 / macOS 27.0
 - Xcode 27.0 (27A266a) with iOS 27.0 and macOS 27.0 SDKs is installed. The iOS 27.0 simulator runtime was not installed; it was downloaded with `xcodebuild -downloadPlatform iOS` (8 GB). Simulator used: iPhone 18 Pro (iOS 27.0).
-- Change: `deploymentTarget` in `project.yml` and `platforms` in `Packages/SunWattKit/Package.swift`.
+- Change: `deploymentTarget` in `apple/project.yml` and `platforms` in `apple/Packages/SunWattKit/Package.swift`.
 
 ## D2. Project generation: XcodeGen
-- `project.yml` is the source of truth. XcodeGen 2.46 was installed with Homebrew. `SunWatt.xcodeproj` is git-ignored and regenerated with `xcodegen generate` (also done by `scripts/verify.sh`).
+- `apple/project.yml` is the source of truth. XcodeGen 2.46 was installed with Homebrew. `apple/SunWatt.xcodeproj` is git-ignored and regenerated with `xcodegen generate` (also done by `apple/scripts/verify.sh`).
 - Why: reproducible, reviewable diffs, no merge conflicts in pbxproj.
 - Change: commit the `.xcodeproj` (remove it from `.gitignore`) if you prefer to edit in Xcode.
 
 ## D3. One local package, one library target
-- `Packages/SunWattKit` with folders `Models/`, `Services/`, `Store/`, `Timeline/`, `DesignSystem/`, `Views/`, `Intents/`, `Watch/`. Widget views also live in the package, so the snapshot renderer and tests can render them with `ImageRenderer` on macOS.
+- `apple/Packages/SunWattKit` with folders `Models/`, `Services/`, `Store/`, `Timeline/`, `DesignSystem/`, `Views/`, `Intents/`, `Watch/`. Widget views also live in the package, so the snapshot renderer and tests can render them with `ImageRenderer` on macOS.
 - Why: separate modules buy nothing at this size and add `public` churn.
 
 ## D4. Signing
 - `DEVELOPMENT_TEAM` is `EX68NKELW9` (ideatic Development, S.L.U.), automatic signing. iOS Simulator builds work, App Group included.
-- macOS uses a team-prefixed App Group, `EX68NKELW9.com.ideatic.sunwatt` (`Constants.appGroupID` under `#if os(macOS)`, `App/SunWatt-macOS.entitlements`, `Widgets/SunWattWidgets-macOS.entitlements`, set with `CODE_SIGN_ENTITLEMENTS[sdk=macosx*]`). iOS and watchOS keep `group.com.ideatic.sunwatt`.
+- macOS uses a team-prefixed App Group, `EX68NKELW9.com.ideatic.sunwatt` (`Constants.appGroupID` under `#if os(macOS)`, `apple/App/SunWatt-macOS.entitlements`, `apple/Widgets/SunWattWidgets-macOS.entitlements`, set with `CODE_SIGN_ENTITLEMENTS[sdk=macosx*]`). iOS and watchOS keep `group.com.ideatic.sunwatt`.
   - Why (2026-10-17): a `group.` ID on the Mac needs a provisioning profile that lists it. The local Debug build got the generic "Mac Team Provisioning Profile: *", macOS blocked the group, the app saved settings in its private container, and the Mac widget said "Solar not set up". A team-prefixed group needs no profile entry. The Mac and iOS apps never share a container, so different IDs cost nothing.
   - The keychain group for the secrets is the same string, allowed by `keychain-access-groups` in the Mac entitlements (the team profile covers `EX68NKELW9.*`).
   - At launch the app moves settings from the private fallback into the group (`AppGroupStore.adoptSettings(from:)`) and moves any secret still in the plist into the keychain (`moveSecretsToKeychain()`).
   - Change: to go back to one ID, register `group.com.ideatic.sunwatt` for the Mac App IDs (profile with the App Group), delete the two `-macOS` entitlements files and the `#if`.
-- `scripts/verify.sh` builds macOS with `CODE_SIGNING_ALLOWED=NO` (compile + link only).
+- `apple/scripts/verify.sh` builds macOS with `CODE_SIGNING_ALLOWED=NO` (compile + link only).
 - The store falls back to a local container when the App Group container is unavailable, so the app still works (without sharing) when unsigned.
-- Change: `DEVELOPMENT_TEAM` in `project.yml` (see README).
+- Change: `DEVELOPMENT_TEAM` in `apple/project.yml` (see README).
 
 ## D5. Kiosk data facts (from the real response, 2026-10-17 01:20)
 - `powerCurve.xAxis`: 288 labels "HH:mm" (5 min). `powerCurve.activePower`: 288 values, missing = `"-"` (single dash). `powerCurve.currentPower` is a string. `realKpi` came as numbers; the parser accepts numbers or strings.
@@ -48,7 +48,7 @@ Each entry: decision, why, how to change it.
 - Change: add a case to `PriceRegion` with its zone code and time zone.
 
 ## D9. Languages and number format
-- en (source), es, pt, fr, de, it, nl. String catalogs: `Core.xcstrings` (data/errors/regions; not named Localizable so Xcode cannot dump untranslated keys into it; all keys `extractionState: manual`), `Widgets.xcstrings` (widget views), `App.xcstrings` (app screens), `Widgets/Resources/Localizable.xcstrings` (App Intent strings). Tests check every key has all 6 translations.
+- en (source), es, pt, fr, de, it, nl. String catalogs: `Core.xcstrings` (data/errors/regions; not named Localizable so Xcode cannot dump untranslated keys into it; all keys `extractionState: manual`), `Widgets.xcstrings` (widget views), `App.xcstrings` (app screens), `apple/Widgets/Resources/Localizable.xcstrings` (App Intent strings). Tests check every key has all 6 translations.
 - Numbers follow the user's locale (`Format.locale`, default `autoupdatingCurrent`), so Spanish users get the comma decimal separator. The spec asked for a Spanish number format; this keeps that for Spanish and stays correct for the other languages.
 - Change: set `Format.locale` to a fixed locale at app start.
 
@@ -157,14 +157,14 @@ Each entry: decision, why, how to change it.
 
 ## D25: A widget tap opens the app and refreshes
 
-- Decision: tapping a widget opens the app (`widgetURL(SunWattLink.refreshURL)`, scheme `sunwatt` in project.yml). The app treats it as an explicit refresh (`AppModel.open(_:)`, no cache window) and reloads the widgets. Control Center controls still refresh in place.
+- Decision: tapping a widget opens the app (`widgetURL(SunWattLink.refreshURL)`, scheme `sunwatt` in apple/project.yml). The app treats it as an explicit refresh (`AppModel.open(_:)`, no cache window) and reloads the widgets. Control Center controls still refresh in place.
 - Why: the in-place refresh (`Button(intent: RefreshWidgetIntent())` over the widget) only dimmed the widget for a moment; widgets cannot show a spinner, so users could not tell what was happening. The app shows the loading state and the full data.
 - How to change: put the overlay button back in `SunWattWidgetEntryView` (git history has it) and the "Tap to refresh" texts.
 
 
 ## D26: Archives keep global symbols (`STRIP_STYLE: non-global`)
 
-- Decision: `project.yml` sets `STRIP_STYLE: non-global` for every target. `scripts/check_appintents_symbols.sh` reads every `Metadata.appintents/extract.packagedata` in a built app and checks that the bundle's binary exports each listed package symbol. `scripts/release.sh` runs it before export; `scripts/verify.sh` (CI, every push and pull request) archives iOS and macOS unsigned and runs it too.
+- Decision: `apple/project.yml` sets `STRIP_STYLE: non-global` for every target. `apple/scripts/check_appintents_symbols.sh` reads every `Metadata.appintents/extract.packagedata` in a built app and checks that the bundle's binary exports each listed package symbol. `apple/scripts/release.sh` runs it before export; `apple/scripts/verify.sh` (CI, every push and pull request) archives iOS and macOS unsigned and runs it too.
 - Why: the app and widget metadata (`Metadata.appintents/extract.packagedata`) include `SunWattKitIntentsPackage` by its symbol name. On install, iOS (`linkd`) looks for that symbol in the binary. The archive stripped all global symbols from the app binary, so `linkd` logged "did not match any imported or exported symbol" and "Could not create bundle record for com.ideatic.sunwatt". Then no App Intent of SunWatt was known: widgets from TestFlight stayed placeholders ("No AppIntent in snapshot(for:with:)"), and Siri shortcuts failed. Debug and simulator builds are not stripped, so they worked. Seen on an iPhone with build 202610172346, 2026-10-18.
 - Why an archive in CI: Debug and simulator builds are never stripped, so only an archive shows the problem. An unsigned archive with `STRIP_STYLE=all` fails the check (tested 2026-10-18).
 - How to change: only with another way to keep that symbol (for example `-exported_symbol` linker flags), and the check must still pass.
@@ -196,3 +196,8 @@ Each entry: decision, why, how to change it.
 - Plain HTTP: `NSAllowsLocalNetworking` in the app and widget plists. `ModbusEndpoint` also holds the HTTP address (`defaultPort` per kind, unit ID unused). `LocalInverterReader`'s contract now covers HTTP readers (GET only, other devices read as unreachable); `HTTPInverterReaderContractTests` checks them. The "inverter did not answer" text names the Solar API too.
 - How to change: a real capture from a Fronius inverter (anonymised) should replace the synthetic fixtures; the inverter archive (`GetArchiveData.cgi`) could fill today's curve and energy on GEN24.
 
+## D31: One repo for all platforms, one folder per platform
+
+- Decision: the Apple app lives in `apple/` (Xcode project spec, targets, `SunWattKit`, scripts, App Store files, design logs). The Android app gets `android/`. The top level keeps only what all platforms share: `docs/` (GitHub Pages serves it from the root), `private/` (secrets; Apple scripts and tests read it as `../private`), `.github/`, and the project notes (`README.md`, `AGENTS.md`, `DECISIONS.md`, `PROGRESS.md`).
+- Why: both apps use the same providers, price sources, store texts and secrets, and decisions such as rate limits and time zones apply to both. Separate folders keep each build system (XcodeGen + SwiftPM, Gradle) self-contained. The files were moved with `git mv`, so `git log --follow` keeps their history.
+- How to change: a new shared piece (for example common fixtures or translations) goes in a new top-level folder that both apps read. The Mac CI job skips changes only under `android/` (`paths-ignore` in `.github/workflows/verify.yml`).

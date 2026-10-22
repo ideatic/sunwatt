@@ -1,13 +1,16 @@
 name: Verify
 
 # Builds and tests SunWatt on a GitHub-hosted Mac (Xcode 27, macOS 27): `swift test` for the package,
-# iOS Simulator tests, macOS and watchOS builds. Same steps as `scripts/verify.sh` locally.
+# iOS Simulator tests, macOS and watchOS builds. Same steps as `apple/scripts/verify.sh` locally.
+# Android-only changes (android/) do not start this Mac job.
 # No secrets are used: builds are unsigned (CODE_SIGNING_ALLOWED=NO) and tests never reach the network.
 
 on:
   push:
     branches: [main]
+    paths-ignore: ['android/**']
   pull_request:
+    paths-ignore: ['android/**']
   workflow_dispatch:
 
 concurrency:
@@ -72,13 +75,13 @@ jobs:
       - name: Verify (swift test, iOS Simulator tests, macOS and watchOS builds)
         env:
           SUNWATT_XCODEBUILD_ARGS: CODE_SIGNING_ALLOWED=NO
-        run: scripts/verify.sh
+        run: apple/scripts/verify.sh
 
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: verify-logs
-          path: build/logs
+          path: apple/build/logs
           if-no-files-found: ignore
           retention-days: 14

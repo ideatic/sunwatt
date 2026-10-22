@@ -13,13 +13,13 @@ build/
 # Claude Code agent worktrees
 .claude/worktrees/
 
-# Store screenshots: rendered before upload (AppStore/SCREENSHOTS.md), not kept in git (333 MB for 7 languages).
-AppStore/screenshots/
+# Store screenshots: rendered before upload (apple/AppStore/SCREENSHOTS.md), not kept in git (333 MB for 7 languages).
+apple/AppStore/screenshots/
 # Design renders: made by SunWattSnapshots / SunWattWatchSnapshots, kept local. The ITERATIONS.md logs stay in git.
-Screenshots/**/*.png
+apple/Screenshots/**/*.png
 
 # App Review contact phone: private, never committed (the repo is public).
-AppStore/metadata/review_information/phone_number.txt
+apple/AppStore/metadata/review_information/phone_number.txt
 
 # JetBrains IDE settings (local)
 .idea/

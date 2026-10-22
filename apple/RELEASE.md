@@ -1,5 +1,7 @@
 # SunWatt: release steps
 
+Paths in this guide are relative to `apple/` (run the scripts from there or as `apple/scripts/…`), except `docs/` and `private/`, which are at the repo root.
+
 Team: ideatic Development, S.L.U. (`EX68NKELW9`). Bundle ID: `com.ideatic.sunwatt`. Version `1.0.0` (set in `project.yml`, `MARKETING_VERSION`). Build number: `CURRENT_PROJECT_VERSION` in `project.yml`, set by `scripts/release.sh`.
 
 ## a) Create the app record (App Store Connect)
@@ -54,7 +56,7 @@ Uploads `AppStore/metadata/` (7 locales) with fastlane deliver. It never uploads
 
 1. Install: `brew install fastlane`.
 2. API key: App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys > "+". Role: App Manager. Download the `.p8` file once (Apple shows it only once).
-3. Write `private/appstore_key.json` (git-ignored; the script's default, or set `ASC_API_KEY_PATH` to another path). Put the whole text of the `.p8` in `key`, with each line break written as `\n`. Then delete the `.p8` file. Placeholder values:
+3. Write `private/appstore_key.json` in the repo root (the script reads `../private/appstore_key.json`) (git-ignored; the script's default, or set `ASC_API_KEY_PATH` to another path). Put the whole text of the `.p8` in `key`, with each line break written as `\n`. Then delete the `.p8` file. Placeholder values:
 
 ```json
 {

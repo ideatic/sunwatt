@@ -1,4 +1,4 @@
-<p align="center"><img src="App/Assets.xcassets/AppIcon.appiconset/mac-256.png" width="128" height="128" alt="SunWatt app icon"></p>
+<p align="center"><img src="apple/App/Assets.xcassets/AppIcon.appiconset/mac-256.png" width="128" height="128" alt="SunWatt app icon"></p>
 
 # SunWatt
 
@@ -47,18 +47,24 @@ Demo data. All renders come from `SunWattSnapshots` / `SunWattWatchSnapshots` (c
 
 ## Repository layout
 
+One repo, one folder per platform. Shared things stay at the top: the website (`docs/`), the git-ignored secrets (`private/`), CI and these notes.
+
 | Path | What |
 | --- | --- |
-| `project.yml` | XcodeGen spec. Source of truth for the Xcode project (`SunWatt.xcodeproj` is generated and git-ignored). |
-| `App/` | App target (iOS + macOS): entry point, Siri shortcuts, watch sync, assets. |
-| `Widgets/` | Widget extension (iOS + macOS): widget, controls, App Intent configuration. |
-| `Watch/`, `WatchWidgets/` | watchOS app and complications. |
-| `Packages/SunWattKit/` | Shared Swift package: models, clients, store, timeline, design system, all views, intents. Tested with `swift test`. |
-| `Packages/SunWattKit/Sources/SunWattSnapshots/` | Renders every widget and app screen to PNG (into `Screenshots/`, git-ignored). |
-| `Screenshots/` | Design iteration logs (`*/ITERATIONS.md`). Renders land here locally and are git-ignored. |
+| `apple/` | iOS, iPadOS, macOS and watchOS app (Swift, Xcode). Everything below with `apple/` lives here. |
+| `android/` | Android app (planned, see `android/README.md`). |
+| `apple/project.yml` | XcodeGen spec. Source of truth for the Xcode project (`apple/SunWatt.xcodeproj` is generated and git-ignored). |
+| `apple/App/` | App target (iOS + macOS): entry point, Siri shortcuts, watch sync, assets. |
+| `apple/Widgets/` | Widget extension (iOS + macOS): widget, controls, App Intent configuration. |
+| `apple/Watch/`, `apple/WatchWidgets/` | watchOS app and complications. |
+| `apple/Packages/SunWattKit/` | Shared Swift package: models, clients, store, timeline, design system, all views, intents. Tested with `swift test`. |
+| `apple/Packages/SunWattKit/Sources/SunWattSnapshots/` | Renders every widget and app screen to PNG (into `apple/Screenshots/`, git-ignored). |
+| `apple/Screenshots/` | Design iteration logs (`*/ITERATIONS.md`). Renders land here locally and are git-ignored. |
 | `docs/readme/` | The few images this README shows. |
-| `AppStore/`, `docs/` | Store texts in 7 languages, privacy answers, review notes, privacy/support web pages. |
-| `scripts/verify.sh` | Regenerates the project, runs all tests, builds iOS Simulator, macOS and watchOS. |
+| `apple/AppStore/` | App Store texts in 7 languages, privacy answers, review notes. |
+| `docs/` | Website on GitHub Pages: privacy and support pages, shared by all platforms. |
+| `private/` | Git-ignored secrets and per-machine data (kiosk link, API keys). Never committed. |
+| `apple/scripts/verify.sh` | Regenerates the project, runs all tests, builds iOS Simulator, macOS and watchOS. |
 | `DECISIONS.md`, `PROGRESS.md` | Decisions with reasons, and the build log of the project. |
 
 ## Setup
@@ -68,7 +74,7 @@ Demo data. All renders come from `SunWattSnapshots` / `SunWattWatchSnapshots` (c
 3. Generate the project and open it:
 
 ```bash
-xcodegen generate && open SunWatt.xcodeproj
+cd apple && xcodegen generate && open SunWatt.xcodeproj
 ```
 
 4. Optional, for debug builds: put your kiosk link in `private/kiosk.local` (one line, git-ignored). Debug builds use it to pre-fill Settings. Release builds never contain it.
@@ -76,23 +82,23 @@ xcodegen generate && open SunWatt.xcodeproj
 ## Build and test
 
 ```bash
-scripts/verify.sh
+apple/scripts/verify.sh
 ```
 
-Runs `swift test`, the iOS Simulator tests, and the macOS and watchOS builds. It ends with `VERIFY OK` or `VERIFY FAILED`. Full logs go to `build/logs/`.
+Runs `swift test`, the iOS Simulator tests, and the macOS and watchOS builds. It ends with `VERIFY OK` or `VERIFY FAILED`. Full logs go to `apple/build/logs/`.
 
 The same check runs on GitHub (`.github/workflows/verify.yml`, Xcode 27 Mac runner, unsigned) on every push to `main` and every pull request.
 
 Live check against the real services (kiosk from `private/kiosk.local`, all 8 price regions, 15 s apart because Energy-Charts rate-limits):
 
 ```bash
-cd Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests
+cd apple/Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests
 ```
 
 Regenerate the screenshots:
 
 ```bash
-cd Packages/SunWattKit && swift run SunWattSnapshots ../../Screenshots/widgets && swift run SunWattSnapshots --app ../../Screenshots/app
+cd apple/Packages/SunWattKit && swift run SunWattSnapshots ../../Screenshots/widgets && swift run SunWattSnapshots --app ../../Screenshots/app
 ```
 
 ## Signing and App Group
@@ -101,7 +107,7 @@ cd Packages/SunWattKit && swift run SunWattSnapshots ../../Screenshots/widgets &
 - Bundle IDs: `com.ideatic.sunwatt` (app), `.widgets`, `.watchkitapp`, `.watchkitapp.widgets`.
 - App Group `group.com.ideatic.sunwatt` on all four targets (on the Mac: `EX68NKELW9.com.ideatic.sunwatt`, DECISIONS D4). It shares settings and the last good data between the app and the widgets (and, on the watch, between the watch app and its complications).
 - macOS: a `group.` App Group needs a provisioning profile, so local macOS builds without signing (`CODE_SIGNING_ALLOWED=NO`) only compile. Without the group container the store falls back to local storage.
-- Release: see `docs/RELEASE.md` and `scripts/release.sh` (safe dry run by default; `--upload` sends to App Store Connect).
+- Release: see `apple/RELEASE.md` and `apple/scripts/release.sh` (safe dry run by default; `--upload` sends to App Store Connect).
 
 ## Add the widgets
 

@@ -12,7 +12,7 @@
 #   -h, --help                                      Show this text.
 #
 # Auth (upload only): App Store Connect API key as a fastlane JSON file.
-#   Path: env ASC_API_KEY_PATH (default private/appstore_key.json, git-ignored). See docs/RELEASE.md.
+#   Path: env ASC_API_KEY_PATH (default ../private/appstore_key.json, git-ignored). See RELEASE.md.
 # The key file is never printed.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -21,7 +21,7 @@ export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 APP_ID=com.ideatic.sunwatt
 METADATA=AppStore/metadata
-KEY_PATH="${ASC_API_KEY_PATH:-private/appstore_key.json}"
+KEY_PATH="${ASC_API_KEY_PATH:-../private/appstore_key.json}"
 
 MODE=dry-run
 PLATFORM=both
@@ -90,7 +90,7 @@ API key file not found: $KEY_PATH
 Create it:
   1. App Store Connect > Users and Access > Integrations > App Store Connect API > Team Keys.
   2. Generate a key with the App Manager role. Download the .p8 file once (Apple shows it only once).
-  3. Write the JSON file (key_id, issuer_id, the .p8 text in "key"). See docs/RELEASE.md.
+  3. Write the JSON file (key_id, issuer_id, the .p8 text in "key"). See RELEASE.md.
 Or set ASC_API_KEY_PATH to another JSON file.
 MSG
   exit 1
@@ -104,16 +104,16 @@ WORK="$ROOT/build/deliver"
 mkdir -p "$WORK"
 : > "$WORK/Deliverfile"
 # The review notes end with the developer's demo kiosk link for App Review. It is a secret (AGENTS.md rule 1), so it
-# lives only in private/kiosk.local and is added to a copy of the metadata here, never to the tracked notes.txt.
+# lives only in ../private/kiosk.local and is added to a copy of the metadata here, never to the tracked notes.txt.
 UPLOAD_METADATA="$WORK/metadata"
 rm -rf "$UPLOAD_METADATA"
 cp -R "$METADATA" "$UPLOAD_METADATA"
-if [[ -s private/kiosk.local ]]; then
-  printf '\n\nDemo kiosk link\n%s' "$(head -n 1 private/kiosk.local | tr -d '[:space:]')" \
+if [[ -s ../private/kiosk.local ]]; then
+  printf '\n\nDemo kiosk link\n%s' "$(head -n 1 ../private/kiosk.local | tr -d '[:space:]')" \
     >> "$UPLOAD_METADATA/review_information/notes.txt"
-  echo "Review notes: demo kiosk link added from private/kiosk.local"
+  echo "Review notes: demo kiosk link added from ../private/kiosk.local"
 else
-  echo "Review notes: no private/kiosk.local, sent without a demo kiosk link"
+  echo "Review notes: no ../private/kiosk.local, sent without a demo kiosk link"
 fi
 for platform in "${PLATFORMS[@]}"; do
   echo "== fastlane deliver ($platform)"

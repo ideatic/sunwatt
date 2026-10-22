@@ -1,7 +1,7 @@
 # Progress
 
 ## Done
-- [x] Step 1: repo, XcodeGen project (app + widget extension, iOS + macOS), local package `HomeDashKit`, core models, client protocols, `Theme`, `Format`, real fixtures, `scripts/verify.sh`.
+- [x] Step 1: repo, XcodeGen project (app + widget extension, iOS + macOS), local package `HomeDashKit`, core models, client protocols, `Theme`, `Format`, real fixtures, `apple/scripts/verify.sh`.
 - [x] Step 2: `FusionSolarKioskClient` + `KioskEndpoint` + `HTMLEntities`; `PVPCClient` + price analysis. Parallel worktrees, merged, 55 tests. Reviewed by 2 fresh Sonnet reviewers.
   - Kiosk review BLOCKING (fixed by me): real plant name/address in `kiosk-night.json` -> anonymized.
   - Should-fix items (cache policy, cancellation, midnight stale curve, kk hidden from descriptions, port, perf, granularity, bad points) -> step 3b.
@@ -19,15 +19,15 @@
 - [x] Extra (user requests): Control Center controls (price, solar), Siri/Shortcuts (3 intents, 7 languages), tap-to-refresh widgets, Apple Watch app + 4 complication families, App Store texts in 7 languages, privacy/support pages, release setup.
 - [x] Full rename HomeDash -> SunWatt (code, targets, bundle IDs, App Group).
 - [x] Step 6: integration, README, `/code-review high` (7 findings, all fixed: shared cache window against parallel fetches / 429, kiosk field no longer saves per keystroke, refresh cancels stale loads, per-day price contexts, yesterday's solar hidden after midnight, solar cache tied to the kiosk link, watch settings race).
-- Final: 298 tests, `scripts/verify.sh` -> VERIFY OK (iOS Simulator tests, macOS build, watchOS build).
+- Final: 298 tests, `apple/scripts/verify.sh` -> VERIFY OK (iOS Simulator tests, macOS build, watchOS build).
 - One unexplained failure: right after one merge, a single `swift test` run reported 176 issues; it never reproduced (20+ runs, clean builds). `verify.sh` now prints the failing tests and keeps the log if it happens again.
 
 - [x] More solar providers (user request): SolarEdge (Monitoring API) and PVOutput, besides FusionSolar. Provider picker in onboarding and Settings, API key + ID editor with "Test connection", 20-min fetch limit for SolarEdge, strings in 7 languages, store texts and privacy/support pages updated, `SolarProviderTests` (DECISIONS D15).
-  - Written in a Linux session without Xcode; compiled and tested by the CI workflow on 2026-10-17 (`5d6b788`: VERIFY OK, 344 tests on macOS and the iOS 27 simulator, macOS and watchOS builds). Still to do on the Mac: render `Screenshots/app` (new `settingsSolarEdge` and `dashboardHome` screens) and check the Settings and onboarding solar pages.
+  - Written in a Linux session without Xcode; compiled and tested by the CI workflow on 2026-10-17 (`5d6b788`: VERIFY OK, 344 tests on macOS and the iOS 27 simulator, macOS and watchOS builds). Still to do on the Mac: render `apple/Screenshots/app` (new `settingsSolarEdge` and `dashboardHome` screens) and check the Settings and onboarding solar pages.
   - SolarEdge/PVOutput fixtures are synthetic. Formats checked on 2026-10-17 against open-source clients (no account available): SolarEdge field names and time format match `clambin/solaredge` (Go); PVOutput history column order, `limit=288`, 400 "No status found", 403 rate limit and the `X-Pvoutput-*` headers match `openclimatefix/pvoutput` (Python). A live check with a real site is still the final proof.
   - Translations reviewed by one Haiku LQA agent per locale (AGENTS.md, "Translations"). Portal menu names are kept in English in every language (SolarEdge: Admin › Site Access › API Access; PVOutput: Settings › API Access): checked against third-party setup guides: PVOutput matches (Settings page: enable API Access, key and System Id on the same page); SolarEdge is Admin (cog icon) › Site Access › API Access in most guides, but some portal versions call it "Plant Access" / "System Access" with an "Access Control" tab. The Admin menu only shows for accounts with admin rights (else ask the installer; the support page says so).
 
-- [x] CI: GitHub workflow `Verify` runs `scripts/verify.sh` on an Xcode 27 Mac runner (unsigned).
+- [x] CI: GitHub workflow `Verify` runs `apple/scripts/verify.sh` on an Xcode 27 Mac runner (unsigned).
 
 - [x] Home consumption for plants with a meter at home (SolarEdge, PVOutput), hidden for export-only plants (DECISIONS D16). Dashboard section + large widget line; new screenshot kind `dashboardHome`.
 
@@ -45,9 +45,9 @@
 
 - [x] Tap-to-refresh fixed (2026-10-17, simulator, iPad iOS 27): a `Button(intent:)` that wrapped the whole widget was ignored and the tap opened the app. The button is now an invisible overlay; a tap refreshes (cache files rewritten) and the app stays closed. No unit test: widget hit-testing only exists in the system renderer. Also checked on the iPhone 18 Pro simulator (2026-10-17, medium widget, live kiosk data): cache rewritten on tap, app stays closed.
 - [x] FusionSolar API account field shows Huawei's portal word: "Password (system code)" in all 7 languages (label, hint, help, two errors). SolarEdge/PVOutput API keys are secret fields (dots) like the system code.
-- [x] `scripts/upload_metadata.sh`: uploads store texts (and optional screenshots) with fastlane deliver; dry run by default, `--upload` only on the owner's word (docs/RELEASE.md, step f2). Used for the first submission.
-- [x] Store screenshots rendered by `SunWattSnapshots --store` (fastlane layout, AppStore/screenshots). All 7 languages rendered and checked (2026-10-17). The folder is git-ignored; render it again before the upload.
-- [x] Design renders (`Screenshots/**/*.png`, 443 files) are git-ignored now; only the `ITERATIONS.md` logs stay in git. The README shows 10 copies from `docs/readme/` (widgets, Lock Screen, watch, iPhone and Mac app). Store screenshots are git-ignored too and rendered before upload (2026-10-17).
+- [x] `apple/scripts/upload_metadata.sh`: uploads store texts (and optional screenshots) with fastlane deliver; dry run by default, `--upload` only on the owner's word (apple/RELEASE.md, step f2). Used for the first submission.
+- [x] Store screenshots rendered by `SunWattSnapshots --store` (fastlane layout, apple/AppStore/screenshots). All 7 languages rendered and checked (2026-10-17). The folder is git-ignored; render it again before the upload.
+- [x] Design renders (`apple/Screenshots/**/*.png`, 443 files) are git-ignored now; only the `ITERATIONS.md` logs stay in git. The README shows 10 copies from `docs/readme/` (widgets, Lock Screen, watch, iPhone and Mac app). Store screenshots are git-ignored too and rendered before upload (2026-10-17).
 - [x] Mac widget said "Solar not set up" (2026-10-17): the Debug build's generic Mac profile does not list `group.com.ideatic.sunwatt`, so macOS blocked the App Group and the app saved settings privately. The Mac now uses `EX68NKELW9.com.ideatic.sunwatt` (DECISIONS D4); the app moves old private settings into the group and plist secrets into the keychain at launch. Checked on this Mac: settings and solar/price caches in the group, kiosk link out of the plist; the owner saw the Mac widget show solar.
 - [x] `private/` (git-ignored) holds all local secrets: kiosk link, live-test keys, App Store Connect API key (checked: read-only GET /v1/apps answers 200 and lists SunWatt).
 - [x] Times show AM/PM in 12-hour locales (en_US showed "01:30" for 13:30).
@@ -64,22 +64,22 @@
 - No public API to add a widget from the app (checked iOS 27 SDK). App shows a guide and detects installed widgets.
 
 ## Release checklist (from the metadata task)
-- [x] Onboarding has a "Skip" path for solar (App Review notes rely on it): `Packages/SunWattKit/Sources/SunWattKit/Views/App/OnboardingView.swift:98` ("Skip, prices only", shown on the solar step when no kiosk link). Review notes wording says "Skip"; the button text is "Skip, prices only".
+- [x] Onboarding has a "Skip" path for solar (App Review notes rely on it): `apple/Packages/SunWattKit/Sources/SunWattKit/Views/App/OnboardingView.swift:98` ("Skip, prices only", shown on the solar step when no kiosk link). Review notes wording says "Skip"; the button text is "Skip, prices only".
 - [x] Energy-Charts "Fraunhofer ISE, CC BY 4.0" attribution visible in the app: `Views/App/AppComponents.swift:326-331` (`sourceAttribution`), shown in `DashboardView.swift:148`, `SettingsView.swift:114`, `OnboardingView.swift:218`; sources list `SettingsView.swift:213-217` (also Red Eléctrica and the "not affiliated" line).
-- [x] `ITSAppUsesNonExemptEncryption = NO` in all four Info.plists (set in `project.yml`, checked in built Release bundles)
+- [x] `ITSAppUsesNonExemptEncryption = NO` in all four Info.plists (set in `apple/project.yml`, checked in built Release bundles)
 - [x] Privacy manifests (`PrivacyInfo.xcprivacy`) for app, widgets, watch app, watch widgets and the SunWattKit resource bundle (UserDefaults 1C8F.1, plus CA92.1 where standard defaults are the fallback; no file-timestamp, boot-time or disk-space APIs used). Present in the built iOS, macOS and watchOS Release bundles.
 - [x] LQA + ASO review of the store texts in 7 languages and of all Italian app strings (Sonnet reviewers, one per language, audited before applying; DECISIONS D24). New subtitles and keywords, fuller descriptions, 76 Italian string fixes (link Kiosk, Siri "su SunWatt", grammar). Metadata check OK, 461 tests pass.
 - [x] Website (`docs/`, GitHub Pages): home page with app icon, App Store badge (Apple's Marketing Tools badge, links to app id 6823996246; live once the app is released), screenshot strip, feature cards with widget, Lock Screen and watch renders, Mac section, providers and markets, privacy note; shared `site.css` (light/dark, phone width checked) for the privacy and support pages too. README and site pictures are English renders (`*-en` jobs in the snapshot tools).
 - [x] Store URLs point to GitHub Pages, `https://ideatic.github.io/sunwatt/` (`docs/` on `main`, `.nojekyll`). Pages is on; the three URLs answer 200 (2026-10-17).
 - [x] User: app record created in App Store Connect ("SunWatt: Solar & Power", same as en-US name.txt). Screenshot sizes confirmed in the renderer.
 
-## Release (step by step in `docs/RELEASE.md`)
-- [x] `DEVELOPMENT_TEAM` EX68NKELW9, version 1.0.0, build number in one place (`CURRENT_PROJECT_VERSION` in `project.yml`)
+## Release (step by step in `apple/RELEASE.md`)
+- [x] `DEVELOPMENT_TEAM` EX68NKELW9, version 1.0.0, build number in one place (`CURRENT_PROJECT_VERSION` in `apple/project.yml`)
 - [x] iPad: 4 orientations, `UIRequiresFullScreen` false; category utilities (iOS and macOS)
 - [x] Release builds without signing: iOS, macOS, watchOS pass; `kiosk.local` is not in any Release bundle
-- [x] `scripts/release.sh` (dry run by default, `--upload` for the real run) and export options in `scripts/`
+- [x] `apple/scripts/release.sh` (dry run by default, `--upload` for the real run) and export options in `apple/scripts/`
 - [x] Archive without `-allowProvisioningUpdates` fails with "No profiles for ..." (expected until the first `--upload`)
-- [x] Build 202610172346 uploaded (iOS + watch, macOS), store texts and screenshots (iPhone, iPad, Mac, Apple Watch, 7 languages) uploaded with `scripts/upload_metadata.sh`, App Privacy "Data Not Collected" published, age rating 4+, free in 175 countries, TestFlight internal group "Team". Review notes carry the demo kiosk link, added at upload from `private/kiosk.local` (never in git); the contact phone is in a git-ignored file.
+- [x] Build 202610172346 uploaded (iOS + watch, macOS), store texts and screenshots (iPhone, iPad, Mac, Apple Watch, 7 languages) uploaded with `apple/scripts/upload_metadata.sh`, App Privacy "Data Not Collected" published, age rating 4+, free in 175 countries, TestFlight internal group "Team". Review notes carry the demo kiosk link, added at upload from `private/kiosk.local` (never in git); the contact phone is in a git-ignored file.
 - [x] 2026-10-18: iOS and macOS 1.0 submitted for App Review (manual release after approval).
 - [x] 2026-10-18: widgets from TestFlight stayed gray placeholders. Cause: the archive stripped the app binary, so iOS could not index the App Intents (DECISIONS D26). Fixed with `STRIP_STYLE: non-global`; `release.sh` checks the symbol. Build 202610172346 had the bug; it was removed from review.
 - [x] 2026-10-18: 1.0 resubmitted (iOS and macOS) with build 202610181936 (second review fixes; replaced 202610181901, which was resubmitted earlier with: strip fix, dark-mode axis labels, widget tap opens the app (D25)). Store texts uploaded. If `release.sh` fails with "Failed to Use Accounts", sign in again in Xcode → Settings → Apple Accounts (javier@marinros.com, team ideatic). Not yet checked on the iPhone from TestFlight. `main` not pushed yet (pushing publishes the support page for D25).

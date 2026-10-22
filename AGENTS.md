@@ -25,18 +25,20 @@ Product name: **SunWatt** (store name "SunWatt: Solar & Power"). Team `EX68NKELW
 
 | Path | What |
 | --- | --- |
-| `project.yml` | XcodeGen spec, the source of truth. `SunWatt.xcodeproj` is generated and git-ignored. Version (`MARKETING_VERSION`) and build number (`CURRENT_PROJECT_VERSION`) live only here. |
-| `App/` | App target (iOS + macOS): entry point, Siri shortcuts, watch sync, debug kiosk prefill, assets. |
-| `Widgets/` | Widget extension: widget, controls, App Intent config, intent strings. |
-| `Watch/`, `WatchWidgets/` | watchOS app and complications. |
-| `Packages/SunWattKit/` | Shared package with almost all code. Targets are thin shells around it. |
-| `Packages/SunWattKit/Sources/SunWattSnapshots`, `SunWattWatchSnapshots` | Render widgets, app screens and watch views to PNG. |
-| `Screenshots/` | Design logs (`*/ITERATIONS.md`, in git). Renders and simulator captures land here locally and are git-ignored. |
+| `apple/` | The Apple app (iOS, iPadOS, macOS, watchOS). Every `apple/…` path below. Its scripts run from here and read secrets from `../private/`. |
+| `android/` | The Android app (planned). Same product rules as here (DECISIONS D31). |
+| `apple/project.yml` | XcodeGen spec, the source of truth. `apple/SunWatt.xcodeproj` is generated and git-ignored. Version (`MARKETING_VERSION`) and build number (`CURRENT_PROJECT_VERSION`) live only here. |
+| `apple/App/` | App target (iOS + macOS): entry point, Siri shortcuts, watch sync, debug kiosk prefill, assets. |
+| `apple/Widgets/` | Widget extension: widget, controls, App Intent config, intent strings. |
+| `apple/Watch/`, `apple/WatchWidgets/` | watchOS app and complications. |
+| `apple/Packages/SunWattKit/` | Shared package with almost all code. Targets are thin shells around it. |
+| `apple/Packages/SunWattKit/Sources/SunWattSnapshots`, `SunWattWatchSnapshots` | Render widgets, app screens and watch views to PNG. |
+| `apple/Screenshots/` | Design logs (`*/ITERATIONS.md`, in git). Renders and simulator captures land here locally and are git-ignored. |
 | `docs/readme/` | The images the README shows (copies of renders; refresh them by hand when the look changes). |
-| `AppStore/` | Store metadata in 7 languages, privacy answers, review notes, `check_metadata.py`. |
-| `docs/` | Privacy/support pages (to host) and `RELEASE.md`. |
-| `scripts/` | `verify.sh` (full check), `release.sh` (archive/upload), export options. |
-| `private/` | Git-ignored, never committed: `kiosk.local` (the developer's kiosk link, one line, for debug prefill and live tests), `solaredge.local` / `pvoutput.local` (live tests), `appstore_key.json` (App Store Connect API key for `scripts/upload_metadata.sh`, the `.p8` text inline in `key`). Put every other secret or personal value here too. |
+| `apple/AppStore/` | Store metadata in 7 languages, privacy answers, review notes, `check_metadata.py`. |
+| `docs/` | Website on GitHub Pages: privacy and support pages, shared by all platforms. Apple release steps: `apple/RELEASE.md`. |
+| `apple/scripts/` | `verify.sh` (full check), `release.sh` (archive/upload), export options. |
+| `private/` | Git-ignored, never committed: `kiosk.local` (the developer's kiosk link, one line, for debug prefill and live tests), `solaredge.local` / `pvoutput.local` (live tests), `appstore_key.json` (App Store Connect API key for `apple/scripts/upload_metadata.sh`, the `.p8` text inline in `key`). Put every other secret or personal value here too. |
 
 ### Inside `SunWattKit/Sources/SunWattKit`
 
@@ -107,29 +109,29 @@ How the code is meant to look. Follow the surrounding code first; these rules sa
 ```bash
 brew install xcodegen
 xcodebuild -downloadPlatform iOS && xcodebuild -downloadPlatform watchOS
-xcodegen generate && open SunWatt.xcodeproj
+cd apple && xcodegen generate && open SunWatt.xcodeproj
 ```
 
-The code needs Apple SDKs (SwiftUI, WidgetKit, AppIntents, Charts, CryptoKit). It does **not** build on Linux; a Linux container can only edit code, docs and metadata (and run `python3 AppStore/check_metadata.py AppStore/metadata`).
+The code needs Apple SDKs (SwiftUI, WidgetKit, AppIntents, Charts, CryptoKit). It does **not** build on Linux; a Linux container can only edit code, docs and metadata (and run `python3 apple/AppStore/check_metadata.py apple/AppStore/metadata`).
 
 ### Test
 
 ```bash
-scripts/verify.sh          # swift test + iOS Simulator tests + macOS and watchOS builds + unsigned Release archives with the App Intents symbol check → VERIFY OK / VERIFY FAILED
-scripts/verify.sh quick    # swift test only
-cd Packages/SunWattKit && swift test --filter LoaderTests   # one suite
+apple/scripts/verify.sh          # swift test + iOS Simulator tests + macOS and watchOS builds + unsigned Release archives with the App Intents symbol check → VERIFY OK / VERIFY FAILED
+apple/scripts/verify.sh quick    # swift test only
+cd apple/Packages/SunWattKit && swift test --filter LoaderTests   # one suite
 ```
 
-- CI: `.github/workflows/verify.yml` runs `scripts/verify.sh` on a GitHub-hosted Mac (`xcode-27` runner, unsigned builds) on every push to `main` and every pull request. Full logs are in the run's `verify-logs` artifact. Use it when no Mac is at hand (e.g. a Linux session).
+- CI: `.github/workflows/verify.yml` runs `apple/scripts/verify.sh` on a GitHub-hosted Mac (`xcode-27` runner, unsigned builds) on every push to `main` and every pull request. Full logs are in the run's `verify-logs` artifact. Use it when no Mac is at hand (e.g. a Linux session).
 - Tests use Swift Testing (`import Testing`, `@Suite`, `@Test`), not XCTest.
 - Network is always stubbed (`StubHTTPClient`). Fixtures live in `Tests/SunWattKitTests/Fixtures/` (real responses, anonymized; `*-synthetic.json` are hand-made).
-- Live tests are opt-in and slow (15 s between requests): `cd Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests`. They read `private/kiosk.local` and hit all 8 price regions. SolarEdge and PVOutput run only when `private/solaredge.local` / `private/pvoutput.local` exist (line 1: ID, line 2: API key; git-ignored).
+- Live tests are opt-in and slow (15 s between requests): `cd apple/Packages/SunWattKit && SUNWATT_LIVE=1 swift test --filter LiveTests`. They read `private/kiosk.local` and hit all 8 price regions. SolarEdge and PVOutput run only when `private/solaredge.local` / `private/pvoutput.local` exist (line 1: ID, line 2: API key; git-ignored).
 - Simulator default: iPhone 18 Pro, iOS 27.0 (`SUNWATT_SIM` overrides). macOS builds run with `CODE_SIGNING_ALLOWED=NO` and only compile (DECISIONS D4).
 
 ### Screenshots and design checks
 
 ```bash
-cd Packages/SunWattKit
+cd apple/Packages/SunWattKit
 swift run SunWattSnapshots ../../Screenshots/widgets
 swift run SunWattSnapshots --app ../../Screenshots/app
 swift run SunWattWatchSnapshots ../../Screenshots/watch
@@ -142,7 +144,7 @@ After any visual change: render, look at the PNGs (light/dark, day/night/stale/e
 - **Solar provider**: add a case to `SolarProvider` and its `SolarProviderProfile` (name, setup kind, portal, request limit, local inverter kind), a client that keeps the `SolarDataSource` contract (written on the protocol), a case in `SolarAccount` (`init(settings:)`, `cacheID`, `client`), the per-provider texts in `SolarSetupViews` (the compiler points at each exhaustive `switch`), strings in all languages, fixtures + parser tests, **one case in `ProviderContractTests`** (the shared contract checks then run on it), and mention it in the privacy page and store texts. Same for a price source (`PriceDataSource`, `PriceContractCase`) or an inverter kind (`LocalInverterReader`, `InverterContractCase`).
 - **Price region**: add a case to `PriceRegion` and its `PriceRegionProfile` (time zone, flag, `PriceSource` with the zone code) and its `displayName`, strings in `Core.xcstrings` in all languages, a real fixture + a `PriceContractCase` (the shared contract checks then run on it), and run the live test once. A new kind of source also needs a client that keeps the `PriceDataSource` contract and its texts in the exhaustive `switch`es on `PriceSource` (tariff name, note, attribution).
 - **User-facing string**: add the key to the right catalog with all 7 languages.
-- **Target setting / plist key**: change `project.yml`, never the generated project.
+- **Target setting / plist key**: change `apple/project.yml`, never the generated project.
 
 ### Translations (one Haiku subagent per locale, acting as LQA)
 
@@ -156,15 +158,15 @@ Every new or changed user-facing string (string catalogs, App Store metadata, `d
    - Each subagent works as an LQA (linguistic quality assurance) reviewer, not only a translator: it reports anything ambiguous in the source, and checks length, terminology consistency and natural phrasing.
 3. **The main agent audits every result** before writing it to the files: placeholders kept, nothing left in English, no words from another language, consistent terms across the app, same formality, sensible length. Note: "solar system" is not "sistema solar" (that means the planets); use the local term for a solar installation or monitoring system.
 4. When something looks wrong, send it back **to the subagent of that locale** (SendMessage) with the exact string and the problem, and apply only the corrected answer. Do not fix one language by copying from another.
-5. Then run the catalog tests (`swift test --filter L10n`, `--filter ViewStrings`) and `python3 AppStore/check_metadata.py AppStore/metadata`.
+5. Then run the catalog tests (`swift test --filter L10n`, `--filter ViewStrings`) and `python3 apple/AppStore/check_metadata.py apple/AppStore/metadata`.
 
 ### Release
 
-Step by step in `docs/RELEASE.md`. `scripts/release.sh` is a dry run by default; `--upload` changes the Apple Developer account and uploads to App Store Connect, so run it only when the owner says so. Check metadata with `python3 AppStore/check_metadata.py AppStore/metadata`. Open owner items are listed in `PROGRESS.md`. Privacy, support and marketing pages are `docs/` on GitHub Pages (`https://ideatic.github.io/sunwatt/`); edit them there.
+Step by step in `apple/RELEASE.md`. `apple/scripts/release.sh` is a dry run by default; `--upload` changes the Apple Developer account and uploads to App Store Connect, so run it only when the owner says so. Check metadata with `python3 apple/AppStore/check_metadata.py apple/AppStore/metadata`. Open owner items are listed in `PROGRESS.md`. Privacy, support and marketing pages are `docs/` on GitHub Pages (`https://ideatic.github.io/sunwatt/`); edit them there.
 
 ## Working conventions
 
 - Small, focused commits with plain-language messages (`Area: what changed`).
 - Record each non-obvious decision in `DECISIONS.md` (decision, why, how to change it) and update `PROGRESS.md` when a step is done or a known issue changes.
-- Run `scripts/verify.sh` before merging; report failures with their output, do not hide flaky tests (raise the timeout or fix the cause, and note it in `PROGRESS.md`).
+- Run `apple/scripts/verify.sh` before merging; report failures with their output, do not hide flaky tests (raise the timeout or fix the cause, and note it in `PROGRESS.md`).
 - Before pushing, grep tracked files for `kk=` followed by a real token and for real plant names or addresses.
